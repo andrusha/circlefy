@@ -1,4 +1,5 @@
 <?php
+echo "what's up";
 echo "test";
 require_once('config.php');
 //echo "These are the classes that are dynamically loaded:<br/>";
