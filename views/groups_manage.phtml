@@ -1,0 +1,312 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+<script type="text/javascript" src="views/javascript/invite.js"></script>
+<script type="text/javascript" >
+
+function vanish_text(classAppend,e){
+e.value = '';
+e.className = classAppend+' 1';
+}
+
+function group(){
+        var postText = getXmlHttpRequestObject();
+        var param = 'init=init';
+
+	var email = document.getElementById('input_connected_email').value;
+                if (postText.readyState == 4 || postText.readyState == 0)
+                {
+                 postText.open("POST", 'AJAX/connected_group_add.php', true);
+                 postText.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+                 postText.onreadystatechange = function() { handlePending(postText) }
+                        param += '&email='+email;
+                        postText.send(param);
+                }
+}
+
+function handlePending(imStatus) {
+        if (imStatus.readyState == 4) {
+                var json_result = eval('(' + imStatus.responseText + ')');
+                if(json_result != null){
+		document.getElementById('connected_status').innerHTML = json_result.stat;
+		document.getElementById('input_connected_email').value = '';
+        }
+}
+}
+
+</script>
+</head>
+
+<body>
+
+<div id="container">
+
+	<?php $group_results = $view_data['group_results'];?>
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<div id="manage_groups">
+	
+		<div id="manage_groups_header">Manage Groups</div>
+	
+			<div id="manage_groups_intro">
+		
+			<p>
+			Welcome to Manage Groups.  Here you can Add, Create, and Remoeve yourself from groups that you like.
+			By adding yourself to a group, you enable yourself to message everyoone in the group and participate in receive
+			updates from that group.
+			</p>
+			
+			<div id="manage_groups_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		</div>
+
+		<div id="manage_groups_body">
+		
+			<div id="manage_groups_top">
+			
+				<span id="create_group_span"><img src="images/icons/group_add.png" /> <a href="/rewrite/create_group">Create a Group&nbsp;</a></span>
+			
+			<span id="relate_groups_title">Related Groups</span>
+			<div id="search_related_wrapper">
+				<!-- SIMPLE -->			
+				<div id="search_groups">
+					
+					<form action="search_groups">
+						<fieldset>
+						<legend>Search Groups To Join:</legend>
+						
+							<ul>
+										<li><label for="group_name">Name </label><input type="text" id="group_name"></input></li>
+										<li><a href="#" onclick="document.getElementById('search_groups').style.display = 'none'; document.getElementById('search_groups_advanced').style.display = 'block';">Advanced Search</a></li>
+										<li><button type="submit">Search</button></li>
+							</ul>
+						
+						</fieldset>
+					</form>
+
+					<ul id="know_someone">
+						<li>Know someone who wants to join one of your groups?  Invite them!</li>
+						<li>	
+						<ul id="know_someone_more">	
+							<li>
+								<input type="text" id="manage_invite" name="manage_invite"></input>
+								<input type="submit" value="Invite" id="manage_invite" name="manage_invite" onclick="something(this); return false;"></input>
+							</li>
+						
+							<li>    
+								<select id="invite_groups_in">
+								<option value="NULL"> - - - - - - - - -</option>
+								<?php while($search_people_results = $view_data['your_groups']->fetch_assoc())
+								echo <<<EOF
+								<option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
+EOF;
+								?>
+		                                                </select>
+							</li>
+						</ul>
+						</li>
+					</ul>	
+		
+				</div>
+
+				<!-- ADVANCED -->			
+				<div id="search_groups_advanced">
+
+                                        <form action="search_groups">
+                                                <fieldset>
+                                                <legend>Search Groups To Join:</legend>
+
+                                                        <ul>
+                                                                                <li><label for="group_name">Name </label><input type="text" id="group_name"></input></li>
+                                                                                <li><a href="#"  onclick="document.getElementById('search_groups').style.display = 'block'; document.getElementById('search_groups_advanced').style.display = 'none';">Back to Simple Search</a></li>
+                                                                                        <li>
+                                                                                                <ul>
+                                                                                                        <li><label for="search_group_name">Keywords in Description </label><input type="text" id="search_group_name"></input></li>
+                                                                                                        <li><label for="search_group_cred">Credibility Atleast.. </label><input type="text" id="search_group_cred"></input></li>
+                                                                                                        <li><label for="search_group_zip">Zipcode </label><input type="text" id="search_group_zip"></input></li>
+                                                                                                        <li>
+                                                                                                                <label for="serach_group_category">Category </label>
+                                                                                                                        <select id="serach_group_category">
+                                                                                                                                <option>test</option>
+                                                                                                                        </select>
+                                                                                                        </li>
+                                                                                                </ul>
+                                                                                        </li>
+                                                                                <li><button type="submit">Search</button></li>
+                                                        </ul>
+
+                                                </fieldset>
+                                        </form>
+
+                                </div>
+
+				
+				<div id="related_groups">
+			
+				<?php 
+					while($res = $view_data['rand_group_results']->fetch_assoc()){
+					$rand_group_output[] .= <<<EOF
+						<div class="related_group_wrapper">
+						 <div class="group_result_name"><span class="group_result_name_span">{$res['gname']}</span></div>
+						<span class="group_more_wrapper">
+							<span class="related_group_pic"><img src="pictures/groups/{$res['pic_100']}" /></span>
+							<span class="related_group_more"><a href="group/{$res['gid']}">More Info..</a></span>
+						</span>
+						
+							<ul class="related_group_list">
+								<li class="related_group_focus"><span class="style_bold">Focus: </span>{$res['focus']}</li>
+								<li class="related_group_desc"><span class="style_bold">Description: </span>Help people change the world by adding computer...</li>
+							</ul>
+					</div>
+EOF;
+					}
+					foreach($rand_group_output as $v)
+						echo $v;
+				?>
+					
+				</div> <!-- End related_groups -->
+				
+			</div>	<!-- End search_related_wrapper -->
+			
+			
+		</div>
+			
+			
+			
+						<span id="search_group_divider">Your Groups:	</span>
+			
+			
+<!--	This is where the groups starts		-->
+
+<?php
+if($group_results->num_rows > 0){
+ 	echo "<div class=\"groups_your_in\">";
+
+	while($res = $group_results->fetch_assoc()){
+	$pic_100 = $res['pic_100'];
+	$gname = $res['gname'];
+	$focus = $res['focus'];
+	$size = $res['size'];
+	$status = $res['admin'];
+	$gid = $res['gid'];	
+
+	switch($status){
+		case 1:
+			$status = "Group Owner";	
+		case 2:
+			$status = "Group Admin";
+		default:
+			$status = "";
+	}
+
+		$x++;
+		if($x & 1){
+			$y = "first";
+		} else {
+			$y = "second";
+		}
+		
+		
+		$group_output[$y] .=
+			<<<EOF
+                                        <div class="group_result">
+							<div class="group_result_name"><span class="group_result_name_span">{$gname} <span class="group_status">{$status}</span></span></div>
+
+							<div class="thumbnail_group_result"><img src="pictures/groups/{$pic_100}" alt="group_pic" /></div>
+
+							<div class="group_result_info">
+								<ul class="result_info_list">
+									<li><span class="style_bold">Focus: </span>{$focus}</li>
+									<li><span class="style_bold">Members: </span> {$size} </li>
+								</ul>
+								
+								<ul class="result_info_list">
+                                                                        <li><span class="style_bold"><a href="group/{$gid}">Manage</a></span></li>
+                                                                </ul>
+
+
+								<ul class="group_result_option_list">
+								</ul>
+
+
+							</div>
+					</div>
+
+
+EOF;
+}
+	} else {
+		echo '<div class="groups_your_in_null">';
+		echo '<span id="no_groups">You are currently in no groups, search above to join groups that you\'re interested in.</span>';
+	}
+	
+	echo $group_output["first"];
+?>
+
+			
+			</div>
+			
+		<div class="groups_your_in_right">
+			<?=$group_output["second"];?>
+		</div>
+		
+		</div>
+
+		<div id="people_search_results">
+			<span id="search_group_divider">Connected Groups:    </span>
+
+			<span id="connected_group_descr"><img src="images/icons/information.png" /> Connected Groups allow you to connect with people who are in the same school, work or area that you're in.  Once part of a group, you can communicate with that group via #your_groups_name.  Enjoy!</span>
+		
+			<form id="connected_form">
+<F5>			<ul id="connected_list">
+				<li> </li>
+				<li>School:</li>
+				<li><input type="text" id="input_connected_email" class="connected_email" value="School email address" onfocus="vanish_text('connected_email',this);"></input></li>
+				<li><input type="submit" id="connected_submit" value="Add Connected Group" onclick="group(); return false;"></li>
+			</ul>
+			</form>	
+
+			<div id="display_connected">
+				
+				<span class="style_bold">Connected Groups You're in:</span>
+
+				<ul id="connected_you_are_in_list">
+				<li id="connected_status"></li>
+					<?php	$rows = $view_data['connected_groups'];
+						if($rows->num_rows == 0){
+							echo "You're in no connected groups, join one!";
+						} else {
+							while($res = $rows->fetch_assoc() ){
+								$status = $res['status'];
+								$gname = $res['gname'];
+								$email = $res['email'];
+								$domain = $res['domain'];
+								if($status == 0){
+									echo "<li class='pending_connect'>An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>";
+								} else {
+									echo "<li class='active_connect'><span class='style_bold'>Group Name</span>: $gname <span class='style_bold'>Symbol</span>:#$domain</li>";
+								}
+						}
+						}
+					?>
+					<li></li>
+				</ul>
+			</div>
+		</div>	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

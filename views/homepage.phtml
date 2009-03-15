@@ -1,0 +1,1102 @@
+<?php echo $view_data['errors']?>
+<?php $user = $view_data['user'];?>
+<?php $user_pic = $view_data['user_pic'];?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Tap</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<!-- <link href="main.css" rel="stylesheet" type="text/css" media="screen" /> -->
+<style type="text/css" media="all">@import "views/style_sheets/main.css";</style>
+<script type="text/javascript" src="http://data.localhost.com/meteor.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.1-core-yc.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2-more.js"></script>
+<script type="text/javascript" src="views/javascript/Autocompleter.js"></script>
+<script type="text/javascript" src="views/javascript/Autocompleter.Request.js"></script>
+<script type="text/javascript" src="views/javascript/Observer.js"></script>
+<script type="text/javascript" src="views/javascript/rel.js"></script>
+<script type="text/javascript" src="views/javascript/homepage_group_status.js"></script>
+<script type="text/javascript" src="views/javascript/homepage_tap_friend.js"></script>
+
+
+
+    <script type="text/javascript" src="views/javascript/chat_window.js"></script>
+    
+    <script type="text/javascript">
+
+String.prototype.trim = function() {
+	return this.replace(/^\s+|\s+$/g,"");
+}
+
+Autocompleter.Request.JSON.Toggle = new Class({
+
+    Extends: Autocompleter.Request.JSON,
+
+    initialize: function(el, url, options) {
+        this.parent(el, url, options);
+
+        this.toggleEnabled = true;
+    },
+
+    enable: function() {
+        this.toggleEnabled = true;
+    },
+
+    disable: function() {
+        this.toggleEnabled = false;
+        this.hideChoices(true);
+    },
+
+    onCommand: function(e) {
+        if (this.toggleEnabled) {
+            this.parent(e);
+        }
+    },
+
+    prefetch: function(e) {
+        if (this.toggleEnabled) {
+            this.parent(e);
+        }
+    }
+
+});
+
+
+
+Bit_Grabber2 = new Class({
+
+	offset_array: [],
+
+	grab_bits: function(data){
+	var self = this;
+	Hash.each(data,function(value){ Hash.each(value,
+	function(html,key){ 
+		var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
+		var id = key+'_information';
+		newel.inject(id,'top');
+		newel.tween('opacity', 0, 1);
+						 new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#fff');
+						console.log(key);
+		$(key+'_bullet').src = "images/icons/bullet_blue.png";
+	 })    
+				});
+				response_event_obj.remove_action();
+                                response_event_obj.add_action();
+				grabber_obj.grab_all();
+				
+			//Actually, I realize that I could have initialzed the offsets in an array an manipulated the array... will chaange in a bit, as well as everything I did HTML with
+	}
+});
+var bg2 = new Bit_Grabber2;
+
+//{'offsets' : bg2.offset_array, 'bit_grabber' : true}
+
+
+
+Bit_Grabber = new Class({
+
+	offset_array: [],
+
+	grab_bits: function(){
+	var self = this;
+	self.offset_array = [];
+
+	$$('.offsets').each(function( el ) {
+		self.offset_array.push(el.innerHTML);
+	});
+
+//	console.log(self.offset_array[0]);
+
+	var req_res = new Request.JSON({
+			url:"AJAX/response_poller.php",
+			onComplete: function(data){
+				var counter = 0;	
+				$$('.offsets').each(function( el ) {
+					var new_offset = data.new_offsets[counter];
+					console.log(data.new_offsets[counter]);
+					el.innerHTML = new_offset;
+					counter++;
+				})
+				if(data.results != false){
+					console.log("test");
+					Hash.each(data.data,function(value){ Hash.each(value,
+					function(html,key){ 
+						var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
+						var id = key+'_information';
+						newel.inject(id,'top');
+						newel.tween('opacity', 0, 1);
+						$(key+'_bullet').src = "images/icons/bullet_blue.png";
+					 })    
+								});
+				}
+			}
+	}).post({'offsets' : self.offset_array, 'bit_grabber' : true});
+			//Actually, I realize that I could have initialzed the offsets in an array an manipulated the array... will chaange in a bit, as well as everything I did HTML with
+	}
+});
+
+Response_Grabber = new Class({
+
+	array_obj: [] ,
+	json_obj: null,
+
+	initialize: function(){
+	},
+
+	grab_all: function(){
+		this.json_obj = null;	
+		$$('.response_mid_max').each( function ( el ) {
+			el_id = el.get('id');
+			this.array_obj.include(el_id.substr(5))
+		}.bind(this));
+
+		this.json_obj = JSON.encode(this.array_obj);
+	},
+
+	r_poller: function(){
+			self = this;
+			var last_mid = $('last_mid').innerHTML;
+	
+			var req_res = new Request.JSON({
+				url:"AJAX/response_poller.php",
+				onComplete: function(data){
+					$('last_mid').innerHTML = data.new_mid;
+					if(data.results != 'false'){
+						results = JSON.decode(data.data);
+						$each( data.data, function(val,key){
+						for(i in val){
+							if($type(val[i]) == 'string'){	
+								//console.log(key,val[i]);
+								if(active_convo.active_convos.contains(key)){
+								new Fx.Tween($('active_'+key), {property: 'background-color', link: 'chain'}).start('#f50').start('#fff');
+								$('active_'+key+'_bullet').src = "images/icons/bullet_blue.png";
+								}
+								class_el = '.'+key+'_resp';
+								$$(class_el).each( function ( el ){
+									var newel = new Element('div', {'html': val[i], 'style':'visibility: hidden'});
+									newel.inject(el,'top');
+									newel.tween('opacity', 0, 1);
+								});
+							} else { 
+								break;
+							}
+						}
+						});
+						
+					}
+					
+				}}
+			).post({'json' : self.json_obj, 'last_mid' : last_mid,'responder':true});
+			
+	},
+	
+	add_bit: function(id){
+		this.array_obj.include(id);
+		this.json_obj = JSON.encode(this.array_obj);
+	},
+
+	remove_bit: function(){
+	//need to add this functoin to improve performance, remove bit from queue
+	}
+
+});
+
+Response_Sender = new Class({
+
+		add_action: function() { 
+			responseBoxes = $$('.textarea_response');
+			responseBoxes.each(function(el){
+				el.addEvent('keydown',function(event){
+					if(event.key == 'enter'){
+						event.stop();
+						var id = el.get('id').substr(18);
+						//add active
+						active_convo.add_active(el,'response');
+						var text = el.value;
+						var req_res = new Request.JSON({
+							url:"AJAX/respond.php",
+							onComplete: function(data){
+								el.value = '';
+							}
+						}).post({'response' : text , 'channel_id' : id});
+					}
+				});
+			});
+		},
+
+		remove_action: function(){
+			responseBoxes = $$('.textarea_response');
+			responseBoxes.removeEvents('keydown');
+		}
+
+});
+
+Active_Convo = new Class({
+
+	active_convos: [],
+
+	get_active_list: function(){
+		var self = this;
+		self.active_convos = [];
+		$$('.toggle_list_active').each(function(el){
+			var active_id = el.id.substring(7);
+			self.active_convos.include(active_id);
+		});
+	},
+
+	remove_active: function(){
+	var self = this;
+
+	$$('.active_close_bullet').each(function(el){
+		el.addEvent('click',function(e){
+			e.stop();
+			var id_seq = this.getParent().id.substring(7);
+			self.active_convos.erase(id_seq);
+			console.log(id_seq)
+			this.getParent().style.display = 'none';
+			var req_res = new Request.JSON({
+				url:"AJAX/remove_active.php"
+			}).post({'remove_active' : id_seq});
+		});
+	});
+
+	},
+	
+	add_active: function(el,type){
+		if(type == 'response')
+		var id = el.get('id').substring(18);
+
+		if(type == 'bit'){	
+			var id = el.get('id').substring(7);
+			el = el.getElements('#textarea_response_'+id)[0];
+		}
+
+		if(!this.active_convos.contains(id)){
+			var req_res = new Request.JSON({
+				url:"AJAX/add_active.php"
+			}).post({'add_active' : id});
+
+
+			
+		var full_div = el.getParent('.respond_text_area_div').get('id').substring(8);
+		var full_div = 'super_bit_'+full_div;
+		var bit = $(full_div);
+		var bit_text = bit.getElements('.bit_text').get('text');
+
+		var text = '';		
+		bit_text.each(function(value,key){
+			text += value;
+		});
+
+		text = text.trim().substring(0,14);
+		
+		var str_match = bit.id.replace(/(.+?[_])(?!_)(.+?[_])(?!_)(.+?[_])(?!_)(.+?[_])(?!_)(.+)/,'$3$4');
+		var new_id = 'bit_'+id+'_active_aggr_0';
+		var str_match = str_match.substring(0,str_match.length-1);
+		str_match = new RegExp(str_match,'g');
+		var inner_bit_replaced = bit.innerHTML.replace(str_match,"active_aggr");
+
+		var new_el = new Element('div', {'html': inner_bit_replaced,'id' : new_id });
+		var wrap = new Element('div'); new_el.clone(true, true).inject(wrap); var html = wrap.get('html'); wrap.destroy();
+		var html = new Element('div', {'html': html,'id' : 'active_'+id+'_information' , 'class' : "sub_information"});
+
+		
+		var close_bullet= '<img class="active_close_bullet" id="active_close_'+id+'_bullet" src="images/icons/bullet_delete.png" />';
+		var bullet = '<img id="active_'+id+'_bullet" src="images/icons/bullet_white.png" />';
+		var new_el_li = new Element('div', {'html': bullet+text+'...'+close_bullet,'id' : 'active_'+id, 'class' : "toggle_list_el toggle_list_active", 'onclick': "show_info('active_"+id+"','Testing 1');"});
+
+
+	//	$('main_information').innerHTML += html;
+		html.inject($('main_information'),'top');
+		new_el_li.inject($('right_tabs_list'),'bottom');
+				response_event_obj.remove_action();
+                                response_event_obj.add_action();
+	
+		active_convo.get_active_list();
+		active_convo.remove_active();
+		if(type != 'bit')
+		show_info('active_'+id,'Testing 1');
+		}
+	}
+
+});
+
+var active_convo;
+var autocompleter;
+var inputBox;
+var grabber_obj;
+var poller_obj;
+var response_event_obj;
+window.addEvent('domready', function() {
+
+	active_convo = new Active_Convo;
+	active_convo.remove_active();
+	active_convo.get_active_list();
+
+
+	inputBox = $('question');
+	responseBoxes = $$('.textarea_response');
+	autocompleter = new Autocompleter.Request.JSON.Toggle('question', 'AJAX/query_assoc.php', {
+	postVar: 'search',
+	multiple: 'true',
+	selectMode: 'select',
+	minLength: 2
+			});
+
+grabber_obj = new Response_Grabber;
+grabber_obj.grab_all();
+grabber_obj.r_poller();
+setInterval('grabber_obj.r_poller()',3000);
+
+/*
+poller_obj = new Bit_Grabber;
+poller_obj.grab_bits();
+//setInterval('poller_obj.grab_bits()',8000);
+*/
+
+var myFx = new Fx.Slide('text_state', {
+    duration: 1000,
+    transition: Fx.Transitions.Pow.easeOut
+});
+$('text_state').style.margin = '0px auto';
+myFx.hide();
+
+	var friends_slide = new Fx.Slide('friends_tab_slide', {
+   		 duration: 1000,
+	    transition: Fx.Transitions.Pow.easeOut
+	});	
+	var groups_slide = new Fx.Slide('groups_tab_slide', {
+   		 duration: 1000,
+	    transition: Fx.Transitions.Pow.easeOut
+	});	
+	var rel_slide = new Fx.Slide('rel_tab_slide', {
+   		 duration: 1000,
+	    transition: Fx.Transitions.Pow.easeOut
+	});	
+
+	$('clear_bullets').addEvent('click',function(e){
+		$$('.tab_bullet').each(function(el){
+			el.src = 'images/icons/bullet_white.png';
+		});
+	});
+
+	$$('.toggle_list_group').each(function(el){
+		el.addEvent('click',function(e){
+			$('question').value = '#'+el.childNodes[2].innerHTML+', ';
+			$('question').focus();
+		});	
+		
+	});
+	$$('.toggle_list_friend').each(function(el){
+		el.addEvent('click',function(e){
+			$('question').value = '@'+el.childNodes[2].innerHTML+', ';
+			$('question').focus();
+		});	
+		
+	});
+
+	$('building').addEvent('click',function(e){
+		$('question').value = '^^, ';
+		$('question').focus();
+	});
+
+	$('friends_toggle').addEvent('click',function(e){
+		$('friends_toggle').src = "images/icons/bullet_toggle_plus.png";
+		friends_slide.toggle();
+	});
+	$('groups_toggle').addEvent('click',function(e){
+		$('groups_toggle').src = "images/icons/bullet_toggle_plus.png";
+		groups_slide.toggle();
+	});
+	$('rel_toggle').addEvent('click',function(e){
+		$('rel_toggle').src = "images/icons/bullet_toggle_plus.png";
+		rel_slide.toggle();
+	});
+	
+	$('text_state_toggle').addEvent('click', function(e) { 
+		e.stop();
+		
+		if($('text_state').className == 'hide_class'){
+			$('text_state').setStyle('display', 'block');
+			$('text_state').set('class','display');
+			$('text_state_toggle').innerHTML = '<a href="#">Hide Help</a>';
+			$('text_state_toggle').className = 'hide_help';
+			myFx.toggle();
+		} else { 
+			myFx.toggle();
+			if($('text_state_toggle').className == 'show_help'){
+				$('text_state_toggle').innerHTML = '<a href="#">Hide Help</a>';
+				$('text_state_toggle').className = 'hide_help';
+			} else { 
+				$('text_state_toggle').innerHTML = '<a href="#">Show Help</a>';
+				$('text_state_toggle').className = 'show_help';
+			}
+		}
+	
+	});
+
+/*	
+	responseBoxes.each(function(el){
+		el.addEvent('keydown',function(event){
+			if(event.key == 'enter'){
+				event.stop();
+				var id = el.get('id').substr(18);
+				var text = el.value;
+				var req_res = new Request.JSON({
+E
+
+					onComplete: function(data){
+						el.value = '';
+					}
+				}).post({'response' : text , 'channel_id' : id});
+			}
+		});
+	});
+*/
+	
+	response_event_obj = new Response_Sender;
+	response_event_obj.add_action();
+	
+	autocompleter.enable();
+
+	inputBox.addEvent('keydown', function(event){
+		if((event.key =='3' && event.shift) && !autocompleter.toggleEnabled){
+			//$('text_state').style.background = 'lightyellow';
+			//$('text_state').innerHTML = 'Direct your message to people using the symbols below (Example: the group Harvard would be #Harvard, your friend Bill22 would be @Biill22 , *cats for people interested in cats). Press ! when complete, then start typing your message';
+			$('mode_text').innerHTML = '<img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode';
+//			$('mode_text').style.background = 'lightblue';
+/*
+			exampleFx = new Fx.Style(’text_state’, ‘opacity’, {
+			    duration: 500,
+			    transition: Fx.Transitions.quartInOut
+			    });
+			    exampleFx.start(0,1); /*fade it in*/
+
+			console.log('Start');
+			autocompleter.enable();
+
+		}else if((event.key =='space')  && autocompleter.toggleEnabled){
+			autocompleter.disable();
+			//$('text_state').style.background = 'lightgreen';
+//			$('text_state').innerHTML = '<img src="images/icons/comment_edit.png" />Now type your message to the people who you\'re sending it to and press enter to send';
+			$('mode_text').innerHTML = '<img src="images/icons/comment_edit.png" />Messaging, press enter to send your message';
+//			$('mode_text').style.background = 'lightgreen';
+			console.log('Stop');
+	//		inputBox.removeEvents();
+		//	setTimeout("autocompleter.disable()",1000);
+			
+		}
+	});
+
+});
+
+/*
+window.addEvent('domready', function() {
+	var completer_created = false;
+	var inputBox = $('question');
+
+	inputBox.addEvent('keydown', function(event){
+		if(event.key == 'a' && !completer_created){
+			var autocompleter = new Autocompleter.Request.JSON('question', 'AJAX/query_assoc.php', {
+				postVar: 'search',
+				maxChoices: 1
+			});
+		}else if(event.key == ';' && autocompleter){
+			autocompleter.destroy();
+		}
+	});
+
+});
+*/
+function show_mang(mang_id){
+	var current_mang = document.getElementById('current_mang').innerHTML;
+	if(current_mang != ''){
+		document.getElementById('mang_'+current_mang).style.display = 'none';
+		document.getElementById('current_mang').innerHTML = mang_id;
+		document.getElementById('mang_'+mang_id).style.display = 'block';
+	} else {
+		document.getElementById('current_mang').innerHTML = mang_id;
+		document.getElementById('mang_'+mang_id).style.display = 'block';
+	}
+}
+
+function hide_mang(mang_id){
+	var current_mang = document.getElementById('current_mang').innerHTML;
+	document.getElementById('mang_'+current_mang).style.display = 'none';	
+	document.getElementById('current_mang').innerHTML = '';
+	}
+
+function show_info(info_id,info_display){
+        var current_info = document.getElementById('current_info').innerHTML;
+        var current_info_display = document.getElementById('current_info_display').innerHTML;
+        if(current_info != ''){
+                document.getElementById(current_info+'_information').style.display = 'none';
+                document.getElementById('current_info').innerHTML = info_id;
+                document.getElementById('current_info_display').innerHTML = info_display;
+		document.getElementById(info_id+'_bullet').src = "images/icons/bullet_yellow.png";
+		if(current_info != info_id) document.getElementById(current_info+'_bullet').src = "images/icons/bullet_white.png";
+                document.getElementById(info_id+'_information').style.display = 'block';
+        } else {
+                document.getElementById('current_info').innerHTML = info_id;
+                document.getElementById('current_info_display').innerHTML = info_display;
+                document.getElementById(info_id+'_information').style.display = 'block';
+        }
+}
+
+function hide_info(info_id){
+        var current_info = document.getElementById('current_info').innerHTML;
+        document.getElementById('info_'+current_info).style.display = 'none';   
+        document.getElementById('current_info').innerHTML = '';
+        }
+
+function toggle_show_response(id,e,from){
+	var state = e.className;
+	
+	if(state == 1){ state = 0; } else { state = 1;}
+	if(state) {
+		if(from)
+			e.innerHTML = '<img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">Hide Replies </span>';
+		document.getElementById(id).style.display = 'block';
+	/*	var scrollObj = document.getElementById(id);
+		scrollObj.scrollTop = scrollObj.scrollHeight;*/
+	}else{
+		if(from) e.innerHTML = '<img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">View Replies </span>';
+		document.getElementById(id).style.display = 'none';
+	}
+	e.className = state;
+}
+
+function vanish_text(classAppend,e){
+e.value = '';
+e.className = classAppend+' 1';
+}
+
+function getXmlHttpRequestObject() {
+        if (window.XMLHttpRequest) {
+                return new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+                        return new ActiveXObject("Microsoft.XMLHTTP");
+        } else {
+                document.getElementById('errors_show').innerHTML = 'Status: Cound not create XmlHttpRequest Object.  Consider upgrading your browser.';
+        }
+}
+
+function good(e,cid,uid,fuid,type){
+        var postText = getXmlHttpRequestObject();
+        var param = 'init=init';
+                if (postText.readyState == 4 || postText.readyState == 0){
+                       postText.open("POST", 'AJAX/good.php', true);
+                       postText.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+                       postText.onreadystatechange = function() { handleGood(postText,cid,type,e) };
+                       param += '&cid='+cid;
+                       param += '&uid='+uid;
+                       param += '&fuid='+fuid;
+                           postText.send(param);
+                }
+}
+
+function handleGood(imStatus,cid,type,e) {
+        if (imStatus.readyState == 4) {
+                var json_result = eval('(' + imStatus.responseText + ')');
+                	document.getElementById('good_'+cid+'_'+type).innerHTML = '<img src="images/icons/accept.png" /> Thanks!';
+			e.onclick = '';
+                }
+        }
+
+function clear_current_chats(){
+		var cwindow = $('chat_windows');
+		if(cwindow.innerHTML == ''){  
+			$('clear_err').get('tween').start('opacity',1).chain(function(){
+			    this.start.delay(1400, this, ['opacity',0]);
+			});
+		} else {
+		 cwindow.get('tween').start('opacity',0).chain(function(){
+                            cwindow.set.delay(100,cwindow,['html','']);
+				cwindow.set.delay(2000,cwindow,cwindow.get('tween').start('opacity',1));
+                        });
+	}
+
+		
+		
+
+//or
+
+
+}
+    </script>
+
+    
+</head>
+
+<body>
+
+<span id="errors_show"></span>
+<span id="last_mid"><?=$view_data['max_mid'];?></span>
+<?php/*
+$offsets = $view_data['offsets'];
+foreach($offsets as $offset)
+	echo '<span class="offsets">'.$offset.'</span><br/>';
+*/
+?>
+<!--
+<div id="top">
+<span onclick="show_mang('rel')" class="top_links" id="top_rel">Relevancy Settings</span>
+<span onclick="show_mang('group')" class="top_links" id="top_group">Groups</span>
+<span onclick="show_mang('network')" class="top_links" id="top_network">Network</span>
+<span onclick="show_mang('prefrences')" class="top_links" id="top_prefrences">Prefrences</span> -->
+.
+</div>
+
+<!-- This is the start of the 3 controlling windows -->
+<span id="current_mang"></span>
+<div id="mang_prefrences">
+<div  class="close_bar" id="mang_rel_bar" onclick="hide_mang('rel');" ><img src="images/icons/cross.png" /></div>
+
+	<form id="edit_you_form" action="profile_edit" method="POST">
+	<ul id="prefrences_list">
+	<li>
+	<span class='style_bold'>Display All Responses Automatically?</span>
+	</li>
+	<li>
+	<input type="radio" id="auto_resp_yes" name="auto_resp" value="Yes" /> <label for="auto_resp_yes">Yes</label>
+	<input type="radio" id="auto_resp_no" name="auto_resp" value="No"/> <label for="auto_resp_no">No</label>
+	</li>
+
+	<li>
+	<span class='style_bold'>Any * keyword overrides all keywords in message</span>
+	</li>
+	<li>
+	<input type="radio" id="auto_resp_yes" name="auto_resp" value="Yes" /> <label for="auto_resp_yes">Yes</label>
+	<input type="radio" id="auto_resp_no" name="auto_resp" value="No"/> <label for="auto_resp_no">No</label>
+	</li>
+
+	<li>
+	<span class='style_bold'>Audio Alerts On/Off</span>
+	</li>
+	<li>
+	<input type="radio" id="auto_resp_yes" name="auto_resp" value="Yes" /> <label for="auto_resp_yes">Yes</label>
+	<input type="radio" id="auto_resp_no" name="auto_resp" value="No"/> <label for="auto_resp_no">No</label>
+	</li>
+
+	</ul>
+	</form>
+
+</div>
+<div id="mang_rel">
+<div  class="close_bar" id="mang_rel_bar" onclick="hide_mang('rel');" ><img src="images/icons/cross.png" /></div>
+ <div id="rel_area_used">
+
+        <table id="rel_table">
+
+                                <colgroup span="6">
+                                        <col width="140"></col>
+                                        <col width="200"></col>
+                                        <col width="80"></col>
+                                        <col width="80"></col>
+                                        <col width="80"></col>
+                                        <col width="40"></col>
+                                </colgroup>
+
+                                <thead id="rel_table_head">
+                                <tr><td>-Name-</td><td>-Tags-</td><td>-Location-</td><td>-Group-</td><td>-Enabled-</td><td>Remove</td></tr>
+                                </thead>
+
+                                <tbody id="rel_table_body">
+
+        <?php
+        if(isset($view_data['get_rel_results'])){
+                foreach($view_data['get_rel_results'] as $value){
+                        echo $value;
+                }
+        } else {
+                echo '<span id="rel_not_setup" style="color:red;font-size:12px">Setup your relevancy settings... click <a href="relevancy_settings">here</a> to do so</span>';
+        }
+        ?>
+                                </tbody>
+                                </table>
+        </div>
+</div>
+
+<div id="mang_group">
+<div class="close_bar" id="mang_group_bar"  onclick="hide_mang('group');" ><img src="images/icons/cross.png" /></div>
+<!--    This is where the groups starts         -->
+
+<?php
+
+$group_results = $view_data['your_groups'];
+
+if($group_results->num_rows > 0){
+        echo "<div class=\"groups_your_in\">";
+
+        while($res = $group_results->fetch_assoc()){
+        $pic_100 = $res['pic_100'];
+        $gname = $res['gname'];
+        $focus = $res['focus'];
+        $size = $res['size'];
+        $status = $res['admin'];
+        $gid = $res['gid'];
+
+        switch($status){
+                case 1:
+                        $status = "Group Owner";
+                case 2:
+                        $status = "Group Admin";
+                default:
+                        $status = "";
+        }
+
+                                $tap_status = ( $res['tapd'] == 1 ) ? "enable" : "disable";
+                                $inherit_status = ( $res['inherit'] == 1 ) ? "enable" : "disable";
+                                $tap_display = ( $res['tapd'] == 1 ) ? "Yes" : "No";
+                                $inherit_display = ( $res['inherit'] == 1 ) ? "Yes" : "No";
+
+                        $html_status = <<<EOF
+                                 <ul class="group_status">
+                                        <li class="group_status_boxes">Tap:
+<span class="group_status_tapd_{$tap_status} {$res['tapd']} group_tap" id="group_tap" onclick="update_enable_status('tapd',{$gid},this.className[this.className.length-1]);">{$tap_display}</span>
+                                        </li> &nbsp &nbsp  <img class="group_status_boxes2" src='images/icons/connect.png' />
+
+                                </ul>
+EOF;
+
+
+                $group_output[] .=
+                        <<<EOF
+                                        <div class="group_result">
+                                                        <div class="group_result_name"><span class="group_result_name_span">{$gname} <span class="group_status">{$status}</span></span></div>
+
+                                                        <div class="thumbnail_group_result"><img src="pictures/groups/{$pic_100}" alt="group_pic" /></div>
+
+                                                        <div class="group_result_info">
+                                                                <ul class="group_result_info_list">
+									{$html_status}
+                                                                </ul>
+
+                                                                <ul class="group_result_info_list">
+                                                                        <!-- <li><span class="style_bold"><a href="group/{$gid}">Manage</a></span></li> -->
+                                                                </ul>
+
+
+                                                                <ul class="group_result_option_list">
+                                                                </ul>
+
+
+                                                        </div>
+                                        </div>
+
+
+EOF;
+}
+        } else {
+                echo '<div class="groups_your_in_null">';
+                echo '<span id="no_groups">You are currently in no groups, search above to join groups that you\'re interested in.</span>';
+   }
+
+	if($group_output)
+	foreach($group_output as $group)
+		echo $group;
+?>
+</div>
+
+</div>
+
+<div id="mang_network">
+<div  class="close_bar" id="mang_network_bar"  onclick="hide_mang('network');" ><img src="images/icons/cross.png" /></div>
+<? if($view_data['html_0'] && $view_data['html_0'] != '')foreach($view_data['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='/rewrite/people_search'>here</a> to find people to tap";}?>
+</div>
+
+
+<div id="container">
+
+	<div id="top_logo"><img src="images/tap_logo.gif" alt="logo" /></div>
+	
+	<div id="info">
+	
+		<ul id="info_list">
+
+			<li id="welcome"> 
+			<?
+				echo "<img src='pictures/$user_pic' /> Welcome ".$user;
+			?>
+			</li>
+			<!-- <li id="number">There are currently 400 active users</li> -->
+	<?php $help = $view_data['help']; if($help) $hide_class="hide_class";
+	
+			$text_state_html = <<<EOF
+			<li class="{$hide_class}" id="text_state"><img src="images/icons/error.png" /> Target your message to people using the symbols below 
+		
+			<ul id="examples_list">	
+				<li><u>Examples:</u> to send to ...</li>
+				<li><img src="images/icons/connect.png" /> @ <b>Direct:</b>  Bill22 would be @Biill22</li>
+				<li><img src="images/icons/group.png" /> # <b>Groups:</b> Stanford would be #Stanford</li>
+				<li><img src="images/icons/transmit_go.png" /> * <b>Tags:</b> people interested in Mike Tyson, *Mike Tyson</li>
+				<!-- <li><img src="images/icons/application_cascade.png" /> & <b>Categroy:</b> people subscribed to the the news category, &Sports </li> -->
+				<!-- <li id="when_done">When done typing who you want to direct your message to, press !, then start typing your message</li> -->
+				<li id="when_done">When done targeting your message to those who you want to reach, press !</li>
+				<li id="full_example"> <u>Full Example</u>: @Bill22, #Stanford, *Mike Tyson, ! Hey all, the Stanford Cardinals won game. Mike Tyson ran on the field..</li>
+				<!-- <li/>( This message would send to Bill22, everyone at Stanford, people interested in dogs,cats and/or people interested in the Sports Categroy )</li> -->
+			</ul>
+EOF;
+			echo $text_state_html;
+?>
+			
+<!--			<ul>
+				<li><b>Pointers:</b></li>
+				<li>-Look to the list at your right to see Groups/People/Categories to send to.</li>
+				<li>-If you don't see any you like, click on Groups / Network in the center and add them.</li>
+				<li>-You can type in any tag. Press ! when complete, then start typing your message</li>
+			</ul> -->
+
+			</li>
+			<?php
+			if($help){
+				 $help_toggle = <<<EOF
+			<li class="show_help" id="text_state_toggle"><a href="#">Show help</a></li>
+EOF;
+			} else {
+				$help_toggle = <<<EOF
+			<li class="hide_help" id="text_state_toggle"><a href="#">Hide help</a></li>
+EOF;
+			}
+
+			echo $help_toggle;
+?>
+			<li id="text_mode"><b>Mode: </b> <span id="mode_text"><img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode</span></li>
+		</ul>
+	
+	</div>
+
+	<div id="forms">
+		<form action="/rewrite/" method="post" >
+				<fieldset>
+					<div id="core">
+					<ul id="directions">
+						<li><b>Symbols:</b></li>
+						<li>@ = Direct</li>
+						<li># = Groups</li>
+						<li>& = Category</li>
+						<li>* = Tags</li>
+					</ul>
+			
+					<ul id="top_form">
+						<li><textarea rows="2" cols="15" id="question" onkeypress="if(!autocompleter.toggleEnabled) { ifEnter(this,event);  document.getElementById('question').focus(); } "></textarea></li>
+						<li id="outter_button"><span id="inner_button">
+						<input type="submit" id="submit_button" onclick="open_window(document.getElementById('welcome').innerHTML.substring(8), document.getElementById('question').value); return false;" value="Tap"></input>
+
+						</span></li>
+					</ul>
+					
+	<div id="links">
+	
+		<ul>
+		
+			<li id="this2"><a href="/rewrite/profile">Profile</a></li>
+			<li id="this3"><a href="/rewrite/relevancy_settings">Filters</a></li>
+			<li id="this5"><a href="/rewrite/groups">Groups</a></li>
+		</ul>
+		
+	
+	</div>
+					</div>
+			
+				</fieldset>
+		</form>
+	
+	</div>
+
+	<span id="clear_chat_windows" onclick="clear_current_chats()">Clear Taps</span><span id="clear_err">You have no taps to clear</span>
+	<div id="chat_windows"></div>
+	<!--	
+	-->
+	<div id="right_tabs">
+		<ul id="right_tabs_list">
+			<li class="tab" id="archives" onclick="show_info('archives','Archives')"><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
+			<li class="tab" id="active" onclick="show_info('active','Active Convos')"><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
+			<?php
+			if(isset($view_data['active_bits_tabs']) && $view_data['active_bits_tabs'] != ''){
+                                foreach($view_data['active_bits_tabs'] as $v){
+                                        echo $v;
+                                }
+                        }
+                        ?>
+
+		</ul>
+	</div>
+
+	<div id="main_tabs">
+		<span id="clear_bullets"><b>Clear Tabs</b></span>
+		<ul id="tab_list">
+			<li class="tab" id="direct" onclick="show_info('direct','Direct Messages')"><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /></li>
+			<li class="tab" id="building" onclick="show_info('building','Same Building')"><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp<img src="images/icons/building.png" /></li>
+			<li class="tab" id="friends" onclick="show_info('friends','Friends Aggragate')"><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp<img src="images/icons/connect.png" /></li>
+			<div id="friends_tab_slide">
+			<!-- START of Network -->
+			<?php
+			if(isset($view_data['network_tab_list']) && $view_data['network_tab_list'] != ''){
+				foreach($view_data['network_tab_list'] as $v){
+					echo $v;
+				}
+			}
+			?>
+			</div>
+
+			<!-- END of Network -->	
+
+			<li class="tab" id="groups" onclick="show_info('groups','Groups Aggragate')"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /></li>
+			<div id="groups_tab_slide">
+			<!-- START of Individual Groups -->	
+			<?php
+			if(isset($view_data['group_tab_list']) && $view_data['group_tab_list'] != ''){
+				foreach($view_data['group_tab_list'] as $v){
+					echo $v;
+				}
+			}
+			?>
+			</div>
+			<!-- END of Individual Groups -->	
+
+			<li class="tab" id="rel" onclick="show_info('rel','Relevant Aggragate')"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /></li>
+			<div id="rel_tab_slide">
+			<!-- START of Relevancy Settings -->	
+			<?php
+			if(isset($view_data['get_rel_tab_names'])){
+        	        	foreach($view_data['get_rel_tab_names'] as $value){
+                	        	echo $value;
+	                	}
+			}
+			?>
+			</div>
+			<!-- END of Relevancy Settings -->	
+		</ul>
+	</div>
+	<div id="current_info_div"><b>Currently Viewing:</b> <span id="current_info_display"></span> Feed <span id="current_info"></span><div>
+	<div id="main_information">
+		<div class="sub_information" id="direct_information">
+		<?
+                        if($view_data['direct_bits'] && $view_data['direct_bits'] != '')
+                                foreach($view_data['direct_bits'] as $v){echo $v;
+                        } else {
+                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_direct'> You are not in any direct, <a href='/rewrite/direct'>here</a> to find direct to tap</span>";
+                        }
+                ?>
+		</div>
+		<div class="sub_information" id="archives_information">
+		There are no archives in the testing mode.
+		</div>
+		<div class="sub_information" id="active_information">
+		To view your individual active conversations, click the individual tabs on the left ( if you don't see any, you don't have any active conversations ) 
+		</div>
+		<?php
+                        if(isset($view_data['active_bits']) && $view_data['active_bits'] != ''){
+                                foreach($view_data['active_bits'] as $v){
+                                        echo $v;
+                                }
+                        }
+                ?>
+		<div class="sub_information" id="building_information">
+		<?
+                        if($view_data['building_bits'] && $view_data['building_bits'] != '')
+                                foreach($view_data['building_bits'] as $v){echo $v;
+                        } else {
+                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_building'> You are not in any building, <a href='/rewrite/building'>here</a> to find building to tap</span>";
+                        }
+                ?>
+		</div>
+<? 
+
+		if($view_data['individual_friend_bits'] && $view_data['individual_friend_bits'] != '')
+			foreach($view_data['individual_friend_bits'] as $v){echo $v;
+		} else {
+			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friend_ind'> You have nobody on tap who is active click <a href='/rewrite/people_search'>here</a> to find people to tap who are active!</span>";
+		}
+?>
+	
+		<div class="sub_information" id="friends_information">
+<? 
+
+		if($view_data['friends_bits'] && $view_data['friends_bits'] != '')
+			foreach($view_data['friends_bits'] as $v){echo $v;
+		} else {
+			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friends_aggr'> You have nobody on tap who is active click <a href='/rewrite/people_search'>here</a> to find people to tap who are active!</span>";
+		}
+?>
+		</div>
+
+                <div class="sub_information" id="groups_information">
+		<div class="ihp_ad" id="groups_ad"><img src='pictures/<?=$user_pic?>' /><?=$uname?>: Hey people, check out my new ad! <a href="http://google.com">My New Site</a></div>
+		<?
+			if($view_data['groups_bits'] && $view_data['groups_bits'] != '') 
+				foreach($view_data['groups_bits'] as $v){echo $v;
+			} else { 
+				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='/rewrite/groups'>here</a> to find groups to tap</span>";
+			}
+		?>      
+                </div>
+
+		<?php
+		if($view_data['group_bits'] && $view_data['group_bits'] != ''){
+			foreach($view_data['group_bits'] as $v){
+				echo $v;
+			}
+		} else { 
+		}
+		?>
+
+                <div class="sub_information" id="rel_information">
+		<?
+                        if($view_data['rel_bits'] && $view_data['rel_bits'] != '')
+                                foreach($view_data['rel_bits'] as $v){echo $v;
+                        } else {
+                                echo "<span class='null_info' id='null_rel'>You have no filters set, <a href='/rewrite/rel'>here</a> to find rel to tap</span>";
+                        }
+                ?>
+		</div>
+
+		<?
+                        if($view_data['individual_rel_bits'] && $view_data['individual_rel_bits'] != '')
+                                foreach($view_data['individual_rel_bits'] as $v){echo $v;
+                        } else {
+                        }
+                ?>
+
+	</div>
+
+<script type="text/javascript">
+window.onload=function() { show_info('groups','Groups'); } ; 
+</script>	
+	<div id="footer">
+
+
+<?php include(FOOTER);?>
+	
+	</div>
+	
+</div>
+
+    <script type="text/javascript">
+
+
+    // Set this to something unique to this client
+	document.domain = "localhost.com";
+    Meteor.hostid = '<?=$_SESSION['rand_id']?>';
+//	Meteor.debugmode = 1;
+
+    // Our Meteor server is on the data. subdomain
+    Meteor.host = "data."+location.hostname;
+    // Call the test() function when data arrives
+    Meteor.registerEventCallback("process", function(data) { bg2.grab_bits(data); } );
+
+    // Join the demo channel and get last five events, then stream
+    Meteor.joinChannel("<?=$view_data['pcid'];?>", 0);
+    Meteor.mode = 'longpoll';
+
+    // Start streaming!
+        Meteor.connect();
+    // Handle incoming events
+    function test(data) { console.log(data); }
+</script>
+</body>
+</html>
+

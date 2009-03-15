@@ -1,0 +1,149 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<div id="edit_profile">
+	
+		<div id="edit_profile_header">Edit Profile</div>
+	
+		<div id="edit_profile_intro">
+		
+			<p>
+			Here you can edit your profile!  Enjoy!
+			</p>
+		
+		</div>
+		
+		<div id="account_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		
+		<div id="edit_profile_forms">
+		
+			<div id="edit_profile_left">
+			
+			<form>
+			<fieldset>
+			<legend>You</legend>
+			
+				<ul>
+				
+					<li><label for="testing">First Name</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Last Name</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">E-mail Address</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Zipcode</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Region</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Country</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Gender</label><input type="text" id="testing"></input></li>
+					<li><button type="submit">Update You</button></li>
+				
+				</ul>
+			
+			</fieldset>
+			</form>
+			
+			
+			<form>
+			<fieldset>
+			<legend>Alerts</legend>
+			
+			
+				<ul>
+				
+					<li><label for="testing">AIM</label><input type="text" id="testing"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="testing"></input></li>
+					
+					<li><label for="testing">MSN</label><input type="text" id="testing"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="testing"></input></li>
+					
+					<li><label for="testing">Yahoo!</label><input type="text" id="testing"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="testing"></input></li>
+					
+					
+					<li><label for="testing">Gtalk</label><input type="text" id="testing"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="testing"></input></li>
+					
+					
+					<li><label for="testing">ICQ</label><input type="text" id="testing"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="testing"></input></li>
+					
+					
+					<li><label for="testing">IRC (Freenode)</label><input type="text" id="testing"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="testing"></input></li>
+					
+					<li><button type="submit">Update Alerts</button></li>
+					
+				</ul>
+			
+			</fieldset>
+			</form>
+			
+			
+			</div>
+			
+			<div id="edit_profile_right">
+			
+			<form>
+			<fieldset>
+			<legend>Personal</legend>
+			
+				<ul>
+				
+					<li><label for="testing">Date of Birth</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Height</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Weight</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Interests</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Something</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Great</label><input type="text" id="testing"></input></li>
+					<li><label for="testing">Great</label><input type="text" id="testing"></input></li>
+					<li><button type="submit">Update Personal</button></li>
+				
+				</ul>
+			
+			</fieldset>
+			</form>
+			
+			
+			<form>
+			<fieldset>
+			<legend>Picture</legend>
+			
+				<ul>
+				
+					<li><label for="image_of_you">Picture Of You</label><input type="file" id="image_of_you"></input></li>
+					<li>
+					<img src="images/bg.gif" alt="You" />
+					</li>
+					<li><button type="submit">Update Picture</button></li>
+				
+				</ul>
+			
+			</fieldset>
+			</form>
+			
+			</div>
+		</div>
+		
+		
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

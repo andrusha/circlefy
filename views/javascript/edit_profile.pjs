@@ -1,0 +1,27 @@
+function height_type( type ){
+
+	var height_cm_li = document.getElementById('height_cm_li');
+	var height_in_li = document.getElementById('height_in_li');
+	var weight_lb = document.getElementById('weight_lb_li');
+	var weight_kg = document.getElementById('weight_kg_li');
+	var default_off = document.getElementById('no_unit_selected');
+	
+	
+	if(type == 'metric'){
+		
+		height_cm_li.style.display = 'block';
+		weight_kg.style.display = 'block';
+		weight_lb.style.display = 'none';
+		height_in_li.style.display = 'none';
+		default_off.style.display = 'none';
+	}
+	
+	if(type == 'standard'){
+		height_in_li.style.display = 'block';
+		height_cm_li.style.display = 'none';
+		weight_kg.style.display = 'none';
+		weight_lb.style.display = 'block';
+		default_off.style.display = 'none';
+	}
+	
+}

@@ -1,0 +1,1070 @@
+.friend_result{
+                                                        display:inline-block;
+                                                        overflow:hidden;
+                                                        padding:10px;
+                                                        margin:5px;
+                                                        }
+
+                                                .friend_result{
+                                                display:block;
+                                                }
+
+                                                .friend_result_blue{
+                                                        display:inline-block;
+                                                        overflow:hidden;
+                                                        background:#EFF4F0;
+                                                        padding:10px;
+                                                        margin:5px;
+                                                        }
+
+                                                .friend_result_blue{
+                                                display:block;
+                                                }
+
+                                                                .friend_result_name{
+                                                                text-align:left;
+                                                                font-weight:bold;
+                                                                }
+
+                                                                        .thumbnail_friend_result{
+                                                                        padding:4px;
+                                                                        height:100px;
+                                                                        margin-bottom:12px;
+                                                                        margin:0 auto;
+                                                                        float:left;
+                                                                        }
+
+                                                                                .friend_result_info{
+                                                                                text-align:left;
+                                                                                overflow:hidden;
+                                                                                }
+
+                                                                                .friend_result_info ul{
+                                                                                margin-left:10px;
+                                                                                display:inline-block;
+
+                                                                                }
+
+                                                                                .friend_result_name_span{
+                                                                                text-align:center;
+                                                                                }
+
+                                                                                .result_info_list{
+                                                                                padding:2px;
+                                                                                padding-left:4px;
+                                                                                width:160px;
+                                                                                float:left;
+                                                                                }
+
+                                                                                .notalk{ color:red; }  
+
+ .result_option_list{
+                                                                                float:right;
+                                                                                text-align:middle;
+                                                                                vertical-align:center;
+                                                                                }
+
+										li{ list-style:none;}
+											
+                                                                                .result_option_list li{
+                                                                                color:blue;
+                                                                                font-size:14px;
+                                                                                cursor:pointer;
+                                                                                }
+
+                                                                                #invite_friend_msg{
+                                                                                display:block;
+                                                                                margin:18px;
+                                                                                font-weight:bold;
+                                                                                color:blue;
+                                                                                }
+#tab_list{ 
+height:22px;
+}
+
+.tab{
+cursor:pointer;
+font-size:14px;
+display:inline;
+padding:0px 9px 0px 9px;
+margin:12px;
+}
+
+#main_tabs{
+position:absolute;
+right:0;
+bottom:0;
+overflow-y:scroll;
+width:640px;
+height:18px;
+background:lightgray;
+margin:0px auto;
+clear:both;
+}
+#main_information{
+width:640px;
+height:380px;
+border:1px solid;
+background:lightgray;
+margin:0px auto;
+clear:both;
+overflow-y:auto;
+}
+
+/* START BIT INFORMATION */
+
+.bit{
+overflow:hidden;
+clear:both;
+}
+
+.blue{
+background-color:lightblue;
+}
+
+.red{
+background-color:lightyellow;
+}
+
+.bit_img{
+margin:20px 10px 20px 30px;
+float:left;
+}
+
+
+.bit_text{
+float:left;
+overflow:hidden;
+display:block;
+padding-top:10px;
+width:240px;
+}
+
+.respond_button{
+clear:both;
+float:right;
+display:block;
+padding:10px;
+cursor:pointer;
+background:url('../../images/bg.gif') no-repeat 1px -117px;;
+}
+
+.bit_responses{
+text-align:left;
+border-left:1px blue solid;
+width:500px;
+float:right;
+}
+
+.responses{
+border-bottom:1px red solid;
+background-color:lightgreen;
+overflow:hidden;
+}
+
+.response_img{
+float:left;
+padding:5px;
+}
+
+.response_text{
+display:block;
+}
+
+/* END BIT INFORMATION */
+
+.sub_information{
+display:none;
+}
+
+
+.group_result{
+padding-top:10px;
+border-top:1px dotted;
+}
+
+.group_result_name{
+}
+.thumbnail_group_result{
+                                                                        margin:0 auto;
+                                                                        float:left;
+                                                                        }
+
+                                                                                .group_result_info{
+                                                                                text-align:left;
+                                                                                overflow:hidden;
+                                                                                }
+
+                                                                                .group_result_info ul{overflow:hidden;
+                                                                                margin-left:10px;
+                                                                                display:inline-block;
+
+                                                                                }
+
+                                                                                .group_result_name_span{
+                                                                                text-align:center;overflow:hidden;
+										width:200px;
+                                                                                }
+
+                                                                                .result_info_list{
+										float:right;
+                                                                                padding-right:110px;
+                                                                                width:180px;
+                                                                                }
+
+                                                                                 .group_result_option_list{
+                                                                                float:right;
+                                                                                text-align:middle;
+                                                                                vertical-align:center;
+                                                                                }
+
+                                                                                .group_result_option_list li{
+                                                                                padding:6px 40px 0 0;
+                                                                                color:blue;
+                                                                                font-size:14px;
+                                                                                cursor:crosshair;
+                                                                                }
+
+
+.chatline{
+display:block;
+}
+
+.chatuname{
+display:block;
+float:left;
+padding-right:2px;
+}
+
+.singlechat{
+	width:510px;
+	background:lightgray;
+	height:110px;
+	margin:0 auto;
+	text-align:left;
+	padding:5px;
+	margin-bottom:12px;
+}
+
+.chatarea{
+	border:dotted 1px;
+	width:320px;
+	height:83px;
+	float:left;
+	margin-bottom:3px;
+}
+
+.chatinfo{
+	border:dotted 1px;
+	padding:2px;
+	margin-left:8px;
+	width:170px;
+	height:100px;
+	float:right;
+}
+
+.chatinfo ul{
+	list-style:none;
+}
+
+.typingspace{
+	clear:left;
+}
+
+.typingspace textarea{
+	width:320px;
+	height:20px;
+	text-align:left;
+}
+
+/* GLOBAL */
+
+* { margin:0; padding:0; }
+
+body{
+	margin-top:0px;
+	margin-bottom:10px;
+	font-size:.7em;
+	font-family:arial,sans-serif;
+}
+
+textarea{
+	font-size:1em;
+	font-family:arial;
+}
+
+#container{
+	width:800px;
+	height:800px;
+	margin:0 auto;
+	border:1px  ;
+	text-align:center;
+	clear:left;
+	overflow:hidden;
+}
+
+#login_form ul{
+	list-style:none;
+}
+
+#login_form{
+	width:150px;
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+#directions{
+float:left;
+width:123px;
+margin-top:-8px;
+}
+
+#directions li{
+margin-left:10px;
+margin-bottom:4px;
+text-align:left;
+}
+
+#question_label{
+overflow:hidden;
+float:left;
+width:110px;
+text-align:right;
+}
+
+/* *** END GLOBAL *** */
+
+
+/* The "top bar" */
+
+	#top{
+		font-weight:bold;
+		font-size:1.1em;
+		padding:6px 8px 14px 14px ;
+		background:white url('../../images/bg-top.gif') no-repeat -70px -20px;
+		float:left;
+		width:440px;
+	}
+	
+	.top_links{
+	padding:3px;
+	cursor:pointer;
+	}
+	
+	#top_rel{
+		background:lightblue;
+	}
+	#top_group{
+		background:lightgreen;
+	}
+	#top_network{
+		background:lightyellow;
+	}
+
+	.close_bar{
+	cursor:pointer;
+	float:right;
+	}
+
+	#mang_rel{
+	display:none;
+	top:40px;
+	position:absolute;
+	background:lightblue;
+	width:420px;
+	height:200px;
+	overflow-y:auto;
+	clear:both;
+	}
+
+	#mang_group{
+	display:none;
+	top:40px;
+	position:absolute;
+	background:lightgreen;
+	width:420px;
+	height:200px;
+	overflow-y:auto;
+	clear:both;
+	}
+
+	#mang_network{
+	display:none;
+	top:40px;
+	position:absolute;
+	background:lightyellow;
+	width:420px;
+	height:200px;
+	overflow-y:auto;
+	clear:both;
+	}
+
+	#current_mang{
+	display:none;
+	}
+	
+	#login_form{
+		float:right;
+	}
+
+/* *** END "top bar" *** */
+
+
+/* Footer */
+
+	#footer{
+		width:148px;
+		margin:0 auto;
+		text-align:middle;
+	}
+
+/* *** END Footer *** */
+
+
+/* Logo */
+
+	#top_logo{
+		border:1px  ;
+		overflow:hidden;
+	}
+
+/* *** END Logo *** */
+
+/* Info on Homepage */
+	
+	#info{
+		padding:10px;
+		border:1px  ;
+	}
+	
+	#info ul li{
+		list-style:none;
+		padding:4px;
+	}
+	
+	.post{
+		color:#0F87FF;
+		border-bottom:1px dotted;
+		padding:4px;
+		width:400px;
+		margin:0 auto;
+		font-size:1.3em;
+		font-weight:bold;
+		font-family:arial;
+	}
+	
+	#video{
+	color:blue;
+	font-size:1.3em;
+	font-weight:bold;
+	font-family:arial;
+	position:absolute;
+	bottom:70%;
+	right:50%;
+	margin:-140px;
+	width:280px;
+	height:200px;
+	}
+
+/* Forms */
+	#forms{
+	overflow:hidden;
+	}
+
+	#forms ul{
+		padding:8px;
+		margin-right:60px;
+		text-align:right;
+		padding-right:100px;
+	}
+	
+	#submit_button {
+	font-size:12px;
+	font-family:arial;
+	width:40px;
+	}
+	
+	textarea{
+	height:90px;
+	width:184px;
+	}
+	
+	#forms #top_form{
+		padding-bottom:10px;
+		margin-left:4px;
+	}
+	
+	#top_form #title{
+	width:124px;
+	}
+	
+	#forms fieldset{
+		padding:0px 0 18px 0;
+		width:500px;
+		margin:0 auto;
+		border:none;
+		background:white url('../../images/bg.gif') no-repeat;
+	}
+	
+	#forms li{
+		list-style:none;
+		padding:1px;
+	}
+	
+	#forms ul label{
+		vertical-align:middle;
+		padding:0 8px 8px 10px;
+	}
+	
+	#forms #top_form label{
+		vertical-align:top;
+	}
+	
+	#sub{
+		vertical-align:top;
+	}
+	
+	#title{
+		width:120px;
+	}
+	
+	#sub-catagory{
+		vertical-align:top;
+	}
+	
+	#main_forms{
+	display:;
+	}
+	
+		#you_ask{
+		display:none;
+		}
+		
+		#we_find{
+		display:none;
+		}
+		
+		#they_connect{
+		display:none;
+		}
+		
+	#currently_showing{
+	display:none;
+	}
+	
+	#inform_container{
+	margin:0 auto;
+	text-align:left;
+	width:400px;
+	font-size:1.1em;
+	}
+	
+	.inform_header{
+	margin:0 auto;
+	width:280px;
+	color:white;
+	text-align:center;
+	font-weight:bold;
+	display:block;
+	padding:1px 0 1px 0;
+	border-bottom:1px solid black;
+	background:url('../../images/left.gif') no-repeat top ;
+	}
+	
+	#inform_pic_1{
+	padding-top:8px;
+	float:left;
+	overflow:hidden;
+	}
+	
+	#inform_pic_2{
+	padding-top:8px;
+	float:left;
+	}
+	
+	#inform_pic_3{
+	padding-top:8px;
+	float:right;
+	}
+	
+	.style_bold{
+	font-weight:bold;
+	font-size:1.1em;
+	}
+	
+	p{overflow:hidden;
+	padding:4px 0 2px 4px;}
+
+	
+/* *** END forms *** */
+
+
+/* links */
+
+	#links{
+		padding:14px;
+		padding-top:0px;
+		width:200px;
+		margin:0 auto;
+	}
+	
+	#links ul li{
+		list-style:none;
+		display:inline;
+		border-right:1px  ;
+		padding-right:8px;
+		padding-left:8px;
+		margin-top:0px;
+		line-height:200%;
+	}
+
+/* *** END links *** */
+
+
+#sign_up{
+display:none;
+margin-left:-210px;
+width:420px;
+height:400px;
+position:absolute;
+top:10%;
+left:50%;
+background:url('../../images/sign_up_bg.gif') no-repeat top;
+z-index:999;
+}
+
+	.sign_up_top_buttons{
+	position:absolute;
+	display:inline-block;
+	white-space:nowrap;
+	left:277px;
+	top:0;
+	}
+	
+	#signup_errors{
+	display:block;
+	}
+	
+	.signup_error_count{
+	display:none;
+	}
+	
+	#sign_up h4{
+	font-size:1em;
+	}
+	
+	#sign_up input{
+	width:140px;
+	}
+	
+	#sign_up fieldset{
+	padding-top:2px;
+	border:none;
+	}
+	
+	#sign_up label{
+	padding-right:2px;
+	}
+	
+	#sign_up .guide{
+	color:gray;
+	display:inline-block;
+	}
+	
+	#sign_up .guide{
+	display:block;
+	}
+	
+	#sign_up legend{
+	padding:4px 0 0 180px;
+	font-weight:bold;
+	}
+	
+	#sign_up #step_1 ul{
+	width:240px;
+	height:200px;
+	text-align:right;
+	margin:0 auto;
+	}
+
+	#sign_up #step_1 ul li{
+	list-style:none;
+	padding:15px 0 0px 0;
+	}
+	
+	#sign_up #name_available{
+	display:block;
+	}
+
+
+#step_1{
+display:none;
+overflow:hidden;
+height:300px;
+
+}
+
+#step_2{
+display:none;
+margin:0 auto;
+width:215px;
+text-align:left;
+padding:8px;
+overflow:hidden;
+}
+	
+	#step_2 ul{
+	list-style:none;
+	text-align:right;
+	display:block;
+	
+	}
+	
+	#step_2 ul li{
+	list-style:none;
+	text-align:right;
+	padding:5px;
+	color:gray;
+	width:210px;
+	}
+	
+	.screen_name{
+	color:blue;
+	}
+	
+	#button_2_container{
+	text-align:right;
+	display:block;
+	}
+	
+	.sign_up_button{
+	position:absolute;
+	bottom:58px;
+	left:231px;
+	width:100px;
+	}
+
+	
+#step_3{
+display:none;
+overflow:hidden;
+margin:0 auto;
+width:220px;
+padding:4px;
+text-align:left;
+}
+
+	#sn_alert{
+	width:240px;
+	text-align:left;
+	}
+
+#step_3 ul{
+text-align:right;
+list-style:none;
+}
+
+#step_3 ul li{
+padding:8px;
+width:214px;
+}
+
+.step_3_space{
+display:block;
+padding:5px 0 5px 0;
+}
+
+#note{
+color:red;
+font-weight:bold;
+}
+
+/* Query Status */
+
+#query_status_window{
+margin-left:-140px;
+width:280px;
+border:1px solid;
+position:absolute;
+top:30%;
+left:50%;
+background:white;
+}
+
+	#query_status_window h4{
+	color:blue;
+	}
+	
+	#query_status_table_header td{
+	font-weight:bold;
+	}
+
+				.log_columns_white{
+			background-color:#FFFFFF;
+			}
+			
+			.log_columns_blue{
+			background-color:#E3E4F0;
+			}
+			
+/* *** END "query status" *** */
+				
+	/*  THE CHAT WINDOW */
+	
+	.chat_window{
+	width:240px;
+	height:220px;
+	border:1px solid lightblue;
+	position:fixed;	
+	padding:0px 16px 40px 10px;
+	background:#E3E4F0 url('../../images/chatapist-mini.gif') no-repeat top left;
+	text-align:right;
+	/* add this for IE6 overflow-y:hidden; */
+	}
+	
+	.minimize_button{
+	padding:0 8px 0 8px;
+	background-color:blue;
+	background:url('../../images/left3.gif') no-repeat top left;
+	border:1px solid lightgray;
+	}
+	
+	.minimize_button:hover{
+	cursor:pointer;
+	background:orange;
+	}
+	
+		 .chat_window_container{
+		 padding-top:10px;
+		 width:100%;
+		 }
+		 
+			 .chat_window_border{
+			 border:1px solid lightblue;
+			 border-bottom:1px solid lightblue;
+			 padding:4px;
+			 }
+			 
+			 .chat_buttons li{
+			 display:inline;
+			 border: 1px solid;
+			 padding:0 10px 0 10px;
+			 margin:0 8px 0 2px;
+			 
+			 }
+			 
+			 .chat_window ul{
+			 text-align:right;
+			 }
+			 
+			 .chat_button{
+			 cursor:pointer;
+			 }
+			
+				.chat_textarea{
+			 	width: 98%;
+			 	overflow-x:hidden;
+			 	height:80px;
+				}
+				
+				.conversation_area{
+				margin:0 auto;
+				height:120px;
+				background:white;
+				}
+			
+	.chat_people{
+	width:240px;
+	height:200px;
+	background:white;
+	left:260px;
+	bottom:220px;
+	overflow:hidden;
+	border:1px solid lightblue;
+	text-align:center;
+	position:relative;
+	float:right;
+	}
+				
+	.chat_min{
+	cursor:pointer;
+	width:180px;
+	height:18px;
+	visibility:hidden;
+	border:lightblue;
+	background:gray;
+	margin:0px 8px 8px 0;
+	border:1px solid lightblue;
+	}
+	
+
+/* rel */
+
+						.active_rel{
+						}
+
+                                                #rel_area_used{
+                                                clear:both;
+                                                text-align:center;
+                                                }
+
+                                                #rel_go_away{
+                                                margin-bottom:6px;
+                                                }
+
+                                                .rel_rid_blue{
+                                                background-color:#E3E4F0;
+                                                }
+
+                                                #rel_table_head{
+                                                background-color:#E3E4F0;height:20px;
+                                                }
+
+                                                #name_error{
+                                                display:none;
+                                                color:red;
+                                                }
+
+                                                #rel_complete{
+                                                display:none;
+                                                color:blue;
+                                                }
+
+                                                #tag_error{
+                                                display:none;
+                                                color:red;
+                                                }
+
+                                                .enable{
+                                                font-weight:bold;
+                                                }
+
+                                                .enable_green{
+                                                cursor:pointer;
+                                                background-color:green;
+                                                font-weight:bold;
+                                                }
+
+                                                .enable_red{
+                                                cursor:pointer;
+                                                background-color:red;
+                                                font-weight:bold;
+                                                }
+
+                                                option{
+                                                padding:0 4px 0 4px;
+                                                }
+
+                                                .style_bold{
+                                                font-weight:bold;
+                                                }
+
+                                                .delete_rel{
+                                                margin:1px 0 10px 0;
+                                                display:block;
+						}
+/* END rel */
+/* max */
+
+#chat_window_id_1{
+left:0;
+top:0;
+}
+
+#chat_window_id_2{
+left:280px;
+top:0;
+}
+
+#chat_window_id_3{
+left:560px;
+top:0;
+}
+
+#chat_window_id_4{
+left:840px;
+top:0;
+}
+
+#chat_window_id_5{
+left:840px;
+top:0;
+}
+
+#chat_window_id_6{
+left:0px;
+top:260px;
+}
+
+/* min */
+
+		#chat_min_id_1{
+		position:fixed;
+		right: 0;
+		bottom: 0;
+		}
+		
+		#chat_min_id_2{
+		position:fixed;
+		right: 188px;
+		bottom: 0;
+		}
+
+		#chat_min_id_3{
+		position:fixed;
+		right: 376px;
+		bottom: 0;
+		}
+		
+		#chat_min_id_4{
+		position:fixed;
+		right: 564px;
+		bottom: 0;
+		}
+		
+		#chat_min_id_5{
+		position:fixed;
+		right: 752px;
+		bottom: 0;
+		}
+		
+		#chat_min_id_6{
+		position:fixed;
+		right: 0px;
+		bottom: 28px;
+		}
+	
+/* *** END min *** */
+
+.group_status_tapd_enable{
+                                                background-color:green;
+                                                cursor:pointer;
+                                                text-align:center;
+                                                padding:4px;
+                                                display:block;
+                                                }
+
+                                                .group_status_tapd_disable{
+                                                background-color:red;
+                                                cursor:pointer;
+                                                text-align:center;
+                                                padding:4px;
+                                                display:block;
+                                                }
+                                                .group_status_inherit_enable{
+                                                background-color:green;
+                                                cursor:pointer;
+                                                text-align:center;
+                                                padding:4px;
+                                                display:block;
+                                                }
+
+                                                .group_status_inherit_disable{
+                                                background-color:red;
+                                                cursor:pointer;
+                                                text-align:center;
+                                                padding:4px;
+                                                display:block;
+                                                }
+

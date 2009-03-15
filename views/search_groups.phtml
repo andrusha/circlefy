@@ -1,0 +1,151 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+</head>
+
+<body>
+
+<div id="container">
+
+	<?php $group_results = $view_data['search_groups'];?>
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<div id="manage_groups">
+	
+		<div id="manage_groups_header">Manage Groups</div>
+	
+			<div id="manage_groups_intro">
+		
+			<p>
+			Welcome to Manage Groups.  Here you can Add, Create, and Remoeve yourself from groups that you like.
+			By adding yourself to a group, you enable yourself to message everyoone in the group and participate in receive
+			updates from that group.
+			</p>
+			
+			<div id="manage_groups_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		</div>
+
+		<div id="manage_groups_body">
+		
+			<div id="manage_groups_top">
+			
+				<span id="create_group_span"><a href="/rewrite/create_group">Create a Group&nbsp;</a></span>
+			
+			
+			<div id="main_search_related_wrapper">
+			
+				<div id="main_search_groups">
+					
+					<form action="search_groups" method="POST">
+						<fieldset>
+						<legend>Search Groups To Join:</legend>
+						
+							<ul>
+										<li><label for="group_name">Name </label><input type="text" id="group_name" name="search_group_name"></input></li>
+										<li><a href="#">Advanced Search</a></li>
+											<li>
+												<ul>
+													<li><label for="search_group_name">Keywords in Description </label><input type="text" id="search_group_name"></input></li>
+													<li><label for="search_group_cred">Credibility Atleast.. </label><input type="text" id="search_group_cred"></input></li>
+													<li><label for="search_group_zip">Zipcode </label><input type="text" id="search_group_zip"></input></li>
+													<li>
+														<label for="serach_group_category">Category </label>
+															<select id="serach_group_category">
+																<option>test</option>
+															</select>
+													</li>
+												</ul>
+											</li>
+										<li><button type="submit">Search</button></li>
+							</ul>
+						
+						</fieldset>
+					</form>
+		
+				</div>
+					
+				
+			</div>	<!-- End search_related_wrapper -->
+			
+			
+		</div>
+			
+			
+			
+						<span id="search_group_divider">Search Results:	</span>
+			
+			
+			
+<!--	This is where the groups starts		-->
+
+<?php
+if($group_results->num_rows > 0){
+	echo '<div class="groups_your_in">';
+	while($group_result_set = $group_results->fetch_assoc()){
+		echo <<<EOF
+		<!-- Folded Group Start -->
+		<div class="folded_group">
+		<div class="folded_group_header"><span class="folded_group_title">{$group_result_set['gname']}</span></div>
+			<div class="folded_group_body">
+			
+				<div class="folded_group_pic">testing</div>
+				
+					<div class="folded_group_info">
+					
+						<ul>
+							<li class="folded_group_focus">
+							<span class="style_bold">Focus: </span>
+							{$group_result_set['focus']}
+							</li>
+							
+							<li class="folded_group_cred">
+							<span class="style_bold">Credibility: </span>
+							{$group_result_set['cred']}
+							</li>
+							
+							<li class="folded_group_why">
+							<span class="style_bold">Members: </span>
+							{$group_result_set['size']}
+							</li>
+						
+						</ul>
+					
+					</div>
+				
+			</div><!-- End folded group body -->
+			
+		</div> <!-- End folded group -->
+EOF;
+
+		echo '</div>';
+}
+	} else {
+		echo "<div id=\"no_search_results\">Your search did not match any groups</div>";
+	}
+
+?>
+
+			
+			
+
+		
+		</div>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

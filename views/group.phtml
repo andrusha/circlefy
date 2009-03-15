@@ -1,0 +1,190 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Group</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "/rewrite/views/style_sheets/home.css";</style>
+<script type="text/javascript" src="../views/javascript/group_rel.js"></script>
+<script type="text/javascript" src="../views/javascript/group_status.js"></script>
+<script type="text/javascript" src="../views/javascript/join_group.js"></script>
+<!--
+<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/themes/flora/flora.all.css" type="text/css" media="screen" title="Flora (Default)">
+
+    <script type="text/javascript" src="views/javascript/jquery-ui.js"></script>
+    <script  src="http://dev.jquery.com/view/trunk/plugins/dimensions/jquery.dimensions.js"></script>
+<script  src="http://dev.jquery.com/view/trunk/plugins/ui/ui.mouse.js"></script>
+<script  src="http://dev.jquery.com/view/trunk/plugins/ui/ui.resizable.js"></script>
+ -->
+
+</head>
+
+<!--[if lt IE 7]>
+<style type="text/css">
+html, body {background-color:#FF00FF;
+#container {height: 100%; width: 100%; overflow: auto;}
+.fixed {position: absolute;}
+</style>
+<![endif]-->
+</head>
+
+<body>
+
+
+<div id="container">
+
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<?php 
+	
+	$profile_data = $view_data['profile'];
+	$rel_profile_data = $view_data['rel_profile'];
+	$login_data = $view_data['login'];
+	$rank_data = $view_data['rank'];
+	$rankings_data = $view_data['rankings'];
+	
+	$friend_data = $view_data['friends'];
+	$posting_results = $view_data['postings'];
+	$chat_results = $view_data['chat'];
+	$groups_results = $view_data['groups'];
+	
+	?>
+	
+	<div id="profile">
+	
+		<div id="profile_header">Group - <?=$view_data['group_name'];?></div>
+	
+		<div id="picture"><img src="../pictures/groups/<?=$view_data['pic_180'];?>" />
+			<?php if($view_data['admin_status']) echo '<span id="edit_profile_link"><a href="../edit_group/'.$view_data['gid'].'">Edit Group Settings</a></span>'; ?>
+		</div>
+
+		
+		<div id="basic_info">
+		
+			<h4>&nbsp;Group Admins</h4>
+			
+			<ul>
+			<?php 
+			foreach($view_data['html_admin'] as $k => $v) {
+			echo "$v";
+			}
+			?>	
+			</ul>
+			
+			<h4>&nbsp;Group Status</h4>
+			<?=$view_data['html_status']?>	
+		</div>
+		
+		<div id="specific_ranking">
+		
+			<h4>People in this group are saying...</h4>
+		
+			<ul>
+			<?php 
+			if($view_data['html_last_chat'] != ''){
+				foreach($view_data['html_last_chat'] as $k => $v) {
+				echo stripslashes($v);
+				}
+			} else { 
+				echo "Nobody has spoken in this group yet, get people to join and yap it up!";
+			}
+			?>	
+				
+			</ul>
+			
+		</div>
+		
+		<div id="group_descr">
+		
+		<h4>Group Info</h4>
+		
+			<ul>
+				<?=$view_data['html_descr']?>
+			</ul>
+		<h4>Group Description</h4>
+			<ul>
+				<?=$view_data['html_descr2']?>
+			</ul>
+			
+		</div>
+		
+	<div id="border"></div>
+		
+	<div id="group_rel_settings">
+		
+		<h4>Group Relevancy Settings</h4>
+		
+		<h5>Remember, any settings that you see here you will inherit and be alerted if you are apart of this group and enable 'Inherit Tags'</h5>
+
+	<?php
+	$relevancy_form = <<<EOF
+
+	<div id="group_rel_form">
+		<form id="rel_form" action="_self" method="post">
+		<fieldset>
+
+			<ul id="group_list_rel">
+				<li> <label for="name">Name:</label><input  type="text" class="textbox"  id="name" value="{$value1}"></input></li>
+				<span id="name_error">You need a name!</span>
+				<li> <label for="tags">Tags:</label><input  type="text" class="textbox" id="tags" value="{$value2}"></input></li>
+				<span id="tag_error">You need tags or a zipcode!</span>
+				<li> <label for="zipcode">Zipcode:</label><input type="text" maxlength="5" class="textbox" id="zipcode" value="{$value3}"></input></li>
+				<li> <label for="group">Group:</label> <span class="style_bold">{$view_data['group_name']} </span></li>
+			</ul>
+
+			<span id="rel_complete">Setting Added!</span>
+			<span id="rel_button"><a href="####" onclick="add_rel({$view_data['gid']}); return false;"><button type="submit">Add Setting</button></a></span>
+
+		</fieldset>
+		</form>
+	</div>
+EOF;
+	if($view_data['admin_status']) echo $relevancy_form;
+	?>
+	
+		<div id="rel_area_used">
+	
+		<table id="rel_table">
+
+                                <colgroup span="6">
+                                        <col width="140"></col>
+                                        <col width="200"></col>
+                                        <col width="80"></col>
+                                        <col width="80"></col>
+                                        <col width="80"></col>
+                                        <?php if($view_data['admin_status']) echo '<col width="40"></col>';?>
+                                </colgroup>
+
+                                <thead id="rel_table_head">
+                                <tr><td>-Name-</td><td>-Tags-</td><td>-Location-</td><td>-Group-</td><td>-Enabled-</td><?php if($view_data['admin_status']) echo '<td>Remove</td>';?></tr>
+                                </thead>
+
+                                <tbody id="rel_table_body">
+
+				<?php
+				if(isset($view_data['html_rel'])){
+				       foreach($view_data['html_rel'] as $value){
+						echo $value;
+					}
+				} else {
+					echo '<span id="rel_not_setup" style="color:red;font-size:12px">This group does not have its Relevancy Settings setup!</span>';
+				}
+				?>
+					</tbody>
+                                </table>
+
+		</div>
+	</div>
+</div>
+
+	<?php include(FOOTER);?>
+
+
+
+</body>
+</html>

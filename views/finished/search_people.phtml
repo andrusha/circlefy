@@ -1,0 +1,138 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<div id="people_search">
+	
+		<div id="rel_header">People Search</div>
+	
+			<div id="people_search_intro">
+		
+			<p>
+			Welcome to People Search.  People Search allows you to find people who you're friends/associates with, or who you've spoken with in the past.
+			When you find the person you're looking for, click "Add to Network" to add them to your network.
+			Remember that each time you add someone to your network, their Credibility affects your	Network Credibility, so be careful who you friend!
+			</p>
+		
+		</div>
+		
+		<div id="people_search_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		
+		<div id="people_search_form">
+			
+			<fieldset>
+				<legend>Search Box</legend>
+				
+				<ul>
+					<li><label>First Name</label><input type="text" id="first_name"></input></li>
+					<li><label>Last Name</label><input type="text" id="last_name"></input></li>
+					<li><label>Group</label><select><option></option></select></li>
+					<li><label>Zipcode</label><input type="text" id="zipcode"></input></li>
+					<li><input id="people_search_button" type="submit" value="Search"></input></li>
+				</ul>
+				
+			</fieldset>
+		
+		</div>
+		
+		<div id="people_search_results">
+		
+			<div id="people_search_results_header"><span id="results_text">Results:</span></div>
+		
+			<div class="search_result">
+			
+			
+			
+			<div class="friend_result">
+					
+						<div class="friend_result_name"><span class="friend_result_name_span">Jed Katz</span></div>
+						
+						<div class="thumbnail_friend_result">Test</div>
+						
+						<div class="friend_result_info">
+							<ul class="result_info_list">
+								<li><span class="style_bold">Username:</span> Mike2049259258</li>
+								<li><span class="style_bold">Rank: </span> 24+</li>
+							</ul>
+							
+							<ul class="result_info_list">
+									<li><span class="style_bold">Groups:</span></li>
+									<li>WCC Westchester Community College</li>
+									<li>Chatapist</li>
+									<li>My friend_results</li>
+									<li>My friend_results</li>
+							</ul>
+							
+							<ul class="result_option_list">
+								<li><span class="style_bold">Add to Network</span></li>
+								<li><span class="style_bold">Message</span></li>
+								<li><span class="style_bold">Alert User</span></li>
+							</ul>	
+							
+								
+						</div>
+		
+					</div>
+					
+					<div class="friend_result_blue">
+					
+						<div class="friend_result_name"><span class="friend_result_name_span">Taso Du Val</span></div>
+						
+						<div class="thumbnail_friend_result">Test</div>
+						
+						<div class="friend_result_info">
+							<ul class="result_info_list">
+								<li><span class="style_bold">Username:</span> Mike2049259258</li>
+								<li><span class="style_bold">Rank: </span> 24+</li>
+							</ul>
+							
+							<ul class="result_info_list">
+									<li><span class="style_bold">Groups:</span></li>
+									<li>WCC Westchester Community College</li>
+									<li>Chatapist</li>
+									<li>My friend_results</li>
+									<li>My friend_results</li>
+							</ul>
+							
+							<ul class="result_option_list">
+								<li><span class="style_bold">Add to Network</span></li>
+								<li><span class="style_bold">Message</span></li>
+								<li><span>Alerts Disabled</span></li>
+							</ul>	
+							
+								
+						</div>
+		
+					</div>
+					
+					
+					
+			
+			</div>
+			
+		</div>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+#Wed Feb 20 20:12:57 GMT 2008
+eclipse.preferences.version=1
+org.eclipse.php.core.contextRoot=
+org.eclipse.php.core.defaultEncoding=
+org.eclipse.php.core.includePath=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<includepath>\r\n\t<includepathentry createdReference\="false" path\="C\:/PHP/PEAR/PHPUnit" contentKind\="source" kind\="lib">\r\n</includepathentry>\r\n</includepath>\r\n

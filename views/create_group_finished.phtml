@@ -1,0 +1,42 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+<script type="text/javascript" src="views/javascript/tap_friend.js"></script>
+</head>
+
+<body>
+
+<div id="container">
+
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	<br />
+
+	<div id="people_search">
+	
+		<div id="rel_header">Continue...</div>
+
+			<span id="continue_explination" class="continue_group">Your group is now setup!  Now you'll be able to invite and have people join your group.
+			Remember that any relevancy settings that you setup for your group are inherted by all members of the group, so make them good!</span>
+			<span id="continue_here" class="continue_group">Click <a href="group/<?=$view_data['group_id']?>">here</a> to manager your group</span>
+
+		<div id="people_search_form">
+		
+		</div>
+		
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

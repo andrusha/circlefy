@@ -1,0 +1,103 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+<script type="text/javascript" src="views/javascript/tap_friend.js"></script>
+<script type="text/javascript" src="views/javascript/invite.js"></script>
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	<br />
+
+	<?$search_people = $view_data['search_people']; var_dump($search_people);?>
+	
+	<div id="people_search">
+	
+		<div id="rel_header">People Search</div>
+	
+			<div id="people_search_intro">
+		
+			<p>
+			Welcome to People Search.  People Search allows you to find people who you're friends/associates with, or who you've spoken with in the past.
+			When you find the person you're looking for, click "Add to Network" to add them to your network.
+			Remember that each time you add someone to your network, their Credibility affects your	Network Credibility, so be careful who you friend!
+			</p>
+		
+		</div>
+		
+		<div id="people_search_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		
+		<div id="people_search_form">
+		
+			<form action="people_search" method="POST">
+				<fieldset>
+					<legend>Search Box</legend>
+					
+					<ul>
+						<li><label>First Name</label><input type="text" id="first_name" name="first_name"></input></li>
+						<li><label>Last Name</label><input type="text" id="last_name" name="last_name"></input></li>
+						<li><label>Group</label>
+						<select id="group" name="group">
+						<option value="NULL"> - - - - - - - - -</option>
+						<?while($search_people_results = $view_data['your_groups']->fetch_assoc())
+						echo <<<EOF
+						<option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
+EOF;
+						?>
+
+						</select></li>
+						<li><label>Zipcode</label><input type="text" id="zipcode" name="zipcode" maxlength="5" ></input></li>
+						<li><input id="people_search_button" type="submit" name="people_search_button" value="Search"></input></li>
+					</ul>
+					
+				</fieldset>
+			</form>
+		
+		</div>
+		
+		<div id="people_search_results">
+		
+			<div id="people_search_results_header"><span id="results_text">Results:</span></div>
+		
+			<div class="search_result">
+				<? 
+				if($view_data['html']){
+					foreach($view_data['html'] as $v){
+					echo $v;
+					}
+				} else { 
+				$error = ($view_data['no_results']) ? $view_data['no_results'] : "";
+				echo <<<EOF
+				{$error}
+				<span id="invite_friend_msg">Looking for someone you can't find?  Invite them to join tapapp!</span>
+				<form id="invite_friend">
+					<label for="invite_friend_text">Invite a friend:</label><input type="text" id="invite_friend_text"></input>
+					<input type="submit" id="invite_friend_submit" value="Invite Friend" onclick="something(this);return false;"></input>
+				</form>
+EOF;
+				 }
+				?>	
+			</div>
+			
+		</div>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

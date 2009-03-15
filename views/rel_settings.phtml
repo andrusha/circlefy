@@ -1,0 +1,137 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+
+<script type="text/javascript" src="views/javascript/rel.js"></script>
+
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+
+	<?php 
+
+	if(!isset($view_data['get_rel_results'])){
+		$value1 = "Who's up to party?";
+		$value2 = "Drinking, Club, Dance, Dorm";
+		$value3 = "94301";
+	}
+	?>
+	
+	<div id="rel">
+	
+		<div id="rel_header">Relevancy Settings</div>
+	
+	
+	<div id="rel_left">
+	
+	<h4>Configure and Add a Relevancy Setting:</h4>
+	
+	<form id="rel_form" action="_self" method="post">	
+	
+	<fieldset>
+
+		<ul>
+			<li> <label for="name">Name:</label><input  type="text" class="textbox"  id="name" value="<?=$value1?>"></input></li>
+			<span id="name_error">You need a name!</span>
+			<li> <label for="tags">Tags:</label><input  type="text" class="textbox" id="tags" value="<?=$value2?>"></input></li>
+			<span id="tag_error">You need tags or a zipcode!</span>
+			<li> <label for="zipcode">Zipcode:</label><input type="text" maxlength="5" class="textbox" id="zipcode" value="<?=$value3?>"></input></li>
+			<li> <label for="gfroup">Group:</label> 
+			<select id="group">
+				<option value="0" title="All">All/Any Group</option>
+                                <?php while($search_people_results = $view_data['your_groups']->fetch_assoc())
+				echo <<<EOF
+				<option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
+EOF;
+				?>
+				</select></li>
+		</ul>
+		
+		<span id="rel_complete">Setting Added!</span>
+		<span id="rel_button"><a href="####" onclick="add_rel(); return false;"><button type="submit">Add Setting</button></a></span>
+	
+	</fieldset>
+		
+		</form>
+	
+	</div>
+	
+	<div id="rel_area">
+	
+   		<h4 id="rel_example">Examples:</h4>
+		<span class="example">
+			In zipcode <span class="style_bold">10522</span> in language <span class="style_bold">English</span> Keywords: <span class="style_bold">Maple, Syrup, Pancakes, mmm</span>
+			<span class="delete_rel"><a href="#"></a></span>
+		</span>
+		
+		<span class="example">
+			<span class="style_bold">All Catagories</span> in zipcode <span class="style_bold">10522</span> Keywords: <span class="style_bold">Skateboarding</span>
+			<span class="delete_rel"><a href="#"></a></span>
+		</span>
+		
+		<span class="example">
+			<span class="style_bold">All Catagories</span> in zipcode <span class="style_bold">10522</span>
+			<span class="delete_rel"><a href="#"></a></span>
+		</span>
+		
+		<span class="example">
+			<span class="style_bold">All Catagories</span> in language <span class="style_bold">Italian </span>Keywords: <span class="style_bold">Pasta, Mario, Luigi, Supa Dupa Ferrari</span>
+			<span class="delete_rel"><a href="#"></a></span>
+		</span>
+		
+	</div>
+	
+	
+	<div id="border"></div>
+	<div id="rel_area_used">
+
+	<table id="rel_table">
+
+                                <colgroup span="6">
+                                        <col width="140"></col>
+                                        <col width="200"></col>
+                                        <col width="80"></col>
+                                        <col width="80"></col>
+                                        <col width="80"></col>
+					<col width="40"></col>
+                                </colgroup>
+
+                                <thead id="rel_table_head">
+                                <tr><td>-Name-</td><td>-Tags-</td><td>-Location-</td><td>-Group-</td><td>-Enabled-</td><td>Remove</td></tr>
+                                </thead>
+
+                                <tbody id="rel_table_body">
+
+	<?php
+	if(isset($view_data['get_rel_results'])){
+		foreach($view_data['get_rel_results'] as $value){
+			echo $value;
+		}
+	} else {
+		echo '<span id="rel_not_setup" style="color:red;font-size:12px">Settup your relevancy settings!!</span>';
+	}
+	?>
+				</tbody>
+				</table>	
+	</div>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

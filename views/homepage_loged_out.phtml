@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Tap</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<!-- <link href="main.css" rel="stylesheet" type="text/css" media="screen" /> -->
+<style type="text/css" media="all">@import "views/style_sheets/main.css";</style>
+<script type="text/javascript" src="views/javascript/sign_up.js?fid=<?=$_GET['fid']?>"></script>
+<script type="text/javascript" src="views/javascript/inform_users.js"></script>
+</head>
+
+<body>
+
+<span id="errors_show"></span>
+<span id="currently_showing">main_forms</span>
+
+
+<div id="login_form">
+		<fieldset id="login_field">
+		<form action="/rewrite/" method="POST">
+		<ul>
+		<li><label>Username</label> <input type="text" id="uname" name="uname"></input></li>
+		<li><label>Password</label> <input type="password" id="pass" name="pass"></input></li>
+		<li><label>Keep Me Logged In</label> <input type="checkbox" checked="true" id="auto_login" name="auto_login"></input></li>
+		<li><input type="submit" id="signin_submit" value="Sign In"></input></li>
+		</ul>
+		</form>
+
+		</fieldset>
+	</div>
+
+<div id="top_container">
+	<div id="top">How it works. &nbsp;&nbsp;&nbsp;&nbsp; Why it works. &nbsp;&nbsp;&nbsp;&nbsp; What it is. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php print $view_data['signup'] ?></div>
+
+	
+</div>
+
+
+<div id="container">
+
+<?php include(SIGNUP);?>
+
+	<div id="top_logo"><img id="click_main_forms" src="images/chatapist-big.gif" alt="logo" onclick="window_swapper(this); return false;" /></div>
+<?php echo $view_data['errors']; ?>
+	
+	<div id="info">
+	<!--
+		<div id="video">Featured Video:
+		
+		<object width="225" height="250"><param name="movie" value="http://www.youtube.com/v/lUGyxi_Z8ks"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/lUGyxi_Z8ks" type="application/x-shockwave-flash" wmode="transparent" width="225" height="250"></embed></object>
+		
+		</div>
+	-->
+		<ul id="info_list">
+			<li class="post" id="click_you_ask" onmouseout="mouse_out_inform(this);" onmouseover="mouse_over_inform(this);" onclick="window_swapper(this); return false;">Tap the Connected</li>
+		</ul>
+	
+	</div>
+	
+	<div id="forms">
+
+						<div id="inform_container">
+						
+						<p></p>
+						
+							<div id="you_ask">
+								<span class="inform_header">Connect.</span>
+								
+								<p>
+								Chattap allows you to connect with people around you and stay informed about topics you're interested in.  Use chattap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals.  Join chattap today.<br/><br/> <a style="margin-left:170px;color:blue;text-align:middle;" class="style_bold" href="#" onclick="sign_up(); return false;">Sign Up</a></span><br/><br/>
+
+								</p>
+								
+								<p>
+								</p>
+
+							
+							</div>
+							
+							<div id="we_find">
+									<span class="inform_header">We Find Them.</span>
+									
+									<img id="inform_pic_2" src="images/inform/inform22.gif" alt="logo"/>
+									<p>
+										After you ask your question or shout to the world, Chattap finds all of the people who are interested in what you've said, and alerts them, instantly.
+										We are able to do this through an advanced algorithem that allows us to find users on our site and alert them.
+									</p>
+									
+									<p>
+									After signing up for Chattap, you'll be able to setup Relevancy Settings, which are settings that let you receive alerts based on what you're interested in, knowledgeable in, and more.
+									</p>
+								
+								
+							</div>
+							
+							<div id="they_connect">
+								<span class="inform_header">The World Connects.</span>
+
+								<img id="inform_pic_3" src="images/inform/inform3.gif" alt="logo"/>
+								<p>
+									After a person is alerted, they decide wither or not to connect with you.
+									Ulike any service that currently exists, Chattap can alert thousands of people
+									instantly who know exactly what you want.  This which is what makes Chattap so revelotionary.
+								</p>
+								
+								<a class="style_bold" href="#" onclick="sign_up(); return false;">Sign Up!</a></span>
+								
+							</div>
+							
+						</div>
+						
+	
+		<div id="main_forms">
+		
+			<form>
+			
+				<fieldset>
+				
+					<ul id="top_form">
+						<li id="q"><label for="question"></label><textarea rows="2" cols="15" id="question"></textarea></li>
+					</ul>
+					
+					<span><input type="submit" id="submit_button" onclick="sign_up(); return false;" value="Tap"></input></span>
+				
+				</fieldset>
+			
+			</form>
+		
+		</div>
+
+		<a class="style_bold" id="sign_up_front" href="#" onclick="sign_up(); return false;">Sign Up!</a>
+	
+	</div>
+		
+	<div id="links">
+	
+		<ul>
+		
+			<li id="this1"><a href="#" onclick="sign_up(); return false">Home</a></li>
+			<li id="this2"><a href="#" onclick="sign_up(); return false">Profile</a></li>
+			<li id="this3"><a href="#" onclick="sign_up(); return false">Relevancy</a></li>
+			<li id="this4"><a href="#" onclick="sign_up(); return false">Network</a></li>
+			<li id="this5"><a href="#" onclick="sign_up(); return false">Groups</a></li>
+		
+		</ul>
+		
+	</div>
+	
+	<div id="footer">
+
+<?php include(FOOTER);?>
+	
+	</div>
+	
+</div>
+
+</body>
+</html>

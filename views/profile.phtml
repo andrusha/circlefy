@@ -1,0 +1,219 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+<!--
+<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/themes/flora/flora.all.css" type="text/css" media="screen" title="Flora (Default)">
+
+    <script type="text/javascript" src="views/javascript/jquery.js"></script>
+    <script type="text/javascript" src="views/javascript/jquery-ui.js"></script>
+    <script  src="http://dev.jquery.com/view/trunk/plugins/dimensions/jquery.dimensions.js"></script>
+<script  src="http://dev.jquery.com/view/trunk/plugins/ui/ui.mouse.js"></script>
+<script  src="http://dev.jquery.com/view/trunk/plugins/ui/ui.resizable.js"></script>
+ -->
+    <script type="text/javascript">
+   
+    
+    
+ /*   
+ function min(window){
+ 	
+	window.style.visibility = "hidden";
+	
+	chat_window_id = window.id.substring(15);
+	
+	min_chat_window = "chat_min_id_"+chat_window_id;
+ 		
+ 	document.getElementById(min_chat_window).style.visibility = "visible";
+ 	
+ }
+ 
+  function max(window){
+ 	
+ 	window.style.visibility = "hidden";
+ 	
+ 	chat_window_id = window.id.substring(12);
+	
+	chat_window = "chat_window_id_"+chat_window_id;
+ 		
+ 	document.getElementById(chat_window).style.visibility = "visible";
+ 	
+ }*/
+
+ 
+ 
+ 
+/*    function toggle_chat_window(window){   
+     		
+     		var something = window.id.substring(15);
+     		
+     		//This is where I want to use jQuery
+    		if( $(something).is(':hidden')){
+    			$(this).html("Hide Channel"); 
+    		} else {
+    			$(this).html("Show Channel"); 
+    		}
+    		
+    		$(something).toggle("slow");
+     	
+     	};*/
+ 
+ $(document).ready(function(){
+ 	
+   
+    $('.chat_window').draggable();
+    
+    $('.chat_button').bind('click', function() { 
+    	
+    	var window_id = this.id.substring(24);
+    	
+    	var full_window_id = "#chat_people_id_"+window_id;
+    	
+    	   	if( $(full_window_id).is(':hidden')){
+    			$(this).html("Hide Channel"); 
+    		} else {
+    			$(this).html("Show Channel"); 
+    		}
+    		
+    		$(full_window_id).toggle("slow");
+    	
+     });
+
+  });
+
+    </script>
+
+</head>
+
+<!--[if lt IE 7]>
+<style type="text/css">
+html, body {background-color:#FF00FF;
+#container {height: 100%; width: 100%; overflow: auto;}
+.fixed {position: absolute;}
+</style>
+<![endif]-->
+</head>
+
+<body>
+
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<?php 
+	
+	$profile_data = $view_data['profile'];
+	$rel_profile_data = $view_data['rel_profile'];
+	$login_data = $view_data['login'];
+	$rank_data = $view_data['rank'];
+	$rankings_data = $view_data['rankings'];
+	$last_chat_data = $view_data['last_chat'];
+	
+	$friend_data = $view_data['friends'];
+	$posting_results = $view_data['postings'];
+	$chat_results = $view_data['chat'];
+	$groups_results = $view_data['groups'];
+	
+	?>
+	
+	<div id="profile">
+	
+		<div id="profile_header">Profile</div>
+	
+		<div id="picture">
+			<img id="profile_pic" src="pictures/<? echo $login_data['pic_180'] ?>" alt='blank' />
+			<span id="edit_profile_link"><img src="images/icons/vcard_edit.png" /> <a href="/rewrite/profile_edit">Edit Profile</a></span>
+		</div>
+		
+		<div id="basic_info">
+		
+			<h4>&nbsp;Account Info.</h4>
+			
+			<ul>
+				<li>Username: <? echo $login_data['uname'] ?></li>
+				<li>Friends: <?=$friend_data['count']?></li>
+				<li>Taps: <?=$posting_results['count']?></li>
+				<li>Responses ( in lines ): <?=$chat_results['count']?></li>
+			</ul>
+			
+			<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You</h4>
+			
+			<ul>
+				<li>Name: <?=$profile_data['fname'].' '.$profile_data['lname']?></li>
+				<li>Location: <?=$rel_profile_data['state'].', '.$rel_profile_data['country']?></li>
+				<li>Zip: <?=$rel_profile_data['zip']?></li>
+				<li>Education: <?=$rel_profile_data['education']?></li>
+				<li>Occupation: <?=$rel_profile_data['occupation']?></li>
+				<li>Languages: <?=$rel_profile_data['language']?></li>
+				<li></li>
+			</ul>
+			
+		</div>
+		
+		<div id="specific_ranking">
+		
+			<h4>What your friends are saying:</h4>
+		
+			<ul>
+				<?php
+				if($last_chat_data->num_rows > 0){
+				while($last_chat = $last_chat_data->fetch_assoc() ){
+				echo '<li>'.$last_chat['uname'].' - '.stripslashes($last_chat['last_chat']).'</li>';
+				}
+				} else {
+				echo "Nobody you have on tap has said anything yet...";
+				}
+				?>
+				
+			</ul>
+			
+		</div>
+		
+		<div id="personal">
+		
+		<h4>Personal</h4>
+		
+			<ul>
+				<li>Interests: <?=$profile_data['interest']?></li>
+				<li>Favriot Foods: <?=$profile_data['foods']?></li>
+				<li>Your reason for being on chatapist: <?=$profile_data['reasons']?></li>
+				<li>Your weakest subjects: <?=$profile_data['weakness']?></li>
+				<li>Your strongest subjects: <?=$profile_data['strength']?></li>
+				<li>What you love: <?=$profile_data['you_love']?></li>
+			</ul>
+			
+		</div>
+		
+		
+	<div id="groups">
+		
+		<h4>Groups</h4>
+		
+		<h5>Groups You're Invovled With:</h5>
+		
+			<ul>
+				<?php
+				while($groups = $groups_results->fetch_assoc() ){
+				echo '<li> <a class="profile_groups" href="group/'.$groups['gid'].'"><img class="profile_groups" src="pictures/groups/'.$groups['pic_36'].'" />'.$groups['gname'].'</li></a>';
+				}
+				?>
+			</ul>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+
+
+</body>
+</html>

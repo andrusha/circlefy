@@ -1,0 +1,348 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+
+    <script type="text/javascript" src="views/javascript/edit_profile.js"></script>
+    
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+
+	<?$edit_profile = $view_data['edit_profile'];
+	
+	//This will select which country to be displayed in the drop down menu when the page loads.
+	$day = substr($edit_profile['dob'],8,2);
+	$month = substr($edit_profile['dob'],5,2);
+	
+		$item_metric[ $edit_profile['metric'] ] = "style=\"color:red ;\" selected";
+		$item_country[$edit_profile['country']] = "style=\"color:red ;\" selected";
+		$item_lang[$edit_profile['language']] = "style=\"color:red ;\" selected";
+		$item_month[$month] = "style=\"color:red ;\" selected";
+		$item_day[$day] = "style=\"color:red ;\" selected";
+		$item_rs_status[$edit_profile['rs_status']] = "style=\"color:red ;\" selected";
+	//END DROP DOWN MENU SELCT
+	
+	
+	//This is a fix for the icq column.  if this is not here, 0 will be displayed witihin the text box/
+		if($edit_profile['icq'] == '0'){
+			$edit_profile['icq'] = '';
+		}
+	//END ICQ COLUMN FIX
+	
+	
+	//The following if statements set each "enable alert" check to checked.
+		if($edit_profile['eaim'] == 'enabled'){
+		$item_checked['eaim'] = ' checked="checked"';
+		}
+		
+		if($edit_profile['eyahoo'] == 'enabled'){
+		$item_checked['eyahoo'] = ' checked="checked"';
+		}
+		
+		if($edit_profile['emsn'] == 'enabled'){
+		$item_checked['emsn'] = ' checked="checked"';
+		}
+		
+		if($edit_profile['eirc'] == 'enabled'){
+		$item_checked['eirc'] = ' checked="checked"';
+		}
+		
+		if($edit_profile['egtalk'] == 'enabled'){
+		$item_checked['egtalk'] = ' checked="checked"';
+		}
+		
+		if($edit_profile['eicq'] == 'enabled'){
+		$item_checked['eicq'] = ' checked="checked"';
+		}
+	//END OF ALERT CHECK ITEMS
+	
+	
+	//These are the genders if statemetns that will check either one based on an enum in the database 
+		if($edit_profile['gender'] == 'male'){
+		$item_checked['male'] = 'checked="true"';
+		}
+		
+		if($edit_profile['gender'] == 'female'){
+		$item_checked['female'] = 'checked="true"';
+		}
+	//END OF GENDER ITMES
+	
+	?>
+	
+	<div id="edit_profile">
+	
+		<div id="edit_profile_header">Edit Profile</div>
+	
+		<div id="edit_profile_intro">
+		
+			<p>
+			Here you can edit your profile!  Enjoy!
+			</p>
+		
+		</div>
+		
+		<div id="account_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		
+		<div id="edit_profile_forms">
+		
+			<div id="edit_profile_left">
+			<div id="active_edit">you</div>
+			
+			<ul id="profile_nav">
+				<li><a href="#" onclick="show_edit('you'); return false;">You</a></li>	
+				<li><a href="#" onclick="show_edit('personal'); return false;">Personal</a></li>	
+				<li><a href="#" onclick="show_edit('pic'); return false;">Picture</a></li>	
+				<li><a href="#" onclick="show_edit('alerts'); return false;">Alerts</a></li>	
+			</ul>
+			
+		</div>
+			
+			<div id="edit_profile_right">
+	
+			
+			<div id="div_edit_you">
+			<div id="you_updated"></div>	
+			<form id="edit_you_form" action="profile_edit" method="POST">
+			<fieldset>
+			<legend>You</legend>
+			
+				<ul>
+				
+					<li><label for="fname">First Name</label><input type="text" id="fname" name="fname" value="<?=$edit_profile['fname']?>" ></input></li>
+					<li><label for="lname">Last Name</label><input type="text" id="lname" name="lname" value="<?=$edit_profile['lname']?>"></input></li>
+					<li><label for="email">E-mail Address</label><input type="text" id="email" name="email" value="<?=$edit_profile['email']?>"></input></li>
+					<li><label for="zip">Zipcode</label><input maxlength="5" type="text" id="zip" name="zip" value="<?=$edit_profile['zip']?>"></input></li>
+					<li><label for="state">State/Region</label><input type="text" id="state" name="state" value="<?=$edit_profile['state']?>"></input></li>
+					<li><label for="country">Country</label><?require('parts/lists/countrylist.phtml');?></li>
+					<li><label for="lang">Language</label><?require('parts/lists/languagelist.phtml');?></li>
+					<li>
+						<label>Gender:</label> 
+						<input type="radio" id="male" name="gender" value="Male" <?=$item_checked['male']?>/> <label for="male">Male</label>
+						<input type="radio" id="female" name="gender" value="Female" <?=$item_checked['female']?>/> <label for="gender">Female</label>
+						</input>
+					</li>
+					<li><button type="submit" id="edit_submit_you" name="edit_submit_you" value="edit_submit_you" onclick="send_update('you'); return false;">Update You</button></li>
+				</ul>
+			
+			</fieldset>
+			</form>
+			</div>
+
+			<div id="div_edit_alerts">
+			<div id="alerts_updated"></div>	
+			<form action="profile_edit" method="POST">
+			<fieldset>
+			<legend>Alerts</legend>
+				<ul>
+				
+					<li><label for="aim">AIM</label><input type="text" id="aim" name="aim" value="<?=$edit_profile['aim']?>"></input></li>
+					<li class="enabled_alert_check"><label for="aim_enable">enabled</label><input type="checkbox" id="aim_enable" <?=$item_checked['eaim']?> name="aim_enable" value="aim_enable"></input></li>
+					
+					<li><label for="testing">MSN</label><input type="text" id="msn" name="msn" value="<?=$edit_profile['msn']?>"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="msn_enable" <?=$item_checked['emsn']?> name="msn_enable" value="msn_enable"></input></li>
+					
+					<li><label for="testing">Yahoo!</label><input type="text" id="yahoo" name="yahoo" value="<?=$edit_profile['yahoo']?>"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="yahoo_enable" <?=$item_checked['eyahoo']?> name="yahoo_enable" value="yahoo_enable"></input></li>
+					
+					
+					<li><label for="testing">Gtalk</label><input type="text" id="gtalk" name="gtalk" value="<?=$edit_profile['gtalk']?>"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="gtalk_enable" <?=$item_checked['egtalk']?> name="gtalk_enable" value="gtalk_enable"></input></li>
+					
+					
+					<li><label for="testing">ICQ</label><input type="text" id="icq" name="icq" value="<?=$edit_profile['icq']?>"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="icq_enable" <?=$item_checked['eicq']?> name="icq_enable" value="icq_enable"></input></li>
+					
+					
+					<li><label for="testing">IRC (Freenode)</label><input type="text" id="irc" name="irc" value="<?=$edit_profile['irc']?>"></input></li>
+					<li class="enabled_alert_check"><label for="testing">enabled</label><input type="checkbox" id="irc_enable" <?=$item_checked['eirc']?> name="irc_enable" value="irc_enable"></input></li>
+					
+	
+					
+					<li><button type="submit" id="edit_submit_alerts" name="edit_submit_alerts" value="edit_submit">Update Alerts</button></li>
+					
+				</ul>
+			
+			</fieldset>
+			</form>
+			</div>
+
+
+			<div id="div_edit_personal">
+			<div id="personal_updated"></div>	
+			<form action="profile_edit" method="POST">
+			<form action="profile_edit" method="POST">
+			<fieldset>
+			<legend>Personal</legend>
+			
+				<ul>
+				
+					<li><label for="dob">Birthday:</label></li>
+					
+					<li>
+					Month <select id="dob_month" name="dob_month">
+					<option  <?=$item_month['01']?> value='01'>Jan</option>
+					<option  <?=$item_month['02']?> value='02'>Feb</option>
+					<option  <?=$item_month['03']?> value='03'>Mar</option>
+					<option  <?=$item_month['04']?> value='04'>Apr</option>
+					<option  <?=$item_month['05']?> value='05'>May</option>
+					<option  <?=$item_month['06']?> value='06'>Jun</option>
+					<option  <?=$item_month['07']?> value='07'>Jul</option>
+					<option  <?=$item_month['08']?> value='08'>Aug</option>
+					<option  <?=$item_month['09']?> value='09'>Sep</option>
+					<option  <?=$item_month['10']?> value='10'>Oct</option>
+					<option  <?=$item_month['11']?> value='11'>Nov</option>
+					<option  <?=$item_month['12']?> value='12'>Dec</option>
+					</select>
+					
+					
+					Day <select id="dob_day" name="dob_day" >
+						<option <?=$item_day['01']?> value='01'>01</option>
+						<option <?=$item_day['02']?> value='02'>02</option>
+						<option <?=$item_day['03']?> value='03'>03</option>
+						<option <?=$item_day['04']?> value='04'>04</option>
+						<option <?=$item_day['05']?> value='05'>05</option>
+						<option <?=$item_day['06']?> value='06'>06</option>
+						<option <?=$item_day['07']?> value='07'>07</option>
+						<option <?=$item_day['08']?> value='08'>08</option>
+						<option <?=$item_day['09']?> value='09'>09</option>
+						<option <?=$item_day['10']?> value='10'>10</option>
+						<option <?=$item_day['11']?> value='11'>11</option>
+						<option <?=$item_day['12']?> value='12'>12</option>
+						<option <?=$item_day['13']?> value='13'>13</option>
+						<option <?=$item_day['14']?> value='14'>14</option>
+						<option <?=$item_day['15']?> value='15'>15</option>
+						<option <?=$item_day['16']?> value='16'>16</option>
+						<option <?=$item_day['17']?> value='17'>17</option>
+						<option <?=$item_day['18']?> value='18'>18</option>
+						<option <?=$item_day['19']?> value='19'>19</option>
+						<option <?=$item_day['20']?> value='20'>20</option>
+						<option <?=$item_day['21']?> value='21'>21</option>
+						<option <?=$item_day['22']?> value='22'>22</option>
+						<option <?=$item_day['23']?> value='23'>23</option>
+						<option <?=$item_day['24']?> value='24'>24</option>
+						<option <?=$item_day['25']?> value='25'>25</option>
+						<option <?=$item_day['26']?> value='26'>26</option>
+						<option <?=$item_day['27']?> value='27'>27</option>
+						<option <?=$item_day['28']?> value='28'>28</option>
+						<option <?=$item_day['29']?> value='29'>29</option>
+						<option <?=$item_day['20']?> value='30'>30</option>
+						<option <?=$item_day['31']?> value='31'>31</option>
+					</select>
+					
+					
+					Year <input style="width:40px;" maxlength="4" type="text" id="dob_year" name="dob_year" value="<?=substr($edit_profile['dob'],0,4)?>" ></input>
+					
+					</li>
+					<li>
+					
+					<li><label for="height_choice">Choose one for following</label>
+					<select onchange="height_type(this.value)" id="height_choice" name="height_choice">
+						<option>Choose one</option>
+						<option <?=$item_metric['standard']?> value="standard">Standard</option>
+						<option <?=$item_metric['metric']?> value="metric">Metric</option>
+					</select>
+					 </li>
+				
+					<span id="no_unit_selected">
+						 <li> 1) Height</li>
+						 <li> 2) Weight</li>	 
+					</span>
+					
+						<li id="height_in_li">
+						<label for="height">Height:</label>
+						<label for="height_feet">Feet</label><input style="width:28px;" maxlength="1"type="text" id="height_feet" name="height_feet"></input>
+						<label for="height_in">Inches</label><input style="width:28px;" maxlength="2" type="text" id="height_in" name="height_in"></input>
+						</li>
+	
+						<li id="height_cm_li">
+						<label for="height">Height:</label>
+						<label for="height_cm">cm</label><input style="width:40px;" maxlength="5" type="text" id="height_cm" name="height_cm"></input>
+						</li>
+					
+					
+					<li id="weight_lb_li"><label for="weight_kg">Weight (lb):</label><input style="width:28px;" type="text" id="weight_kg" name="weight_kg"></input></li>
+					<li id="weight_kg_li"><label for="weight_lb">Weight (kg):</label><input style="width:28px;" type="text" id="weight_lb" name="weight_lb"></input></li>
+					
+					
+					</li>
+					<script type="text/javascript">height_type("<?=$edit_profile['metric']?>");</script>
+					
+					<li><label for="relationship_status">Relationship Status:
+					<select id="relationship_status" name="relationship_status">
+						<option value="null">--</option>
+						<option <?=$item_rs_status['single']?> value="single">Single</option>
+						<option <?=$item_rs_status['dating']?> value="dating">Dating</option>
+						<option <?=$item_rs_status['married']?> value="married">Married</option>
+						<option <?=$item_rs_status['divorced']?> value="divorced">Divorced</option>
+					</select>
+					</li>
+										
+					<li><label for="interest">Interests (comma seperated):</label><textarea id="interests" name="interests"></textarea></li>
+					<li><label for="interest">Strengths in Life (comma seperated):</label><textarea id="strengths" name="strengths"></textarea></li>
+					<li><label for="interest">Weaknesses in Life (comma seperated):</label><textarea id="weaknesses" name="weaknesses"></textarea></li>
+					<li><label for="you_love">One thing you love</label><input style="width:80px;" type="text" id="you_love" name="you_love"></input></li>
+					<li><button type="submit" id="edit_submit_personal" name="edit_submit_personal" value="edit_submit">Update Personal</button></li>
+				
+				</ul>
+			
+			</fieldset>
+			</form>
+			</div>
+			
+			<div id="div_edit_pic">
+			<div id="pic_updated"></div>
+
+			<form  action="<?=$PHP_SELF?>" target="upload_iframe" method="post" enctype="multipart/form-data">
+			<ul>
+					<li><input type="hidden" name="fileframe" value="true"></li>
+					<li><label for="image_of_you">Picture Of You</label>
+					<input type="file" id="image_of_you" name="image_of_you"></input></li>
+			</ul>
+			</form>
+			<iframe name="upload_iframe" style="width: 400px; height: 100px; display:none;"></iframe>
+			
+			<form actoin="" method="POST">
+			<fieldset>
+			<legend>Picture</legend>
+			
+				<ul>
+					<li><span id="upload_status"></span></li>
+				        <li><span id="pic_format_error"></span></li>
+					<li>
+						<span id="edit_profile_picture"><img src="pictures/<? echo $edit_profile['pic_180'] ?>" alt='blank' /></span>
+					</li>
+					<li id="default_pic_msg"><?php if( $edit_profile['pic_180'] == '180h_default.jpg') echo "You're using the default pic, please upload a new picture of you! :)";?></li>
+					<li><button type="submit" id="edit_submit_pic" name="edit_submit_pic" onclick="jsUpload(document.getElementById('image_of_you')); return false;" value="edit_submit">Update Picture</button></li>
+				
+				</ul>
+			
+			</fieldset>
+			</form>
+			</div>
+			
+			</div>
+		</div>
+		
+		
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>                                                                                                                                                                                                                                                                                                                  
+</html>

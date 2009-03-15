@@ -1,0 +1,85 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<div id="logs">
+	
+		<div id="logs_header">Conversation w/ JohnJake29429954833894</div>
+		
+		<div id="go_back_logs"><a href="#">Back to logs</a></div>
+		
+		<div id="timestamp"><a href="#">Timestamp On/Off</a></div>
+
+		<div id="log_table_div">
+		
+			<table id="log_table">
+					
+				<colgroup span="6">
+					<col width="120"></col>
+					<col width="80"></col>
+					<col width="360"></col>
+				</colgroup>
+			
+				<thead id="log_head">
+				<tr><td>-Date-</td><td>-Username-</td><td>-Conversation-</td></tr>
+				</thead>
+				
+				<tbody>
+				
+					<tr class="log_columns_white">
+						<td class="log_rows">10/2/2007 @ 8:52am</td>
+						<td class="log_rows">TasoDuv</td>
+						<td class="table_description"> This is a description of something that happened.  I'm wondering where my kid could have gone if
+						I really gave him the car keys that we were talking about doing.  This is something pretty serious.
+						does anyone know how this could be possible or why something like this could happen or anything
+						of the sort?  Thanks!</td>
+					</tr>
+					
+					<tr class="log_columns_blue">
+						<td class="log_rows">10/2/2007 @ 8:52am</td>
+						<td class="log_rows">MarkDark</td>
+						<td class="table_description"> serious.
+						does anyone know how this could be possible or why something like this could happen or anything
+						of the sort?  Thanks!</td>
+					</tr>
+					
+					<tr class="log_columns_white">
+						<td class="log_rows">10/2/2007 @ 8:53am</td>
+						<td class="log_rows">TasoDuv</td>
+						<td class="table_description"> This is a description of something that happened. Thanks!</td>
+					</tr>
+					
+					<tr class="log_columns_blue">
+						<td class="log_rows">10/2/2007 @ 8:53am</td>
+						<td class="log_rows">MarkDark</td>
+						<td class="table_description">  Thanks!</td>
+					</tr>
+					
+				</tbody>
+			</table>
+		
+		</div>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+
+/* GLOBAL */
+
+* { margin:0; padding:0; }
+
+body{
+	margin-top:0px;
+	margin-bottom:10px;
+	font-size:.7em;
+	font-family:arial,sans-serif;
+}
+
+textarea{
+	font-size:1em;
+	font-family:arial;
+}
+
+#container{
+	width:800px;
+	height:600px;
+	margin:0 auto;
+	border:1px  ;
+	text-align:center;
+}
+
+/* *** END GLOBAL *** */
+
+
+
+
+/* The "top bar" */
+
+	#top{
+		padding:6px 8px 14px 14px ;
+		background:white url('../../images/bg-top.gif') no-repeat -180px -20px;
+	}
+
+/* *** END "top bar" *** */
+
+
+/* Footer */
+
+	#footer{
+		width:142px;
+		margin:0 auto;
+		text-align:middle;
+	}
+
+/* *** END Footer *** */
+
+
+/* Logo */
+
+	#top_logo{
+		border:1px  ;
+	}
+
+/* *** END Logo *** */
+
+/* Info on Homepage */
+	
+	#info{
+		padding:10px;
+		border:1px  ;
+	}
+	
+	#info ul li{
+		list-style:none;
+		padding-bottom:12px;
+	}
+	
+	#post{
+		color:#0F87FF;
+		border-bottom:1px dotted;
+		padding:4px;
+		width:400px;
+		margin:0 auto;
+		font-size:1.3em;
+		font-weight:bold;
+		font-family:arial;
+	}
+	
+	#video{
+	color:blue;
+	font-size:1.3em;
+	font-weight:bold;
+	font-family:arial;
+	position:absolute;
+	bottom:70%;
+	right:50%;
+	margin:-140px;
+	width:280px;
+	height:200px;
+	}
+
+/* Forms */
+
+	#forms ul{
+		padding:8px;
+		margin-right:60px;
+	}
+	
+	#submit_button {
+	font-size:12px;
+	font-family:arial;
+	width:40px;
+	}
+	
+	textarea{
+	height:50px;
+	width:124px;
+	}
+	
+	#forms #top_form{
+		padding-bottom:10px;
+		margin-left:4px;
+	}
+	
+	#top_form #title{
+	width:124px;
+	}
+	
+	#forms fieldset{
+		padding:8px 0 18px 0;
+		width:500px;
+		margin:0 auto;
+		border:none;
+		background:white url('../../images/bg.gif') no-repeat;
+	}
+	
+	#forms li{
+		list-style:none;
+		display:inline;
+		font-weight:bold;
+	}
+	
+	#forms ul label{
+		vertical-align:middle;
+		padding:0 8px 8px 10px;
+	}
+	
+	#forms #bottom_form label{
+		vertical-align:top;
+	}
+	
+	#sub{
+		vertical-align:top;
+	}
+	
+	#title{
+		width:120px;
+	}
+	
+	#sub-catagory{
+		vertical-align:top;
+	}
+	
+/* *** END forms *** */
+
+
+/* links */
+
+	#links{
+		padding:14px;
+		padding-top:0px;
+		width:200px;
+		margin:0 auto;
+	}
+	
+	#links ul li{
+		list-style:none;
+		display:inline;
+		border-right:1px  ;
+		padding-right:8px;
+		padding-left:8px;
+		margin-top:0px;
+		line-height:200%;
+	}
+
+/* *** END links *** */
+
+
+#sign_up{
+display:none;
+margin-left:-210px;
+width:420px;
+height:400px;
+position:absolute;
+top:10%;
+left:50%;
+background:url('../../images/sign_up_bg.gif') no-repeat top;
+z-index:999;
+}
+
+	.sign_up_top_buttons{
+	position:absolute;
+	display:inline-block;
+	white-space:nowrap;
+	left:277px;
+	top:0;
+	}
+	
+	#signup_errors{
+	display:block;
+	}
+	
+	.signup_error_count{
+	display:none;
+	}
+	
+	#sign_up h4{
+	font-size:1em;
+	}
+	
+	#sign_up input{
+	width:140px;
+	}
+	
+	#sign_up fieldset{
+	padding-top:2px;
+	border:none;
+	}
+	
+	#sign_up label{
+	padding-right:2px;
+	}
+	
+	#sign_up .guide{
+	color:gray;
+	display:inline-block;
+	}
+	
+	#sign_up .guide{
+	display:block;
+	}
+	
+	#sign_up legend{
+	padding:4px 0 0 180px;
+	font-weight:bold;
+	}
+	
+	#sign_up #step_1 ul{
+	width:240px;
+	height:200px;
+	text-align:right;
+	margin:0 auto;
+	}
+
+	#sign_up #step_1 ul li{
+	list-style:none;
+	padding:15px 0 0px 0;
+	}
+	
+	#sign_up #name_available{
+	display:block;
+	}
+
+
+#step_1{
+display:none;
+overflow:hidden;
+height:300px;
+
+}
+
+#step_2{
+display:none;
+margin:0 auto;
+width:215px;
+text-align:left;
+padding:8px;
+overflow:hidden;
+}
+	
+	#step_2 ul{
+	list-style:none;
+	text-align:right;
+	display:block;
+	
+	}
+	
+	#step_2 ul li{
+	list-style:none;
+	text-align:right;
+	padding:5px;
+	color:gray;
+	width:210px;
+	}
+	
+	.screen_name{
+	color:blue;
+	}
+	
+	#button_2_container{
+	text-align:right;
+	display:block;
+	}
+	
+	.sign_up_button{
+	position:absolute;
+	bottom:58px;
+	left:231px;
+	width:100px;
+	}
+
+	
+#step_3{
+display:none;
+overflow:hidden;
+margin:0 auto;
+width:220px;
+padding:4px;
+text-align:left;
+}
+
+	#sn_alert{
+	width:240px;
+	text-align:left;
+	}
+
+#step_3 ul{
+text-align:right;
+list-style:none;
+}
+
+#step_3 ul li{
+padding:8px;
+width:214px;
+}
+
+.step_3_space{
+display:block;
+padding:5px 0 5px 0;
+}
+
+#note{
+color:red;
+font-weight:bold;
+}
+
+/* Query Status */
+
+#query_status_window{
+margin-left:-140px;
+width:280px;
+border:1px solid;
+position:absolute;
+top:30%;
+left:50%;
+background:white;
+}
+
+	#query_status_window h4{
+	color:blue;
+	}
+	
+	#query_status_table_header td{
+	font-weight:bold;
+	}
+
+				.log_columns_white{
+			background-color:#FFFFFF;
+			}
+			
+			.log_columns_blue{
+			background-color:#E3E4F0;
+			}
+			
+/* *** END "query status" *** */
+				
+	/*  THE CHAT WINDOW */
+	
+	.chat_window{
+	width:240px;
+	height:220px;
+	border:1px solid lightblue;
+	position:fixed;	
+	padding:0px 16px 40px 10px;
+	background:#E3E4F0 url('../../images/chatapist-mini.gif') no-repeat top left;
+	text-align:right;
+	/* add this for IE6 overflow-y:hidden; */
+	}
+	
+	.minimize_button{
+	padding:0 8px 0 8px;
+	background-color:blue;
+	background:url('../../images/left3.gif') no-repeat top left;
+	border:1px solid lightgray;
+	}
+	
+	.minimize_button:hover{
+	cursor:pointer;
+	background:orange;
+	}
+	
+		 .chat_window_container{
+		 padding-top:10px;
+		 width:100%;
+		 }
+		 
+			 .chat_window_border{
+			 border:1px solid lightblue;
+			 border-bottom:1px solid lightblue;
+			 padding:4px;
+			 }
+			 
+			 .chat_buttons li{
+			 display:inline;
+			 border: 1px solid;
+			 padding:0 10px 0 10px;
+			 margin:0 8px 0 2px;
+			 
+			 }
+			 
+			 .chat_window ul{
+			 text-align:right;
+			 }
+			 
+			 .chat_button{
+			 cursor:pointer;
+			 }
+			
+				.chat_textarea{
+			 	width: 98%;
+			 	overflow-x:hidden;
+			 	height:80px;
+				}
+				
+				.conversation_area{
+				margin:0 auto;
+				height:120px;
+				background:white;
+				}
+			
+	.chat_people{
+	width:240px;
+	height:200px;
+	background:white;
+	left:260px;
+	bottom:220px;
+	overflow:hidden;
+	border:1px solid lightblue;
+	text-align:center;
+	position:relative;
+	float:right;
+	}
+				
+	.chat_min{
+	cursor:pointer;
+	width:180px;
+	height:18px;
+	visibility:hidden;
+	border:lightblue;
+	background:gray;
+	margin:0px 8px 8px 0;
+	border:1px solid lightblue;
+	}
+	
+
+/* max */
+
+#chat_window_id_1{
+left:0;
+top:0;
+}
+
+#chat_window_id_2{
+left:280px;
+top:0;
+}
+
+#chat_window_id_3{
+left:560px;
+top:0;
+}
+
+#chat_window_id_4{
+left:840px;
+top:0;
+}
+
+#chat_window_id_5{
+left:840px;
+top:0;
+}
+
+#chat_window_id_6{
+left:0px;
+top:260px;
+}
+
+/* min */
+
+		#chat_min_id_1{
+		position:fixed;
+		right: 0;
+		bottom: 0;
+		}
+		
+		#chat_min_id_2{
+		position:fixed;
+		right: 188px;
+		bottom: 0;
+		}
+
+		#chat_min_id_3{
+		position:fixed;
+		right: 376px;
+		bottom: 0;
+		}
+		
+		#chat_min_id_4{
+		position:fixed;
+		right: 564px;
+		bottom: 0;
+		}
+		
+		#chat_min_id_5{
+		position:fixed;
+		right: 752px;
+		bottom: 0;
+		}
+		
+		#chat_min_id_6{
+		position:fixed;
+		right: 0px;
+		bottom: 28px;
+		}
+	
+/* *** END min *** */

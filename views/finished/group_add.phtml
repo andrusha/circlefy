@@ -1,0 +1,140 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
+</head>
+
+<body>
+
+<div id="container">
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	
+	<div id="create_group">
+	
+		<div id="create_group_header">Create a Group</div>
+	
+			<div id="create_group_intro">
+		
+			<p>
+			Welcome to Create Group.  Here you can create a group and invite your friends to the group
+			that you create.  There are many options for creating a group, and each option affects who is able
+			to be invited, the information that is shared within the group, and the credibility of the group.
+			</p>
+			
+			<div id="create_group_go_away"><a href="#">Click to not display this message.</a></div>
+		
+		</div>
+
+		<div id="create_group_form">
+		
+		<form action="_self">
+		<fieldset>
+		<legend>Group Creation Form</legend>
+			
+			<ul id="main_create_form">
+			
+				<li><label for="create_group_name">Group Name </label><input type="text" id="create_group_name"></input></li>
+				<li><label for="create_group_desc">Group Description</label><input type="text" id="create_group_desc"></input></li>
+				<li>
+					<label for="create_group_why">Groups Focus(es)</label>
+										<span class="group_explinations">Select up to 4</span>
+						<select>
+							<option></option>
+						</select>
+				</li>
+				<li><label for="create_group_why">Why Join This Group</label><input type="text" id="create_group_why"></input></li>
+				
+				
+				<li><span class="style_bold">Prerequiests:</span>
+
+					<ul id="prereq_check_list">
+						<li>
+							<label>E-mail Suffix of.. </label>
+							<input type="checkbox" id="dsf"></input>
+								<input type="text" class="hidden_text_form"></input>
+						</li>
+						
+						<li>
+							<label>Credibility Rating of.. </label>
+							<input type="checkbox" id="saf"></input>
+								<input type="text" class="hidden_text_form"></input>
+						</li>
+						
+						<li>
+							<label>Be Apart of Group.. </label>
+							<input type="checkbox" id="afds"></input>
+								<input type="text" class="hidden_text_form"></input>
+						</li>
+					</ul>
+				</li>
+
+				<li>
+					<label>Make Private</label>
+					<input type="checkbox" id="afds"></input>
+					<span class="group_explinations">(This will not publicize your group in "Related Groups" or in search results)</span>
+					
+				</li>
+				
+				<li>
+					<label>Invite Only</label>
+					<input type="checkbox" id="afds"></input>
+					<span class="group_explinations">(By making a group Invite Only, only memebers invited will be able to join.)</span>
+				</li>
+				
+				<li>
+					<label>Who is allowed to invite new group members?</label>
+					<ul id="prereq_check_list">
+						<li>
+							<label>Owner/Administrators </label>
+							<input type="radio" id="dsf"></input>
+						</li>
+						
+						<li>
+							<label>Everyone </label>
+							<input type="radio" id="saf"></input>
+						</li>
+						
+						<li>
+							<label>Nobody</label>
+							<input type="radio" id="afds"></input>
+						</li>
+					</ul>
+				</li>
+				</li>
+								
+				<li>
+					<label for="invite_friends">Invite People From Your Network</label>
+						<select>
+							<option>aofhoafhoifahoia hoi hoifa</option>
+						</select>
+				</li>
+								
+				<li>
+					<label id="group_upload_label" for="upload_group_picture">Upload Group Picture:</label>
+					<input type="file" id="upload_group_picture"></input>
+				</li>
+
+				<li><button>Submit</button></li>
+			</ul>
+		
+		</fieldset>
+		</form>
+		
+		</div>
+	
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>
