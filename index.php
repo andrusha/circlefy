@@ -1,4 +1,5 @@
 <?php
+echo "wow";
 echo "hey what's up";
 echo "test";
 require_once('config.php');
