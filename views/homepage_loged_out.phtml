@@ -19,7 +19,7 @@
 
 <div id="login_form">
 		<fieldset id="login_field">
-		<form action="/rewrite/" method="POST">
+		<form action="<?=ROOT?>" method="POST">
 		<ul>
 		<li><label>Username</label> <input type="text" id="uname" name="uname"></input></li>
 		<li><label>Password</label> <input type="password" id="pass" name="pass"></input></li>
@@ -115,7 +115,7 @@
 
 
 		<div id="forms">
-                <form action="/rewrite/" method="post" >
+                <form action="<?=ROOT?>" method="post" >
                                 <fieldset>
                                         <div id="core">
                                         <ul id="directions">
@@ -138,9 +138,9 @@
 
                 <ul>
 
-                        <li id="this2"><a href="/rewrite/profile">Profile</a></li>
-                        <li id="this3"><a href="/rewrite/relevancy_settings">Filters</a></li>
-                        <li id="this5"><a href="/rewrite/groups">Groups</a></li>
+                        <li id="this2"><a href="<?=ROOT?>profile">Profile</a></li>
+                        <li id="this3"><a href="<?=ROOT?>relevancy_settings">Filters</a></li>
+                        <li id="this5"><a href="<?=ROOT?>groups">Groups</a></li>
                 </ul>
 
 

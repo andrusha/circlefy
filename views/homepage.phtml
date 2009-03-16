@@ -804,7 +804,7 @@ EOF;
 
 <div id="mang_network">
 <div  class="close_bar" id="mang_network_bar"  onclick="hide_mang('network');" ><img src="images/icons/cross.png" /></div>
-<? if($view_data['html_0'] && $view_data['html_0'] != '')foreach($view_data['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='/rewrite/people_search'>here</a> to find people to tap";}?>
+<? if($view_data['html_0'] && $view_data['html_0'] != '')foreach($view_data['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='<?=ROOT?>people_search'>here</a> to find people to tap";}?>
 </div>
 
 
@@ -869,7 +869,7 @@ EOF;
 	</div>
 
 	<div id="forms">
-		<form action="/rewrite/" method="post" >
+		<form action="<?=ROOT?>" method="post" >
 				<fieldset>
 					<div id="core">
 					<ul id="directions">
@@ -892,9 +892,9 @@ EOF;
 	
 		<ul>
 		
-			<li id="this2"><a href="/rewrite/profile">Profile</a></li>
-			<li id="this3"><a href="/rewrite/relevancy_settings">Filters</a></li>
-			<li id="this5"><a href="/rewrite/groups">Groups</a></li>
+			<li id="this2"><a href="<?=ROOT?>profile">Profile</a></li>
+			<li id="this3"><a href="<?=ROOT?>relevancy_settings">Filters</a></li>
+			<li id="this5"><a href="<?=ROOT?>groups">Groups</a></li>
 		</ul>
 		
 	
@@ -978,7 +978,7 @@ EOF;
                         if($view_data['direct_bits'] && $view_data['direct_bits'] != '')
                                 foreach($view_data['direct_bits'] as $v){echo $v;
                         } else {
-                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_direct'> You are not in any direct, <a href='/rewrite/direct'>here</a> to find direct to tap</span>";
+                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_direct'> You are not in any direct, <a href='<?=ROOT?>direct'>here</a> to find direct to tap</span>";
                         }
                 ?>
 		</div>
@@ -1000,7 +1000,7 @@ EOF;
                         if($view_data['building_bits'] && $view_data['building_bits'] != '')
                                 foreach($view_data['building_bits'] as $v){echo $v;
                         } else {
-                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_building'> You are not in any building, <a href='/rewrite/building'>here</a> to find building to tap</span>";
+                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_building'> You are not in any building, <a href='<?=ROOT?>building'>here</a> to find building to tap</span>";
                         }
                 ?>
 		</div>
@@ -1009,7 +1009,7 @@ EOF;
 		if($view_data['individual_friend_bits'] && $view_data['individual_friend_bits'] != '')
 			foreach($view_data['individual_friend_bits'] as $v){echo $v;
 		} else {
-			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friend_ind'> You have nobody on tap who is active click <a href='/rewrite/people_search'>here</a> to find people to tap who are active!</span>";
+			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friend_ind'> You have nobody on tap who is active click <a href='<?=ROOT?>people_search'>here</a> to find people to tap who are active!</span>";
 		}
 ?>
 	
@@ -1019,7 +1019,7 @@ EOF;
 		if($view_data['friends_bits'] && $view_data['friends_bits'] != '')
 			foreach($view_data['friends_bits'] as $v){echo $v;
 		} else {
-			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friends_aggr'> You have nobody on tap who is active click <a href='/rewrite/people_search'>here</a> to find people to tap who are active!</span>";
+			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friends_aggr'> You have nobody on tap who is active click <a href='<?=ROOT?>people_search'>here</a> to find people to tap who are active!</span>";
 		}
 ?>
 		</div>
@@ -1030,7 +1030,7 @@ EOF;
 			if($view_data['groups_bits'] && $view_data['groups_bits'] != '') 
 				foreach($view_data['groups_bits'] as $v){echo $v;
 			} else { 
-				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='/rewrite/groups'>here</a> to find groups to tap</span>";
+				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='<?=ROOT?>groups'>here</a> to find groups to tap</span>";
 			}
 		?>      
                 </div>
@@ -1049,7 +1049,7 @@ EOF;
                         if($view_data['rel_bits'] && $view_data['rel_bits'] != '')
                                 foreach($view_data['rel_bits'] as $v){echo $v;
                         } else {
-                                echo "<span class='null_info' id='null_rel'>You have no filters set, <a href='/rewrite/rel'>here</a> to find rel to tap</span>";
+                                echo "<span class='null_info' id='null_rel'>You have no filters set, <a href='<?=ROOT?>rel'>here</a> to find rel to tap</span>";
                         }
                 ?>
 		</div>
