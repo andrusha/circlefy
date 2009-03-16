@@ -42,7 +42,7 @@
 
 <?php include(SIGNUP);?>
 
-	<div id="top_logo"><img id="click_main_forms" src="images/chatapist-big.gif" alt="logo" onclick="window_swapper(this); return false;" /></div>
+	<div id="top_logo"><img id="click_main_forms" src="images/tap_logo.gif" alt="logo" onclick="window_swapper(this); return false;" /></div>
 <?php echo $view_data['errors']; ?>
 	
 	<div id="info">
@@ -111,8 +111,43 @@
 							
 						</div>
 						
+
+
+
+		<div id="forms">
+                <form action="/rewrite/" method="post" >
+                                <fieldset>
+                                        <div id="core">
+                                        <ul id="directions">
+                                                <li><b>Tap</b></li>
+                                                <li>@ Connect with people</li>
+                                                <li># Co</li>
+                                                <li>& = Category</li>
+                                                <li>* = Tags</li>
+                                        </ul>
+
+                                        <ul id="top_form">
+                                                <li><textarea rows="2" cols="15" id="question"></textarea></li>
+                                                <li id="outter_button"><span id="inner_button">
+                                                <input type="submit" id="submit_button" onclick="sign_up(); return false;"  value="Tap"></input>
+
+                                                </span></li>
+                                        </ul>
+
+        <div id="links">
+
+                <ul>
+
+                        <li id="this2"><a href="/rewrite/profile">Profile</a></li>
+                        <li id="this3"><a href="/rewrite/relevancy_settings">Filters</a></li>
+                        <li id="this5"><a href="/rewrite/groups">Groups</a></li>
+                </ul>
+
+
+        </div>
+
 	
-		<div id="main_forms">
+	<!--	<div id="main_forms">
 		
 			<form>
 			
@@ -133,20 +168,7 @@
 		<a class="style_bold" id="sign_up_front" href="#" onclick="sign_up(); return false;">Sign Up!</a>
 	
 	</div>
-		
-	<div id="links">
-	
-		<ul>
-		
-			<li id="this1"><a href="#" onclick="sign_up(); return false">Home</a></li>
-			<li id="this2"><a href="#" onclick="sign_up(); return false">Profile</a></li>
-			<li id="this3"><a href="#" onclick="sign_up(); return false">Relevancy</a></li>
-			<li id="this4"><a href="#" onclick="sign_up(); return false">Network</a></li>
-			<li id="this5"><a href="#" onclick="sign_up(); return false">Groups</a></li>
-		
-		</ul>
-		
-	</div>
+	-->	
 	
 	<div id="footer">
 
