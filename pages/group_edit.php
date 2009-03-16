@@ -29,7 +29,8 @@ class group_edit extends Base{
 
 	
 	if(isset($_FILES['group_image'])){
-			$upload_dir = "/htdocs/rewrite/pictures/groups"; // Directory for file storing
+			$root = ROOT;
+			$upload_dir = "/htdocs/".$root."pictures/groups"; // Directory for file storing
 			$web_upload_dir = "./"; // Directory for file storing
   	                 		          // Web-Server dir 
 			// testing upload dir 
@@ -110,7 +111,7 @@ echo $update_pics_query;
 	        if ($result == 'OK'){
 		$js_output = <<<EOF
 	                parDoc.getElementById("upload_status").innerHTML = "picture successfully uploaded"
-	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='/rewrite/pictures/groups/{$pic_180}' alt='picture' />"
+	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='{$root}pictures/groups/{$pic_180}' alt='picture' />"
         	        parDoc.getElementById("pic_format_error").innerHTML = ""
         	        parDoc.getElementById("default_pic_msg").innerHTML = ""
 EOF;

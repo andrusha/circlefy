@@ -68,7 +68,8 @@ class create_group extends Base{
 			//The pather where the users picture is stored
 			if($_FILES['picture_path'] != ''){
                         $file_name = $gname.'_'.$_FILES['picture_path']['name'];
-                        $new_path = '/htdocs/rewrite/pictures/'.$file_name;
+			$root = ROOT;
+                        $new_path = '/htdocs'.$root.'pictures/'.$file_name;
 
                         move_uploaded_file($_FILES['picture_path']['tmp_name'],$new_path);
                         $new_path = addslashes($new_path);

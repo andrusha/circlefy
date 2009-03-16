@@ -921,7 +921,12 @@ $push_channel_id = rand(1,888).'Xic'.$uid.'R';
 $this->set($push_channel_id,'pcid');
 $last_offset = implode(',',$last_offset);
 
-system("php /htdocs/rewrite/AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1 >/htdocs/rewrite/AJAX/output &",$retval);
+$root = ROOT;
+$exec = "php /htdocs".$root."AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1 >/htdocs".$root."AJAX/output &";
+
+echo $exec;
+
+system("php /htdocs".$root."AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1 >/htdocs".$root."AJAX/output &",$retval);
 ///////////////////////////////////////////////////////////////////////////
 //END misc tasks - Including, getting max file id, spnning off process, etc
 		}

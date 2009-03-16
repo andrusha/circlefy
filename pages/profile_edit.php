@@ -26,7 +26,9 @@ class profile_edit extends Base{
 
 	
 	if(isset($_FILES['image_of_you'])){
-			$upload_dir = "/htdocs/rewrite/pictures"; // Directory for file storing
+			$root = ROOT;
+			
+			$upload_dir = "/htdocs".$root."pictures"; // Directory for file storing
 			$web_upload_dir = "./"; // Directory for file storing
   	                 		          // Web-Server dir 
 			// testing upload dir 
@@ -106,7 +108,7 @@ echo $update_pics_query;
 	        if ($result == 'OK'){
 		$js_output = <<<EOF
 	                parDoc.getElementById("upload_status").innerHTML = "picture successfully uploaded"
-	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='/rewrite/AJAX/upload/{$filename}' alt='picture' />"
+	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='{$root}AJAX/upload/{$filename}' alt='picture' />"
         	        parDoc.getElementById("pic_format_error").innerHTML = ""
         	        parDoc.getElementById("default_pic_msg").innerHTML = ""
 EOF;
