@@ -11,4 +11,6 @@ define("SIGNUP","parts/sign_up/sign_up.phtml");
 define("CATEGORY","parts/lists/category.phtml");
 
 define("D_GROUP_PIC_PATH","/default/pic/path");
+
+define("ROOT","/tap_repo_taso/");
 ?>
