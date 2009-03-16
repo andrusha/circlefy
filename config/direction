@@ -1,0 +1,5 @@
+1) You need to run:
+
+cat init.sql | mysql -uxxxx -pxxxx
+
+2) Setup your config in the root of the code base ( there is only config and index.php , so it's config )
