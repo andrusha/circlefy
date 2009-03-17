@@ -10,7 +10,7 @@
 <meta name="description" content="" />
 <!-- <link href="main.css" rel="stylesheet" type="text/css" media="screen" /> -->
 <style type="text/css" media="all">@import "views/style_sheets/main.css";</style>
-<script type="text/javascript" src="http://data.localhost.com/meteor.js"></script>
+<script type="text/javascript" src="http://localhost.com:8080/meteor.js"></script>
 <script type="text/javascript" src="views/javascript/mootools-1.2.1-core-yc.js"></script>
 <script type="text/javascript" src="views/javascript/mootools-1.2-more.js"></script>
 <script type="text/javascript" src="views/javascript/Autocompleter.js"></script>
@@ -1081,6 +1081,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
     // Set this to something unique to this client
 	document.domain = "localhost.com";
     Meteor.hostid = '<?=$_SESSION['rand_id']?>';
+    Meteor.port = '8080';
 //	Meteor.debugmode = 1;
 
     // Our Meteor server is on the data. subdomain

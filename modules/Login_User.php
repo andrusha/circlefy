@@ -40,7 +40,7 @@ public function __construct($db_class=''){
 		session_start();
 	}
 
-
+/*
 	//START maintance of expired logouts
 	if(!$_SESSION['uid'] && !$_COOKIE['expire'])
 		setcookie("expire",1,time()+360000);
@@ -56,7 +56,7 @@ public function __construct($db_class=''){
 		$flag=1;
 	}
 	//END maintance of expired logouts
-	
+*/	
 	$this->db_class_mysql = $db_class;
 
 }

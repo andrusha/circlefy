@@ -10,7 +10,7 @@ param 5 = Message ID List ( For Responses )
 param 6 = Channel ID ( to hook into Meteor Subcriber )
 param 7 = User ID
 */
-require('/htdocs/rewrite/config.php');
+require('../config.php');
 $timeout_max=8;
 
 
@@ -25,7 +25,7 @@ $debug = $argv[8];
 
 $offsets = explode(',',$offsets);
 
-
+echo "test1";
 //echo "Channel: ".$ch;
 //echo "Original Offsets:\n ";
 //print_r($offsets);
@@ -37,8 +37,12 @@ if($responder & $hoiahfofa){
 	$json =  json_decode(stripslashes($json));
 	$channel_id_list = implode(',',$json);
 	$results = $chat_obj->check_new_msg($last_mid,$channel_id_list,$new_mid);
+	echo "test2";
 }
 
+
+
+echo "test3";
 if($bit_grabber){
    $op = false;
 
@@ -62,6 +66,7 @@ if($bit_grabber){
    }
            socket_set_blocking($op,false);
    }
+	echo "test5";
         fwrite($op,"COUNTSUBSCRIBERS $ch\n");
 
         //START patch for BUG in Meteor Server, sometimes it does not return result
