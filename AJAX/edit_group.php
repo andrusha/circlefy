@@ -41,9 +41,9 @@ class profile_functions{
 		$update_you_query = <<<EOF
 			UPDATE groups AS t1
                         SET
-				t1.gname="$gname",
-				t1.focus="$focus",
-				t1.descr="$descr"
+				t1.gname="{$gname}",
+				t1.focus="{$focus}",
+				t1.descr="{$descr}"
                         WHERE t1.gid = {$gid};
 EOF;
                 $you_results = $this->mysqli->query($update_you_query);
@@ -52,3 +52,4 @@ EOF;
 	}
 
 }
+?>
