@@ -19,7 +19,7 @@ class assoc_functions{
                 private $results;
 
         function __construct(){
-                                $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+		$this->mysqli =  new mysqli(D_ADDR, D_USER, D_PASS, D_DATABASE);
         }
 
         function assoc($search){
@@ -31,8 +31,8 @@ class assoc_functions{
 	
 		//Get symbols and search-text seperated		
 		$strlen = strlen($search);
-		$symbol = substr($search,0,1);
-		$search = substr($search,1,$strlen--);
+		$symbol = substr($search, 0, 1);
+		$search = substr($search, 1, $strlen--);
 
 		if($search != '' && $symbol == '#'){
 			$create_assoc_query = <<<EOF
@@ -74,7 +74,7 @@ EOF;
 
 					foreach($tag_final as $v){
 						//Some tags have white spaces in the beggining
-						 $v2 = trim($v," ");
+						$v2 = trim($v," ");
 		                                $results[] = $symbol.$v2;
 					}
                                 }
@@ -99,8 +99,8 @@ EOF;
 					$results[] = $symbol.$res['name'];
 				}
 			} elseif($search != '') { 
-			$string = trim("$symbol$search has no results");
-			$results = array($string);
+				$string = trim("$symbol$search has no results");
+				$results = array($string);
 			}
 			return json_encode($results);
 	}
