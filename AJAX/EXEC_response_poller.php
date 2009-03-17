@@ -10,7 +10,7 @@ param 5 = Message ID List ( For Responses )
 param 6 = Channel ID ( to hook into Meteor Subcriber )
 param 7 = User ID
 */
-require('../config.php');
+require('config.php');
 $timeout_max=8;
 
 
