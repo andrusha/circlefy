@@ -13,8 +13,7 @@ $state = $_POST['state'];
 
 if($friend){
 	$instance = new friend_functions();
-	$res = $instance->tap_friend($fid,$state);
-	echo $res;
+	echo $instance->tap_friend($fid,$state);
 }
 
 class friend_functions{
@@ -24,7 +23,7 @@ class friend_functions{
                 private $results;
 
         function __construct(){
-                                $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+		$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
         function tap_friend($fid,$state){
@@ -43,8 +42,10 @@ class friend_functions{
 
                 $friend_results = $this->mysqli->query($friend_query);
 		
-		$results = json_encode(array('good' => 1));
-		return $results;
+		if($friend_results) {
+			$results = json_encode(array('good' => 1));
+			return $results;
+		}
 	}
 
 }	

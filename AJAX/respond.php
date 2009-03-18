@@ -18,7 +18,7 @@ class chat_functions{
                 private $results;
 
         function __construct(){
-                                $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+		$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
 		

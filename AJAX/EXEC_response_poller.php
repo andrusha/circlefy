@@ -42,43 +42,51 @@ if($bit_grabber){
    $op = false;
 
    while(true) { echo "top";
-   // Open a controller channel to Meteor server
-   if (!is_resource($op) or feof($op) or ($haswritten and !$buf)) {
+	// Open a controller channel to Meteor server
+	if (!is_resource($op) or feof($op) or ($haswritten and !$buf)) {
+		if($debug)
+			echo "Reconnecting to Meteor\n";
+		//Reset Timeout Counter
+		$timeout = 0;
+		if (!($op = fsockopen("127.0.0.1", 4671, $errno, $errstr, 5))) {
+			//if > 10 Timeouts Exit
+			if($timeout > $timeout_max)
+				die;
+			//if < 10 Timeouts, increase timeout counter
+			if($timeout < $timeout_max)
+				$timeout++;
+			echo "Meteor not responding\n";
+			sleep(5);
+			continue;
+		}
+		socket_set_blocking($op,false);
+	}
+	fwrite($op,"COUNTSUBSCRIBERS $ch\n");
+
+	//START patch for BUG in Meteor Server, sometimes it does not return result
+	$status = '';
+	while($status == ''){
+		$status =  fgets($op,7);
+		echo "\nSTATUS:".$status;
+		$holy_shit_this_is_fucked_up++;
+		if( $holy_shit_this_is_fucked_up > 5000 )
+			 die;
+	}
+	$holy_shit_this_is_fucked_up = 0;
+	//END
+	(integer) $status = substr($status,3);
 	if($debug)
-        echo "Reconnecting to Meteor\n";
-        //Reset Timeout Counter
-        $timeout = 0;
-   if (!($op = fsockopen("127.0.0.1", 4671, $errno, $errstr, 5))) {
-        //if > 10 Timeouts Exit
-        if($timeout > $timeout_max)
-        die;
-        //if < 10 Timeouts, increase timeout counter
-        if($timeout < $timeout_max)
-        $timeout++;
-           echo "Meteor not responding\n";
-           sleep(5);
-           continue;
-   }
-           socket_set_blocking($op,false);
-   }
-        fwrite($op,"COUNTSUBSCRIBERS $ch\n");
+		echo "\nSTATUS:\n $status \nTimeout: $timeout \n";
 
-        //START patch for BUG in Meteor Server, sometimes it does not return result
-        $status = '';
-        while($status == ''){
-        $status =  fgets($op,7);echo "\nSTATUS:".$status;$holy_shit_this_is_fucked_up++; if($holy_shit_this_is_fucked_up>5000) die;}$holy_shit_this_is_fucked_up=0;
-        //END
-        (integer) $status = substr($status,3);
-	if($debug) echo "\nSTATUS:\n $status \nTimeout: $timeout \n";
-	
+	//if > 10 Timeouts Exit
+	if(!$status && $timeout > $timeout_max){
+		echo "odd";
+		exit;
+	}
+	//if < 10 Timeouts, increase timeout counter
+	if(!$status && $timeout < $timeout_max+1)
+		$timeout++;
 
-        //if > 10 Timeouts Exit
-        if(!$status && $timeout > $timeout_max){
-        echo "odd";exit;}
-        //if < 10 Timeouts, increase timeout counter
-        if(!$status && $timeout < $timeout_max+1)
-        $timeout++;
-	
 	if($old_timeout == $timeout)
 		$timeout=0;
 	$old_timeout = $imeout;
@@ -107,23 +115,23 @@ if($bit_grabber){
 	var_dump($offsets);
 
 
-   // Give Meteor time to respond - 10ms
-   usleep(40000);
+	// Give Meteor time to respond - 10ms
+	usleep(40000);
 
-   // Read response
-   if ($haswritten) {
-   $buf = fread($op, 4096);
-   }
-//   echo $buf;
-   // Sleep for 3s
+	// Read response
+	if ($haswritten) {
+		$buf = fread($op, 4096);
+	}
+	//   echo $buf;
+	// Sleep for 3s
 	echo "bottom".rand(1,999);
-   sleep(3);
+	sleep(3);
    }
 
 }
 
 
-class chat_functions{
+class chat_functions {
 
                 private $mysqli;
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
