@@ -24,3 +24,4 @@ class remove_functions{
 		$this->mysqli->query($remove_active_query);
 	}	
 }
+?>

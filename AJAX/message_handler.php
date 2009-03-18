@@ -71,9 +71,9 @@ class chat_functions{
 		
 		return $msg_and_channel_id;
 	}
-	//heh
-	static function pwny($str){
-		$max = strlen($str);$str = substr($str,1,$max);return $str;
+	//Returns the string without the first character
+	static function remove_first_char($str){
+		return substr($str, 1);
 	}
 
 	//Parses out all and extracts all tokens into a clean, user-friendly associative array
@@ -84,11 +84,11 @@ class chat_functions{
 			preg_match_all('/@[^,! ]+/i',$msg,$friends);
 			$building = strpos($msg,'^^');
 
-			$results['groups'] = array_map(array('chat_functions','pwny'),$groups[0]);
-			$results['keywords'] = array_map(array('chat_functions','pwny'),$keywords[0]);
-			$results['friends'] = array_map(array('chat_functions','pwny'),$friends[0]);
-			$results['building'] = $building;
-	return $results;
+			$results['groups'] 	= array_map( array('chat_functions', 'remove_first_char'), $groups[0]);
+			$results['keywords'] 	= array_map( array('chat_functions', 'remove_first_char'), $keywords[0]);
+			$results['friends'] 	= array_map( array('chat_functions', 'remove_first_char'), $friends[0]);
+			$results['building'] 	= $building;
+			return $results;
 	}
 
 	//This function aggregates all uids from all match functions into one for the final insert
@@ -103,36 +103,36 @@ class chat_functions{
 		NOTE: 0 = default values
 		*/
 		if($groups != '')
-		foreach($groups as $gid => $uids){
-			foreach($uids as $uid){
-				$insert_string .= "$uid $cid {$gid} 0 0 0\n";
+			foreach($groups as $gid => $uids){
+				foreach($uids as $uid){
+					$insert_string .= "$uid $cid {$gid} 0 0 0\n";
+				}
 			}
-		}
 
 		if($directs != '')
-		foreach($directs as $uid){
-			$insert_string .= "$uid $cid 0 0 0 2\n";
-		}
+			foreach($directs as $uid){
+				$insert_string .= "$uid $cid 0 0 0 2\n";
+			}
 
 		if($friends != '')
-		foreach($friends as $uid){
-			$insert_string .= "$uid $cid 0 0 $fuid 1\n";
-		}
+			foreach($friends as $uid){
+				$insert_string .= "$uid $cid 0 0 $fuid 1\n";
+			}
 		
 		if($building != '')
-		foreach($building as $uid){
-			$insert_string .= "$uid $cid 0 0 0 4\n";
-		}
+			foreach($building as $uid){
+				$insert_string .= "$uid $cid 0 0 0 4\n";
+			}
 
 		if($filters != '')
-		foreach($filters as $rid => $uid){
-			$insert_string .= "$uid $cid 0 $rid 0 3\n";
-		}
+			foreach($filters as $rid => $uid){
+				$insert_string .= "$uid $cid 0 $rid 0 3\n";
+			}
 		
 		for($i = 0;$i < 5;$i++){
 			$fp = fopen("/var/data/flat/flat_$i", "a");
-			if (flock($fp,LOCK_NB|LOCK_EX)){
-					fwrite($fp,$insert_string);
+			if (flock($fp, LOCK_NB|LOCK_EX)){
+				fwrite($fp,$insert_string);
 				break;
 			} else {
 				continue;
@@ -141,9 +141,10 @@ class chat_functions{
 		$cache_myself = "SELECT t2.cid,t2.chat_text,t1.uname,t1.pic_100,t1.fname,t1.lname FROM login AS t1 JOIN special_chat AS t2 ON t1.uid = t2.uid WHERE t1.uid = {$fuid} AND t2.cid = {$cid} LIMIT 1";
 		$res_to_cache = $this->mysqli->query($cache_myself);
 		$res_to_cache = $res_to_cache->fetch_assoc();
+
 		$memcache = new Memcache;
 		$memcache->connect('127.0.0.1', 11211) or die ("Could not connect");
-			$memcache->set($cid, $res_to_cache, false, 10) or die ("Failed to save data at the server");
+		$memcache->set($cid, $res_to_cache, false, 10) or die ("Failed to save data at the server");
 		//$end = microtime(true);echo $end - $start;
 	}
 
