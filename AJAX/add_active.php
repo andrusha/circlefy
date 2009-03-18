@@ -1,4 +1,9 @@
 <?php
+
+/* CALLS:
+	homepage.phtml
+*/
+
 session_start();
 require('../config.php');
 $uid = $_SESSION['uid'];

@@ -8,7 +8,6 @@ if(isset($_POST['search'])){
    	$assoc_function = new assoc_functions();
         $results = $assoc_function->assoc($search);
 
-	header("Content-Type: text/xml; charset=utf-8");
         echo $results;
 }
 

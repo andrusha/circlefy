@@ -148,9 +148,7 @@ class invite_functions {
 				$message_footer="\n\n\ntap 2009";
 				$message_subject=$_POST['fname']." ( ".$_POST['email_box']." )".$message['subject'];
 				$message_body=$message['body'].$message['attachment'].$message_footer; 
-				$headers="From: {$_POST['email_box']}";
 				foreach ($selected_contacts as $email=>$name)
-					mail($email,$message_subject,$message_body,$headers);
 				$this->ok['mails']="Mails sent successfully";
 				}
 			elseif ($sendMessage===false)
