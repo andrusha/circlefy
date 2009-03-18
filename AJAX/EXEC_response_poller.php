@@ -2,12 +2,12 @@
 /*USAGE:
 EXEC_response_poller.php 1 1 "{offsets:value}" "{last_mid:value}" "{midlist:values}" cid uid
 
-param 1 = Responder Bit, Active
-param 2 = Bit Grabber, Active
-param 3 = Offsets ( For Grabber ) 
-param 4 = Last Message ID ( For Responses )
-param 5 = Message ID List ( For Responses )
-param 6 = Channel ID ( to hook into Meteor Subcriber )
+param 1 = Responder Bit, Active *
+param 2 = Bit Grabber, Active * 
+param 3 = Offsets ( For Grabber )  * 
+param 4 = Last Message ID ( For Responses ) * 
+param 5 = Message ID List ( For Responses ) *
+param 6 = Channel ID ( to hook into Meteor Subcriber ) *
 param 7 = User ID
 */
 require('config.php');
@@ -25,7 +25,6 @@ $debug = $argv[8];
 
 $offsets = explode(',',$offsets);
 
-echo "test1";
 //echo "Channel: ".$ch;
 //echo "Original Offsets:\n ";
 //print_r($offsets);
@@ -37,12 +36,8 @@ if($responder & $hoiahfofa){
 	$json =  json_decode(stripslashes($json));
 	$channel_id_list = implode(',',$json);
 	$results = $chat_obj->check_new_msg($last_mid,$channel_id_list,$new_mid);
-	echo "test2";
 }
 
-
-
-echo "test3";
 if($bit_grabber){
    $op = false;
 
@@ -66,13 +61,12 @@ if($bit_grabber){
    }
            socket_set_blocking($op,false);
    }
-	echo "test5";
         fwrite($op,"COUNTSUBSCRIBERS $ch\n");
 
         //START patch for BUG in Meteor Server, sometimes it does not return result
         $status = '';
         while($status == ''){
-        $status =  fgets($op,5);echo "\nSTATUS:".$status;$holy_shit_this_is_fucked_up++; if($holy_shit_this_is_fucked_up>5000) die;}$holy_shit_this_is_fucked_up=0;
+        $status =  fgets($op,7);echo "\nSTATUS:".$status;$holy_shit_this_is_fucked_up++; if($holy_shit_this_is_fucked_up>5000) die;}$holy_shit_this_is_fucked_up=0;
         //END
         (integer) $status = substr($status,3);
 	if($debug) echo "\nSTATUS:\n $status \nTimeout: $timeout \n";
