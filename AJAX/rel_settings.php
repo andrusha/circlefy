@@ -1,4 +1,9 @@
 <?php
+
+/* CALLS:
+	relevancy_settings.phtml
+*/
+
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
 header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" );
 header("Cache-Control: no-cache, must-revalidate" );
@@ -20,7 +25,7 @@ $state = $_POST['state'];
 
 if(isset($name)){
 	$rel_function = new rel_functions();
-	$results = $rel_function->create_filter($name,$tags,$zipcode,$gid);
+	$results = $rel_function->create_filter($name, $tags, $zipcode, $gid);
 	echo $results;
 }
 
@@ -32,22 +37,22 @@ if(isset($_POST['delete'])){
 
 if(isset($_POST['update'])){
    	$rel_function = new rel_functions();
-        $results = $rel_function->toggle_enable($rid,$state);
+        $results = $rel_function->toggle_enable($rid, $state);
         echo $results;
 }
 
 
 class rel_functions{
 
-                private $mysqli;
-                private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
-                private $results;
+	private $mysqli;
+	private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
+	private $results;
 
         function __construct(){
-                                $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+		$this->mysqli =  new mysqli(D_ADDR, D_USER, D_PASS, D_DATABASE);
         }
 
-        function create_filter($name,$tags,$zipcode,$gid){
+        function create_filter($name, $tags, $zipcode, $gid){
 
                 $uid = $_COOKIE["uid"];
                 $uname = $_COOKIE["uname"];
@@ -66,6 +71,7 @@ class rel_functions{
                 $last_id = $last_id['last_id'];
 	
 		$tag_list = explode(',',$tags);
+
 		foreach($tag_list as $tag){
 			$tag = trim($tag);
 			$AND_tags = explode('AND',$tag);
@@ -88,41 +94,43 @@ class rel_functions{
 
 		$get_rel_query = "SELECT rid,name,tags,language,country,state,zip,gid,groups FROM rel_settings where rid = {$last_id}";
 		$get_rel_results = $this->mysqli->query($get_rel_query);
-		$res = $get_rel_results->fetch_assoc();
+		
+		if($get_rel_results){
+			$res = $get_rel_results->fetch_assoc();
 
-                if($res['tags']){
-                $tags = $res['tags'];
-                } else {
-		$tags = "Anything said in..";
-		}
+			if($res['tags']){
+				$tags = $res['tags'];
+			} else {
+				$tags = "Anything said in..";
+			}
 
-                if($res['language']){
-                $lang = "Language: ".$res['language'];
-                }
+			if($res['language']){
+				$lang = "Language: ".$res['language'];
+			}
 
-                if($res['country']){
-                $country = "Country: ".$res['country'];
-                }
+			if($res['country']){
+				$country = "Country: ".$res['country'];
+			}
 
-                if($res['zip']){
-                $zip = "Zipcode: ".$res['zip'];
-                } else {
-		$zip = "Any Location";
-		}
+			if($res['zip']){
+				$zip = "Zipcode: ".$res['zip'];
+			} else {
+				$zip = "Any Location";
+			}
 
-		if($res['gid'] == 0){
-                        $gid = 'All';
-                } else {
-                        $gid = 'Tied to a group!';
-                }
+			if($res['gid'] == 0){
+				$gid = 'All';
+			} else {
+				$gid = 'Tied to a group!';
+			}
 
-		$name = $res['name'];
-		$rid = $res['rid'];
+			$name = $res['name'];
+			$rid = $res['rid'];
 
-		$rel_string = $keywords.$lang.$country.$zip;		
+			$rel_string = $keywords.$lang.$country.$zip;		
 
-		$html = <<<EOF
-       <tr class="rel_rid_blue" id="rel_{$rid}">
+			$html = <<<EOF
+        <tr class="rel_rid_blue" id="rel_{$rid}">
                                 <td class="rel_name_number">New!. {$name}</td>
                                 <td class="active_rel">{$tags}</td>
                                 <td class="active_loc">{$zip}</td>
@@ -132,29 +140,32 @@ class rel_functions{
         </tr>
 EOF;
  
-		$json_res = json_encode(array('html' => "$html"));
-		return $json_res;
+			$json_res = json_encode(array('html' => "$html"));
+			return $json_res;
+		}
 	}
 
 	function del_filter($rid){
-		$uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
-
 		$del_rel_query = "DELETE FROM rel_settings where rid = {$rid}";
 		$del_rel_results = $this->mysqli->query($del_rel_query);
 		$del_rel_query2 = "DELETE FROM rel_settings_query where rrid = {$rid}";
 		$del_rel_results2 = $this->mysqli->query($del_rel_query2);
-		
-		//I had to make this quickly it menas it DELETED okay ...somewhat...	
-		$good = json_encode(array('good' => 1));
-		return $good;
+
+		if( $del_rel_results && $del_rel_results2 ) {
+			//I had to make this quickly it menas it DELETED okay ...somewhat...	
+			$good = json_encode(array('good' => 1));
+			return $good;
+		}
 	}
 	
 	function toggle_enable($rid,$state){
 		$toggle_rel_query = "UPDATE rel_settings SET enabled = {$state} WHERE rid = {$rid}";
 		$toggle_rel_results = $this->mysqli->query($toggle_rel_query);
 
-		$good = json_encode(array('updated' => 1));
-		return $good;
+		if( $toggle_rel_results ) {
+			$good = json_encode(array('updated' => 1));
+			return $good;
+		}
 	}
 }
+?>
