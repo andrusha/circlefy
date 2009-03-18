@@ -1,4 +1,8 @@
 <?php
+/* CALLS:
+	sign_up.js
+	groups_manage.phtml
+*/
 require('../config.php');
 session_start();
 

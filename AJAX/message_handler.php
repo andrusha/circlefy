@@ -1,4 +1,7 @@
 <?php
+/* CALLS:
+	chat_window.js
+*/
 session_start();
 require('../config.php');
 

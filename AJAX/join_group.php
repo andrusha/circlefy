@@ -1,5 +1,7 @@
 <?php
-
+/* CALLS:
+	join_group.js
+*/
 require('../config.php');
 
 $gid = $_POST['gid'];

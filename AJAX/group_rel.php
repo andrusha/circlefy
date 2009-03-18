@@ -1,5 +1,7 @@
 <?php
-
+/* CALLS:
+	group_rel.js
+*/
 require('../config.php');
 
 $gid = $_POST['gid'];

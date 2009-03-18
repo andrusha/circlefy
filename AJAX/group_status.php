@@ -1,5 +1,8 @@
 <?php
-
+/* CALLS:
+	homepage_group_status.js
+	group_status.js
+*/
 require('../config.php');
 
 //Used for delete and update

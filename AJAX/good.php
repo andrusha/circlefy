@@ -1,5 +1,7 @@
 <?php
-
+/* CALLS:
+	homepage.phtml
+*/
 require('../config.php');
 
 $cid = $_POST['cid'];

@@ -1,4 +1,9 @@
 <?php
+/* CALLS:
+	homepage_tap_friend.js
+	tap_friend.js
+	invite.js
+*/
 require('../config.php');
 session_start();
 

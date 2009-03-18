@@ -1,4 +1,7 @@
 <?php
+/* CALLS:
+	edit_profile.js
+*/
 
 require('../config.php');
 

@@ -1,4 +1,7 @@
 <?php
+/* CALLS:
+	sign_up.js
+*/
 include('../modules/OpenInviter/openinviter.php');
 
 $rm = $_SERVER['REQUEST_METHOD'];

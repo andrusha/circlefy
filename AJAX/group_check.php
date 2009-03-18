@@ -1,4 +1,7 @@
 <?php
+/* CALLS:
+	group_add.js
+*/
 
 require('../config.php');
 

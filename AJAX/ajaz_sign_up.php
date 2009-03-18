@@ -1,4 +1,7 @@
 <?php
+/* CALLS:
+	sign_up.js
+*/
 require('../config.php');
 session_start();
 

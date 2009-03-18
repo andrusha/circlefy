@@ -1,4 +1,7 @@
 <?php
+/* CALLS:
+	homepage.phtm
+*/
 session_start();
 require('../config.php');
 

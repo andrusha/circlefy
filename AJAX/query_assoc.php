@@ -1,5 +1,7 @@
 <?php
-
+/* CALLS:
+	homepage.phtml
+*/
 require('../config.php');
 
 $search = $_POST['search'];
