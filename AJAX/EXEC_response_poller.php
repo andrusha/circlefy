@@ -91,6 +91,7 @@ if($bit_grabber){
 	//if($debug) echo $offsets;
 	//if($debug) echo $uid;
 	$results = $chat_obj->check_new_bits($offsets,$uid,$debug);
+
 	echo "RESULTS\n";
 	print_r($results);
 	echo "\nThe truth:\n".$results['results'];
@@ -98,12 +99,12 @@ if($bit_grabber){
 		$msg = json_encode($results['data']);
 		$out = "ADDMESSAGE ".$ch." ".$msg."\n";
 		if($debug) echo $out;
-		$haswritten=true;
+		$haswritten = true;
 		fwrite($op, $out);
 	}
 	$offsets = $results['new_offsets'];
-		$haswritten=true;
-		fwrite($op, '');
+	$haswritten = true;
+	fwrite($op, '');
 
 	echo "\nVAR_DUMP(offsets);\n";
 	var_dump($offsets);
