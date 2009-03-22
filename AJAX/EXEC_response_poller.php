@@ -41,13 +41,13 @@ if($responder & $hoiahfofa){
 if($bit_grabber){
    $op = false;
 
-   while(true) { echo "top";
+   while(true) {
+	echo "-- Start of Loop\n";
 	// Open a controller channel to Meteor server
 	if (!is_resource($op) or feof($op) or ($haswritten and !$buf)) {
 		if($debug)
 			echo "Reconnecting to Meteor\n";
 		//Reset Timeout Counter
-		$timeout = 0;
 		if (!($op = fsockopen("127.0.0.1", 4671, $errno, $errstr, 5))) {
 			//if > 10 Timeouts Exit
 			if($timeout > $timeout_max)
@@ -59,46 +59,41 @@ if($bit_grabber){
 			sleep(5);
 			continue;
 		}
-		socket_set_blocking($op,false);
+		socket_set_blocking($op, false);
 	}
-	fwrite($op,"COUNTSUBSCRIBERS $ch\n");
 
-	//START patch for BUG in Meteor Server, sometimes it does not return result
-	$status = '';
-	while($status == ''){
-		$status =  fgets($op,7);
-		echo "\nSTATUS:".$status;
-		$holy_shit_this_is_fucked_up++;
-		if( $holy_shit_this_is_fucked_up > 5000 )
-			 die;
-	}
-	$holy_shit_this_is_fucked_up = 0;
-	//END
-	(integer) $status = substr($status,3);
+	// Ask for number of subscrubers
+	fwrite($op,"COUNTSUBSCRIBERS $ch\n");
+	// Wait for the answer
+	while( ! ( $status = trim(fgets($op)) ) );
+
+	echo "'COUNTSUBSCRIBERS' -> '$status'\n";
+	$status = intval( substr( $status, 3 ) );
+
 	if($debug)
-		echo "\nSTATUS:\n $status \nTimeout: $timeout \n";
+		echo "PARSED STATUS: $status\nTIMEOUT: $timeout \n";
 
 	//if > 10 Timeouts Exit
 	if(!$status && $timeout > $timeout_max){
-		echo "odd";
+		echo "Timeout. Destroying process.";
 		exit;
 	}
+
 	//if < 10 Timeouts, increase timeout counter
-	if(!$status && $timeout < $timeout_max+1)
+	if(!$status && $timeout < $timeout_max + 1 ){
 		$timeout++;
+	} else {
+		$timeout = 0;
+ 	}
 
-	if($old_timeout == $timeout)
-		$timeout=0;
-	$old_timeout = $imeout;
-
-
-   // Write a random word
-   $haswritten = false;
-   $buf = "";
+   	// Write a random word
+	$haswritten = false;
+	$buf = '';
 	//if($debug) echo $offsets;
 	//if($debug) echo $uid;
 	$results = $chat_obj->check_new_bits($offsets,$uid,$debug);
-	echo "RESULTS\n";print_r($results);
+	echo "RESULTS\n";
+	print_r($results);
 	echo "\nThe truth:\n".$results['results'];
 	if($results['results'] == 1){
 		$msg = json_encode($results['data']);
@@ -122,9 +117,9 @@ if($bit_grabber){
 	if ($haswritten) {
 		$buf = fread($op, 4096);
 	}
-	//   echo $buf;
+
 	// Sleep for 3s
-	echo "bottom".rand(1,999);
+	echo "-- End of loop".rand(1,999);
 	sleep(3);
    }
 
