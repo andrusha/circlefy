@@ -30,7 +30,6 @@ $offsets = explode(',',$offsets);
 //print_r($offsets);
 
 //var_dump($argv);
-
 $chat_obj = new chat_functions; //might want to shield this so if people hammer this object does not instancieate
 if($responder & $hoiahfofa){
 	$json =  json_decode(stripslashes($json));
