@@ -141,13 +141,18 @@ class chat_functions{
 				continue;
 			}
 		}
-		$cache_myself = "SELECT t2.cid,t2.chat_text,t1.uname,t1.pic_100,t1.fname,t1.lname FROM login AS t1 JOIN special_chat AS t2 ON t1.uid = t2.uid WHERE t1.uid = {$fuid} AND t2.cid = {$cid} LIMIT 1";
+		$cache_myself = "SELECT t2.cid,t2.chat_text,t1.uname,t1.pic_100,t1.fname,t1.lname,t1.uid AS fuid FROM login AS t1 JOIN special_chat AS t2 ON t1.uid = t2.uid WHERE t1.uid = {$fuid} AND t2.cid = {$cid} LIMIT 1";
 		$res_to_cache = $this->mysqli->query($cache_myself);
-		$res_to_cache = $res_to_cache->fetch_assoc();
-
+		/*
+		while($php_res = $res_to_cache->fetch_assoc()){
+			$ubiq_res["row"] .= ;
+		}
+		$ubiq_res = json_encode($ubiq_res);
+*/
+		$ubiq_res = json_encode($res_to_cache->fetch_assoc());
 		$memcache = new Memcache;
 		$memcache->connect('127.0.0.1', 11211) or die ("Could not connect");
-		$memcache->set($cid, $res_to_cache, false, 10) or die ("Failed to save data at the server");
+		$memcache->set("$cid",$ubiq_res, false, 30) or die ("Failed to save data at the server");
 		//$end = microtime(true);echo $end - $start;
 	}
 
