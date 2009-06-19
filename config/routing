@@ -1,0 +1,3 @@
+iptables -t nat -I OUTPUT -p tcp --dport 80 --destination 127.0.0.2 -j REDIRECT --to-port 4670;
+iptables -A INPUT -p tcp --dport 4670 -j ACCEPT;
+iptables -t nat -I PREROUTING -p tcp --dport 80 --destination 127.0.0.2 -j REDIRECT --to-port 4670;
