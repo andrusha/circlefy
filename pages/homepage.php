@@ -922,12 +922,22 @@ $this->set($push_channel_id,'pcid');
 $last_offset = implode(',',$last_offset);
 
 $root = ROOT;
+/*
 $exec = "php AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1 > AJAX/output &";
 
-echo $exec;
-
-system("php AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1 > AJAX/output &", $retval);
+system("php AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1>AJAX/output &", $retval);
 echo $retval;
+*/
+
+$this->db_class_mysql->set_query('UPDATE TEMP_ONLINE SET timeout = 0,cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';','TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
+#echo 'UPDATE TEMP_ONLINE SET cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';';
+$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');
+$this->db_class_mysql->set_query('INSERT INTO TEMP_ONLINE(uid,cid) values('.$uid.',"'.$push_channel_id.'");','TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
+#echo 'INSERT INTO TEMP_ONLINE(uid,cid) values('.$uid.',"'.$push_channel_id.'");';
+$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
+
+	
+
 ///////////////////////////////////////////////////////////////////////////
 //END misc tasks - Including, getting max file id, spnning off process, etc
 		}
