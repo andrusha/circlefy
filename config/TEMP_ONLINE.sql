@@ -1,4 +1,4 @@
-Create Table: CREATE TABLE `TEMP_ONLINE` (
+CREATE TABLE `TEMP_ONLINE` (
   `toid` int(5) NOT NULL auto_increment,
   `uid` int(5) NOT NULL,
   `cid` varchar(255) NOT NULL,
