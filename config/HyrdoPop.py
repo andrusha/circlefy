@@ -234,7 +234,7 @@ class chat_functions():
 			uname = user_obj["uname"]
 			fname = user_obj["fname"]
 			lname = user_obj["lname"]
-			chat_text = user_obj["chat_text"]
+			chat_text = user_obj["chat_text"].replace("\\","")
 			pic_100 = user_obj["pic_100"]
 			fuid = user_obj["fuid"]
 			for els in tuples:
