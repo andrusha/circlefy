@@ -67,7 +67,7 @@ class chat_functions{
 		$friend_uids = $this->friend_matches();
 		if($parsed_symbols['building'] !== false)
 			$building_uids = $this->building_matches();
-		$filter_uids = $this->filter_matches($msg);
+		$filter_uids = $this->filter_matches($msg,$sent_zip=$parsed_symbols['zips']);
 
 		//Dispatch all messages with associated reason
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
@@ -83,11 +83,13 @@ class chat_functions{
 	private function lexical_parser($msg){
 
 			preg_match_all('/#[^,! ]+/i',$msg,$groups);
+			preg_match_all('/#(\d{5})/i',$msg,$zips);
 			preg_match_all('/\*[^,! ]+/i',$msg,$keywords);
 			preg_match_all('/@[^,! ]+/i',$msg,$friends);
 			$building = strpos($msg,'^^');
 
 			$results['groups'] 	= array_map( array('chat_functions', 'remove_first_char'), $groups[0]);
+			$results['zips'] 	= array_map( array('chat_functions', 'remove_first_char'), $zips[0]);
 			$results['keywords'] 	= array_map( array('chat_functions', 'remove_first_char'), $keywords[0]);
 			$results['friends'] 	= array_map( array('chat_functions', 'remove_first_char'), $friends[0]);
 			$results['building'] 	= $building;
@@ -189,12 +191,12 @@ class chat_functions{
 
 	//This function gets all matches of the people who have you on tap ( or are 'following you' ) 
 	private function friend_matches(){
-		$friends_query = "SELECT fuid FROM friends WHERE uid = {$_SESSION['uid']}";
+		$friends_query = "SELECT uid FROM friends WHERE fuid = {$_SESSION['uid']}";
 		$friends_results = $this->mysqli->query($friends_query);
 
 		if($friends_results->num_rows > 0)
 		while($res = $friends_results->fetch_assoc()){
-			$uid_list['friend'][] = $res['fuid'];
+			$uid_list['friend'][] = $res['uid'];
 		}	
 	return $uid_list;
 	}
@@ -236,7 +238,7 @@ EOF;
 	//$sent_zip = zipcode message is destine for
 	//$static_zip = persons zipcode
 	//$string = message
-	private function filter_matches($string,$sent_zip=0,$static_zip=0){
+	private function filter_matches($string,$sent_zip=array(0),$static_zip=0){
 	
 		//START parsing to see who gets what
 		$array =  explode(' ',$string);
@@ -254,7 +256,27 @@ EOF;
 			}
 
 		$phrase_list = rtrim($final,',');
-		$phrase_query = "SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE tags IN( ".$phrase_list." ) and enabled = 1;";
+	
+		$zips = array();
+		if($sent_zip[0] == 0){
+			$zips[] .= $static_zip;
+		} else {
+			foreach($sent_zip as $zip){
+				$zips[] .= $zip.",";
+			}
+			$zips[] .= $static_zip;
+		}
+	
+		$zip_list = implode('',$zips);
+
+//		$phrase_query = "SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE tags IN( ".$phrase_list." ) and enabled = 1;";
+		$phrase_query = <<<EOF
+		SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE
+		(tags IN({$phrase_list}) AND zip IN({$zip_list},0))
+		OR
+		(tags IN("") AND zip IN({$zip_list}))
+		AND enabled = 1;
+EOF;
 		$phrase_matches = $this->mysqli->query($phrase_query);
 
 		//This processes the uid's while keeping AND/OR logic in mind
@@ -269,7 +291,8 @@ EOF;
 			$uid = $res['uid'];
 			$zip = $res['zip'];
 			//This line should be change if more control is zip control is wanted ( i.e. destination/origination )
-			if($zip = 0 || $sent_zip == $zip || $static_zip == $zip){
+			
+			if(1){ //This if(1) statement was different in earlier revisions, it might have to go back, I don't think so , but maybe.
 				if($rrid != $old_rrid)
 					$type_counter=0;
 				if(!$type){
