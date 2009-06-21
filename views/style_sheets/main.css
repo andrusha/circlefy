@@ -149,7 +149,7 @@ position:absolute;
 right:0;
 top:30px;
 overflow-y:auto;
-width:180px;
+width:190px;
 height:740px;
 margin:0px auto;
 clear:both;
@@ -228,9 +228,11 @@ clear:both;
 .self_bit{
 width:520px;
 border-bottom:1px dotted green;
+background:#FFFFCC;
 margin:0px auto;
 margin-bottom:8px;
 }
+
 
 .blue{
 border-bottom:1px dotted green;
@@ -793,7 +795,7 @@ margin-bottom:10px;
 	position:absolute; top:50%;height:70px;}
 	
 	#top_form{
-		padding-bottom:10px;
+		padding-bottom:4px;
 		margin-left:4px;
 	}
 	
@@ -915,11 +917,8 @@ margin-bottom:10px;
 /* links */
 
 	#links{
-		top:304px;
-		left:591px;
-		position:absolute;
 		padding-top:0px;
-		width:200px;
+		width:220px;
 		margin:0 auto;
 	}
 

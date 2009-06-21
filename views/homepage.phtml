@@ -70,6 +70,12 @@ Bit_Grabber2 = new Class({
 	offset_array: [],
 
 	grab_bits: function(data){
+	console.log($type(data));
+	console.log(data);
+	data = JSON.decode(data)
+	console.log($type(data));
+	console.log(data);
+	
 	var self = this;
 	Hash.each(data,function(value){ Hash.each(value,
 	function(html,key){ 
@@ -351,6 +357,8 @@ grabber_obj.r_poller();
 setInterval('grabber_obj.r_poller()',3000);
 
 /*
+This was the polling method to grabing the bits
+
 poller_obj = new Bit_Grabber;
 poller_obj.grab_bits();
 //setInterval('poller_obj.grab_bits()',8000);
@@ -1085,7 +1093,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
 //	Meteor.debugmode = 1;
 
     // Our Meteor server is on the data. subdomain
-    Meteor.host = "data."+location.hostname;
+    Meteor.host = location.hostname;
     // Call the test() function when data arrives
     Meteor.registerEventCallback("process", function(data) { bg2.grab_bits(data); } );
 
