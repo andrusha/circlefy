@@ -1099,7 +1099,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
 
     // Join the demo channel and get last five events, then stream
     Meteor.joinChannel("<?=$view_data['pcid'];?>", 0);
-    Meteor.mode = 'longpoll';
+    Meteor.mode = 'stream';
 
     // Start streaming!
         Meteor.connect();
