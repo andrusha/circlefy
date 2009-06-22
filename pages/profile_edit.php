@@ -26,10 +26,10 @@ class profile_edit extends Base{
 
 	
 	if(isset($_FILES['image_of_you'])){
+
 			$root = ROOT;
-			
 			$upload_dir 		= PROFILE_PIC_PATH;		// Real path
-			$web_upload_dir   	= "/pictures";			// Web Root relative path
+			$web_upload_dir   	= PROFILE_PIC_REL;		// Web Root relative path
 
 			// testing upload dir 
 			// that your upload dir is really writable to PHP scripts
@@ -263,10 +263,11 @@ EOF;
 				'get_edit_profile','This is getting the users profile contents');
 							
 				$edit_profile_results = $this->db_class_mysql->execute_query('get_edit_profile');
-				
-				$edit_profile_results = $edit_profile_results->fetch_assoc();
-				
-				$this->set($edit_profile_results,'edit_profile');
+			
+				if($edit_profile_results) {	
+					$edit_profile_results = $edit_profile_results->fetch_assoc();
+					$this->set($edit_profile_results,'edit_profile');
+				}
 				
 	}
 	

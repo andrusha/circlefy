@@ -10,6 +10,10 @@ define("LEFT","parts/left.phtml");
 define("SIGNUP","parts/sign_up/sign_up.phtml");
 define("CATEGORY","parts/lists/category.phtml");
 
-define("D_GROUP_PIC_PATH","/default/pic/path");
+define("PROFILE_PIC_REL", "/user_pics");
+define("D_GROUP_PIC_REL", "/group_pics");
+define("PROFILE_PIC_PATH", "/var/data/user_pics");
+define("D_GROUP_PIC_PATH","/var/data/group_pics");
+
 define("ROOT","/");
 ?>
