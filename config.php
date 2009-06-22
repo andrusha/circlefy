@@ -12,4 +12,6 @@ define("CATEGORY","parts/lists/category.phtml");
 
 define("D_GROUP_PIC_PATH","/default/pic/path");
 define("ROOT","/");
+define("BLAH","B");
+//testing
 ?>
