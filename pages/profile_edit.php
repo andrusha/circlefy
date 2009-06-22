@@ -28,9 +28,9 @@ class profile_edit extends Base{
 	if(isset($_FILES['image_of_you'])){
 			$root = ROOT;
 			
-			$upload_dir = "/htdocs".$root."pictures"; // Directory for file storing
-			$web_upload_dir = "./"; // Directory for file storing
-  	                 		          // Web-Server dir 
+			$upload_dir 		= PROFILE_PIC_PATH;		// Real path
+			$web_upload_dir   	= "/pictures";			// Web Root relative path
+
 			// testing upload dir 
 			// that your upload dir is really writable to PHP scripts
 			$tf = $upload_dir.'/'.md5(rand()).".test";
@@ -82,7 +82,7 @@ class profile_edit extends Base{
 						t1.pic_36 = "$pic_36"
                                         WHERE t1.uid ={$uid}
 EOF;
-echo $update_pics_query;
+//echo $update_pics_query;
 				$this->db_class_mysql->set_query($update_pics_query,'update_pics',"Updating a users pictures");
 				$edit_profile_results = $this->db_class_mysql->execute_query('update_pics');
 
@@ -107,8 +107,8 @@ echo $update_pics_query;
 
 	        if ($result == 'OK'){
 		$js_output = <<<EOF
-	                parDoc.getElementById("upload_status").innerHTML = "picture successfully uploaded"
-	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='{$root}AJAX/upload/{$filename}' alt='picture' />"
+	                parDoc.getElementById("upload_status").innerHTML = "Uploaded!"
+	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='{$web_upload_dir}/{$filename}' alt='Your picture' />"
         	        parDoc.getElementById("pic_format_error").innerHTML = ""
         	        parDoc.getElementById("default_pic_msg").innerHTML = ""
 EOF;
