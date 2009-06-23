@@ -32,19 +32,6 @@ function handlePending(imStatus) {
 }
 
 
-
-function first_run(){
-	var signed = <?php if($_COOKIE['wasp_attack']){ echo 1; } else { echo 2; }?>;
-	if(signed == 1){
-		document.getElementById('im_hash').innerHTML = '\''+'<?=$_COOKIE['im_hash']?>'+'\'';
-		var inputs = document.getElementsByTagName('input').elements;
-	 			 for (var i = 0; i < inputs.length; i++) { 
-	 			 	var input = inputs[i];
-	 			 	input.disabled = true;
-	 			 }	 
-	}
-}
-
 function set_cookie( name, value, expires, path, domain, secure ) 
 {
 	var today = new Date();
