@@ -25,9 +25,13 @@ class rel_settings extends Base{
 		$uid = $_SESSION['uid'];
 	
 		$group_query = <<<EOF
-		SELECT t2.gname,t1.gid FROM group_members AS t1
-		JOIN groups AS t2 ON t2.gid=t1.gid
-		WHERE t1.uid={$uid}
+                        ( SELECT t2.gname,t1.gid,t1.connected FROM group_members AS t1 
+                        JOIN groups AS t2 ON t2.gid=t1.gid 
+                        WHERE t1.uid={$uid} AND t1.connected = 0 )
+                        UNION ALL 
+                        ( SELECT t2.gname,t1.gid,t1.connected FROM group_members AS t1
+                        JOIN connected_groups AS t2 ON t2.gid=t1.gid
+                        WHERE t1.uid={$uid} AND t1.connected=1 )
 EOF;
 		
 		$this->db_class_mysql->set_query($group_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
@@ -44,12 +48,19 @@ EOF;
 		if($get_rel_result->num_rows > 0){
 
 		while($get_rel_output = $get_rel_result->fetch_assoc()){
-			if($get_rel_output['gid'] != 0)
-				$groups_IN_res[$get_rel_output['rid']] .= $get_rel_output['gid'];
+			if($get_rel_output['gid'] != 0){
+				if(!$get_rel_output['connected']){
+					$groups_IN_res[$get_rel_output['rid']] .= $get_rel_output['gid'];
+				} else { 
+					$connected_IN_res[$get_rel_output['rid']] .= $get_rel_output['gid'];
+				}
+				$group_exists = 1;
+				}
 		}
 
-		if($groups_IN_res){
+		if($group_exists){
 			//Build query for groups
+			if($groups_IN_res){
 			foreach($groups_IN_res as $k => $v){
 				 $counting++;
 				if($counting !== 1){
@@ -58,20 +69,48 @@ EOF;
 					$group_list .= $v;
 				}
 			}
+			} else {
+				$group_list = "NULL";
+			}
+			$counting = 0;
+
+			if($connected_IN_res){
+			foreach($connected_IN_res as $k => $v){
+                                 $counting++;
+                                if($counting !== 1){
+                                        $connected_list .= ','.$v;
+                                } else {
+                                        $connected_list .= $v;
+                                }
+			}
+                        } else {
+				$connected_list = "NULL";
+			}
 
 			$get_groups_query = <<<EOF
-			SELECT gid,gname FROM groups
-			WHERE gid IN ({$group_list})
+			( SELECT gid,gname FROM groups
+			WHERE gid IN ({$group_list}) ) 
+			UNION ALL
+			( SELECT gid,gname FROM connected_groups
+                        WHERE gid IN ({$connected_list})
+			)
 EOF;
 
 			$this->db_class_mysql->set_query($get_groups_query,'get_rel_groups','This gets the groups that are then associated to an rid ( or relevacny id )');
 			$get_groups_res = $this->db_class_mysql->execute_query('get_rel_groups');
 
+				
 			while($res = $get_groups_res->fetch_assoc()){	
+				if($group_list != "NULL")
 				foreach($groups_IN_res as $k => $v){
 					if($res['gid'] == $v)
 						$group_output[$k] = $res['gname'];
-				}	
+				}
+				if($connected_list != "NULL")
+				foreach($connected_IN_res as $k => $v){
+                                        if($res['gid'] == $v)
+                                                $group_output[$k] = $res['gname'];
+                                }
 			}
 		}
 

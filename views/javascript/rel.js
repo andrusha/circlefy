@@ -48,7 +48,8 @@ function add_rel(){
 	text11 = 0;
 	
 	gid = document.getElementById('group');
-	param += '&gid='+gid.options[gid.selectedIndex].value;
+	if(gid.options[gid.selectedIndex].value != 0)
+		param += '&gid='+gid.options[gid.selectedIndex].value;
 	param += '&name='+document.getElementById('name').value;		
 	param += '&tags='+document.getElementById('tags').value;		
 	param += '&zipcode='+document.getElementById('zipcode').value;

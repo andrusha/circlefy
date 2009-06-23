@@ -692,6 +692,10 @@ border-bottom:1px dotted;
 					color:red;
 					font-weight:bold;
 					}
+	
+					#rel_form select{
+					width:140px;
+					}
 					
 						#rel_area{
 						overflow:hidden;
@@ -1039,6 +1043,11 @@ display:block;
 				
 					#people_search_form{
 					width:400px;
+					margin:0 auto;
+					}
+
+					#people_search_form select{
+					width:140px;
 					margin:0 auto;
 					}
 					

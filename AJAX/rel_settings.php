@@ -10,7 +10,15 @@ require('../config.php');
 $name = $_POST['name'];
 $tags = $_POST['tags'];
 $zipcode = $_POST['zipcode'];
-$gid = $_POST['gid'];
+	
+if($_POST['gid']){
+	$parts = explode(":",$_POST['gid']);
+	$gid = $parts[0];
+	$connected = $parts[1];
+} else {
+	$gid = 0;
+	$connected = 0;
+}
 
 //Used for delete and update
 $rid = $_POST['rid'];
@@ -20,7 +28,7 @@ $state = $_POST['state'];
 
 if(isset($name)){
 	$rel_function = new rel_functions();
-	$results = $rel_function->create_filter($name, $tags, $zipcode, $gid);
+	$results = $rel_function->create_filter($name, $tags, $zipcode, $gid, $connected);
 	echo $results;
 }
 
@@ -47,7 +55,7 @@ class rel_functions{
 		$this->mysqli =  new mysqli(D_ADDR, D_USER, D_PASS, D_DATABASE);
         }
 
-        function create_filter($name, $tags, $zipcode, $gid){
+        function create_filter($name, $tags, $zipcode, $gid, $connected){
 
                 $uid = $_COOKIE["uid"];
                 $uname = $_COOKIE["uname"];
@@ -57,8 +65,9 @@ class rel_functions{
                 $tags = $this->mysqli->real_escape_string($tags);
                 $zipcode = $this->mysqli->real_escape_string($zipcode);
                 $group = $this->mysqli->real_escape_string($group);
+                $connected = $this->mysqli->real_escape_string($connected);
 
-		$create_rel_query = "INSERT INTO rel_settings(uid,name,tags,zip,gid) values('{$uid}','{$name}','{$tags}','{$zipcode}',{$gid});";
+		$create_rel_query = "INSERT INTO rel_settings(uid,name,tags,zip,gid,connected) values('{$uid}','{$name}','{$tags}','{$zipcode}',{$gid},{$connected});";
                 $create_rel_results = $this->mysqli->query($create_rel_query);
 		$last_id = $this->mysqli->query($this->last_id);
 
@@ -75,12 +84,12 @@ class rel_functions{
 				$type = count($AND_tags);
 				foreach($AND_tags as $AND_tag){
 					$AND_tag = trim($AND_tag);
-					$optimize_query_AND = "INSERT INTO rel_settings_query(uid,rrid,tags,zip,gid,type) values('{$uid}',{$last_id},'{$AND_tag}','{$zipcode}',{$gid},{$type});";
+					$optimize_query_AND = "INSERT INTO rel_settings_query(uid,rrid,tags,zip,gid,connected,type) values('{$uid}',{$last_id},'{$AND_tag}','{$zipcode}',{$gid},{$connected},{$type});";
 					$this->mysqli->query($optimize_query_AND);
 				
 				}
 			} else { 
-				$optimize_query = "INSERT INTO rel_settings_query(uid,rrid,tags,zip,gid,type) values('{$uid}',{$last_id},'{$tag}','{$zipcode}',{$gid},{$type});";
+				$optimize_query = "INSERT INTO rel_settings_query(uid,rrid,tags,zip,gid,connected,type) values('{$uid}',{$last_id},'{$tag}','{$zipcode}',{$gid},{$connected},{$type});";
 				$this->mysqli->query($optimize_query);
 			}
 		}

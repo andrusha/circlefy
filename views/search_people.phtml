@@ -51,9 +51,10 @@
 						<li><label>Group</label>
 						<select id="group" name="group">
 						<option value="NULL"> - - - - - - - - -</option>
-						<?while($search_people_results = $view_data['your_groups']->fetch_assoc())
+						<?
+						while($search_people_results = $view_data['your_groups']->fetch_assoc())
 						echo <<<EOF
-						<option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
+						<option value="{$search_people_results['gid']}:{$search_people_results['connected']}">{$search_people_results['gname']}</option>
 EOF;
 						?>
 

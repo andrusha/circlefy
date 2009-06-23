@@ -53,7 +53,7 @@
 				<option value="0" title="All">All/Any Group</option>
                                 <?php while($search_people_results = $view_data['your_groups']->fetch_assoc())
 				echo <<<EOF
-				<option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
+				<option value="{$search_people_results['gid']}:{$search_people_results['connected']}">{$search_people_results['gname']}</option>
 EOF;
 				?>
 				</select></li>
