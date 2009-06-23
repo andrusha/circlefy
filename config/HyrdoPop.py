@@ -120,7 +120,7 @@ class chat_functions():
 				results = self.bit_generator(matches_list)
 				dict_id_chan = dict( [(int(items[0]),items[1]) for items in self.id_chan] )
 				for item in results:
-					self.s_ctlr.send('ADDMESSAGE %s %r\n' % (dict_id_chan[item[0]],json.dumps({"data": {item[1]: item[2]} })) )
+					self.s_ctlr.send('ADDMESSAGE %s %r\n' % (dict_id_chan[item[0]],json.dumps({"data": {item[1]: item[2]},"cid":item[3] })) )
 					'''test =  json.dumps({"data": {item[1]: item[2]} })
 					print test'''
 			print "Current Users Online: %s" % ( len(self.id_chan) )
@@ -275,7 +275,7 @@ class chat_functions():
 							</div>
 
 								<ul class="bit_responses %(cid)s_resp" id="responses_%(cid)s_%(row_type)s_%(rand)s">
-						''' % { 'cid': cid, 'uid':uid, 'fuid': fuid,'row_type':row_type,'rand':rand,'color_class':"blue",'chat_text':chat_text,'uname':uname,'pic_100':pic_100,'chat_timestamp': chat_timestamp }))
+						''' % { 'cid': cid, 'uid':uid, 'fuid': fuid,'row_type':row_type,'rand':rand,'color_class':"blue",'chat_text':chat_text,'uname':uname,'pic_100':pic_100,'chat_timestamp': chat_timestamp },cid))
 
 		return bits
 

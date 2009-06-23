@@ -70,11 +70,8 @@ Bit_Grabber2 = new Class({
 	offset_array: [],
 
 	grab_bits: function(data){
-	console.log($type(data));
-	console.log(data);
 	data = JSON.decode(data)
-	console.log($type(data));
-	console.log(data);
+	grabber_obj.add_bit(data.cid);
 	
 	var self = this;
 	Hash.each(data,function(value){ Hash.each(value,
@@ -84,22 +81,17 @@ Bit_Grabber2 = new Class({
 		newel.inject(id,'top');
 		newel.tween('opacity', 0, 1);
 						 new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#fff');
-						console.log(key);
 		$(key+'_bullet').src = "images/icons/bullet_blue.png";
 	 })    
 				});
 				response_event_obj.remove_action();
                                 response_event_obj.add_action();
-				grabber_obj.grab_all();
-				
 			//Actually, I realize that I could have initialzed the offsets in an array an manipulated the array... will chaange in a bit, as well as everything I did HTML with
 	}
 });
 var bg2 = new Bit_Grabber2;
 
 //{'offsets' : bg2.offset_array, 'bit_grabber' : true}
-
-
 
 Bit_Grabber = new Class({
 
