@@ -56,7 +56,7 @@ EOF;
 				}
 
 				$html .= <<<EOF
-				{$ul}<li class="rel_add_group">The '{$res['gname']}' group <a href=/rewrite/groups/{$res['gid']}>click here</a> to check it out</li>
+				{$ul}<li class="rel_add_group">The '{$res['gname']}' group <a href=/groups/{$res['gid']}>click here</a> to check it out</li>
 EOF;
 				$array_result[] = array($html);
 			}

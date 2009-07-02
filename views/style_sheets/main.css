@@ -126,7 +126,7 @@ margin:12px;
 display:block;
 }
 
-#right_tabs{
+#left_tabs{
 text-align:left;
 position:absolute;
 left:0;
@@ -473,8 +473,8 @@ textarea{
 }
 
 #container{
-	width:800px;
-	height:1440px;
+	width:580px;
+	height:1640px;
 	margin:0 auto;
 	border:1px  ;
 	text-align:center;
@@ -485,7 +485,7 @@ textarea{
 
 
 #login_field{
-width:10px;
+width:160px;
 border:none;
 }
 

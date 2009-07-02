@@ -99,10 +99,10 @@ function handlePending(imStatus) {
 						<ul id="know_someone_more">	
 							<li>
 								<input type="text" id="manage_invite" name="manage_invite"></input>
-								<input type="submit" value="Invite" id="manage_invite" name="manage_invite" onclick="something(this); return false;"></input>
+								<input type="submit" value="Invite" id="manage_invite" name="manage_invite" onclick="invite(document.getElementById('manage_invite').value,2,this.parentNode); return false;"></input>
 							</li>
 						
-							<li>    
+							<li>    Group To Invite To:
 								<select id="invite_groups_in">
 								<option value="NULL"> - - - - - - - - -</option>
 								<?php while($search_people_results = $view_data['your_groups']->fetch_assoc())
@@ -291,9 +291,9 @@ EOF;
 								$email = $res['email'];
 								$domain = $res['domain'];
 								if($status == 0){
-									echo "<li class='pending_connect'>An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>";
+									echo "<li class='pending_connect'><img src=\"images/icons/error.png\" /> An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>";
 								} else {
-									echo "<li class='active_connect'><span class='style_bold'>Group Name</span>: $gname <span class='style_bold'>Symbol</span>:#$domain</li>";
+									echo "<li class='active_connect'><img src=\"images/icons/accept.png\" />  <span class='style_bold'>Group Name</span>: $gname <span class='style_bold'>Symbol</span>:#$domain</li>";
 								}
 						}
 						}

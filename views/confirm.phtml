@@ -1,0 +1,49 @@
+<?php print_r($errors)?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Chatapist - Profile</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css" media="all">@import "<?=ROOT?>views/style_sheets/home.css";</style>
+<script type="text/javascript" src="views/javascript/tap_friend.js"></script>
+</head>
+
+<body>
+
+<div id="container">
+
+	
+	<?php include(HEADER);?>
+		
+	<?php include(LEFT);?>
+	<br />
+
+	<div id="people_search">
+	
+		<div id="rel_header">Confirm Group Connection</div>
+
+			<span id="continue_explination" class="continue_group">Group Confrimation <?=$view_data['status'];?>
+				
+			</span>
+
+			<?
+			if($view_data['status'] == 'Accepted')
+			echo <<<EOF
+			<span id="continue_here" class="continue_group">Click <a href="/relevancy_settings">here</a> to add filters to these groups</span>
+EOF;
+			?>
+
+		<div id="people_search_form">
+		
+		</div>
+		
+	</div>
+	
+</div>
+
+	<?php include(FOOTER);?>
+
+</body>
+</html>

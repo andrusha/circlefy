@@ -17,6 +17,8 @@
         RewriteRule /view_logs$ /index.php?page=view_logs
         RewriteRule /search_groups$ /index.php?page=search_groups
 
+	
+        RewriteRule /confirm/(.*)$ /index.php?page=confirm&code=$1
         RewriteRule /group/([0-9])$ /index.php?page=group&group=$1
         RewriteRule /edit_group/([0-9])$ /index.php?page=group_edit&group=$1
         RewriteRule /([0-9])$ /index.php?fid=$1

@@ -95,7 +95,7 @@ EOF;
 					<li >Tap:
 <span class="group_status_tapd_{$tap_status} {$status_output['tapd']}" id="group_tap"  onclick="update_enable_status('tapd',{$gid},this.className[this.className.length-1]);">{$tap_display}</span>
 					</li>
-					<li >Inherit Tags:
+					<li style="color:red;">Inherit Tags:
 					<span class="group_status_inherit_{$inherit_status} {$status_output['inherit']}" id="group_inherit"  onclick="update_enable_status('inherit',{$gid},this.className[this.className.length-1]);">{$inherit_display}</span>
 					</li>
 				</ul>

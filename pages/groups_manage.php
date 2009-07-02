@@ -46,7 +46,7 @@ EOF;
 
 	
 			$connected_group_query = <<<EOF
-			SELECT t3.email,t2.status,t1.gid,t1.gname,t1.domain,t2.uid,t2.status FROM group_members AS t2
+			SELECT t3.email,t1.gid,t1.gname,t1.domain,t2.uid,t2.status FROM group_members AS t2
 			JOIN connected_groups AS t1
 			ON t1.gid = t2.gid
 			JOIN join_group_status as t3

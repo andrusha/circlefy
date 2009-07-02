@@ -684,7 +684,6 @@ $addr = $_SERVER['REMOTE_ADDR'];
 $get_buildings_bits_query = <<<EOF
                 SELECT mid,uid FROM special_chat WHERE ip = INET_ATON('{$addr}') ORDER BY mid DESC LIMIT 10;
 EOF;
-
         $this->db_class_mysql->set_query($get_buildings_bits_query,'building_query_ALL',"This is a SPECIAL QUERY that is part of a building of queries - This is for building: ALL ");
         $buildings_bits_results = $this->db_class_mysql->execute_query('building_query_ALL');
 
@@ -706,7 +705,6 @@ if($buildings_bits_results->num_rows > 0){
 	(SELECT null as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_time) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2 
 	JOIN chat as t3 ON t3.uid = t2.uid WHERE t3.cid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10) ;
 EOF;
-
 	$html_all_buildings_bits = $this->bit_generator($buildings_query_bits_info,'buildings_aggr');
 }
 $this->set($html_all_buildings_bits,'building_bits');	
@@ -730,7 +728,9 @@ while($res = $rel_settings_results->fetch_assoc() ) {
 	$slashes_tags = addslashes($res['tags']);
 	$rid = $res['rid'];
 	$zip_string = '';
-	if($zip != 0 ){ $slashes_tags .= ','.$res['zip']; $zip_string = "AND zip=$zip";}
+	if($zip != 0 ){
+		$slashes_tags .= ','.$res['zip'];
+	}
 
 	$counting2=0;
 	$split_tags = explode(',',$slashes_tags);
@@ -739,11 +739,22 @@ while($res = $rel_settings_results->fetch_assoc() ) {
 	$tags_list[$rid] = 'SELECT mid,uid FROM special_chat WHERE ';
 
 	foreach($split_tags as $tags){
-		if($tags == $end_array) { $end_paren = ')'; $zip_string_now = $zip_string;} 
+		$logic = "OR";
+		if($tags == $end_array){
+			$end_paren = ')';
+			if($zip != 0){	
+				$logic = "AND";
+				$zip_string_now = "OR ".implode(" ",$tags_list_query);
+				$zip_string_now .=  "AND zip=$zip )";
+			}
+			
+		}
+
 		if($begin_array == $tags) { $start_paren = '('; } 
+
 		$counting++;
 		if($counting !== 1){
-			if($tags != $old_tags) { $tags_list_10[] .= "OR {$start_paren} chat_text LIKE '%".$tags."%' {$end_paren} {$zip_string_now} "; }
+			if($tags != $old_tags) { $tags_list_10[] .= "{$logic} {$start_paren} chat_text LIKE '%".$tags."%' {$end_paren} {$zip_string_now} "; }
 		} else {
 			$tags_list_10[] .= "( chat_text LIKE '%".$tags."%' {$end_paren}";
 		}
@@ -752,17 +763,23 @@ while($res = $rel_settings_results->fetch_assoc() ) {
 		$counting2++;
 		if($counting2 !== 1){
 			/* This if statement is here to ensure a unique list */
-			if($tags != $old_tags) { $tags_list[$rid] .= "{$start_paren} OR chat_text LIKE '%".$tags."%'  {$end_paren} {$zip_string_now} "; }
+			if($tags != $old_tags) {
+				$tags_list[$rid] .= "{$logic} {$start_paren} chat_text LIKE '%".$tags."%'  {$end_paren} {$zip_string_now} "; 
+				$tags_list_query[] .= "{$logic} {$start_paren} chat_text LIKE '%".$tags."%'  {$end_paren} {$zip_string_now}";
+			}
 		} else {
 			$tags_list[$rid] .= "( chat_text LIKE '%".$tags."%' {$end_paren}";
+			$tags_list_query[] .= "( chat_text LIKE '%".$tags."%' {$end_paren}";
 		}
-		$old_tags = $tags;
+		$old_tags = 'ZXZDSHJZEBRA';
 		$start_paren = '';
 		$zip_string_now = '';
 	}
-	$end_paren = '';
+		$tags_list_query = '';
+		$end_paren = '';
 	$tags_list[$rid] .= ' ORDER BY mid DESC LIMIT 10;';
 }
+
 
 $tags_list_10_string = implode($tags_list_10);
 
@@ -894,51 +911,15 @@ $res = $max_mid_results->fetch_assoc();
 $max_mid = $res['mid'];
 $this->set($max_mid,'max_mid');
 
-
-$active_slices = 3;
- for($i = 0;$i< $active_slices;$i++){
-		$file = "/var/data/flat/flat_$i";
-		$last_offset[$i] = filesize($file);
-}
-$this->set($last_offset,'offsets');//You need to do $current_offset - $last_offset to get the mark
-$_SESSION['rand_id'] = '280924'.$_SESSION['uid'].'9482';
-
-
-/*USAGE:
-EXEC_response_poller.php 1 1 "{offsets:value}" "{last_mid:value}" "{midlist:values}" cid uid
-
-param 1 = Responder Bit, Active
-param 2 = Bit Grabber, Active
-param 3 = Offsets ( For Grabber ) 
-param 4 = Last Message ID ( For Responses )
-param 5 = Message ID List ( For Responses )
-param 6 = Channel ID ( to hook into Meteor Subcriber )
-param 7 = User ID
-*/
-
 $uid = $_SESSION['uid'];
 $push_channel_id = rand(1,888).'Xic'.$uid.'R';
 $this->set($push_channel_id,'pcid');
-$last_offset = implode(',',$last_offset);
 
-$root = ROOT;
-/*
-$exec = "php AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1 > AJAX/output &";
-
-system("php AJAX/EXEC_response_poller.php 0 1 $last_offset $max_mid 0 $push_channel_id $uid 1>AJAX/output &", $retval);
-echo $retval;
-*/
 
 $this->db_class_mysql->set_query('UPDATE TEMP_ONLINE SET timeout = 0,cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';','TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
-#echo 'UPDATE TEMP_ONLINE SET cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';';
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');
 $this->db_class_mysql->set_query('INSERT INTO TEMP_ONLINE(uid,cid) values('.$uid.',"'.$push_channel_id.'");','TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
-#echo 'INSERT INTO TEMP_ONLINE(uid,cid) values('.$uid.',"'.$push_channel_id.'");';
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
-
-	
-
-///////////////////////////////////////////////////////////////////////////
 //END misc tasks - Including, getting max file id, spnning off process, etc
 		}
 

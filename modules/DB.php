@@ -102,6 +102,7 @@ class DB{
 	return $result;
 	
 	}
+
 	
 	function __destruct(){	
 	//$this->db->close();

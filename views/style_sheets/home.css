@@ -1902,6 +1902,9 @@ display:block;
 				#connected_you_are_in_list{
 				margin-left:30px;width:240px;text-align:left;
 				}
+				#connected_you_are_in_list li{
+				margin:10px;
+				}
 
 				.pending_connect{ margin:8px; }
 				.active_connect{ margin:12px; }

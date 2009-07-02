@@ -83,9 +83,9 @@ EOF;
 				echo <<<EOF
 				{$error}
 				<span id="invite_friend_msg">Looking for someone you can't find?  Invite them to join tapapp!</span>
-				<form id="invite_friend">
+				<form id="invite_friend" name="invite_friend">
 					<label for="invite_friend_text">Invite a friend:</label><input type="text" id="invite_friend_text"></input>
-					<input type="submit" id="invite_friend_submit" value="Invite Friend" onclick="something(this);return false;"></input>
+					<input type="submit" id="invite_friend_submit" value="Invite Friend" onclick="invite(document.invite_friend['invite_friend_text'].value,1,document.invite_friend);return false;"></input>
 				</form>
 EOF;
 				 }

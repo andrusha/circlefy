@@ -63,11 +63,15 @@ class chat_functions{
 
 		//Collect all uids to send message to via different criteria(s)
 		$group_uids = $this->group_matches($parsed_symbols['groups']);
+			$group_gids = $group_uids['gids'];
+			$cgroup_gids = $group_uids['cgids'];
+			$group_uids['groups'] = $group_uids['groups'];
+		
 		$direct_uids = $this->direct_matches($parsed_symbols['friends']);		
 		$friend_uids = $this->friend_matches();
 		if($parsed_symbols['building'] !== false)
 			$building_uids = $this->building_matches();
-		$filter_uids = $this->filter_matches($msg,$sent_zip=$parsed_symbols['zips']);
+		$filter_uids = $this->filter_matches($msg,$sent_zip=$parsed_symbols['zips'],$static_zip=0,$gid_list=$group_gids,$cgid_list=$cgroup_gids);
 
 		//Dispatch all messages with associated reason
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
@@ -213,12 +217,12 @@ class chat_functions{
 
 		$groups_query = <<<EOF
 		(
-		SELECT t1.gid AS gid,t2.uid AS uid FROM groups AS t1
+		SELECT t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM groups AS t1
 		JOIN group_members AS t2
 		ON t2.gid = t1.gid
 		WHERE t1.gname IN ( $groups )
 		) UNION ALL (
-		SELECT t1.gid AS gid,t2.uid AS uid FROM connected_groups AS t1
+		SELECT t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM connected_groups AS t1
                 JOIN group_members AS t2
                 ON t2.gid = t1.gid
                 WHERE t1.domain IN ( $groups)
@@ -226,23 +230,46 @@ class chat_functions{
 EOF;
 
 		$group_matches = $this->mysqli->query($groups_query);
-		if($group_matches->num_rows > 0)
+		if($group_matches->num_rows > 0){
 		while($res = $group_matches->fetch_assoc() ) {
+			$c = $res['c'];
 			$uid_list['groups'][$res['gid']][] .= $res['uid'];
+			if(!$c){
+				$uid_list['gids'][] .= $res['gid'];
+				$g = 1;
+			} else {
+				$uid_list['cgids'][] .= $res['gid'];
+				$c = 1;
+			}
+			
 		}
-	
+		if($g)
+		$uid_list['gids'] = array_unique($uid_list['gids']);
+		if($c)
+		$uid_list['cgids'] = array_unique($uid_list['cgids']);
+		}
 	return $uid_list;
-		
 	}
 
 	//$sent_zip = zipcode message is destine for
 	//$static_zip = persons zipcode
 	//$string = message
-	private function filter_matches($string,$sent_zip=array(0),$static_zip=0){
+	private function filter_matches($string,$sent_zip=array(0),$static_zip=0,$gid_list='',$cgid_list=''){
 	
 		//START parsing to see who gets what
 		$array =  explode(' ',$string);
 		$temp = $array;
+
+		//Create Group String
+		if($gid_list != ''){
+			$gid_list = implode(",",$gid_list);
+			$gid_list = $gid_list.",";
+		}
+		
+		if($cgid_list != ''){
+			$cgid_list = implode(",",$cgid_list);
+			$cgid_list = $cgid_list.",";
+		}
 
 		//This parses out every single gramitical phrase in the message.  The phrases are then sent into the IN() clause
 		//This method is A LOT faster then a full-text search and has many more perks. As each keyword is indexed. It's also much more real-time.
@@ -269,14 +296,20 @@ EOF;
 	
 		$zip_list = implode('',$zips);
 
-//		$phrase_query = "SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE tags IN( ".$phrase_list." ) and enabled = 1;";
 		$phrase_query = <<<EOF
 		SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE
-		(tags IN({$phrase_list}) AND zip IN({$zip_list},0))
+		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$gid_list}0) AND connected=0 )
 		OR
-		(tags IN("") AND zip IN({$zip_list}))
+		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$cgid_list}0) AND connected=1 )
+		OR
+		(tags IN("") AND zip IN({$zip_list}) AND gid=0)
+		OR
+		(tags IN("") AND zip IN({$zip_list}) AND gid IN ({$gid_list}0) AND connected=0  )
+		OR
+		(tags IN("") AND zip IN({$zip_list}) AND gid IN ({$cgid_list}0) AND connected=1 )
 		AND enabled = 1;
 EOF;
+//		echo $phrase_query;
 		$phrase_matches = $this->mysqli->query($phrase_query);
 
 		//This processes the uid's while keeping AND/OR logic in mind
@@ -285,6 +318,7 @@ EOF;
 		//if the type is 0 that means it adheres to OR logic and only needs to be matched on once, and it automatically added in
 		$type_counter=0;
 		$old_rid=0;
+		if($phrase_matches->num_rows > 0)
 		while($res = $phrase_matches->fetch_assoc() ) {
 			$type = $res['type'];
 			$rrid = $res['rrid'];

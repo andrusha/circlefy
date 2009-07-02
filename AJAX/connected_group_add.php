@@ -23,6 +23,11 @@ class join_functions{
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
                 private $results;
 
+		private $from = "auth@tap.info";
+                private $to;
+                private $subject;
+                private $body;
+
         function __construct(){
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
@@ -55,11 +60,21 @@ class join_functions{
 			$last_id = $this->mysqli->query($this->last_id);
 			$last_id = $last_id->fetch_assoc();
 			$last_id = $last_id['last_id'];
-			if($last_id > 0)				
-				return json_encode(array('stat' => "<li class='pending_connect'>An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>"));
-				return json_encode(array('stat' => '<span id="school_error">Error in processing school join request</span>'));
+			if($last_id > 0){
+				$this->body = <<<EOF
+				You've tried to join the connected group for {$school}.  Please click click the link below to active your connection:
+					\n\n
+				http://localhost.com/confirm/{$hash}
+EOF;
+				$this->subject = "Request to Confirm Your Connected Group for {$school}";
+				$this->to = "tasoduv@gmail.com";
+	
+				mail($this->to,$this->subject,$this->body,$this->from);
+				return json_encode(array('stat' => "<li class='pending_connect'><img src=\"images/icons/error.png\" /> An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>"));
+				}
+				return json_encode(array('stat' => '<span id="school_error"><img src=\"images/icons/error.png\" /> Error in processing school join request</span>'));
 		}
-				return json_encode(array('stat'=> "<span id=\"school_error\">No such school with domain $school</span>"));
+				return json_encode(array('stat'=> "<span id=\"school_error\"><img src=\"images/icons/error.png\" /> No such school with domain $school</span>"));
 
 	}
 }

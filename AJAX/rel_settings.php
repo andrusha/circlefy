@@ -45,6 +45,7 @@ if(isset($_POST['update'])){
 }
 
 
+//Whenever this function or rel_settings algo is updated , this needs to be updated - They should be merged and utilize each other
 class rel_functions{
 
 	private $mysqli;
