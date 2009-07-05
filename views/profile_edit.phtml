@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Chatapist - Profile</title>
+<title><?=TITLE?> - Profile</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
@@ -35,39 +35,6 @@
 		$item_rs_status[$edit_profile['rs_status']] = "style=\"color:red ;\" selected";
 	//END DROP DOWN MENU SELCT
 	
-	
-	//This is a fix for the icq column.  if this is not here, 0 will be displayed witihin the text box/
-		if($edit_profile['icq'] == '0'){
-			$edit_profile['icq'] = '';
-		}
-	//END ICQ COLUMN FIX
-	
-	
-	//The following if statements set each "enable alert" check to checked.
-		if($edit_profile['eaim'] == 'enabled'){
-		$item_checked['eaim'] = ' checked="checked"';
-		}
-		
-		if($edit_profile['eyahoo'] == 'enabled'){
-		$item_checked['eyahoo'] = ' checked="checked"';
-		}
-		
-		if($edit_profile['emsn'] == 'enabled'){
-		$item_checked['emsn'] = ' checked="checked"';
-		}
-		
-		if($edit_profile['eirc'] == 'enabled'){
-		$item_checked['eirc'] = ' checked="checked"';
-		}
-		
-		if($edit_profile['egtalk'] == 'enabled'){
-		$item_checked['egtalk'] = ' checked="checked"';
-		}
-		
-		if($edit_profile['eicq'] == 'enabled'){
-		$item_checked['eicq'] = ' checked="checked"';
-		}
-	//END OF ALERT CHECK ITEMS
 	
 	
 	//These are the genders if statemetns that will check either one based on an enum in the database 
@@ -104,9 +71,7 @@
 			
 			<ul id="profile_nav">
 				<li><a href="#" onclick="show_edit('you'); return false;">You</a></li>	
-				<li><a href="#" onclick="show_edit('personal'); return false;">Personal</a></li>	
 				<li><a href="#" onclick="show_edit('pic'); return false;">Picture</a></li>	
-				<li><a href="#" onclick="show_edit('alerts'); return false;">Alerts</a></li>	
 			</ul>
 			
 		</div>
@@ -323,7 +288,7 @@
 					<li><span id="upload_status"></span></li>
 				        <li><span id="pic_format_error"></span></li>
 					<li>
-						<span id="edit_profile_picture"><img src="pictures/<? echo $edit_profile['pic_180'] ?>" alt='blank' /></span>
+						<span id="edit_profile_picture"><img src="<?=PROFILE_PIC_REL?><? echo $edit_profile['pic_180'] ?>" alt='blank' /></span>
 					</li>
 					<li id="default_pic_msg"><?php if( $edit_profile['pic_180'] == '180h_default.jpg') echo "You're using the default pic, please upload a new picture of you! :)";?></li>
 					<li><button type="submit" id="edit_submit_pic" name="edit_submit_pic" onclick="jsUpload(document.getElementById('image_of_you')); return false;" value="edit_submit">Update Picture</button></li>

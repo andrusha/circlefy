@@ -127,37 +127,56 @@ display:block;
 }
 
 #left_tabs{
+background:url('../../images/left_bg.gif') no-repeat 8px top;
+border-right:1px dotted #10F0FF;
+margin-top:160px;
 text-align:left;
-position:absolute;
-left:0;
-top:240px;
+float:left;
 overflow-y:auto;
 width:180px;
 height:740px;
-margin:0px auto;
 clear:both;
+}
+
+.toggle_list_active{
+width:170px;
 }
 
 .active_close_bullet{
-position:absolute;
-right:0;
+margin-left:4px;
+}
+
+#sign_out{
+color:blue;
+text-decoration:none;
+float:left;
+margin-top:-18px;
+}
+
+#sign_out a:visited{
+font-size:14px;
+color:blue;
+text-decoration:none;
+}
+
+#sign_out a{
+font-size:14px;
+color:blue;
+text-decoration:none;
 }
 
 #main_tabs{
+margin-top:170px;
 text-align:left;
-position:absolute;
+float:left;
 right:0;
-top:30px;
 overflow-y:auto;
 width:190px;
 height:740px;
-margin:0px auto;
-clear:both;
 }
 	.toggle_list_el{
-	border-top:1px solid lightgray;
 	cursor:pointer;
-	margin:3px;
+	margin:9px;
 	}
 
 #clear_bullets{
@@ -170,6 +189,11 @@ cursor:pointer;
 #current_info_div{
 clear:both;
 }
+
+li:hover{
+background:#F0F0F0;
+}
+
 
 #current_info{
 display:none;
@@ -227,19 +251,32 @@ clear:both;
 
 .self_bit{
 width:520px;
-border-bottom:1px dotted green;
+border-bottom:1px solid #F0F0F0 ;
 background:#FFFFCC;
 margin:0px auto;
 margin-bottom:8px;
 }
 
+.super_bit_self{
+width:580px;
+margin 0 auto;
+}
+
 
 .blue{
-border-bottom:1px dotted green;
+border-bottom:1px dotted #00F0F0;
+}
+
+.blue:hover{
+background:#F0F0F0;
 }
 
 .red{
-border-bottom:1px dotted green;
+border-bottom:1px dotted #00F0F0;
+}
+
+.red:hover{
+background:#F0F0F0;
 }
 
 .bit_img_container{
@@ -262,13 +299,22 @@ padding-top:10px;
 width:440px;
 font-size:14px;
 }
+.bit_text a{
+text-decoration:none;
+font-weight:bold;
+}
+
+.bit_text a:visited{
+text-decoration:none;
+font-weight:bold;
+}
 
 .bits_lists_options{
 float:right;
 }
 
 .bits_lists_options li{
-margin:0 8px 8px 24px;
+margin:0 2px 8px 10px;
 float:left;
 }
 
@@ -312,6 +358,10 @@ clear:both;
 float:right;
 }
 
+.good{
+cursor:pointer;
+}
+
 .respond_text_area_div textarea{
 height:40px;
 width:280px;
@@ -335,7 +385,6 @@ margin-bottom:10px;
 float:right;
 margin:6px;
 width:290px;
-border-bottom:1px dotted blue;
 overflow:hidden;
 }
 
@@ -471,15 +520,33 @@ textarea{
 	font-size:1em;
 	font-family:arial;
 }
-
+#large_container{
+	width:980px;
+        height:1640px;
+        margin:0 auto;
+        border:1px  ;
+        text-align:center;
+        clear:left;
+        overflow:hidden;
+}
 #container{
+	float:left;
 	width:580px;
 	height:1640px;
 	margin:0 auto;
 	border:1px  ;
 	text-align:center;
-	clear:left;
 	overflow:hidden;
+}
+
+#container_logged_out{
+        width:800px;
+        height:1440px;
+        margin:0 auto;
+        border:1px  ;
+        text-align:center;
+        clear:left;
+        overflow:hidden;
 }
 
 
@@ -770,13 +837,14 @@ margin-bottom:10px;
 	}
 	
 	textarea{
-	height:90px;
-	width:184px;
+	height:106px;
+	width:300px;
+	font-size:12px;
 	}
 
 	#directions{
 	float:left;
-	width:90px;
+	width:74px;
 	text-align:left;
 	margin-right:10px;
 	}
@@ -919,7 +987,17 @@ margin-bottom:10px;
 	#links{
 		padding-top:0px;
 		width:220px;
-		margin:0 auto;
+		font-size:14px;
+		font-color:blue;
+	}
+
+	#links a:visited{
+		color:blue;
+		text-decoration:none;
+	}
+	#links a{
+		color:blue;
+		text-decoration:none;
 	}
 
 	#links ul{
@@ -994,7 +1072,7 @@ z-index:999;
 	}
 	
 	#sign_up legend{
-	padding:4px 0 0 180px;
+	padding:4px 0 0 84px;
 	font-weight:bold;
 	}
 	

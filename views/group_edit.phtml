@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Chatapist - Profile</title>
+<title><?=TITLE?> - Profile</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <style type="text/css" media="all">@import "<?=ROOT?>views/style_sheets/home.css";</style>
@@ -147,7 +147,7 @@
 					<li><span id="upload_status"></span></li>
 				        <li><span id="pic_format_error"></span></li>
 					<li>
-						<span id="edit_profile_picture"><img src="../pictures/groups/<?=$pic_180_2?>" alt='group_picture' /></span>
+						<span id="edit_profile_picture"><img src="..<?=D_GROUP_PIC_REL?><?=$pic_180_2?>" alt='group_picture' /></span>
 					</li>
 					<li id="default_pic_msg">
 								<?php if( $pic_180_2 == '180h_default_group.jpg')

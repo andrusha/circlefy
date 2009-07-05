@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require('../config.php');
 
@@ -35,8 +36,8 @@ class chat_functions{
 
 	function create_channel($msg){
 			
-		$uid = $_COOKIE["uid"];
-		$uname = $_COOKIE["uname"];
+		$uid = $_SESSION["uid"];
+		$uname = $_SESSION["uname"];
 
 		$uid = $this->mysqli->real_escape_string($uid);	
 		$msg = $this->mysqli->real_escape_string($msg);	
@@ -140,7 +141,7 @@ class chat_functions{
 
 	//This function gets all matches of the people who have you on tap ( or are 'following you' ) 
 	private function friend_matches(){
-		$friends_query = "SELECT fuid FROM friends WHERE uid = {$_COOKIE['uid']}";
+		$friends_query = "SELECT fuid FROM friends WHERE uid = {$_SESSION['uid']}";
 		$friends_results = $this->mysqli->query($friends_query);
 
 		if($friends_results->num_rows > 0)
@@ -194,8 +195,8 @@ EOF;
 	}	
 		
 	function send_and_check_new_msg($msg,$time,$channel_id){
-		$uid = $_COOKIE["uid"];
-		$uname = $_COOKIE["uname"];
+		$uid = $_SESSION["uid"];
+		$uname = $_SESSION["uname"];
 		
                 $init_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$channel_id}','{$uid}','{$uname}','{$msg}')";
                 $this->mysqli->query($init_message_query);

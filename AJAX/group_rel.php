@@ -2,6 +2,7 @@
 /* CALLS:
 	group_rel.js
 */
+session_start();
 require('../config.php');
 
 $gid = $_POST['gid'];
@@ -46,8 +47,8 @@ class rel_functions{
 
         function create_channel($name,$tags,$zipcode,$gid){
 
-                $uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
+                $uid = $_SESSION["uid"];
+                $uname = $_SESSION["uname"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $name = $this->mysqli->real_escape_string($name);
@@ -108,8 +109,8 @@ EOF;
 
 
 	function del_channel($rid){
-		$uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
+		$uid = $_SESSION["uid"];
+                $uname = $_SESSION["uname"];
 
 		$del_rel_query = "DELETE FROM rel_settings where rid = {$rid}";
 

@@ -1,4 +1,5 @@
 <?php
+session_start();
 /* CALLS:
 	homepage.phtml
 */
@@ -27,7 +28,7 @@ class assoc_functions{
 
 		$results = array();
 
-		$uid = $_COOKIE['uid'];
+		$uid = $_SESSION['uid'];
                 $uid = $this->mysqli->real_escape_string($uid);
 	
 		//Get symbols and search-text seperated		

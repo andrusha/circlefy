@@ -309,12 +309,13 @@ foreach($query as $k_query => $v_query){
                                                                 $tap_msg = "Tap";
                                                                 $state = 0;
                                                         }
+							$path = PROFILE_PIC_REL;
                                                         $html_network_top[$count] =
                                                         <<<EOF
                                                         <div class="{$color}">
                                                                         <div class="friend_result_name"><span class="friend_result_name_span">{$search_res['fname']}  {$search_res['lname']}</span></div>
 
-                                                                        <div class="thumbnail_friend_result"> <span class="img_bit_container"><img class="bit_img" src="pictures/{$search_res['pic_100']}" alt='blank' /></span></div>
+                                                                        <div class="thumbnail_friend_result"> <span class="img_bit_container"><img class="bit_img" src="{$path}{$search_res['pic_100']}" alt='blank' /></span></div>
 
                                                                         <div class="friend_result_info">
                                                                                 <ul class="friend_result_info_list">
@@ -659,10 +660,12 @@ while($res = $actives_bits_results->fetch_assoc()){
 	echo 'key_bit: '.$key_bit.' <br/>';
 */
         $active_bits_tabs[$key] .= <<<EOF
-        <li class="toggle_list_el toggle_list_active" id="active_{$key}"  onclick="show_info('active_{$key}','{$convo_uname}...')"><img class="tab_bullet" id="active_{$key}_bullet" src="images/icons/bullet_white.png" />{$display}...<img class="active_close_bullet" id="active_close_{$key}_bullet" src="images/icons/bullet_delete.png" /></li>
+        \n<li class="toggle_list_el toggle_list_active" id="active_{$key}"  onclick="show_info('active_{$key}','{$convo_uname}...')">
+		\n<img class="active_close_bullet" id="active_close_{$key}_bullet" src="images/icons/bullet_delete.png" />
+		\n<img class="tab_bullet" id="active_{$key}_bullet" src="images/icons/bullet_white.png" />{$display}...</li>
 EOF;
         $active_bits[$key] .= <<<EOF
-        <div class="sub_information" id="active_{$key}_information">{$bit}</div>
+        \n<div class="sub_information" id="active_{$key}_information">{$bit}</div>
 EOF;
 }
 
@@ -927,6 +930,7 @@ $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT'
 
 
 private function bit_generator($query,$type){
+	$pic_path = PROFILE_PIC_REL;
 	$counter = 0;
 	$this->db_class_mysql->set_query($query,'bit_gen_query',"This gets the initial lists of bits of type: {$type}");
 	$bit_gen_results = $this->db_class_mysql->execute_query('bit_gen_query');
@@ -951,7 +955,7 @@ private function bit_generator($query,$type){
 
 				if(!$good_id){
 					$good = <<<EOF
-<li class="0" id="good_{$cid}_{$type}" onclick="good(this,'{$cid}','{$uid}','{$_SESSION['uid']}','{$type}');"><img src="images/icons/thumb_up.png" /> <span class="bits_lists_options_text"> Good </span></li>
+<li class="0 good" id="good_{$cid}_{$type}" onclick="good(this,'{$cid}','{$uid}','{$_SESSION['uid']}','{$type}');"><img src="images/icons/thumb_up.png" /> <span class="bits_lists_options_text"></span></li>
 EOF;
 				} else {
 					$good = <<<EOF
@@ -961,7 +965,7 @@ EOF;
 
 				if(!$special){
 					$resp_html[$cid][] .= <<<EOF
-					<li class="responses"><img class="response_img" src="pictures/{$pic_36}" /><span class="response_text">{$uname}: {$chat_text}</span></li>
+					<li class="responses"><img class="response_img" src="{$pic_path}{$pic_36}" /><span class="response_text">{$uname}: {$chat_text}</span></li>
 EOF;
 				}
 
@@ -972,15 +976,15 @@ EOF;
 <div id="super_bit_{$cid}_{$type}_{$rand}">
 <div class="bit {$color_class} {$cid}_bit" id="bit_{$cid}_{$type}_{$rand}">
 
-        <span class="bit_img_container"><img class="bit_img" src="pictures/{$pic_100}" /></span>
+        <span class="bit_img_container"><img class="bit_img" src="{$pic_path}{$pic_100}" /></span>
         <span class="bit_text">
-                <a href="profile">{$uname}</a>: {$chat_text}
+                <a href="profile">{$uname}</a> {$chat_text}
         </span>
 	<span class="bit_timestamp"><i>{$chat_timestamp}</i></span>
 	<ul class="bits_lists_options">
 		{$good}
-		<li id="toggle_show_response_button" class="0" onclick="toggle_show_response('responses_{$cid}_{$type}_{$rand}',this,1)"><img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">View Replies </span></li>
-		<li class="0" onclick="toggle_show_response('respond_{$cid}_{$type}_{$rand}',this,0); toggle_show_response('responses_{$cid}_{$type}_{$rand}',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text">Respond </span></li>
+		<li class="0 good "id="toggle_show_response_button"  onclick="toggle_show_response('responses_{$cid}_{$type}_{$rand}',this,1)"><span class="bits_lists_options_text"> </span></li>
+		<li class="0 good" onclick="toggle_show_response('respond_{$cid}_{$type}_{$rand}',this,0); toggle_show_response('responses_{$cid}_{$type}_{$rand}',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
 	</ul>
 
 </div>

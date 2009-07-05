@@ -2,6 +2,7 @@
 /* CALLS:
 	homepage.phtml
 */
+session_start();
 require('../config.php');
 
 $cid = $_POST['cid'];
@@ -26,8 +27,8 @@ class good_functions{
 
         function good($cid,$uid){
 
-                $fuid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
+                $fuid = $_SESSION["uid"];
+                $uname = $_SESSION["uname"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $gid = $this->mysqli->real_escape_string($gid);

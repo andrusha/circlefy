@@ -253,15 +253,15 @@ class chat_functions():
 						<div id="super_bit_%(cid)s_%(row_type)s_%(rand)s">
 							<div class="bit %(color_class)s %(cid)s_bit" id="bit_%(cid)s_%(row_type)s_%(rand)s">
 
-								<span class="bit_img_container"><img class="bit_img" src="pictures/%(pic_100)s" /></span>
+								<span class="bit_img_container"><img class="bit_img" src="user_pics/%(pic_100)s" /></span>
 								<span class="bit_text">
-									<a href="profile">%(uname)s</a>: %(chat_text)s
+									<a href="profile">%(uname)s</a> %(chat_text)s
 								</span>
 								<span class="bit_timestamp"><i>%(chat_timestamp)s</i></span>
 								<ul class="bits_lists_options">
-									<li class="0" id="good_%(cid)s_%(row_type)s" onclick="good(this,'%(cid)s','%(uid)s','%(fuid)s','%(row_type)s');"><img src="images/icons/thumb_up.png" /> <span class="bits_lists_options_text"> Good </span></li>
-									<li id="toggle_show_response_button" class="0" onclick="toggle_show_response('responses_%(cid)s_%(row_type)s_%(rand)s',this,1)"><img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">View Replies </span></li>
-									<li class="0" onclick="toggle_show_response('respond_%(cid)s_%(row_type)s_%(rand)s',this,0); toggle_show_response('responses_%(cid)s_%(row_type)s_%(rand)s',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text">Respond </span></li>
+									<li class="0" id="good_%(cid)s_%(row_type)s" onclick="good(this,'%(cid)s','%(uid)s','%(fuid)s','%(row_type)s');"><img src="images/icons/thumb_up.png" /> <span class="bits_lists_options_text"></span></li>
+									<li id="toggle_show_response_button" class="0" onclick="toggle_show_response('responses_%(cid)s_%(row_type)s_%(rand)s',this,1)"><span class="bits_lists_options_text"></span></li>
+									<li class="0" onclick="toggle_show_response('respond_%(cid)s_%(row_type)s_%(rand)s',this,0); toggle_show_response('responses_%(cid)s_%(row_type)s_%(rand)s',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
 								</ul>
 
 							</div>

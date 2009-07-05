@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Chatapist - Group</title>
+<title><?=TITLE?> - Group</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <style type="text/css" media="all">@import "<?=ROOT?>views/style_sheets/home.css";</style>
@@ -59,7 +59,7 @@ html, body {background-color:#FF00FF;
 	
 		<div id="profile_header">Group - <?=$view_data['group_name'];?></div>
 	
-		<div id="picture"><img src="../pictures/groups/<?=$view_data['pic_180'];?>" />
+		<div id="picture"><img src="..<?=D_GROUP_PIC_REL?><?=$view_data['pic_180'];?>" />
 			<?php if($view_data['admin_status']) echo '<span id="edit_profile_link"><a href="../edit_group/'.$view_data['gid'].'">Edit Group Settings</a></span>'; ?>
 		</div>
 

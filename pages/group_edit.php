@@ -109,9 +109,10 @@ echo $update_pics_query;
 		    // main page is a 'parent'
 
 	        if ($result == 'OK'){
+		$pic_path = D_GROUP_PIC_REL;
 		$js_output = <<<EOF
 	                parDoc.getElementById("upload_status").innerHTML = "picture successfully uploaded"
-	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='{$root}pictures/groups/{$pic_180}' alt='picture' />"
+	                parDoc.getElementById("edit_profile_picture").innerHTML = "<img src='{$root}{$pic_path}{$pic_180}' alt='picture' />"
         	        parDoc.getElementById("pic_format_error").innerHTML = ""
         	        parDoc.getElementById("default_pic_msg").innerHTML = ""
 EOF;
@@ -168,9 +169,9 @@ EOF;
                                 break;
                 }
 
-
+		$pic_path = PROFILE_PIC_REL;
                 $admin_html[] = <<<EOF
-                <li ><img id="group_admins" src="../pictures/{$res['pic_36']}" alt='blank' /> <span class="admin_info">{$res['uname']} - {$status}</span></li>
+                <li ><img id="group_admins" src="..{$pic_path}{$res['pic_36']}" alt='blank' /> <span class="admin_info">{$res['uname']} - {$status}</span></li>
 EOF;
         }
         $this->set($admin_html,'html_admin');

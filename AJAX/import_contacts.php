@@ -2,6 +2,7 @@
 /* CALLS:
 	sign_up.js
 */
+session_start();
 include('../modules/OpenInviter/openinviter.php');
 
 $rm = $_SERVER['REQUEST_METHOD'];

@@ -1,4 +1,5 @@
 <?php
+session_start();
 /* CALLS:
 	join_group.js
 */
@@ -25,8 +26,8 @@ class join_functions{
 
         function join_group($gid){
 
-                $uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
+                $uid = $_SESSION["uid"];
+                $uname = $_SESSION["uname"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $gid = $this->mysqli->real_escape_string($gid);

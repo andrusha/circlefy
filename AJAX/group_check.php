@@ -2,7 +2,7 @@
 /* CALLS:
 	group_add.js
 */
-
+session_start();
 require('../config.php');
 
 $check = $_POST['group_check'];
@@ -26,8 +26,8 @@ class group_functions{
 
         function check_group($gname){
 
-  	        $uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
+  	        $uid = $_SESSION["uid"];
+                $uname = $_SESSION["uname"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $fid = $this->mysqli->real_escape_string($fid);

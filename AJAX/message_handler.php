@@ -377,19 +377,20 @@ EOF;
 
 				$color_class = 'self_bit';
 
+				$pic_path = PROFILE_PIC_REL;
                                 $final_html = <<<EOF
-                                <div id="super_bit_{$cid}_{$type}_{$rand}">
+                                <div id="super_bit_{$cid}_{$type}_{$rand}" class="super_bit_self">
 <div class="bit {$color_class} {$cid}_bit" id="bit_{$cid}_{$type}_{$rand}">
 
-        <span class="bit_img_container"><img class="bit_img" src="pictures/{$pic_100}" /></span>
+        <span class="bit_img_container"><img class="bit_img" src="{$pic_path}{$pic_100}" /></span>
         <span class="bit_text">
-                <a href="profile">{$uname}</a>: {$chat_text}
+                <a href="profile">{$uname}</a> {$chat_text}
         </span>
         <span class="bit_timestamp"><i>{$chat_timestamp}</i></span>
         <ul class="bits_lists_options">
                 {$good}
-                <li id="toggle_show_response_button" class="0" onclick="toggle_show_response('responses_{$cid}_{$type}_{$rand}',this,1)"><img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">View Replies </span></li>
-                <li class="0" onclick="toggle_show_response('respond_{$cid}_{$type}_{$rand}',this,0); toggle_show_response('responses_{$cid}_{$type}_{$rand}',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text">Respond </span></li>
+                <li id="toggle_show_response_button" class="0" onclick="toggle_show_response('responses_{$cid}_{$type}_{$rand}',this,1)"><span class="bits_lists_options_text"></span></li>
+                <li class="0" onclick="toggle_show_response('respond_{$cid}_{$type}_{$rand}',this,0); toggle_show_response('responses_{$cid}_{$type}_{$rand}',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
         </ul>
 
 </div>

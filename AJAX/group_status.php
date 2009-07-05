@@ -1,4 +1,5 @@
 <?php
+session_start();
 /* CALLS:
 	homepage_group_status.js
 	group_status.js
@@ -6,7 +7,7 @@
 require('../config.php');
 
 //Used for delete and update
-$uid = $_COOKIE['uid'];
+$uid = $_SESSION['uid'];
 $gid = $_POST['gid'];
 $type = $_POST['type'];
 

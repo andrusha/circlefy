@@ -2,7 +2,7 @@
 /* CALLS:
 	edit_profile.js
 */
-
+session_start();
 require('../config.php');
 
 $type = $_POST['type'];
@@ -26,7 +26,7 @@ class profile_functions{
 
         function update_you(){
 
-                $uid = $_COOKIE["uid"];
+                $uid = $_SESSION["uid"];
                 $uname = $_COOKIE["uname"];
 		$fname = $_POST['fname'];
 		$lname = $_POST['lname'];
@@ -34,52 +34,35 @@ class profile_functions{
 		$state = $_POST['state'];
 		$gender =  $_POST['gender'];
 		$email = $_POST['email'];
+		$lang = $_POST['lang'];
+		$country = $_POST['country'];
 
                 $uid = $this->mysqli->real_escape_string($uid);
-                $name = $this->mysqli->real_escape_string($name);
-                $tags = $this->mysqli->real_escape_string($tags);
-                $zipcode = $this->mysqli->real_escape_string($zipcode);
+                $zip = $this->mysqli->real_escape_string($zip);
+                $fname = $this->mysqli->real_escape_string($fname);
+                $lname = $this->mysqli->real_escape_string($lname);
+                $email = $this->mysqli->real_escape_string($email);
+                $gender = $this->mysqli->real_escape_string($gender);
+                $state = $this->mysqli->real_escape_string($state);
 
 		$update_you_query = <<<EOF
 			UPDATE display_rel_profile AS t1
                         JOIN login AS t2
                         ON t1.uid = t2.uid
-                        JOIN profile AS t3
-                        ON t1.uid = t3.uid
                         SET
-				t3.fname="$fname",
-				t3.lname="$lname",
+				t2.fname="$fname",
+				t2.lname="$lname",
 				t1.zip="$zip",
 				t1.state="$state",
 				t1.gender="$gender",
+				t1.language="$lang",
+				t1.country="$country",
 				t2.email="$email"
                         WHERE t1.uid ={$uid}
 EOF;
 
-
                 $you_results = $this->mysqli->query($update_you_query);
 		$json_res = array('good' => 1);
 		return $json_res;
-	}
-
-	function del_channel($rid){
-		$uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
-
-		$del_rel_query = "DELETE FROM rel_settings where rid = {$rid}";
-
-		$del_rel_results = $this->mysqli->query($del_rel_query);
-		
-		//I had to make this quickly it menas it DELETED okay ...somewhat...	
-		$good = json_encode(array('good' => 1));
-		return $good;
-	}
-	
-	function toggle_enable($rid,$state){
-		$toggle_rel_query = "UPDATE rel_settings SET enabled = {$state} WHERE rid = {$rid}";
-		$toggle_rel_results = $this->mysqli->query($toggle_rel_query);
-
-		$good = json_encode(array('updated' => 1));
-		return $good;
 	}
 }

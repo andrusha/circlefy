@@ -156,13 +156,13 @@ EOF;
 								$state = 0;
 							}
 							
-	
+							$pic_path = PROFILE_PIC_REL;
 							$res[$count] =
 							<<<EOF
 							<div class="{$color}">
 									<div class="friend_result_name"><span class="friend_result_name_span">{$search_res['fname']}  {$search_res['lname']}</span></div>
 
-									<div class="thumbnail_friend_result"> <img id="edit_profile_picture" src="pictures/{$search_res['pic_100']}" alt='blank' /></div>
+									<div class="thumbnail_friend_result"> <img id="edit_profile_picture" src="{$pic_path}{$search_res['pic_100']}" alt='blank' /></div>
 
 									<div class="friend_result_info">
 										<ul class="result_info_list">

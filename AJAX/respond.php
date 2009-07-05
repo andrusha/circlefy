@@ -2,6 +2,7 @@
 /* CALLS:
 	homepage.phtml
 */
+session_start();
 require('../config.php');
 
 $response = $_POST['response'];
@@ -23,8 +24,8 @@ class chat_functions{
 
 		
 	function send_response($msg,$channel_id){
-		$uid = $_COOKIE["uid"];
-		$uname = $_COOKIE["uname"];
+		$uid = $_SESSION["uid"];
+		$uname = $_SESSION["uname"];
 		
                 $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$channel_id}','{$uid}','{$uname}','{$msg}')";
 		echo $resp_message_query;

@@ -235,6 +235,7 @@ background:url('../../images/bg-test.gif') no-repeat bottom;
 /* Profile */
 
 	#profile{
+	font-size:12px;
 	padding:2px;
 	overflow:hidden;
 	border:1px solid;
@@ -411,9 +412,10 @@ border-bottom:1px dotted;
 
 
 /* groups */
-						#groups{
-						width:400px;
-						float:right;
+
+				
+						#groups_profile{
+						width:350px;
 						overflow:hidden;
 						}
 					
@@ -461,7 +463,7 @@ border-bottom:1px dotted;
 						width:140px;
 						 }
 						
-						#groups h4{
+						#groups_profile h4{
 						clear:both;
 						color:white;
 						border-bottom:1px solid black;
@@ -469,7 +471,7 @@ border-bottom:1px dotted;
 						background:url('../../images/left.gif') no-repeat top;
 						}
 						
-						#groups ul{
+						#groups_profile ul{
 						text-align:left;
 						padding:8px;
 						}

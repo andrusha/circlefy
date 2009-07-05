@@ -767,7 +767,7 @@ EOF;
                                         <div class="group_result">
                                                         <div class="group_result_name"><span class="group_result_name_span">{$gname} <span class="group_status">{$status}</span></span></div>
 
-                                                        <div class="thumbnail_group_result"><img src="pictures/groups/{$pic_100}" alt="group_pic" /></div>
+                                                        <div class="thumbnail_group_result"><img src="<?=PROFILE_PIC_REL?>{$pic_100}" alt="group_pic" /></div>
 
                                                         <div class="group_result_info">
                                                                 <ul class="group_result_info_list">
@@ -807,6 +807,30 @@ EOF;
 <? if($view_data['html_0'] && $view_data['html_0'] != '')foreach($view_data['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='people_search'>here</a> to find people to tap";}?>
 </div>
 
+<div id="large_container">
+	<div id="links">
+		<ul>
+		
+			<li id="this2"><a href="<?=ROOT?>profile">Profile</a></li>
+			<li id="this3"><a href="<?=ROOT?>relevancy_settings">Filters</a></li>
+			<li id="this5"><a href="<?=ROOT?>groups">Groups</a></li>
+		</ul>
+	</div>
+
+	<div id="left_tabs">
+		<ul id="left_tabs_list">
+			<li style="color:red;" class="tab" id="archives" onclick="show_info('archives','Archives')"><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
+			<li class="tab" id="active" onclick="show_info('active','Active Convos')"><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
+			<?php
+			if(isset($view_data['active_bits_tabs']) && $view_data['active_bits_tabs'] != ''){
+                                foreach($view_data['active_bits_tabs'] as $v){
+                                        echo $v;
+                                }
+                        }
+                        ?>
+
+		</ul>
+	</div>
 
 <div id="container">
 
@@ -818,7 +842,7 @@ EOF;
 
 			<li id="welcome"> 
 			<?
-				echo "<img src='pictures/$user_pic' /> Welcome ".$user;
+				echo "<img src='".PROFILE_PIC_REL.$user_pic."' /> Welcome ".$user;
 			?>
 			</li>
 			<!-- <li id="number">There are currently 400 active users</li> -->
@@ -888,17 +912,6 @@ EOF;
 						</span></li>
 					</ul>
 					
-	<div id="links">
-	
-		<ul>
-		
-			<li id="this2"><a href="<?=ROOT?>profile">Profile</a></li>
-			<li id="this3"><a href="<?=ROOT?>relevancy_settings">Filters</a></li>
-			<li id="this5"><a href="<?=ROOT?>groups">Groups</a></li>
-		</ul>
-		
-	
-	</div>
 					</div>
 			
 				</fieldset>
@@ -906,71 +919,11 @@ EOF;
 	
 	</div>
 
-	<span id="clear_chat_windows" onclick="clear_current_chats()">Clear Taps</span><span id="clear_err">You have no taps to clear</span>
+	<span id="clear_chat_windows" onclick="clear_current_chats()"></span><span id="clear_err">You have no taps to clear</span>
 	<div id="chat_windows"></div>
 	<!--	
 	-->
-	<div id="left_tabs">
-		<ul id="left_tabs_list">
-			<li style="color:red;" class="tab" id="archives" onclick="show_info('archives','Archives')"><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
-			<li class="tab" id="active" onclick="show_info('active','Active Convos')"><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
-			<?php
-			if(isset($view_data['active_bits_tabs']) && $view_data['active_bits_tabs'] != ''){
-                                foreach($view_data['active_bits_tabs'] as $v){
-                                        echo $v;
-                                }
-                        }
-                        ?>
 
-		</ul>
-	</div>
-
-	<div id="main_tabs">
-		<span id="clear_bullets"><b>Clear Tabs</b></span>
-		<ul id="tab_list">
-			<li class="tab" id="direct" onclick="show_info('direct','Direct Messages')"><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /></li>
-			<li class="tab" id="building" onclick="show_info('building','Same Building')"><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp<img src="images/icons/building.png" /></li>
-			<li class="tab" id="friends" onclick="show_info('friends','Friends Aggragate')"><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp<img src="images/icons/connect.png" /></li>
-			<div id="friends_tab_slide">
-			<!-- START of Network -->
-			<?php
-			if(isset($view_data['network_tab_list']) && $view_data['network_tab_list'] != ''){
-				foreach($view_data['network_tab_list'] as $v){
-					echo $v;
-				}
-			}
-			?>
-			</div>
-
-			<!-- END of Network -->	
-
-			<li class="tab" id="groups" onclick="show_info('groups','Groups Aggragate')"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /></li>
-			<div id="groups_tab_slide">
-			<!-- START of Individual Groups -->	
-			<?php
-			if(isset($view_data['group_tab_list']) && $view_data['group_tab_list'] != ''){
-				foreach($view_data['group_tab_list'] as $v){
-					echo $v;
-				}
-			}
-			?>
-			</div>
-			<!-- END of Individual Groups -->	
-
-			<li class="tab" id="rel" onclick="show_info('rel','Relevant Aggragate')"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /></li>
-			<div id="rel_tab_slide">
-			<!-- START of Relevancy Settings -->	
-			<?php
-			if(isset($view_data['get_rel_tab_names'])){
-        	        	foreach($view_data['get_rel_tab_names'] as $value){
-                	        	echo $value;
-	                	}
-			}
-			?>
-			</div>
-			<!-- END of Relevancy Settings -->	
-		</ul>
-	</div>
 	<div id="current_info_div"><b>Currently Viewing:</b> <span id="current_info_display"></span> Feed <span id="current_info"></span><div>
 	<div id="main_information">
 		<div class="sub_information" id="direct_information">
@@ -1073,6 +1026,62 @@ window.onload=function() { show_info('groups','Groups'); } ;
 	
 	</div>
 	
+</div>
+
+<!-- End main information -->
+</div>
+
+<!-- End container -->
+</div>
+	<span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
+	<div id="main_tabs">
+		<span id="clear_bullets"><b>Clear Tabs</b></span>
+		<ul id="tab_list">
+			<li class="tab" id="direct" onclick="show_info('direct','Direct Messages')"><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /></li>
+			<li class="tab" id="building" onclick="show_info('building','Same Building')"><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp<img src="images/icons/building.png" /></li>
+			<li class="tab" id="friends" onclick="show_info('friends','Friends Aggragate')"><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp<img src="images/icons/connect.png" /></li>
+			<div id="friends_tab_slide">
+			<!-- START of Network -->
+			<?php
+			if(isset($view_data['network_tab_list']) && $view_data['network_tab_list'] != ''){
+				foreach($view_data['network_tab_list'] as $v){
+					echo $v;
+				}
+			}
+			?>
+			</div>
+
+			<!-- END of Network -->	
+
+			<li class="tab" id="groups" onclick="show_info('groups','Groups Aggragate')"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /></li>
+			<div id="groups_tab_slide">
+			<!-- START of Individual Groups -->	
+			<?php
+			if(isset($view_data['group_tab_list']) && $view_data['group_tab_list'] != ''){
+				foreach($view_data['group_tab_list'] as $v){
+					echo $v;
+				}
+			}
+			?>
+			</div>
+			<!-- END of Individual Groups -->	
+
+			<li class="tab" id="rel" onclick="show_info('rel','Relevant Aggragate')"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /></li>
+			<div id="rel_tab_slide">
+			<!-- START of Relevancy Settings -->	
+			<?php
+			if(isset($view_data['get_rel_tab_names'])){
+        	        	foreach($view_data['get_rel_tab_names'] as $value){
+                	        	echo $value;
+	                	}
+			}
+			?>
+			</div>
+			<!-- END of Relevancy Settings -->	
+		</ul>
+	</div>
+
+<!-- End large container -->
 </div>
 
     <script type="text/javascript">

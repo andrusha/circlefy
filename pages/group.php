@@ -200,9 +200,10 @@ EOF;
 				break;
         	}
 
-		
+	
+		$pic_path = PROFILE_PIC_REL;
 		$admin_html[] = <<<EOF
-		<li ><img id="edit_profile_picture" src="../pictures/{$res['pic_36']}" alt='blank' /> <span class="admin_info">{$res['uname']} - {$status}</span></li>
+		<li ><img id="edit_profile_picture" src="..{$pic_path}{$res['pic_36']}" alt='blank' /> <span class="admin_info">{$res['uname']} - {$status}</span></li>
 EOF;
 	}
 	$this->set($admin_html,'html_admin');

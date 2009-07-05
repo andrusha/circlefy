@@ -22,7 +22,7 @@ if($flag == "signup_function();"){
 
 
 if($flag == "check_im_status();"){
-	$get_im_hash_results = $sign_up_object->check_im_status($_COOKIE['wasp_attack']);
+	$get_im_hash_results = $sign_up_object->check_im_status($_SESSION['wasp_attack']);
 	echo $get_im_hash_results;
 }
 
@@ -78,6 +78,7 @@ class ajaz_sign_up{
 		$comb2 = $finame;
 		$comb3 = $lname;
 
+		$this->populate_profile();
 		$this->create_filter('My Area','',94301,0);
 		$this->create_filter('My Name',$comb1.','.$comb2.','.$comb3,0,0);
 		$this->create_filter('Random Area','',10002,0);
@@ -86,9 +87,14 @@ class ajaz_sign_up{
 		$this->create_filter('Random Word','copyright',0,0);
 		$this->create_filter('Random Word 2','girls',0,0);
 		$this->join_group(1);
-		$this->join_group(5);
+		$this->join_group(2);
 		if($_POST['fid'])
 			$this->tap_friend($_POST['fid']);
+	}
+
+	function populate_profile(){
+                $profile_query = "INSERT INTO display_rel_profile(uid) values('$this->uid}');";
+                $this->mysqli->query($profile_query);
 	}
 
 	function tap_friend($fid){

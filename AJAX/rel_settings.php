@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 /* CALLS:
 	relevancy_settings.phtml
@@ -58,8 +59,8 @@ class rel_functions{
 
         function create_filter($name, $tags, $zipcode, $gid, $connected){
 
-                $uid = $_COOKIE["uid"];
-                $uname = $_COOKIE["uname"];
+                $uid = $_SESSION["uid"];
+                $uname = $_SESSION["uname"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $name = $this->mysqli->real_escape_string($name);

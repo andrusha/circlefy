@@ -2,7 +2,7 @@
 /* CALLS:
 	edit_group.js
 */
-
+session_start();
 require('../config.php');
 
 $type = $_POST['type'];
