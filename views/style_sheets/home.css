@@ -2375,3 +2375,287 @@ top:260px;
 .null_attr{
 color:red;
 }
+/* add group */
+
+
+
+	#create_group{
+	padding:2px;
+	overflow:hidden;
+	border:1px solid;
+	display:inline-block;
+	}
+	
+	#create_group{
+	display:block;
+	}
+
+	#create_group_header{
+	font-weight:bold;
+	border-bottom:1px solid;
+	width:288px;
+	margin: 0 auto;
+	padding:1px 0 1px 0;
+	margin-top:10px;
+	margin-bottom:10px;
+	background:url('../../images/left3.gif') no-repeat top;
+	}
+	
+		#create_group_intro{
+		color:gray;
+		width:280px;
+		margin:0 auto;
+		}
+	
+	#create_group_form{
+	width:400px;
+	margin:0 auto;
+	}
+	
+	#create_group_form li{
+	padding:4px;
+	}
+		
+	#create_group_form #main_create_form{
+	float:left;
+	text-align:right;
+	padding-left:20px;
+	}
+	
+	#prereq_checks{
+	display:block;
+	}
+	
+	#prereq_check_list li{
+	display:block;
+	}
+	
+	#group_upload_label{
+	display:block;
+	}
+	
+	#main_create_form label{
+	font-weight:bold;
+	}
+	
+	.group_explinations{
+	display:block;
+	color:gray;
+	text-align:right;
+	}
+/* add group */
+
+
+
+	#create_group{
+	padding:2px;
+	overflow:hidden;
+	border:1px solid;
+	display:inline-block;
+	}
+	
+	#create_group{
+	display:block;
+	}
+
+	#create_group_header{
+	font-weight:bold;
+	border-bottom:1px solid;
+	width:288px;
+	margin: 0 auto;
+	padding:1px 0 1px 0;
+	margin-top:10px;
+	margin-bottom:10px;
+	background:url('../../images/left3.gif') no-repeat top;
+	}
+	
+		#create_group_intro{
+		color:gray;
+		width:280px;
+		margin:0 auto;
+		}
+	
+	#create_group_form{
+	width:400px;
+	margin:0 auto;
+	}
+	
+	#create_group_form li{
+	padding:4px;
+	}
+		
+	#create_group_form #main_create_form{
+	float:left;
+	text-align:right;
+	padding-left:20px;
+	}
+	
+	#prereq_checks{
+	display:block;
+	}
+	
+	#prereq_check_list li{
+	display:block;
+	}
+	
+	#group_upload_label{
+	display:block;
+	}
+	
+	#main_create_form label{
+	font-weight:bold;
+	}
+	
+	.group_explinations{
+	display:block;
+	color:gray;
+	text-align:right;
+	}
+
+#group_search{
+	display:inline-block;
+	padding:2px;
+	overflow:hidden;
+	border:1px solid;
+}
+	
+	#group_search{
+	display:block;
+	}
+	
+	#group_search_header{
+		font-weight:bold;
+		border-bottom:1px solid;
+		width:288px;
+		margin: 0 auto;
+		padding:1px 0 1px 0;
+		margin-top:10px;
+		margin-bottom:10px;
+		background:url('../../images/left3.gif') no-repeat top;
+	}
+	
+	#group_search_intro{
+		color:gray;
+		text-align:left;
+		width:280px;
+		margin:10px auto;
+	}
+		
+	#group_search_go_away{
+		margin:6px 0 6px 0;
+		text-align:center;
+	}
+		
+	#group_search_form{
+		width:400px;
+		margin:0 auto;
+	}
+		
+	#group_search_form fieldset{
+		margin-bottom:8px;
+	}
+		
+	#group_search_form legend{
+		margin-left:170px;
+		color:blue;
+	}
+		
+	#group_search_form ul{
+		text-align:right;
+		padding-right:120px;
+	}
+		
+	#group_search_form ul li{
+		padding:4px 0 4px 0;
+	}
+		
+	#group_search_form label, #group_search_form label:after{
+		padding-right:2px;
+		content:":";
+	}
+							
+	#group_search_form #group_search_button{
+		font-size:11px;
+		padding:1px;
+	}
+	
+	#group_search_results_header {
+		display:block;
+		border-bottom:1px solid;
+		margin:0 auto;
+		margin-bottom:8px;
+		margin-top:8px;
+		width:140px;
+		font-weight:bold;
+	}
+		
+		
+	.group_result{
+		display:inline-block;
+		overflow:hidden;
+		padding:10px;
+		margin:5px;
+	}
+			
+	.group_result{
+		display:block;
+	}
+			
+	.group_result_blue{
+		display:inline-block;
+		overflow:hidden;
+		background:#EFF4F0;
+		padding:10px;
+		margin:5px;
+	}
+	
+	.group_result_blue{
+		display:block;
+	}
+				
+	.group_result_name{
+		text-align:left;
+		font-weight:bold;
+	}
+	
+	.thumbnail_group_result{
+		width:122px;
+		height:86px;
+		background:lightgray;
+		border:1px solid lightblue;
+		margin-bottom:12px;
+		margin:0 auto;
+		float:left;
+	}
+	
+	.group_result_info{
+		text-align:left;
+		overflow:hidden;
+	}
+	
+	.group_result_info ul{
+		margin-left:10px;
+		display:inline-block;
+	}
+	
+	.group_result_name_span{
+		text-align:center;
+	}
+	
+	.group_info_list{
+		padding:2px;
+		float:left;
+	}
+	
+	.group_option_list{
+		padding:2px;
+		float:right;
+	}
+	
+	.group_option_list li{
+		padding:0 0 4px 17px;
+		color:blue;
+	}
+	
+/* *** END "group search" *** */
+

@@ -30,12 +30,12 @@ class group_edit extends Base{
 	
 	if(isset($_FILES['group_image'])){
 			$root = ROOT;
-			$upload_dir = "/htdocs/".$root."pictures/groups"; // Directory for file storing
+			$upload_dir = ".".D_GROUP_PIC_REL; // Directory for file storing
 			$web_upload_dir = "./"; // Directory for file storing
   	                 		          // Web-Server dir 
 			// testing upload dir 
 			// that your upload dir is really writable to PHP scripts
-			$tf = $upload_dir.'/'.md5(rand()).".test";
+			$tf = $upload_dir.md5(rand()).".test";
 			$f = @fopen($tf, "w");
 			if ($f == false)
 				die("Fatal error! {$upload_dir} is not writable. Set 'chmod 777 {$upload_dir}'or something like this");

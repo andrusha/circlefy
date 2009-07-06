@@ -89,46 +89,34 @@
 <!--	This is where the groups starts		-->
 
 <?php
+$pic_path = D_GROUP_PIC_REL;
 if($group_results->num_rows > 0){
-	echo '<div class="groups_your_in">';
+	echo '<div class="group_search">';
 	while($group_result_set = $group_results->fetch_assoc()){
 		echo <<<EOF
-		<!-- Folded Group Start -->
-		<div class="folded_group">
-		<div class="folded_group_header"><span class="folded_group_title">{$group_result_set['gname']}</span></div>
-			<div class="folded_group_body">
-			
-				<div class="folded_group_pic">testing</div>
-				
-					<div class="folded_group_info">
-					
-						<ul>
-							<li class="folded_group_focus">
-							<span class="style_bold">Focus: </span>
-							{$group_result_set['focus']}
-							</li>
-							
-							<li class="folded_group_cred">
-							<span class="style_bold">Credibility: </span>
-							{$group_result_set['cred']}
-							</li>
-							
-							<li class="folded_group_why">
-							<span class="style_bold">Members: </span>
-							{$group_result_set['size']}
-							</li>
-						
-						</ul>
-					
-					</div>
-				
-			</div><!-- End folded group body -->
-			
-		</div> <!-- End folded group -->
-EOF;
+		<div class="group_result_blue">
+			<div class="group_result_name"><span class="group_result_name_span">{$group_result_set['gname']}</span></div>
+			<div class="thumbnail_group_result"> <img id="edit_profile_picture" src="{$pic_path}{$group_result_set['pic_100']}" alt='blank' /></div>
 
-		echo '</div>';
-}
+			<div class="group_result_info">
+				 <div class="group_result_info">
+	                                 <ul class="group_info_list" style="width:150px">
+        	                                 <li><span class="style_bold">Focus: </span>{$group_result_set['focus']}</li>
+                                                 <li><span class="style_bold">Credibility: </span>{$group_result_set['cred']}</li>
+                                                 <li><span class="style_bold">Members: </span>{$group_result_set['size']}</li>
+                                         </ul>
+	                                 <ul class="group_info_list" style="width:220px">
+         	                                <li><span class="style_bold">Description:</span> {$group_result_set['descr']}</li>
+					 </ul>
+                                         <ul class="group_option_list">
+                                         	<li><span class="style_bold"><a href="/group/{$group_result_set['gid']}">More info</a></span></li>
+                                         </ul>
+                        </div>
+                </div>
+		</div>
+
+EOF;
+	}
 	} else {
 		echo "<div id=\"no_search_results\">Your search did not match any groups</div>";
 	}
