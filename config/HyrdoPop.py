@@ -260,8 +260,7 @@ class chat_functions():
 								<span class="bit_timestamp"><i>%(chat_timestamp)s</i></span>
 								<ul class="bits_lists_options">
 									<li class="0" id="good_%(cid)s_%(row_type)s" onclick="good(this,'%(cid)s','%(uid)s','%(fuid)s','%(row_type)s');"><img src="images/icons/thumb_up.png" /> <span class="bits_lists_options_text"></span></li>
-									<li id="toggle_show_response_button" class="0" onclick="toggle_show_response('responses_%(cid)s_%(row_type)s_%(rand)s',this,1)"><span class="bits_lists_options_text"></span></li>
-									<li class="0" onclick="toggle_show_response('respond_%(cid)s_%(row_type)s_%(rand)s',this,0); toggle_show_response('responses_%(cid)s_%(row_type)s_%(rand)s',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
+									<li class="0" onclick="toggle_show_response('_%(cid)s_%(row_type)s_%(rand)s',this,0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
 								</ul>
 
 							</div>

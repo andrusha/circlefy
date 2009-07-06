@@ -551,19 +551,18 @@ function hide_info(info_id){
         document.getElementById('current_info').innerHTML = '';
         }
 
-function toggle_show_response(id,e,from){
+function toggle_show_response(id,e){
 	var state = e.className;
+	id_respond = "respond"+id;
+	id_response = "responses"+id;
 	
 	if(state == 1){ state = 0; } else { state = 1;}
 	if(state) {
-		if(from)
-			e.innerHTML = '<img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">Hide Replies </span>';
-		document.getElementById(id).style.display = 'block';
-	/*	var scrollObj = document.getElementById(id);
-		scrollObj.scrollTop = scrollObj.scrollHeight;*/
+		document.getElementById(id_respond).style.display = 'block';
+		document.getElementById(id_response).style.display = 'block';
 	}else{
-		if(from) e.innerHTML = '<img src="images/icons/text_align_left.png" /> <span class="bits_lists_options_text">View Replies </span>';
-		document.getElementById(id).style.display = 'none';
+		document.getElementById(id_respond).style.display = 'none';
+		document.getElementById(id_response).style.display = 'none';
 	}
 	e.className = state;
 }

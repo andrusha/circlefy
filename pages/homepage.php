@@ -983,8 +983,7 @@ EOF;
 	<span class="bit_timestamp"><i>{$chat_timestamp}</i></span>
 	<ul class="bits_lists_options">
 		{$good}
-		<li class="0 good "id="toggle_show_response_button"  onclick="toggle_show_response('responses_{$cid}_{$type}_{$rand}',this,1)"><span class="bits_lists_options_text"> </span></li>
-		<li class="0 good" onclick="toggle_show_response('respond_{$cid}_{$type}_{$rand}',this,0); toggle_show_response('responses_{$cid}_{$type}_{$rand}',document.getElementById('toggle_show_response_button'),0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
+		<li class="0 good" onclick="toggle_show_response('_{$cid}_{$type}_{$rand}',this);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
 	</ul>
 
 </div>
