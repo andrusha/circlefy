@@ -930,12 +930,18 @@ $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT'
 
 
 private function bit_generator($query,$type){
+//	echo $query."\n"."\n"."<br/>"."<br/>";
 	$pic_path = PROFILE_PIC_REL;
 	$counter = 0;
 	$this->db_class_mysql->set_query($query,'bit_gen_query',"This gets the initial lists of bits of type: {$type}");
 	$bit_gen_results = $this->db_class_mysql->execute_query('bit_gen_query');
 
 			$num_rows = $bit_gen_results->num_rows;
+                        while($res = $bit_gen_results->fetch_assoc() )
+					if(!$res['special'])
+					$resp_count[$res['cid']][0] = $resp_count[$res['cid']][0] + 1;
+
+			$bit_gen_results->data_seek(0);
                         while($res = $bit_gen_results->fetch_assoc() ){
 				$num_rows--;
 				$chat_timestamp = $this->time_since($res['chat_timestamp']);
@@ -972,6 +978,10 @@ EOF;
 				if($special){
 	                                if($color_counter & 1){ $color_class = "blue"; } else { $color_class = "red"; }
 
+				$resp_msg = '';
+				if($resp_count[$cid][0] > 0)
+					$resp_msg = $resp_count[$cid][0]." Replies";
+
                                 $final_html[$cid] = <<<EOF
 <div id="super_bit_{$cid}_{$type}_{$rand}">
 <div class="bit {$color_class} {$cid}_bit" id="bit_{$cid}_{$type}_{$rand}">
@@ -982,6 +992,7 @@ EOF;
         </span>
 	<span class="bit_timestamp"><i>{$chat_timestamp}</i></span>
 	<ul class="bits_lists_options">
+		<li><span class="{$cid}_resp_notify resp_notify">{$resp_msg}</span></li>
 		{$good}
 		<li class="0 good" onclick="toggle_show_response('_{$cid}_{$type}_{$rand}',this);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
 	</ul>

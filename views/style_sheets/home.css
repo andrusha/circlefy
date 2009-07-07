@@ -1611,6 +1611,12 @@ display:block;
 					float:right;
 					margin:-4px 0 8px 0;
 					}
+
+						.resp_notify{
+						font-weight:bold;
+						font-color:blue;
+						font-size:12px;
+						}
 					
 						#responding_area{
 							clear:both;

@@ -313,6 +313,24 @@ font-weight:bold;
 float:right;
 }
 
+.resp_notify{
+	/*
+	background:url('../../images/reply_msg_bg.gif') no-repeat -1px -3px;;
+	width:109px;
+	height:22px;
+	display:block;
+	*/
+	font-weight:bold;
+	color:blue;
+	font-size:12px;
+}
+
+.new_reply{
+	color:#0AA0F0;
+	font-size:12px;
+}
+	
+
 .bits_lists_options li{
 margin:0 2px 8px 10px;
 float:left;

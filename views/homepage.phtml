@@ -113,12 +113,12 @@ Bit_Grabber = new Class({
 				var counter = 0;	
 				$$('.offsets').each(function( el ) {
 					var new_offset = data.new_offsets[counter];
-					console.log(data.new_offsets[counter]);
+					//console.log(data.new_offsets[counter]);
 					el.innerHTML = new_offset;
 					counter++;
 				})
 				if(data.results != false){
-					console.log("test");
+					//console.log("test");
 					Hash.each(data.data,function(value){ Hash.each(value,
 					function(html,key){ 
 						var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
@@ -138,6 +138,7 @@ Bit_Grabber = new Class({
 Response_Grabber = new Class({
 
 	array_obj: [] ,
+	resp_count_obj: new Hash({}),
 	json_obj: null,
 
 	initialize: function(){
@@ -152,7 +153,11 @@ Response_Grabber = new Class({
 
 		this.json_obj = JSON.encode(this.array_obj);
 	},
-
+/*
+	update_resp_count: function(key){
+		this.resp_count_obj.set(key,count);
+	},
+*/
 	r_poller: function(){
 			self = this;
 			var last_mid = $('last_mid').innerHTML;
@@ -166,7 +171,7 @@ Response_Grabber = new Class({
 						$each( data.data, function(val,key){
 						for(i in val){
 							if($type(val[i]) == 'string'){	
-								//console.log(key,val[i]);
+								//console.log(key,val);
 								if(active_convo.active_convos.contains(key)){
 								new Fx.Tween($('active_'+key), {property: 'background-color', link: 'chain'}).start('#f50').start('#fff');
 								$('active_'+key+'_bullet').src = "images/icons/bullet_blue.png";
@@ -177,6 +182,22 @@ Response_Grabber = new Class({
 									newel.inject(el,'top');
 									newel.tween('opacity', 0, 1);
 								});
+
+								class_el = '.'+key+'_resp_notify';
+									count = self.resp_count_obj.get(key);
+									count = count + 1;
+									self.resp_count_obj.set(key,count);
+									if(count == 1)
+									msg = "<span class='new_reply'> "+count+" New Reply</span>";
+									if(count > 1)
+									msg = "<span class='new_reply'> "+count+" New Replies</span>";
+								
+								$$(class_el).each( function ( el ){
+								        //var newel = new Element('div', {'html': count, styles:{'opacity' :'0'} });
+                                                                        //newel.get('tween').start('opacity', 1);
+									el.set('html',msg);
+								});
+
 							} else { 
 								break;
 							}
@@ -252,7 +273,7 @@ Active_Convo = new Class({
 			e.stop();
 			var id_seq = this.getParent().id.substring(7);
 			self.active_convos.erase(id_seq);
-			console.log(id_seq)
+			//console.log(id_seq)
 			this.getParent().style.display = 'none';
 			var req_res = new Request.JSON({
 				url:"AJAX/remove_active.php"
@@ -474,7 +495,7 @@ E
 			    });
 			    exampleFx.start(0,1); /*fade it in*/
 
-			console.log('Start');
+			//console.log('Start');
 			autocompleter.enable();
 
 		}else if((event.key =='space')  && autocompleter.toggleEnabled){
@@ -483,7 +504,7 @@ E
 //			$('text_state').innerHTML = '<img src="images/icons/comment_edit.png" />Now type your message to the people who you\'re sending it to and press enter to send';
 			$('mode_text').innerHTML = '<img src="images/icons/comment_edit.png" />Messaging, press enter to send your message';
 //			$('mode_text').style.background = 'lightgreen';
-			console.log('Stop');
+			//console.log('Stop');
 	//		inputBox.removeEvents();
 		//	setTimeout("autocompleter.disable()",1000);
 			
@@ -1104,7 +1125,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
     // Start streaming!
         Meteor.connect();
     // Handle incoming events
-    function test(data) { console.log(data); }
+    //function test(data) { console.log(data); }
 </script>
 </body>
 </html>

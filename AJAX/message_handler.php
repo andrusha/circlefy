@@ -388,7 +388,7 @@ EOF;
         </span>
         <span class="bit_timestamp"><i>{$chat_timestamp}</i></span>
         <ul class="bits_lists_options">
-                {$good}
+		<li><span class="{$cid}_resp_notify resp_notify"></span></li>
                 <li class="0" onclick="toggle_show_response('_{$cid}_{$type}_{$rand}',this,0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
         </ul>
 

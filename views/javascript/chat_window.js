@@ -84,13 +84,13 @@ function handlePending(imStatus,time,channel_id) {
 				response_event_obj.add_action();
 				active_convo.add_active(newel,'bit');	
 				//setTimeout("toggle_show_response('responses_'+new_id+'_self',$('self_toggle_res_'+new_id),1)",1000);
-				console.log('first_round');
+				//console.log('first_round');
 				time = json_result.time;
 			} else if(json_result.results != 'false') {
-				console.log('second_round');
+				//console.log('second_round');
 
 			}
-			console.log('third_round');
+			//console.log('third_round');
 		}
 //	        sTimer =  setTimeout("send_msg('','"+time+"','"+channel_id+"');",2000);
 	}
