@@ -38,7 +38,7 @@
 	
 	<h4>Configure and Add a Relevancy Setting:</h4>
 	
-	<form id="rel_form" action="_self" method="post">	
+	<form id="rel_form" action="<?=ROOT?>" method="post">	
 	
 	<fieldset>
 
@@ -60,7 +60,9 @@ EOF;
 		</ul>
 		
 		<span id="rel_complete">Setting Added!</span>
-		<span id="rel_button"><a href="####" onclick="add_rel(); return false;"><button type="submit">Add Setting</button></a></span>
+		<span id="rel_button"><a href="#" onclick="add_rel(); return false;">
+			<button type="submit" onsubmit="return false;">Add Setting</button></a>
+		</span>
 	
 	</fieldset>
 		

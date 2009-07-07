@@ -67,6 +67,7 @@ Autocompleter.Request.JSON.Toggle = new Class({
 
 Bit_Grabber2 = new Class({
 
+	tab_counter: new Hash({}),
 	offset_array: [],
 
 	grab_bits: function(data){
@@ -76,6 +77,15 @@ Bit_Grabber2 = new Class({
 	var self = this;
 	Hash.each(data,function(value){ Hash.each(value,
 	function(html,key){ 
+		var tab_counter	= key+'_counter';
+		console.log(tab_counter);
+		if($(tab_counter)){
+			count = self.tab_counter.get(key);
+			count = count + 1;
+				$(tab_counter).set('text',count);
+			self.tab_counter.set(key,count);
+		}
+
 		var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
 		var id = key+'_information';
 		newel.inject(id,'top');
@@ -400,6 +410,9 @@ myFx.hide();
 	$('clear_bullets').addEvent('click',function(e){
 		$$('.tab_bullet').each(function(el){
 			el.src = 'images/icons/bullet_white.png';
+		});
+		$$('.tab_counter').each(function(el){
+			el.set('text','0');
 		});
 	});
 
@@ -1055,11 +1068,11 @@ window.onload=function() { show_info('groups','Groups'); } ;
 </div>
 	<span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
 	<div id="main_tabs">
-		<span id="clear_bullets"><b>Clear Tabs</b></span>
+		<span id="clear_bullets"><b>Reset Tabs</b></span>
 		<ul id="tab_list">
-			<li class="tab" id="direct" onclick="show_info('direct','Direct Messages')"><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /></li>
-			<li class="tab" id="building" onclick="show_info('building','Same Building')"><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp<img src="images/icons/building.png" /></li>
-			<li class="tab" id="friends" onclick="show_info('friends','Friends Aggragate')"><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp<img src="images/icons/connect.png" /></li>
+			<li class="tab" id="direct" onclick="show_info('direct','Direct Messages')"><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /> <span class="tab_counter" id="direct_counter">0</span></li>
+			<li class="tab" id="building" onclick="show_info('building','Same Building')"><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp <img src="images/icons/building.png" /> <span class="tab_counter" id="building_counter">0</span> </li>
+			<li class="tab" id="friends" onclick="show_info('friends','Friends Aggragate')"><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp <img src="images/icons/connect.png" /> <span class="tab_counter" id="friends_counter">0</span></li>
 			<div id="friends_tab_slide">
 			<!-- START of Network -->
 			<?php
@@ -1073,7 +1086,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
 
 			<!-- END of Network -->	
 
-			<li class="tab" id="groups" onclick="show_info('groups','Groups Aggragate')"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /></li>
+			<li class="tab" id="groups" onclick="show_info('groups','Groups Aggragate')"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /> <span class="tab_counter" id="groups_counter">0</span> </li>
 			<div id="groups_tab_slide">
 			<!-- START of Individual Groups -->	
 			<?php
@@ -1086,7 +1099,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
 			</div>
 			<!-- END of Individual Groups -->	
 
-			<li class="tab" id="rel" onclick="show_info('rel','Relevant Aggragate')"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /></li>
+			<li class="tab" id="rel" onclick="show_info('rel','Relevant Aggragate')"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /> <span class="tab_counter" id="rel_counter">0</span> </li>
 			<div id="rel_tab_slide">
 			<!-- START of Relevancy Settings -->	
 			<?php

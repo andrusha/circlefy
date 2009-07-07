@@ -120,13 +120,14 @@ height:22px;
 font-weight:bold;
 cursor:pointer;
 font-size:14px;
-display:inline;
 padding:0px 9px 0px 9px;
+text-align:right;
 margin:12px;
 display:block;
 }
 
 #left_tabs{
+cursor:pointer;
 background:url('../../images/left_bg.gif') no-repeat 8px top;
 border-right:1px dotted #10F0FF;
 margin-top:160px;
@@ -171,12 +172,15 @@ text-align:left;
 float:left;
 right:0;
 overflow-y:auto;
-width:190px;
-height:740px;
+width:207px;
+height:840px;
 }
 	.toggle_list_el{
 	cursor:pointer;
 	margin:9px;
+	}
+
+	.tab_counter{
 	}
 
 #clear_bullets{
