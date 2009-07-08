@@ -78,7 +78,6 @@ Bit_Grabber2 = new Class({
 	Hash.each(data,function(value){ Hash.each(value,
 	function(html,key){ 
 		var tab_counter	= key+'_counter';
-		console.log(tab_counter);
 		if($(tab_counter)){
 			count = self.tab_counter.get(key);
 			count = count + 1;
@@ -115,20 +114,16 @@ Bit_Grabber = new Class({
 		self.offset_array.push(el.innerHTML);
 	});
 
-//	console.log(self.offset_array[0]);
-
 	var req_res = new Request.JSON({
 			url:"AJAX/response_poller.php",
 			onComplete: function(data){
 				var counter = 0;	
 				$$('.offsets').each(function( el ) {
 					var new_offset = data.new_offsets[counter];
-					//console.log(data.new_offsets[counter]);
 					el.innerHTML = new_offset;
 					counter++;
 				})
 				if(data.results != false){
-					//console.log("test");
 					Hash.each(data.data,function(value){ Hash.each(value,
 					function(html,key){ 
 						var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
@@ -181,7 +176,6 @@ Response_Grabber = new Class({
 						$each( data.data, function(val,key){
 						for(i in val){
 							if($type(val[i]) == 'string'){	
-								//console.log(key,val);
 								if(active_convo.active_convos.contains(key)){
 								new Fx.Tween($('active_'+key), {property: 'background-color', link: 'chain'}).start('#f50').start('#fff');
 								$('active_'+key+'_bullet').src = "images/icons/bullet_blue.png";
@@ -283,7 +277,6 @@ Active_Convo = new Class({
 			e.stop();
 			var id_seq = this.getParent().id.substring(7);
 			self.active_convos.erase(id_seq);
-			//console.log(id_seq)
 			this.getParent().style.display = 'none';
 			var req_res = new Request.JSON({
 				url:"AJAX/remove_active.php"
@@ -508,7 +501,6 @@ E
 			    });
 			    exampleFx.start(0,1); /*fade it in*/
 
-			//console.log('Start');
 			autocompleter.enable();
 
 		}else if((event.key =='space')  && autocompleter.toggleEnabled){
@@ -517,7 +509,6 @@ E
 //			$('text_state').innerHTML = '<img src="images/icons/comment_edit.png" />Now type your message to the people who you\'re sending it to and press enter to send';
 			$('mode_text').innerHTML = '<img src="images/icons/comment_edit.png" />Messaging, press enter to send your message';
 //			$('mode_text').style.background = 'lightgreen';
-			//console.log('Stop');
 	//		inputBox.removeEvents();
 		//	setTimeout("autocompleter.disable()",1000);
 			

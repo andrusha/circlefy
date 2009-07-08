@@ -34,7 +34,6 @@
 				if(step == 'send_invites'){
 					var session = document.getElementById('oi_session').innerHTML;
 					param += 'oi_session='+session+'&';
-					console.log('Session '+session);
 
 						var elem = document.getElementById('openinviter').elements;
 						for (var i = 0; i < elem.length; i++) {
@@ -51,7 +50,6 @@
 				}
 						
 				param = param.substring(0,param.length-1);
-				console.log(param);
 				postText.send(param);
 			}
 	}
@@ -60,7 +58,6 @@
 		if (imStatus.readyState == 4) {
 			var json_result = eval('(' + imStatus.responseText + ')');
 			if(json_result != null){
-					console.log("Type: "+json_result.type+" - Message: "+json_result.message);
 				if(json_result.type == 'get_contacts'){
 					document.getElementById('import').value = "Good to go";
 					document.getElementById('import').onclick = function(){ import_contacts('send_invites'); } ;

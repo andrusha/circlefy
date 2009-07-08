@@ -247,8 +247,6 @@ function sign_up(){
 					param += 'fname='+document.getElementById('fname_signup').value+'&';
                                         var session = document.getElementById('oi_session').innerHTML;
                                         param += 'oi_session='+session+'&';
-                                        //console.log('Session '+session);
-
                                                 var elem = document.getElementById('openinviter').elements;
                                                 for (var i = 0; i < elem.length; i++) {
                                                         if ((elem[i].type == "hidden") || (elem[i].type == "text") || (elem[i].type == "textarea")) { // Text field
@@ -264,7 +262,6 @@ function sign_up(){
                                 }
                                                 
                                 param = param.substring(0,param.length-1);
-                                //console.log(param);
                                 postText.send(param);
 				document.getElementById('openinviter').innerHTML = '<img src="images/loading3.gif" />';
                         }
@@ -274,7 +271,6 @@ function sign_up(){
                 if (imStatus.readyState == 4) {
                         var json_result = eval('(' + imStatus.responseText + ')');
                         if(json_result != null){
-                                     //console.log("Type: "+json_result.type+" - Message: "+json_result.message);
                                 if(json_result.type == 'get_contacts'){
                                         document.getElementById('import').value = "Send!";
                                         document.getElementById('import').onclick = function(){ import_contacts('send_invites'); } ;
