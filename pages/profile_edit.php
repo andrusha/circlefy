@@ -83,8 +83,6 @@ class profile_edit extends Base{
                                         WHERE t1.uid ={$uid}
 EOF;
 
-				echo $update_pics_query;
-//echo $update_pics_query;
 				$this->db_class_mysql->set_query($update_pics_query,'update_pics',"Updating a users pictures");
 				$edit_profile_results = $this->db_class_mysql->execute_query('update_pics');
 

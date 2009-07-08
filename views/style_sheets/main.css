@@ -121,8 +121,8 @@ font-weight:bold;
 cursor:pointer;
 font-size:14px;
 padding:0px 9px 0px 9px;
-text-align:right;
-margin:12px;
+text-align:left;
+margin:8px;
 display:block;
 }
 
@@ -177,7 +177,7 @@ height:840px;
 }
 	.toggle_list_el{
 	cursor:pointer;
-	margin:9px;
+	margin:4px;
 	}
 
 	.tab_counter{
@@ -910,7 +910,7 @@ margin-bottom:10px;
 		width:500px;
 		margin:0 auto;
 		border:none;
-		background:white url('../../images/bg.gif') no-repeat 20px 0px;
+		background:url('../../images/bg.gif') no-repeat 20px 0px;
 	}
 	
 	#forms li{

@@ -51,7 +51,7 @@ EOF;
 			$posting_results = $this->db_class_mysql->execute_query('get_postings');
 			$chat_results = $this->db_class_mysql->execute_query('get_chat');
 			$group_results = $this->db_class_mysql->execute_query('get_groups');
-			
+
 				$rel_profile_results = $rel_profile_results->fetch_assoc();
 				$login_results = $login_results->fetch_assoc();
 				$friends_results = $friends_results->fetch_assoc();
