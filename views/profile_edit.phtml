@@ -9,7 +9,19 @@
 <style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
 
     <script type="text/javascript" src="views/javascript/edit_profile.js"></script>
+    <script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
     
+    <script type="text/javascript">
+
+
+window.addEvent('ondomready',function(){
+	
+	$('edit_submit_you').addEvent('click',function(){
+		Cookie.dispose('profile_edit');
+	});
+});
+	
+	</script>
 </head>
 
 <body>
@@ -19,7 +31,6 @@
 	<?php include(HEADER);?>
 		
 	<?php include(LEFT);?>
-	
 
 	<?$edit_profile = $view_data['edit_profile'];
 	

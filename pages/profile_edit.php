@@ -23,6 +23,7 @@ class profile_edit extends Base{
 		parent::__construct();
 
 		$uid = $_SESSION['uid'];
+		setcookie('profile_edit','',time()-360000);
 
 	
 	if(isset($_FILES['image_of_you'])){

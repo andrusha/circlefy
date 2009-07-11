@@ -8,6 +8,21 @@
 <meta name="description" content="" />
 <style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
 <script type="text/javascript" src="views/javascript/invite.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
+
+<script type="text/javascript">
+
+      
+window.addEvent('domready', function() { 
+         
+        $('connected_submit').addEvent('click',function(){
+                Cookie.dispose('groups');
+        });
+
+});
+        
+</script>
+
 <script type="text/javascript" >
 
 function vanish_text(classAppend,e){

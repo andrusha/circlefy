@@ -9,6 +9,19 @@
 <style type="text/css" media="all">@import "views/style_sheets/home.css";</style>
 
 <script type="text/javascript" src="views/javascript/rel.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript">
+
+      
+window.addEvent('domready', function() { 
+	 
+        $('rel_button').addEvent('click',function(){
+                Cookie.dispose('rel_settings');
+        });
+
+});
+        
+        </script>
 
 </head>
 
@@ -60,7 +73,7 @@ EOF;
 		</ul>
 		
 		<span id="rel_complete">Setting Added!</span>
-		<span id="rel_button"><a href="#" onclick="add_rel(); return false;">
+		<span id="rel_button"><a id="rel_button_b" href="#" onclick="add_rel(); return false;">
 			<button type="submit" onsubmit="return false;">Add Setting</button></a>
 		</span>
 	

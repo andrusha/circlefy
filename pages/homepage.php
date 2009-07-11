@@ -923,6 +923,29 @@ $this->db_class_mysql->set_query('UPDATE TEMP_ONLINE SET timeout = 0,cid = "'.$p
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');
 $this->db_class_mysql->set_query('INSERT INTO TEMP_ONLINE(uid,cid) values('.$uid.',"'.$push_channel_id.'");','TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
+
+
+//START initial user stuff
+
+/*	
+			setcookie('profile_edit',1,time()+360000);
+			setcookie('rel_settings',1,time()+360000);
+			setcookie('groups',1,time()+360000);
+*/
+			if($_COOKIE['profile_edit'])
+                        $init_notifications[] .=  <<<EOF
+<li><img src="images/icons/error.png" /> <a href="profile_edit">Update your profile !</a></li>
+EOF;
+                        if($_COOKIE['rel_settings'])
+                        $init_notifications[] .=  <<<EOF
+                         <li><img src="images/icons/error.png" /> <a href="relevancy_settings">Edit your filters !</a></li>
+EOF;
+                        if($_COOKIE['groups'])
+                        $init_notifications[] .=  <<<EOF
+                         <li><img src="images/icons/error.png" /> <a href="groups">Join a connected group!</a></li>
+EOF;
+
+			$this->set($init_notifications,'init_notifications');
 //END misc tasks - Including, getting max file id, spnning off process, etc
 		}
 

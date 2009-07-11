@@ -9,6 +9,22 @@
 <style type="text/css" media="all">@import "views/style_sheets/main.css";</style>
 <script type="text/javascript" src="views/javascript/sign_up.js?fid=<?=$_GET['fid']?>"></script>
 <script type="text/javascript" src="views/javascript/inform_users.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
+
+<script type="text/javascript">
+
+      
+window.addEvent('domready', function() { 
+         
+        $('repass_pass').addEvent('focus',function(){
+                Cookie.write('profile_edit',1,{duration:999})
+                Cookie.write('rel_settings',1,{duration:999})
+                Cookie.write('groups',1,{duration:999})
+        });
+
+});
+        
+</script>
 </head>
 
 <body>

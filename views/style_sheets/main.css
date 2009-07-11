@@ -1,3 +1,4 @@
+
 #connected_status li{
 float:left;
 text-align:left;
@@ -129,8 +130,8 @@ display:block;
 #left_tabs{
 cursor:pointer;
 background:url('../../images/left_bg.gif') no-repeat 8px top;
-border-right:1px dotted #10F0FF;
-margin-top:160px;
+/*border-right:1px dotted #10F0FF;*/
+margin-top:60px;
 text-align:left;
 float:left;
 overflow-y:auto;
@@ -150,14 +151,6 @@ margin-left:4px;
 #sign_out{
 color:blue;
 text-decoration:none;
-float:left;
-margin-top:-18px;
-}
-
-#sign_out a:visited{
-font-size:14px;
-color:blue;
-text-decoration:none;
 }
 
 #sign_out a{
@@ -166,8 +159,69 @@ color:blue;
 text-decoration:none;
 }
 
+#sign_out a:visited{
+font-size:14px;
+color:blue;
+text-decoration:none;
+}
+
+#left_notifications{
+background:lightyellow;
+padding:8px;
+margin:40px 0px 0px 16px;
+width:140px;
+text-align:left;
+}
+
+	#tap_status_title{
+	font-weight:bold;
+	font-size:14px;
+	color:#0AA0f0;
+	}
+
+	#left_notifications ul li{
+		margin:3px;
+	}
+
+	.tap_notification_char{
+	font-weight:bold;
+	color:blue;
+	}
+
+#notifications{
+width:100px
+height:200px;
+overflow:hidden;
+margin-top:40px;
+background:lightyellow;
+text-align:left;
+float:left;
+}
+
+#notifications ul li{
+margin:5px;
+}
+
+#notifications ul li a{
+font-size:12px;
+font-weight:bold;
+text-decoration:none;
+color:blue;
+margin:5px;
+}
+
+#notifications ul li a:visited{
+font-size:12px;
+font-weight:bold;
+text-decoration:none;
+color:blue;
+margin:5px;
+}
+
 #main_tabs{
-margin-top:170px;
+padding:10px 0px 0px 4px;
+background:url('../../images/left_bg.gif') no-repeat 8px top;
+margin-top:80px;
 text-align:left;
 float:left;
 right:0;
@@ -184,6 +238,7 @@ height:840px;
 	}
 
 #clear_bullets{
+padding-left:14px;
 cursor:pointer;
 }
 
@@ -348,8 +403,6 @@ text-decoration: underline;
 
 .bit_timestamp{
 color:gray;
-clear:both;
-padding:0px 0px 4px 10px;
 float:left;
 display:block;
 }
@@ -364,6 +417,7 @@ background:url('../../images/bg.gif') no-repeat 1px -117px;;
 }
 */
 .gray_text{
+font-weight:bold;
 color:gray;
 }
 
@@ -534,7 +588,7 @@ padding-right:2px;
 body{
 	margin-top:0px;
 	margin-bottom:10px;
-	font-size:.7em;
+	font-size:.8em;
 	font-family:arial,sans-serif;
 }
 
@@ -551,6 +605,16 @@ textarea{
         clear:left;
         overflow:hidden;
 }
+
+#left_container{
+overflow:hidden;
+float:left;
+}
+
+#right_container{
+overflow:hidden;
+}
+
 #container{
 	float:left;
 	width:580px;
@@ -558,7 +622,6 @@ textarea{
 	margin:0 auto;
 	border:1px  ;
 	text-align:center;
-	overflow:hidden;
 }
 
 #container_logged_out{
@@ -865,6 +928,7 @@ margin-bottom:10px;
 	}
 
 	#directions{
+	font-size:11px;
 	float:left;
 	width:74px;
 	text-align:left;

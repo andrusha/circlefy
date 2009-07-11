@@ -14,7 +14,7 @@ class DB{
 	public $query_list = array();
 	
 	//protected $db_type = 'MySQL';
-	protected $db_debug = 0	;
+	protected $db_debug = 0;
 	static private $count = 0;
 	
 	static private $instance;
