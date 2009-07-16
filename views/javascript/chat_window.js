@@ -103,6 +103,8 @@ function handlePending(imStatus,time,channel_id) {
 					$('tap_status_table_body').innerHTML += "<tr><td class='lt'>Other </td><td class='rt'>"+counter_data.other+"</td></tr>";
 				});
 				$('tap_status_table_body').tween('opacity', 0, 1);
+				$('to_output').tween('opacity', 1, 0);
+				$('to_output').empty();
 			} else if(json_result.results != 'false') {
 
 			}

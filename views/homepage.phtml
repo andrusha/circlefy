@@ -379,22 +379,54 @@ Sym_Search = new Class({
 Send_To = new Class({
 
 	stringPos: 0,
+	added: new Hash({}),
 
 	enable:function(){
-		self = this;
 		$('to_input').addEvent('keydown',function(event){
-			current_text = $('to_input').value.slice(self.stringPos);
-			if(event.key == 'enter'||event.key == 'space')
-			match = current_text.match(/#\S+/);
+			match = null;
+			type = null;
+			current_text = $('to_input').value.slice(this.stringPos);
+			if(event.key == 'enter'||event.key == 'space'){
+
+				if(current_text.substr(0,1) == '#'){
+					match = current_text.match(/#\S+/);
+					type = 'group_to';
+				}
+				if(current_text.substr(0,1) == '*'){
+					match = current_text.match(/\*\S+/);
+					type = 'keyword_to';
+				}
+				if(current_text.substr(0,1) == '@'){
+					match = current_text.match(/@\S+/);
+					type = 'friend_to';
+				}
+				if(!type && this.added.getKeys().length == 0)
+					$('to_output').innerHTML = ' You should do x,y,z seriiously';
+
+			}
 	
 			if(match != null){
+				console.log(type);
 				match = match[0];
 				pos = current_text.split(match);
-				self.stringPos = current_text.indexOf(pos[1]);
-				$('to_input').value = current_text.replace(match,match.substr(1)+', ');
+				this.stringPos = current_text.indexOf(pos[1]);
+				this.added.set(type,current_text.replace(match,match.substr(1)));
+				$('to_input').value = '';
+				this.list();
 			}
-			match = null
+		}.bind(this));
+	},
+
+
+	list:function(){
+		el = $('to_output');
+		el.empty();
+		el.tween('opacity', 1, 0);
+		$each(this.added,function(val,type){
+			el.innerHTML += '<span class="to_box '+type+'">'+val+'</span>';	
 		});
+		el.tween('opacity', 0, 1);
+
 	}
 });
 
@@ -1001,7 +1033,7 @@ EOF;
 				</table>
 			</li>
 			<li id="to">To:
-			<input id="to_input" type="input"></input>	
+			<input id="to_input" type="input"></input><span id="to_output"></span>
 			</li>
 		</ul>
 	

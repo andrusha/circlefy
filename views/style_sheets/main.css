@@ -1021,9 +1021,26 @@ margin-bottom:10px;
 	}
 
 	#to_input{
-	border:1px solid lightgray;
+	border:none;
+	border-bottom:1px solid lightgray;
 	color:gray;	
 	width:90px;
+	}
+
+	.to_box{
+		margin:4px;
+		padding:3px;
+		border:1px solid gray;
+	}
+
+	.group_to{
+	background:lightgreen;
+	}
+	.friend_to{
+	background:lightblue;
+	}
+	.keyword_to{
+	background:lightyellow;
 	}
 	
 	#inner_button{
