@@ -148,19 +148,25 @@ width:170px;
 margin-left:4px;
 }
 
+#user{
+font-weight:bold;
+font-size:12px;
+margin-right:20px;
+}
+
 #sign_out{
+font-weight:bold;
+font-size:11px;
 color:blue;
 text-decoration:none;
 }
 
 #sign_out a{
-font-size:14px;
 color:blue;
 text-decoration:none;
 }
 
 #sign_out a:visited{
-font-size:14px;
 color:blue;
 text-decoration:none;
 }
@@ -172,6 +178,18 @@ margin:40px 0px 0px 16px;
 width:140px;
 text-align:left;
 }
+
+#tap_status_table_body{
+overflow:hidden;
+}
+	.lt{
+	width:140px;
+	font-weight:bold;
+	color:gray;
+	}
+	
+	.rt{
+	}
 
 	#tap_status_title{
 	font-weight:bold;
@@ -273,10 +291,11 @@ vertical-align:middle;
 
 
 #main_information{
+background:url('../../images/feed_bg.gif') no-repeat -80px -15px;
 width:520px;
 height:780px;
 margin:0px auto;
-padding:5px;
+padding:20px;
 clear:both;
 overflow-y:hidden;
 overflow-x:hidden;
@@ -323,7 +342,7 @@ margin 0 auto;
 
 
 .blue{
-border-bottom:1px dotted #00F0F0;
+border-bottom:1px solid #F0F0F0;
 }
 
 .blue:hover{
@@ -331,7 +350,7 @@ background:#F0F0F0;
 }
 
 .red{
-border-bottom:1px dotted #00F0F0;
+border-bottom:1px solid #F0F0F0;
 }
 
 .red:hover{
@@ -417,6 +436,10 @@ background:url('../../images/bg.gif') no-repeat 1px -117px;;
 }
 */
 .gray_text{
+color:gray;
+}
+
+.gray_text2{
 font-weight:bold;
 color:gray;
 }
@@ -913,6 +936,10 @@ margin-bottom:10px;
 	width:400px;
 	}
 
+	#info_list li:hover{
+	background:transparent;
+	}
+
 	
 	#submit_button {
 	font-size:12px;
@@ -922,8 +949,9 @@ margin-bottom:10px;
 	}
 	
 	textarea{
-	height:106px;
-	width:300px;
+	padding:9px;
+	height:88px;
+	width:285px;
 	font-size:12px;
 	}
 
@@ -938,9 +966,64 @@ margin-bottom:10px;
 	#directions li{
 	margin:4px;
 	}
+
+	#sym_search{
+	padding:8px 0px 5px 0px;
+	}
+	
+	#sym_search input[type=text]{
+	background:white url('../../images/icons/magnifier.png') no-repeat 2px;
+	padding:2px;
+	padding-left:20px;
+	}
+
+	#sym_results{
+		display:block;
+		margin:0 auto;
+		padding:4px;
+		width:340px;
+		height:50px;
+	}
+
+	#sym_results_table{
+		width:320px;
+		text-align:left;
+		border-collapse:collapse;
+	}
+
+	#sym_results_table td{
+		border-bottom:1px solid lightgray;
+	}
+	
+	#sym_results_table tr:hover{
+		background:lightblue;
+		cursor:pointer;
+	}
+
+	#tap_status_table tfoot{
+	font-size:11px;
+	color:blue;
+	}
+
+	#sym_results:hover{
+		background:#F0F0F0;
+	}
 		
 	#outter_button{
 	position:relative;
+	}
+
+	#to{
+	color:gray;
+	font-weight:bold;
+	text-align:left;
+	margin-left:54px;
+	}
+
+	#to_input{
+	border:1px solid lightgray;
+	color:gray;	
+	width:90px;
 	}
 	
 	#inner_button{

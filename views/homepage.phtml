@@ -345,6 +345,59 @@ Active_Convo = new Class({
 
 });
 
+Sym_Search = new Class({
+
+	search:function(){
+		var self = this
+		$('sym_search').addEvent('submit',function(e){
+		e.stop();
+		keyword = $('main_sym_search').value;
+		var req_res = new Request.JSON({
+                                url:"AJAX/search_assoc.php",
+				onComplete: function(data){
+					tbody = $('sym_results_table_body');
+					tbody.empty();
+					$each( data, function(val,key){
+						el = new Element('tr', {'html':''} );
+						elements = [];
+						Hash.each(val,function(val2,key2){
+							elements[key2] = new Element('td', {'html': val2 } )
+							elements[key2].inject(el,'bottom');
+						});
+							button =  new Element('td', {'html': '<img src="images/icons/bullet_add.png" />' } )
+							button.inject(el,'bottom');
+						el.tween('opacity', 0, 1);
+						el.inject(tbody,'top');
+					}).bind(elements,key2);
+					
+				}
+                        }).post({'search' : keyword});
+		});
+	}
+});
+
+Send_To = new Class({
+
+	stringPos: 0,
+
+	enable:function(){
+		self = this;
+		$('to_input').addEvent('keydown',function(event){
+			current_text = $('to_input').value.slice(self.stringPos);
+			if(event.key == 'enter'||event.key == 'space')
+			match = current_text.match(/#\S+/);
+	
+			if(match != null){
+				match = match[0];
+				pos = current_text.split(match);
+				self.stringPos = current_text.indexOf(pos[1]);
+				$('to_input').value = current_text.replace(match,match.substr(1)+', ');
+			}
+			match = null
+		});
+	}
+});
+
 var active_convo;
 var autocompleter;
 var inputBox;
@@ -353,6 +406,12 @@ var poller_obj;
 var response_event_obj;
 window.addEvent('domready', function() {
 
+	send_to_obj = new Send_To;
+	send_to_obj.enable();
+
+	sym_search_obj = new Sym_Search;
+	sym_search_obj.search();
+	
 	active_convo = new Active_Convo;
 	active_convo.remove_active();
 	active_convo.get_active_list();
@@ -370,7 +429,7 @@ window.addEvent('domready', function() {
 grabber_obj = new Response_Grabber;
 grabber_obj.grab_all();
 grabber_obj.r_poller();
-setInterval('grabber_obj.r_poller()',3000);
+//setInterval('grabber_obj.r_poller()',3000);
 
 /*
 This was the polling method to grabing the bits
@@ -441,7 +500,8 @@ myFx.hide();
 		$('rel_toggle').src = "images/icons/bullet_toggle_plus.png";
 		rel_slide.toggle();
 	});
-	
+
+/*	
 	$('text_state_toggle').addEvent('click', function(e) { 
 		e.stop();
 		
@@ -463,7 +523,7 @@ myFx.hide();
 		}
 	
 	});
-
+*/
 /*	
 	responseBoxes.each(function(el){
 		el.addEvent('keydown',function(event){
@@ -492,7 +552,7 @@ E
 		if((event.key =='3' && event.shift) && !autocompleter.toggleEnabled){
 			//$('text_state').style.background = 'lightyellow';
 			//$('text_state').innerHTML = 'Direct your message to people using the symbols below (Example: the group Harvard would be #Harvard, your friend Bill22 would be @Biill22 , *cats for people interested in cats). Press ! when complete, then start typing your message';
-			$('mode_text').innerHTML = '<img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode';
+//			$('mode_text').innerHTML = '<img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode';
 //			$('mode_text').style.background = 'lightblue';
 /*
 			exampleFx = new Fx.Style(’text_state’, ‘opacity’, {
@@ -507,7 +567,7 @@ E
 			autocompleter.disable();
 			//$('text_state').style.background = 'lightgreen';
 //			$('text_state').innerHTML = '<img src="images/icons/comment_edit.png" />Now type your message to the people who you\'re sending it to and press enter to send';
-			$('mode_text').innerHTML = '<img src="images/icons/comment_edit.png" />Messaging, press enter to send your message';
+//			$('mode_text').innerHTML = '<img src="images/icons/comment_edit.png" />Messaging, press enter to send your message';
 //			$('mode_text').style.background = 'lightgreen';
 	//		inputBox.removeEvents();
 		//	setTimeout("autocompleter.disable()",1000);
@@ -845,7 +905,15 @@ EOF;
 
 		<div id="left_notifications">
 			<span id="tap_status_title">tap status</span> <br/>
-			<span id="tap_status_descr"> <img src="images/icons/information.png" />  tap status shows you who's getting your message.  If nobody gets your message, we'll let you know, and you can pitch that message to different people
+			<span id="tap_status_descr"> <img src="images/icons/information.png" />  tap status shows you who's getting your message.  If nobody gets your message, we'll let you know, and you can pitch that message to different people</span>
+			<table id="tap_status_table">
+			<thead></thead>
+			<tbody id="tap_status_table_body">
+			</tbody>
+			<tfoot>
+			<tr><td># of people you tapd</td></tr>
+			</tfoot>	
+			</table>
 <!--				<ul>
 					<li><span class="tap_notification_char">#nyu.edu </span> 940</li>
 					<li><span class="tap_notification_char">direct </span>3</li>
@@ -887,11 +955,6 @@ EOF;
 	
 		<ul id="info_list">
 
-			<li id="welcome"> 
-			<?
-				echo "<img src='".PROFILE_PIC_REL.$user_pic."' /> Welcome ".$user;
-			?>
-			</li>
 			<!-- <li id="number">There are currently 400 active users</li> -->
 	<?php $help = $view_data['help']; if($help) $hide_class="hide_class";
 	
@@ -919,22 +982,27 @@ EOF;
 				<li>-If you don't see any you like, click on Groups / Network in the center and add them.</li>
 				<li>-You can type in any tag. Press ! when complete, then start typing your message</li>
 			</ul> -->
-
+			<li>
+			<form id="sym_search">
+				<input class="0 gray_text" onclick="vanish_text(0,this); return false;" type="text" id="main_sym_search" value="Search"></input>
+	 			</form>
+			</form>
 			</li>
-			<?php
-			if($help){
-				 $help_toggle = <<<EOF
-			<li class="show_help" id="text_state_toggle"><a href="#">Show help</a></li>
-EOF;
-			} else {
-				$help_toggle = <<<EOF
-			<li class="hide_help" id="text_state_toggle"><a href="#">Hide help</a></li>
-EOF;
-			}
-
-			echo $help_toggle;
-?>
-			<li id="text_mode"><b>Mode: </b> <span id="mode_text"><img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode</span></li>
+			<li id="sym_results">
+				<table id="sym_results_table">
+					<thead>
+						<col width="170px">
+						<col width="40px">
+						<col width="20px">
+						<col width="20px">
+					</thead>
+					<tbody id="sym_results_table_body">
+					</tbody>
+				</table>
+			</li>
+			<li id="to">To:
+			<input id="to_input" type="input"></input>	
+			</li>
 		</ul>
 	
 	</div>
@@ -952,9 +1020,9 @@ EOF;
 					</ul>
 			
 					<ul id="top_form">
-						<li><textarea class="gray_text" maxlength="254" rows="2" cols="15" id="question" onkeypress="if(!autocompleter.toggleEnabled) { ifEnter(this,event);  document.getElementById('question').focus(); } "></textarea></li>
+						<li><textarea class="gray_text" maxlength="254" rows="2" cols="15" id="question" onkeypress="if(!autocompleter.toggleEnabled) { ifEnter(this,event);  document.getElementById('question').focus(); } ">Tap the connected..</textarea></li>
 						<li id="outter_button"><span id="inner_button">
-						<input type="submit" id="submit_button" onclick="open_window(document.getElementById('welcome').innerHTML.substring(8), document.getElementById('question').value); return false;" value="Tap"></input>
+						<input type="submit" id="submit_button" onclick="open_window(document.getElementById('question').value); return false;" value="Tap"></input>
 
 						</span></li>
 					</ul>
@@ -971,7 +1039,7 @@ EOF;
 	<!--	
 	-->
 
-	<div id="current_info_div"><b>Currently Viewing:</b> <span id="current_info_display"></span> Feed <span id="current_info"></span><div>
+	<div id="current_info_div"><b>Currently Viewing:</b> <span id="current_info_display"></span> Feed <span id="current_info"></span><div><br/>
 	<div id="main_information">
 		<div class="sub_information" id="direct_information">
 		<?
@@ -1085,7 +1153,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
 
 
 	<div id="right_container">
-		<span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
+		<span id="user">Logged in as <?=$user?></span><span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
 
 		<div id="notifications">
 			<ul>

@@ -60,7 +60,8 @@ window.addEvent('domready', function() {
 			<span id="name_error">You need a name!</span>
 			<li> <label for="tags">Tags:</label><input  type="text" class="textbox" id="tags" value="<?=$value2?>"></input></li>
 			<span id="tag_error">You need tags or a zipcode!</span>
-			<li> <label for="zipcode">Zipcode:</label><input type="text" maxlength="5" class="textbox" id="zipcode" value="<?=$value3?>"></input></li>
+			<li> <label for="zipcode">Zipcode:</label><input type="text" maxlength="5" class="textbox" id="zipcode" value="<?=$value3?>"></input><label for="radius">Raduis:</label><input type="text" style="width:20px;"></input> </li>
+			<li> <input type="radio"> Destin </input><input type="radio"> Originating </input><input type="radio"> Both </input></li>
 			<li> <label for="gfroup">Group:</label> 
 			<select id="group">
 				<option value="0" title="All">All/Any Group</option>
@@ -70,6 +71,7 @@ window.addEvent('domready', function() {
 EOF;
 				?>
 				</select></li>
+			<li> <input type="radio"> Destin </input><input type="radio"> Originating </input><input type="radio"> Both </input></li>
 		</ul>
 		
 		<span id="rel_complete">Setting Added!</span>

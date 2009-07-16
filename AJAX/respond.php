@@ -26,6 +26,8 @@ class chat_functions{
 	function send_response($msg,$channel_id){
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
+		$this->mysqli->real_escape_string($msg);
+		$this->mysqli->real_escape_string($channel_id);
 		
                 $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$channel_id}','{$uid}','{$uname}','{$msg}')";
 		echo $resp_message_query;

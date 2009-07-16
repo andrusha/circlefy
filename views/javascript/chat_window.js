@@ -3,7 +3,7 @@ var sTimer;
 function ifEnter(field,event) {
 	var theCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
 	if (theCode == 13){
-		open_window(document.getElementById('welcome').innerHTML.substring(8), document.getElementById('question').value);
+		open_window(document.getElementById('question').value);
 		return false;
 	} else {
 		return true;
@@ -34,13 +34,14 @@ function getXmlHttpRequestObject() {
 }
 
 
-function open_window( user, msg ){
+function open_window( msg ){
+	user = <?=$_SESSION['uname']?>
 	//This initiates the AJAX polling and receives the channel_id
 	send_msg(msg,0,0);
 
 document.getElementById('question').value = '';
 setTimeout("document.getElementById('question').value = '';",200);
-$('mode_text').innerHTML = '<img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode';
+//$('mode_text').innerHTML = '<img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode';
 
 }
 
@@ -85,6 +86,23 @@ function handlePending(imStatus,time,channel_id) {
 				active_convo.add_active(newel,'bit');	
 				//setTimeout("toggle_show_response('responses_'+new_id+'_self',$('self_toggle_res_'+new_id),1)",1000);
 				time = json_result.time;
+				counter_data = json_result.counter_data;
+				$('tap_status_descr').innerHTML = '';
+				$('tap_status_table_body').innerHTML = '';
+				$('tap_status_table_body').tween('opacity', 0, 0);
+				$each(counter_data,function(x,key){
+					if(key == 'groups')
+						$each(x,function(count,group){
+							$('tap_status_table_body').innerHTML += "<tr><td class='lt'>"+group+" </td><td class='rt'>"+count+"</td></tr>";
+						});
+					if(key == 'direct')
+					$('tap_status_table_body').innerHTML += "<tr><td class='lt'>Direct </td><td class='rt'>"+counter_data.direct+"</td></tr>";
+					if(key == 'friends')
+							$('tap_status_table_body').innerHTML += "<tr><td class='lt'>On tap </td><td class='rt'>"+counter_data.friends+"</td></tr>";
+					if(key == 'other')
+					$('tap_status_table_body').innerHTML += "<tr><td class='lt'>Other </td><td class='rt'>"+counter_data.other+"</td></tr>";
+				});
+				$('tap_status_table_body').tween('opacity', 0, 1);
 			} else if(json_result.results != 'false') {
 
 			}

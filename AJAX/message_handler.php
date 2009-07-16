@@ -21,6 +21,8 @@ class chat_functions{
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
                 private $results;
 
+		public $counter_data;
+
         function __construct(){
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
@@ -55,8 +57,6 @@ class chat_functions{
 		$init_active_convo = "INSERT INTO active_convo(mid,uid,active) values({$last_id},{$uid},1)";
 		$this->mysqli->query($init_active_convo);
 
-		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg);
-		$msg_and_channel_id = json_encode($msg_and_channel_id);
 
 		//Call and get symbols parsed
 		$parsed_symbols = $this->lexical_parser($msg);
@@ -75,7 +75,10 @@ class chat_functions{
 
 		//Dispatch all messages with associated reason
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
-		
+	
+		//Return information to user in JSON
+		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg, 'counter_data' => $this->counter_data);
+		$msg_and_channel_id = json_encode($msg_and_channel_id);
 		return $msg_and_channel_id;
 	}
 	//Returns the string without the first character
@@ -167,9 +170,11 @@ class chat_functions{
 		$addr = $_SERVER['REMOTE_ADDR'];
 		$direct_query = "SELECT uid FROM login WHERE ip = INET_ATON('$addr');";
 		$direct_results = $this->mysqli->query($direct_query);
-		
+	
+		$x=0;	
 		if($direct_results->num_rows > 0)
 		while($res = $direct_results->fetch_assoc()){
+			$this->counter_data['building'] = $x++;
                         $uid_list['building'][] .= $res['uid'];
                 }
 	return $uid_list;
@@ -183,11 +188,13 @@ class chat_functions{
                 }
                 $friends = rtrim($friend_list,',');
 
-		$direct_query = "SELECT uid FROM login WHERE uname IN ( $friends );";
+		$direct_query = "SELECT uid,uname FROM login WHERE uname IN ( $friends );";
 		$direct_results = $this->mysqli->query($direct_query);
-		
+	
+		$x=0;	
 		if($direct_results->num_rows > 0)
 		while($res = $direct_results->fetch_assoc()){
+			$this->counter_data['direct'][] = $res['uname'];
                         $uid_list['direct'][] .= $res['uid'];
                 }
 	return $uid_list;
@@ -198,8 +205,10 @@ class chat_functions{
 		$friends_query = "SELECT uid FROM friends WHERE fuid = {$_SESSION['uid']}";
 		$friends_results = $this->mysqli->query($friends_query);
 
+		$x=0;
 		if($friends_results->num_rows > 0)
 		while($res = $friends_results->fetch_assoc()){
+			$this->counter_data['friends'] = $x++;
 			$uid_list['friend'][] = $res['uid'];
 		}	
 	return $uid_list;
@@ -209,7 +218,6 @@ class chat_functions{
 	//This function gets all of the groups to send to based on your your direct message to them via the # symbol ( i.e. #Stanford )
 	//$group_array = an array of groups you sent to
 	private function group_matches($groups_array){
-
 		foreach($groups_array as $v){
 			$group_list .= '"'.$v.'",';
 		}
@@ -217,19 +225,19 @@ class chat_functions{
 
 		$groups_query = <<<EOF
 		(
-		SELECT t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM groups AS t1
+		SELECT t1.gname as gname,t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM groups AS t1
 		JOIN group_members AS t2
 		ON t2.gid = t1.gid
 		WHERE t1.gname IN ( $groups )
 		) UNION ALL (
-		SELECT t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM connected_groups AS t1
+		SELECT t1.domain as gname,t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM connected_groups AS t1
                 JOIN group_members AS t2
                 ON t2.gid = t1.gid
                 WHERE t1.domain IN ( $groups)
 		)
 EOF;
-
 		$group_matches = $this->mysqli->query($groups_query);
+
 		if($group_matches->num_rows > 0){
 		while($res = $group_matches->fetch_assoc() ) {
 			$c = $res['c'];
@@ -241,12 +249,14 @@ EOF;
 				$uid_list['cgids'][] .= $res['gid'];
 				$c = 1;
 			}
-			
+				$this->counter_data['groups'][$res['gname']][0]++;
 		}
 		if($g)
 		$uid_list['gids'] = array_unique($uid_list['gids']);
 		if($c)
 		$uid_list['cgids'] = array_unique($uid_list['cgids']);
+		$g = 0;
+		$c = 0;
 		}
 	return $uid_list;
 	}
@@ -309,7 +319,6 @@ EOF;
 		(tags IN("") AND zip IN({$zip_list}) AND gid IN ({$cgid_list}0) AND connected=1 )
 		AND enabled = 1;
 EOF;
-//		echo $phrase_query;
 		$phrase_matches = $this->mysqli->query($phrase_query);
 
 		//This processes the uid's while keeping AND/OR logic in mind
@@ -330,11 +339,13 @@ EOF;
 				if($rrid != $old_rrid)
 					$type_counter=0;
 				if(!$type){
+					$this->counter_data['other'][0]++;
 					$uid_list['filters'][$rrid] .= $uid;
 				} else {
 					$type_counter++;
 					if($type == $type_counter){
 						$uid_list['filters'][$rrid] .= $uid;
+						$this->counter_data['other'][0]++;
 					} else { 
 						$old_rrid = $rrid;
 					}
