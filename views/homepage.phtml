@@ -347,11 +347,23 @@ Active_Convo = new Class({
 
 Sym_Search = new Class({
 
+
+	sym_val:0,
+	type_val:0,
+
 	search:function(){
 		var self = this
 		$('sym_search').addEvent('submit',function(e){
 		e.stop();
 		keyword = $('main_sym_search').value;
+		symbol = keyword.substr(0,1);
+		if(symbol == '#')
+			self.type_val = 'group_to';
+		if(symbol == '@')
+			self.type_val = 'friend_to';
+		if(symbol == '*')
+			self.type_val = 'keyword_to';
+
 		var req_res = new Request.JSON({
                                 url:"AJAX/search_assoc.php",
 				onComplete: function(data){
@@ -361,15 +373,20 @@ Sym_Search = new Class({
 						el = new Element('tr', {'html':''} );
 						elements = [];
 						Hash.each(val,function(val2,key2){
+							if(key2 == 'symbol')
+								self.sym_val = val2;	
+
 							elements[key2] = new Element('td', {'html': val2 } )
 							elements[key2].inject(el,'bottom');
 						});
-							button =  new Element('td', {'html': '<img src="images/icons/bullet_add.png" />' } )
+							button =  new Element('td', {'html': '<img src="images/icons/bullet_add.png" />', 'class':'outside_x'} );
+							button.store('symbol',self.sym_val);
+							button.store('type',self.type_val);
 							button.inject(el,'bottom');
 						el.tween('opacity', 0, 1);
 						el.inject(tbody,'top');
-					}).bind(elements,key2);
-					
+					}.bind(this));
+					send_to_obj.outside_x();		
 				}
                         }).post({'search' : keyword});
 		});
@@ -379,9 +396,53 @@ Sym_Search = new Class({
 Send_To = new Class({
 
 	stringPos: 0,
-	added: new Hash({}),
+	stringPos2: 0,
+	added: new Hash({'group_to': [], 'friend_to':[],'keyword_to':[]}),
 
 	enable:function(){
+		$('to_clear').addEvent('click',function(event){
+			this.del_all();
+		}.bind(this));
+
+
+		$('question').addEvent('keyup',function(event){
+			if($('question').value == '')
+				this.stringPos2 = 0;
+
+			whole_text = $('question').value;
+			lchar = false;
+			match = null;
+			type = null;
+			current_text = $('question').value.slice(this.stringPos2);
+			if(event.key == 'enter'||event.key == 'space'){
+
+				match = current_text.match(/(#|@|\*)\S+/);
+				if(match[0].substr(-1) != ',')
+					var lchar = true;
+	
+				if(match[0].substr(0,1) == '#' && lchar){
+					type = 'group_to';
+				}
+				if(match[0].substr(0,1) == '*' && lchar){
+					type = 'keyword_to';
+				}
+				if(match[0].substr(0,1) == '@' && lchar){
+					type = 'friend_to';
+				}
+				if(!type && this.added.getKeys().length == 0)
+					$('to_output').innerHTML = ' Try targeting a group and users using the symbols to the right';
+
+			}
+	
+			if(match != null){
+				match = match[0];
+				pos = current_text.split(match);
+				this.stringPos2 = whole_text.lastIndexOf(pos[1]);
+				match = match.substr(1);
+				this.add(type,match);
+			}
+		}.bind(this));
+
 		$('to_input').addEvent('keydown',function(event){
 			match = null;
 			type = null;
@@ -406,23 +467,39 @@ Send_To = new Class({
 			}
 	
 			if(match != null){
-				console.log(type);
 				match = match[0];
 				pos = current_text.split(match);
 				this.stringPos = current_text.indexOf(pos[1]);
-				this.added.set(type,current_text.replace(match,match.substr(1)));
+			 	var y = current_text.replace(match,match.substr(1))
+				this.add(type,y);
 				$('to_input').value = '';
-				this.list();
 			}
 		}.bind(this));
 	},
 
+	outside_x:function(){
+		$$('.outside_x').addEvent('click',function(event){
+				send_to_obj.add(this.retrieve('type'),this.retrieve('symbol')[0]);
+		});
+	
+	},
+
+	add:function(type,val){
+		this.added[type].include(val);
+		this.list();
+	},
+
+	del_all:function(){
+		this.added = new Hash({'group_to': [], 'friend_to':[],'keyword_to':[]});
+		this.list();
+	},
 
 	list:function(){
 		el = $('to_output');
 		el.empty();
 		el.tween('opacity', 1, 0);
 		$each(this.added,function(val,type){
+			if(val != '')
 			el.innerHTML += '<span class="to_box '+type+'">'+val+'</span>';	
 		});
 		el.tween('opacity', 0, 1);
@@ -461,7 +538,7 @@ window.addEvent('domready', function() {
 grabber_obj = new Response_Grabber;
 grabber_obj.grab_all();
 grabber_obj.r_poller();
-//setInterval('grabber_obj.r_poller()',3000);
+//setInterval('grabber_obj.r_poller()',1000);
 
 /*
 This was the polling method to grabing the bits
@@ -502,15 +579,19 @@ myFx.hide();
 
 	$$('.toggle_list_group').each(function(el){
 		el.addEvent('click',function(e){
-			$('question').value = '#'+el.childNodes[2].innerHTML+', ';
+			var group = el.childNodes[2].innerHTML;
+			$('question').value = '#'+group+', ';
 			$('question').setCaretPosition("end");
+			send_to_obj.add('group_to',group);
 		});	
 		
 	});
 	$$('.toggle_list_friend').each(function(el){
 		el.addEvent('click',function(e){
-			$('question').value = '@'+el.childNodes[2].innerHTML+', ';
+			var friend = el.childNodes[2].innerHTML;
+			$('question').value = '@'+friend+', ';
 			$('question').setCaretPosition("end");
+			send_to_obj.add('friend_to',friend);
 		});	
 		
 	});
@@ -1035,6 +1116,7 @@ EOF;
 			<li id="to">To:
 			<input id="to_input" type="input"></input><span id="to_output"></span>
 			</li>
+			<li id="to_clear">clear</li>
 		</ul>
 	
 	</div>
@@ -1176,11 +1258,9 @@ window.onload=function() { show_info('groups','Groups'); } ;
 </div>
 
 <!-- End main information -->
-<span>test</span>
 </div>
 
 <!-- End container -->
-<span>test 2</span>
 </div>
 
 

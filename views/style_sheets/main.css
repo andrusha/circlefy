@@ -854,7 +854,7 @@ margin-bottom:10px;
 /* Footer */
 
 	#footer{
-		width:148px;
+		width:178px;
 		margin:0 auto;
 		margin-top:15px;
 		text-align:middle;
@@ -1025,6 +1025,20 @@ margin-bottom:10px;
 	border-bottom:1px solid lightgray;
 	color:gray;	
 	width:90px;
+	}
+
+	#to_clear{
+	color:blue;
+	cursor:pointer;
+	font-size:11px;
+	font-weight:bold;
+	text-align:left;
+	margin-left:54px;
+	}
+	
+	#to_clear:hover{
+	color:lightblue;
+	cursor:pointer;
 	}
 
 	.to_box{

@@ -5,17 +5,27 @@
 session_start();
 require('../config.php');
 
+$to_list = json_decode(stripslashes($_POST['to_box']));
+
+$group_to = $to_list->group_to;
+$friend_to = $to_list->friend_to;
+$keyword_to = $to_list->keyword_to;
+
 $msg = $_POST['msg'];
 $time = $_POST['time'];
 $channel_id = $_POST['channel_id'];
 
 if($msg){
-	$chat_obj = new chat_functions();
+	$chat_obj = new chat_functions($group_to,$friend_to,$keyword_to);
 	$chat_id = $chat_obj->create_channel($msg);
 	echo $chat_id;
 }
 
 class chat_functions{
+
+		public $group_to;
+		public $friend_to;
+		public $keyword_to;
 
                 private $mysqli;
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
@@ -23,7 +33,11 @@ class chat_functions{
 
 		public $counter_data;
 
-        function __construct(){
+        function __construct($groups,$friends,$keywords){
+				$this->group_to = $groups;
+				$this->friend_to = $friends;
+				$this->keyword_to = $keywords;
+
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
@@ -61,8 +75,9 @@ class chat_functions{
 		//Call and get symbols parsed
 		$parsed_symbols = $this->lexical_parser($msg);
 
+
 		//Collect all uids to send message to via different criteria(s)
-		$group_uids = $this->group_matches($parsed_symbols['groups']);
+		$group_uids = $this->group_matches(array_merge($parsed_symbols['groups'],$this->group_to));
 			$group_gids = $group_uids['gids'];
 			$cgroup_gids = $group_uids['cgids'];
 			$group_uids['groups'] = $group_uids['groups'];
@@ -285,9 +300,18 @@ EOF;
 		//This method is A LOT faster then a full-text search and has many more perks. As each keyword is indexed. It's also much more real-time.
 		while($array){
 			while($temp){
-				$final .= '"'.implode(' ',$temp).'",';
+				if(!$flag)
+				$count = count($temp);
+				if($count < 8){
+					$match = implode(' ',$temp);
+					$total++;
+					$final .= '"'.$match.'",';
+				}
+				$flag = 1;
+				$count--;
 				array_pop($temp);
 			}
+			$flag=0;
 			array_shift($array);
 			$temp = $array;
 			}
@@ -310,7 +334,7 @@ EOF;
 		SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE
 		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$gid_list}0) AND connected=0 )
 		OR
-		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$cgid_list}0) AND connected=1 )
+		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$gid_list}0) AND connected=1 )
 		OR
 		(tags IN("") AND zip IN({$zip_list}) AND gid=0)
 		OR
@@ -319,6 +343,8 @@ EOF;
 		(tags IN("") AND zip IN({$zip_list}) AND gid IN ({$cgid_list}0) AND connected=1 )
 		AND enabled = 1;
 EOF;
+
+
 		$phrase_matches = $this->mysqli->query($phrase_query);
 
 		//This processes the uid's while keeping AND/OR logic in mind
