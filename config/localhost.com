@@ -19,7 +19,7 @@
 
 	
         RewriteRule /confirm/(.*)$ /index.php?page=confirm&code=$1
-        RewriteRule /group/([0-9])$ /index.php?page=group&group=$1
+        RewriteRule /group/([0-9]+) /index.php?page=group&group=$1
         RewriteRule /edit_group/([0-9])$ /index.php?page=group_edit&group=$1
         RewriteRule /([0-9])$ /index.php?fid=$1
         RewriteRule /homepage_loged_out$ /index.php?page=homepage_loged_out
