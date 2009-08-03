@@ -28,22 +28,22 @@ require_once($file.'/pages/'.$page.'.php');
 $newpage = new $page();
 $newpage->$event();
 
-$view_data = $newpage->get();
+$_t = $newpage->get();
 
-switch($view_data['output']){
+switch($_t['output']){
 
 	case 'HTML':
-	//	var_dump($view_data);
+	//	var_dump($_t);
 		include_once($file.'/views/'.$newpage->page().'.phtml');	
 	break;
 	
 	case 'JSON':
-		echo json_encode($view_data);
+		echo json_encode($_t);
 	break;
 	
 	case 'XML':
 		require_once($file.'/modules/XML_Serialize.php');
-		$xml .= XML_serialize($view_data);
+		$xml .= XML_serialize($_t);
 		$xml .= '</root>';
 			echo $xml;
 	break;

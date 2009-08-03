@@ -42,25 +42,25 @@ html, body {background-color:#FF00FF;
 	
 	<?php 
 	
-	$profile_data = $view_data['profile'];
-	$rel_profile_data = $view_data['rel_profile'];
-	$login_data = $view_data['login'];
-	$rank_data = $view_data['rank'];
-	$rankings_data = $view_data['rankings'];
+	$profile_data = $_t['profile'];
+	$rel_profile_data = $_t['rel_profile'];
+	$login_data = $_t['login'];
+	$rank_data = $_t['rank'];
+	$rankings_data = $_t['rankings'];
 	
-	$friend_data = $view_data['friends'];
-	$posting_results = $view_data['postings'];
-	$chat_results = $view_data['chat'];
-	$groups_results = $view_data['groups'];
+	$friend_data = $_t['friends'];
+	$posting_results = $_t['postings'];
+	$chat_results = $_t['chat'];
+	$groups_results = $_t['groups'];
 	
 	?>
 	
 	<div id="profile">
 	
-		<div id="profile_header">Group - <?=$view_data['group_name'];?></div>
+		<div id="profile_header">Group - <?=$_t['group_name'];?></div>
 	
-		<div id="picture"><img src="..<?=D_GROUP_PIC_REL?><?=$view_data['pic_180'];?>" />
-			<?php if($view_data['admin_status']) echo '<span id="edit_profile_link"><a href="../edit_group/'.$view_data['gid'].'">Edit Group Settings</a></span>'; ?>
+		<div id="picture"><img src="..<?=D_GROUP_PIC_REL?><?=$_t['pic_180'];?>" />
+			<?php if($_t['admin_status']) echo '<span id="edit_profile_link"><a href="../edit_group/'.$_t['gid'].'">Edit Group Settings</a></span>'; ?>
 		</div>
 
 		
@@ -70,14 +70,14 @@ html, body {background-color:#FF00FF;
 			
 			<ul>
 			<?php 
-			foreach($view_data['html_admin'] as $k => $v) {
+			foreach($_t['html_admin'] as $k => $v) {
 			echo "$v";
 			}
 			?>	
 			</ul>
 			
 			<h4>&nbsp;Group Status</h4>
-			<?=$view_data['html_status']?>	
+			<?=$_t['html_status']?>	
 		</div>
 		
 		<div id="specific_ranking">
@@ -86,8 +86,8 @@ html, body {background-color:#FF00FF;
 		
 			<ul>
 			<?php 
-			if($view_data['html_last_chat'] != ''){
-				foreach($view_data['html_last_chat'] as $k => $v) {
+			if($_t['html_last_chat'] != ''){
+				foreach($_t['html_last_chat'] as $k => $v) {
 				echo stripslashes($v);
 				}
 			} else { 
@@ -104,11 +104,11 @@ html, body {background-color:#FF00FF;
 		<h4>Group Info</h4>
 		
 			<ul>
-				<?=$view_data['html_descr']?>
+				<?=$_t['html_descr']?>
 			</ul>
 		<h4>Group Description</h4>
 			<ul>
-				<?=$view_data['html_descr2']?>
+				<?=$_t['html_descr2']?>
 			</ul>
 			
 		</div>
@@ -134,17 +134,17 @@ html, body {background-color:#FF00FF;
 				<li> <label for="tags">Tags:</label><input  type="text" class="textbox" id="tags" value="{$value2}"></input></li>
 				<span id="tag_error">You need tags or a zipcode!</span>
 				<li> <label for="zipcode">Zipcode:</label><input type="text" maxlength="5" class="textbox" id="zipcode" value="{$value3}"></input></li>
-				<li> <label for="group">Group:</label> <span class="style_bold">{$view_data['group_name']} </span></li>
+				<li> <label for="group">Group:</label> <span class="style_bold">{$_t['group_name']} </span></li>
 			</ul>
 
 			<span id="rel_complete">Setting Added!</span>
-			<span id="rel_button"><a href="####" onclick="add_rel({$view_data['gid']}); return false;"><button type="submit">Add Setting</button></a></span>
+			<span id="rel_button"><a href="####" onclick="add_rel({$_t['gid']}); return false;"><button type="submit">Add Setting</button></a></span>
 
 		</fieldset>
 		</form>
 	</div>
 EOF;
-	if($view_data['admin_status']) echo $relevancy_form;
+	if($_t['admin_status']) echo $relevancy_form;
 	?>
 	
 		<div id="rel_area_used">
@@ -157,18 +157,18 @@ EOF;
                                         <col width="80"></col>
                                         <col width="80"></col>
                                         <col width="80"></col>
-                                        <?php if($view_data['admin_status']) echo '<col width="40"></col>';?>
+                                        <?php if($_t['admin_status']) echo '<col width="40"></col>';?>
                                 </colgroup>
 
                                 <thead id="rel_table_head">
-                                <tr><td>-Name-</td><td>-Tags-</td><td>-Location-</td><td>-Group-</td><td>-Enabled-</td><?php if($view_data['admin_status']) echo '<td>Remove</td>';?></tr>
+                                <tr><td>-Name-</td><td>-Tags-</td><td>-Location-</td><td>-Group-</td><td>-Enabled-</td><?php if($_t['admin_status']) echo '<td>Remove</td>';?></tr>
                                 </thead>
 
                                 <tbody id="rel_table_body">
 
 				<?php
-				if(isset($view_data['html_rel'])){
-				       foreach($view_data['html_rel'] as $value){
+				if(isset($_t['html_rel'])){
+				       foreach($_t['html_rel'] as $value){
 						echo $value;
 					}
 				} else {

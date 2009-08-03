@@ -33,6 +33,11 @@ class join_functions{
         }
 
         function join_group($school,$email){
+		$type = explode('.',$school);
+		if(end($type) == 'edu')
+			$type = 1;
+		else
+			$type = 2;
 
                 $uid = $_SESSION['uid'];
                 $uname = $_SESSION['uname'];
@@ -41,17 +46,18 @@ class join_functions{
                 $email = $this->mysqli->real_escape_string($email);
                 $school = $this->mysqli->real_escape_string($school);
                 $gid = $this->mysqli->real_escape_string($gid);
-
-		$check_school = "SELECT gid,gname FROM connected_groups WHERE domain LIKE '$school%'";
+	
+		$check_school = "SELECT gid,connected,gname FROM groups WHERE symbol LIKE '$school%' AND connected={$type};";
 		$school_results = $this->mysqli->query($check_school);
 		
 		$res = $school_results->fetch_assoc();
 		$gid = $res['gid'];
 		$gname = $res['gname'];
+		$connected = $res['connected'];
 		$hash = md5(rand(1,94949).$gid.$gname.$uname.'C98c8i3*x0_hahQ');
 
 		if($school_results->num_rows > 0){
-			$create_group_member = "INSERT INTO group_members(uid,gid,connected,status) values('{$uid}',{$gid},1,0);";
+			$create_group_member = "INSERT INTO group_members(uid,gid,connected,status) values('{$uid}',{$gid},{$connected},0);";
 			$create_group_member = $this->mysqli->query($create_group_member);
 
 			$create_join_group = "INSERT INTO join_group_status(uid,gid,email,status,hash) values('{$uid}',{$gid},'{$email}',0,'{$hash}');";

@@ -62,7 +62,7 @@ function handlePending(imStatus) {
 
 <div id="container">
 
-	<?php $group_results = $view_data['group_results'];?>
+	<?php $group_results = $_t['group_results'];?>
 	
 	<?php include(HEADER);?>
 		
@@ -120,7 +120,7 @@ function handlePending(imStatus) {
 							<li>    Group To Invite To:
 								<select id="invite_groups_in">
 								<option value="NULL"> - - - - - - - - -</option>
-								<?php while($search_people_results = $view_data['your_groups']->fetch_assoc())
+								<?php while($search_people_results = $_t['your_groups']->fetch_assoc())
 								echo <<<EOF
 								<option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
 EOF;
@@ -169,7 +169,7 @@ EOF;
 			
 				<?php	
 					$pic_path = D_GROUP_PIC_REL; 
-					while($res = $view_data['rand_group_results']->fetch_assoc()){
+					while($res = $_t['rand_group_results']->fetch_assoc()){
 					$rand_group_output[] .= <<<EOF
 						<div class="related_group_wrapper">
 						 <div class="group_result_name"><span class="group_result_name_span">{$res['gname']}</span></div>
@@ -297,7 +297,7 @@ EOF;
 
 				<ul id="connected_you_are_in_list">
 				<li id="connected_status"></li>
-					<?php	$rows = $view_data['connected_groups'];
+					<?php	$rows = $_t['connected_groups'];
 						if($rows->num_rows == 0){
 							echo "You're in no connected groups, join one!";
 						} else {
@@ -305,11 +305,11 @@ EOF;
 								$status = $res['status'];
 								$gname = $res['gname'];
 								$email = $res['email'];
-								$domain = $res['domain'];
+								$symbol = $res['symbol'];
 								if($status == 0){
 									echo "<li class='pending_connect'><img src=\"images/icons/error.png\" /> An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>";
 								} else {
-									echo "<li class='active_connect'><img src=\"images/icons/accept.png\" />  <span class='style_bold'>Group Name</span>: $gname <span class='style_bold'>Symbol</span>:#$domain</li>";
+									echo "<li class='active_connect'><img src=\"images/icons/accept.png\" />  <span class='style_bold'>Group Name</span>: $gname <span class='style_bold'>Symbol</span>:#$symbol</li>";
 								}
 						}
 						}

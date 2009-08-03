@@ -164,15 +164,24 @@ public function login_user($uname,$pass,$hash,$auto_login){
 			   $hash_results = $this->db_class_mysql->db->query($hash_update_query);
 			   
 			   		//Get the users ID to use for the rest of the application
-			   			$get_user_id_query = "SELECT uname,uid FROM login WHERE uname='{$uname}';";
-			   			
+			   			$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
+									LEFT JOIN group_members AS t2
+									ON t1.uid = t2.uid
+									LEFT JOIN display_rel_profile AS t3
+									ON t1.uid = t3.uid
+									WHERE t1.uname='{$uname}' AND t2.status=1;";
+	
 			   			$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
-			   			
-			   			$get_user_id_result = $get_user_id_result->fetch_assoc();
-			   			
-						$uid = $get_user_id_result['uid'];
-						$uname = $get_user_id_result['uname'];
-			   
+
+		
+							while($res = $get_user_id_result->fetch_assoc()){
+								$uid = $res['uid'];
+								$uname = $res['uname'];
+								$zip = $res['zip'];
+								$gids[] .= $res['gid'];
+							}
+								$_SESSION['gid'] = implode(',',$gids);
+								$_SESSION['zip'] = $zip;
 				}
 		// END SESSION UPDATE BASED ON HASH
 			
@@ -211,6 +220,7 @@ public function log_out($uid){
 	
 		//START LOG OUT
 	    $_SESSION['uid'] = "";
+		$_SESSION['gid'] = "";
 	    
 	    //When you log out destroy the cookie so that it does not enter the if statement on line 14
 	    setcookie("uid",'',time()-36000);

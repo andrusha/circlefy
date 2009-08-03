@@ -34,9 +34,30 @@ function getXmlHttpRequestObject() {
 }
 
 
+<?
+/* This indicates the user is new */
+$new_user = $_COOKIE['new_user'];
+//$new_user =1;
+if(!$new_user)
+	$new_user = 0;
+?>;
+
+var new_user = <?=$new_user?>;
+
 function open_window( msg ){
-	user = <?=$_SESSION['uname']?>
 	//This initiates the AJAX polling and receives the channel_id
+	
+	if(new_user)
+	{	
+		var intro_text = '<span class="intro_text">Welcome to tap.<br/>  With tap, you can<br/><br/><span class="intro_target intro_link">Target</span> an entire company,school, or group <br/><br/><span class="intro_filters intro_link">Filters</span> allow you to control what data you receive and from who<br/><br/><span class="intro_to_box intro_link">To box.</span> defines who your messages will go to<br/><br/>Target a group of users then press enter to send your message</span>';
+		$('tap_status_descr').innerHTML = '';
+		$('tap_status_table_body').set('html',intro_text).fade(0,1);
+		new_user = 0;
+		Cookie.dispose('new_user');
+		intro_obj.init_intro();
+		return false;
+	}
+	
 	send_msg(msg,0,0);
 
 document.getElementById('question').value = '';

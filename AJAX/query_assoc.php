@@ -38,7 +38,7 @@ class assoc_functions{
 
 		if($search != '' && $symbol == '#'){
 			$create_assoc_query = <<<EOF
-				SELECT t1.gname AS name,COUNT(t3.uid) AS members FROM 
+				SELECT t1.symbol,t1.gname AS name,COUNT(t3.uid) AS members FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' ) AS t1
 				JOIN groups AS t2 ON t2.gid = t1.gid
 				JOIN group_members AS t3 ON t3.gid=t2.gid
@@ -98,7 +98,7 @@ EOF;
 
 			if($create_assoc_results->num_rows > 0){
 				while($res = $create_assoc_results->fetch_assoc() ) {
-					$results[] = $symbol.$res['name'];
+					$results[] = "<span class='symbol_drop'>symbol:</span> ".$symbol.$res['symbol'];
 				}
 			} elseif($search != '') { 
 				$string = trim("$symbol$search has no results");

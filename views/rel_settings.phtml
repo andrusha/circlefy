@@ -35,7 +35,7 @@ window.addEvent('domready', function() {
 
 	<?php 
 
-	if(!isset($view_data['get_rel_results'])){
+	if(!isset($_t['get_rel_results'])){
 		$value1 = "Who's up to party?";
 		$value2 = "Drinking, Club, Dance, Dorm";
 		$value3 = "94301";
@@ -65,7 +65,7 @@ window.addEvent('domready', function() {
 			<li> <label for="gfroup">Group:</label> 
 			<select id="group">
 				<option value="0" title="All">All/Any Group</option>
-                                <?php while($search_people_results = $view_data['your_groups']->fetch_assoc())
+                                <?php while($search_people_results = $_t['your_groups']->fetch_assoc())
 				echo <<<EOF
 				<option value="{$search_people_results['gid']}:{$search_people_results['connected']}">{$search_people_results['gname']}</option>
 EOF;
@@ -132,8 +132,8 @@ EOF;
                                 <tbody id="rel_table_body">
 
 	<?php
-	if(isset($view_data['get_rel_results'])){
-		foreach($view_data['get_rel_results'] as $value){
+	if(isset($_t['get_rel_results'])){
+		foreach($_t['get_rel_results'] as $value){
 			echo $value;
 		}
 	} else {

@@ -30,14 +30,14 @@ html, body {background-color:#FF00FF;
 	
 	<?php 
 	
-	$rel_profile_data = $view_data['rel_profile'];
-	$login_data = $view_data['login'];
-	$last_chat_data = $view_data['last_chat'];
+	$rel_profile_data = $_t['rel_profile'];
+	$login_data = $_t['login'];
+	$last_chat_data = $_t['last_chat'];
 	
-	$friend_data = $view_data['friends'];
-	$posting_results = $view_data['postings'];
-	$chat_results = $view_data['chat'];
-	$groups_results = $view_data['groups'];
+	$friend_data = $_t['friends'];
+	$posting_results = $_t['postings'];
+	$chat_results = $_t['chat'];
+	$groups_results = $_t['groups'];
 	
 	?>
 	
@@ -102,8 +102,23 @@ html, body {background-color:#FF00FF;
 		
 			<ul>
 				<?php
+				$group_path = D_GROUP_PIC_REL;
 				while($groups = $groups_results->fetch_assoc() ){
-				echo '<li> <a class="profile_groups" href="group/'.$groups['gid'].'"><img class="profile_groups" src="'.D_GROUP_PIC_REL.$groups['pic_36'].'" />'.$groups['gname'].'</li></a>';
+				$c = $groups['connected'];
+				if(!$c)
+				echo <<<EOF
+				<li>
+				<a class="profile_groups" href="group/{$groups['gid']}">
+					<img class="profile_groups" src="{$group_path}/{$groups['pic_36']}" />{$groups['gname']}</a>
+
+				</li>
+EOF;
+				else
+					echo <<<EOF
+				<li>
+					{$groups['gname']} <img class="profile_groups" src="images/icons/accept.png" />
+				</li>
+EOF;
 				}
 				?>
 			</ul>

@@ -20,7 +20,7 @@
 	<?php include(LEFT);?>
 	<br />
 
-	<?$search_people = $view_data['search_people']; var_dump($search_people);?>
+	<?$search_people = $_t['search_people']; var_dump($search_people);?>
 	
 	<div id="people_search">
 	
@@ -52,7 +52,7 @@
 						<select id="group" name="group">
 						<option value="NULL"> - - - - - - - - -</option>
 						<?
-						while($search_people_results = $view_data['your_groups']->fetch_assoc())
+						while($search_people_results = $_t['your_groups']->fetch_assoc())
 						echo <<<EOF
 						<option value="{$search_people_results['gid']}:{$search_people_results['connected']}">{$search_people_results['gname']}</option>
 EOF;
@@ -74,12 +74,12 @@ EOF;
 		
 			<div class="search_result">
 				<? 
-				if($view_data['html']){
-					foreach($view_data['html'] as $v){
+				if($_t['html']){
+					foreach($_t['html'] as $v){
 					echo $v;
 					}
 				} else { 
-				$error = ($view_data['no_results']) ? $view_data['no_results'] : "";
+				$error = ($_t['no_results']) ? $_t['no_results'] : "";
 				echo <<<EOF
 				{$error}
 				<span id="invite_friend_msg">Looking for someone you can't find?  Invite them to join tapapp!</span>

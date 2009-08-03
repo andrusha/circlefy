@@ -15,8 +15,6 @@
 
 <div id="container">
 
-<?php echo "Hello!!"; print_r($_GET);?>
-	
 	<?php include(HEADER);?>
 		
 	<?php include(LEFT);?>
@@ -46,6 +44,8 @@
 			<ul id="main_create_form">
 			
 				<li><label for="create_group_name">Group Name </label><input type="text" name="gname" id="create_group_name" onblur="group(this.value);" ></input></li>
+				<li><label for="create_group_symbol">Symbol </label><input type="text" name="symbol" id="create_group_symbol" onblur="group(this.value);" ></input></li>
+				<span class="group_explinations">Symbols are how people reference your group</span>
 				<span id="ajax_rel_groups"><ul id="ajax_rel_list"></ul></span>
 
 				<li><label id="group_descr_label" for="create_group_desc">Group Description </label><textarea rows="4" cols="16" name="descr" id="create_group_desc" onblur="check_descr(this.value);"></textarea></li>
@@ -107,8 +107,8 @@
 						<select id="group_invite_list" name="group_invite">
 						<option value="null">--- Nobody ---</option>
 						<?
-						if(is_object($view_data['your_groups'])){
-						while($search_people_results = $view_data['your_groups']->fetch_assoc())
+						if(is_object($_t['your_groups'])){
+						while($search_people_results = $_t['your_groups']->fetch_assoc())
                                                 echo <<<EOF
                                                 <option value="{$search_people_results['gid']}">{$search_people_results['gname']}</option>
 EOF;

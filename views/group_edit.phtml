@@ -7,7 +7,7 @@
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <style type="text/css" media="all">@import "<?=ROOT?>views/style_sheets/home.css";</style>
-    <script type="text/javascript">var ggid = <?php echo $view_data['gid']; ?></script>
+    <script type="text/javascript">var ggid = <?php echo $_t['gid']; ?></script>
     <script type="text/javascript" src="../views/javascript/edit_group.js"></script>
     
 </head>
@@ -22,8 +22,8 @@
 
 	<?php
 	
-	$group_admins_result = $view_data['group_admins_results'];
-	$group_info_result = $view_data['group_info_results'];
+	$group_admins_result = $_t['group_admins_results'];
+	$group_info_result = $_t['group_info_results'];
 
 	 while($res = $group_info_result->fetch_assoc() ){
                         $gname = $res['gname'];
@@ -117,7 +117,7 @@
 				<ul>
 					<li>Current Admins:</li>
 					<?
-					foreach($view_data['html_admin'] as $v)
+					foreach($_t['html_admin'] as $v)
 						echo $v;
 
 					?>

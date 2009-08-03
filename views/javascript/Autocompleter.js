@@ -162,7 +162,7 @@ var Autocompleter = new Class({
 			start += this.queryIndex;
 			end += this.queryIndex;
 			var old = value.substr(this.queryIndex).split(split, 1)[0];
-			value = value.substr(0, this.queryIndex) + input + value.substr(this.queryIndex + old.length);
+			value = value.substr(0, this.queryIndex) + input.substr(40) + value.substr(this.queryIndex + old.length);
 			if (finish) {
 				var tokens = value.split(this.options.separatorSplit).filter(function(entry) {
 					return this.test(entry);

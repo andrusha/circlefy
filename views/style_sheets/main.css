@@ -1,3 +1,13 @@
+.intro_text{
+font-weight:bold;
+color:gray;
+}
+
+.intro_link{
+color:blue;
+text-decoration:underline;
+cursor:pointer;
+}
 
 #connected_status li{
 float:left;
@@ -175,13 +185,19 @@ text-decoration:none;
 background:lightyellow;
 padding:8px;
 margin:40px 0px 0px 16px;
-width:140px;
+width:160px;
 text-align:left;
 }
 
 #tap_status_table_body{
 overflow:hidden;
 }
+
+thead{
+	font-weight:bold;
+	font-size:11px;
+}
+
 	.lt{
 	width:140px;
 	font-weight:bold;
@@ -195,6 +211,12 @@ overflow:hidden;
 	font-weight:bold;
 	font-size:14px;
 	color:#0AA0f0;
+	}
+
+	.null_tap{
+	color:#C0509F;
+	font-weight:bold;
+	font-size:11px;
 	}
 
 	#left_notifications ul li{
@@ -993,6 +1015,8 @@ margin-bottom:10px;
 
 	#sym_results_table td{
 		border-bottom:1px solid lightgray;
+		padding:2px;
+		margin:2px;
 	}
 	
 	#sym_results_table tr:hover{
@@ -1014,6 +1038,7 @@ margin-bottom:10px;
 	}
 
 	#to{
+	padding:8px;margin:2px;
 	color:gray;
 	font-weight:bold;
 	text-align:left;
@@ -1081,6 +1106,11 @@ margin-bottom:10px;
 	float:left;
 	margin:0px auto;
 	padding:0px;
+	}
+
+	#forms{
+	margin-top:10px;
+		
 	}
 	
 	#forms fieldset{
@@ -1687,6 +1717,10 @@ display:block;
 /* END group mang */
 
 /* START Autocompleter styles */
+.symbol_drop{
+color:gray;
+font-weight:bold;
+}
 ul.autocompleter-choices
 {
 	position:absolute;

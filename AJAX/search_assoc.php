@@ -34,24 +34,17 @@ class assoc_functions{
 		//Get symbols and search-text seperated		
 		$strlen = strlen($search);
 		$symbol = substr($search, 0, 1);
-		$search = substr($search, 1, $strlen--);
+		$symbol = '#';
+//		$search = substr($search, 1, $strlen--);
 
 		if($search != '' && $symbol == '#'){
 			$create_assoc_query = <<<EOF
-			(
-				SELECT null AS domain,t1.gname AS name,COUNT(t3.uid) AS members FROM 
-				( SELECT * FROM groups WHERE gname LIKE '{$search}%' ) AS t1
+				SELECT t2.symbol,t1.gname AS name,COUNT(t3.uid) AS members FROM 
+				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
-				LEFT JOIN group_members AS t3 ON ( t3.gid=t2.gid AND t3.connected=0 ) 
+				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid  
 				GROUP BY t2.gid
-			) UNION ALL
-			(
-				SELECT t1.domain AS domain,t1.gname AS name,COUNT(t3.uid) AS members FROM 
-				( SELECT * FROM connected_groups WHERE domain LIKE '{$search}%' OR gname LIKE '{$search}%' ) AS t1
-				LEFT JOIN connected_groups AS t2 ON t2.gid = t1.gid
-				LEFT JOIN group_members AS t3 ON ( t3.gid=t2.gid AND t3.connected=1 ) 
-				GROUP BY t2.gid
-			) LIMIT 2;
+			LIMIT 2;
 EOF;
 
 
@@ -109,7 +102,7 @@ EOF;
 				while($res = $create_assoc_results->fetch_assoc() ) {
 					$count++;
 					$results[$count]['name'][] = substr($res['name'],0,28);
-					$results[$count]['symbol'][] = substr($res['domain'],0,28);
+					$results[$count]['symbol'][] = substr($res['symbol'],0,28);
 					if(!$res['members'])
 						$$res['members'] = 0;
 					$results[$count]['members'][] = $res['members'];

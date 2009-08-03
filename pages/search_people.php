@@ -26,13 +26,9 @@ class search_people extends Base{
 		//Match all user IDs with a specific ID, so you will have join the group_members table with the groups table
 		//matching the groups_members table with the groups table based off gid, you need to return the name
 			$get_users_groups_query = <<<EOF
-			( SELECT t2.gname,t1.gid,t1.connected FROM group_members AS t1 
+			SELECT t2.gname,t1.gid,t1.connected FROM group_members AS t1 
 			JOIN groups AS t2 ON t2.gid=t1.gid 
-			WHERE t1.uid={$uid} AND t1.connected = 0 )
-			UNION ALL 
-			( SELECT t2.gname,t1.gid,t1.connected FROM group_members AS t1
-			JOIN connected_groups AS t2 ON t2.gid=t1.gid
-			WHERE t1.uid={$uid} AND t1.connected=1 )
+			WHERE t1.uid={$uid};
 EOF;
 			$this->db_class_mysql->set_query($get_users_groups_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
 			$groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
@@ -64,7 +60,7 @@ EOF;
 					if($group != "NULL")  {
 						// This can probably be furher optmized by removeing the second join and stating that t3.gid=# in SQL
 						$join['group_q1'] = 'JOIN group_members AS t3 ON t1.uid=t3.uid';
-						$query_array['group_q2'] = ' t3.gid="'.$group.'" AND t3.connected = '.$connected;
+						$query_array['group_q2'] = ' t3.gid="'.$group.'"';
 					}
 			
 					//This part shows what the user last tap'd via the special_chat table	

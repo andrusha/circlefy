@@ -1,6 +1,6 @@
-<?php echo $view_data['errors']?>
-<?php $user = $view_data['user'];?>
-<?php $user_pic = $view_data['user_pic'];?>
+<?php echo $_t['errors']?>
+<?php $user = $_t['user'];?>
+<?php $user_pic = $_t['user_pic'];?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -357,6 +357,7 @@ Sym_Search = new Class({
 		e.stop();
 		keyword = $('main_sym_search').value;
 		symbol = keyword.substr(0,1);
+		var symbol = '#';
 		if(symbol == '#')
 			self.type_val = 'group_to';
 		if(symbol == '@')
@@ -417,6 +418,8 @@ Send_To = new Class({
 			if(event.key == 'enter'||event.key == 'space'){
 
 				match = current_text.match(/(#|@|\*)\S+/);
+				if(match != null){
+
 				if(match[0].substr(-1) != ',')
 					var lchar = true;
 	
@@ -432,6 +435,7 @@ Send_To = new Class({
 				if(!type && this.added.getKeys().length == 0)
 					$('to_output').innerHTML = ' Try targeting a group and users using the symbols to the right';
 
+				}
 			}
 	
 			if(match != null){
@@ -443,7 +447,7 @@ Send_To = new Class({
 			}
 		}.bind(this));
 
-		$('to_input').addEvent('keydown',function(event){
+		$('to_input').addEvent('keyup',function(event){
 			match = null;
 			type = null;
 			current_text = $('to_input').value.slice(this.stringPos);
@@ -468,8 +472,8 @@ Send_To = new Class({
 	
 			if(match != null){
 				match = match[0];
-				pos = current_text.split(match);
-				this.stringPos = current_text.indexOf(pos[1]);
+				//pos = current_text.split(match);
+				//this.stringPos = current_text.indexOf(pos[1]);
 			 	var y = current_text.replace(match,match.substr(1))
 				this.add(type,y);
 				$('to_input').value = '';
@@ -507,6 +511,41 @@ Send_To = new Class({
 	}
 });
 
+Intro = new Class({
+
+	init_intro: function(){
+		$$('.intro_filters').addEvent('mouseenter',function(){
+			$('main_tabs').set({styles:{'background':'#FFCCCC'}});
+			$('this3').set({styles:{'background':'#FFCCCC'}});
+		});
+		$$('.intro_filters').addEvent('mouseleave',function(){
+			$('main_tabs').set({styles:{'background':'transparent'}});
+			$('this3').set({styles:{'background':'transparent'}});
+		});
+
+		$$('.intro_to_box').addEvent('mouseenter',function(){
+			$('to_input').set({styles:{'background':'#FFCCCC'}});
+		});
+
+		$$('.intro_to_box').addEvent('mouseleave',function(){
+			$('to_input').set({styles:{'background':'#FFFFFF'}});
+		});
+
+		$$('.intro_target').addEvent('mouseenter',function(){
+			$('to_input').set({styles:{'background':'#FFCCCC'}});
+			$('sym_search').set({styles:{'background':'#FFCCCC'}});
+			$('directions').set({styles:{'background':'#FFCCCC'}});
+		});
+		$$('.intro_target').addEvent('mouseleave',function(){
+			$('to_input').set({styles:{'background':'#FFFFFF'}});
+			$('sym_search').set({styles:{'background':'#FFFFFF'}});
+			$('directions').set({styles:{'background':'transparent'}});
+		});
+	
+	}
+
+});
+
 var active_convo;
 var autocompleter;
 var inputBox;
@@ -514,6 +553,12 @@ var grabber_obj;
 var poller_obj;
 var response_event_obj;
 window.addEvent('domready', function() {
+
+	$('question').addEvent('click',function() { if(this.value == 'Tap the connected...') this.value = ''; });
+	$('question').addEvent('blur',function() { if(this.value == '') this.value = 'Tap the connected...'; });
+
+	
+	intro_obj = new Intro;	
 
 	send_to_obj = new Send_To;
 	send_to_obj.enable();
@@ -538,7 +583,7 @@ window.addEvent('domready', function() {
 grabber_obj = new Response_Grabber;
 grabber_obj.grab_all();
 grabber_obj.r_poller();
-//setInterval('grabber_obj.r_poller()',1000);
+setInterval('grabber_obj.r_poller()',1000);
 
 /*
 This was the polling method to grabing the bits
@@ -580,7 +625,7 @@ myFx.hide();
 	$$('.toggle_list_group').each(function(el){
 		el.addEvent('click',function(e){
 			var group = el.childNodes[2].innerHTML;
-			$('question').value = '#'+group+', ';
+			$('question').value += '#'+group+', ';
 			$('question').setCaretPosition("end");
 			send_to_obj.add('group_to',group);
 		});	
@@ -589,7 +634,7 @@ myFx.hide();
 	$$('.toggle_list_friend').each(function(el){
 		el.addEvent('click',function(e){
 			var friend = el.childNodes[2].innerHTML;
-			$('question').value = '@'+friend+', ';
+			$('question').value += '@'+friend+', ';
 			$('question').setCaretPosition("end");
 			send_to_obj.add('friend_to',friend);
 		});	
@@ -597,7 +642,7 @@ myFx.hide();
 	});
 
 	$('building').addEvent('click',function(e){
-		$('question').value = '^^, ';
+		$('question').value += '^^, ';
 		$('question').setCaretPosition("end");
 	});
 
@@ -830,9 +875,9 @@ function clear_current_chats(){
 <body>
 
 <span id="errors_show"></span>
-<span id="last_mid"><?=$view_data['max_mid'];?></span>
+<span id="last_mid"><?=$_t['max_mid'];?></span>
 <?php/*
-$offsets = $view_data['offsets'];
+$offsets = $_t['offsets'];
 foreach($offsets as $offset)
 	echo '<span class="offsets">'.$offset.'</span><br/>';
 */
@@ -903,8 +948,8 @@ foreach($offsets as $offset)
                                 <tbody id="rel_table_body">
 
         <?php
-        if(isset($view_data['get_rel_results'])){
-                foreach($view_data['get_rel_results'] as $value){
+        if(isset($_t['get_rel_results'])){
+                foreach($_t['get_rel_results'] as $value){
                         echo $value;
                 }
         } else {
@@ -922,7 +967,7 @@ foreach($offsets as $offset)
 
 <?php
 
-$group_results = $view_data['your_groups'];
+$group_results = $_t['your_groups'];
 
 if($group_results->num_rows > 0){
         echo "<div class=\"groups_your_in\">";
@@ -1001,7 +1046,7 @@ EOF;
 
 <div id="mang_network">
 <div  class="close_bar" id="mang_network_bar"  onclick="hide_mang('network');" ><img src="images/icons/cross.png" /></div>
-<? if($view_data['html_0'] && $view_data['html_0'] != '')foreach($view_data['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='people_search'>here</a> to find people to tap";}?>
+<? if($_t['html_0'] && $_t['html_0'] != '')foreach($_t['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='people_search'>here</a> to find people to tap";}?>
 </div>
 
 <div id="large_container">
@@ -1020,7 +1065,7 @@ EOF;
 			<span id="tap_status_title">tap status</span> <br/>
 			<span id="tap_status_descr"> <img src="images/icons/information.png" />  tap status shows you who's getting your message.  If nobody gets your message, we'll let you know, and you can pitch that message to different people</span>
 			<table id="tap_status_table">
-			<thead></thead>
+			<thead><td></td><td>tapped</td></thead>
 			<tbody id="tap_status_table_body">
 			</tbody>
 			<tfoot>
@@ -1049,8 +1094,8 @@ EOF;
 				<li style="color:red;" class="tab" id="archives" onclick="show_info('archives','Archives')"><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
 				<li class="tab" id="active" onclick="show_info('active','Active Convos')"><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
 				<?php
-				if(isset($view_data['active_bits_tabs']) && $view_data['active_bits_tabs'] != ''){
-					foreach($view_data['active_bits_tabs'] as $v){
+				if(isset($_t['active_bits_tabs']) && $_t['active_bits_tabs'] != ''){
+					foreach($_t['active_bits_tabs'] as $v){
 						echo $v;
 					}
 				}
@@ -1069,7 +1114,7 @@ EOF;
 		<ul id="info_list">
 
 			<!-- <li id="number">There are currently 400 active users</li> -->
-	<?php $help = $view_data['help']; if($help) $hide_class="hide_class";
+	<?php $help = $_t['help']; if($help) $hide_class="hide_class";
 	
 			$text_state_html = <<<EOF
 			<li class="{$hide_class}" id="text_state"><img src="images/icons/error.png" /> Target your message to people using the symbols below 
@@ -1097,13 +1142,17 @@ EOF;
 			</ul> -->
 			<li>
 			<form id="sym_search">
-				<input class="0 gray_text" onclick="vanish_text(0,this); return false;" type="text" id="main_sym_search" value="Search"></input>
+				<input class="0 gray_text" onclick="vanish_text(0,this); return false;" type="text" id="main_sym_search" value="Schools/Companies"></input>
 	 			</form>
 			</form>
 			</li>
 			<li id="sym_results">
 				<table id="sym_results_table">
 					<thead>
+						<td></td>
+						<td></td>
+						<td>members</td>
+						<td>add</td>
 						<col width="170px">
 						<col width="40px">
 						<col width="20px">
@@ -1113,15 +1162,16 @@ EOF;
 					</tbody>
 				</table>
 			</li>
-			<li id="to">To:
-			<input id="to_input" type="input"></input><span id="to_output"></span>
-			</li>
-			<li id="to_clear">clear</li>
 		</ul>
 	
 	</div>
 
 	<div id="forms">
+		<ul>
+			<li id="to">To:
+			<input id="to_input" type="input"></input><span id="to_output"></span>
+			</li>
+			<li id="to_clear">clear</li></ul>
 		<form action="<?=ROOT?>" method="post" >
 				<fieldset>
 					<div id="core">
@@ -1134,7 +1184,7 @@ EOF;
 					</ul>
 			
 					<ul id="top_form">
-						<li><textarea class="gray_text" maxlength="254" rows="2" cols="15" id="question" onkeypress="if(!autocompleter.toggleEnabled) { ifEnter(this,event);  document.getElementById('question').focus(); } ">Tap the connected..</textarea></li>
+						<li><textarea class="gray_text" maxlength="254" rows="2" cols="15" id="question" onkeypress="if(!autocompleter.toggleEnabled) { ifEnter(this,event);  document.getElementById('question').focus(); } ">Tap the connected...</textarea></li>
 						<li id="outter_button"><span id="inner_button">
 						<input type="submit" id="submit_button" onclick="open_window(document.getElementById('question').value); return false;" value="Tap"></input>
 
@@ -1157,8 +1207,8 @@ EOF;
 	<div id="main_information">
 		<div class="sub_information" id="direct_information">
 		<?
-                        if($view_data['direct_bits'] && $view_data['direct_bits'] != '')
-                                foreach($view_data['direct_bits'] as $v){echo $v;
+                        if($_t['direct_bits'] && $_t['direct_bits'] != '')
+                                foreach($_t['direct_bits'] as $v){echo $v;
                         } else {
                                 echo "<img src='images/icons/error.png' /><span class='null_info' id='null_direct'> You are not in any direct, <a href='search_people'>here</a> to find direct to tap</span>";
                         }
@@ -1171,16 +1221,16 @@ EOF;
 		To view your individual active conversations, click the individual tabs on the left ( if you don't see any, you don't have any active conversations ) 
 		</div>
 		<?php
-                        if(isset($view_data['active_bits']) && $view_data['active_bits'] != ''){
-                                foreach($view_data['active_bits'] as $v){
+                        if(isset($_t['active_bits']) && $_t['active_bits'] != ''){
+                                foreach($_t['active_bits'] as $v){
                                         echo $v;
                                 }
                         }
                 ?>
 		<div class="sub_information" id="building_information">
 		<?
-                        if($view_data['building_bits'] && $view_data['building_bits'] != '')
-                                foreach($view_data['building_bits'] as $v){echo $v;
+                        if($_t['building_bits'] && $_t['building_bits'] != '')
+                                foreach($_t['building_bits'] as $v){echo $v;
                         } else {
                                 echo "<img src='images/icons/error.png' /><span class='null_info' id='null_building'> You are not in any building, <a href='building'>here</a> to find building to tap</span>";
                         }
@@ -1188,8 +1238,8 @@ EOF;
 		</div>
 <? 
 
-		if($view_data['individual_friend_bits'] && $view_data['individual_friend_bits'] != '')
-			foreach($view_data['individual_friend_bits'] as $v){echo $v;
+		if($_t['individual_friend_bits'] && $_t['individual_friend_bits'] != '')
+			foreach($_t['individual_friend_bits'] as $v){echo $v;
 		} else {
 			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friend_ind'> You have nobody on tap who is active click <a href='people_search'>here</a> to find people to tap who are active!</span>";
 		}
@@ -1198,8 +1248,8 @@ EOF;
 		<div class="sub_information" id="friends_information">
 <? 
 
-		if($view_data['friends_bits'] && $view_data['friends_bits'] != '')
-			foreach($view_data['friends_bits'] as $v){echo $v;
+		if($_t['friends_bits'] && $_t['friends_bits'] != '')
+			foreach($_t['friends_bits'] as $v){echo $v;
 		} else {
 			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friends_aggr'> You have nobody on tap who is active click <a href='people_search'>here</a> to find people to tap who are active!</span>";
 		}
@@ -1209,17 +1259,17 @@ EOF;
                 <div class="sub_information" id="groups_information">
 		<!-- <div class="ihp_ad" id="groups_ad"><img src='pictures/<?=$user_pic?>' /><?=$uname?>: Hey people, check out my new ad! <a href="http://google.com">My New Site</a></div> -->
 		<?
-			if($view_data['groups_bits'] && $view_data['groups_bits'] != '') 
-				foreach($view_data['groups_bits'] as $v){echo $v;
+			if($_t['groups_bits'] && $_t['groups_bits'] != '') 
+				foreach($_t['groups_bits'] as $v){echo $v;
 			} else { 
-				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='<?=ROOT?>groups'>here</a> to find groups to tap</span>";
+				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='groups'>here</a> to find groups to tap</span>";
 			}
 		?>      
                 </div>
 
 		<?php
-		if($view_data['group_bits'] && $view_data['group_bits'] != ''){
-			foreach($view_data['group_bits'] as $v){
+		if($_t['group_bits'] && $_t['group_bits'] != ''){
+			foreach($_t['group_bits'] as $v){
 				echo $v;
 			}
 		} else { 
@@ -1228,8 +1278,8 @@ EOF;
 
                 <div class="sub_information" id="rel_information">
 		<?
-                        if($view_data['rel_bits'] && $view_data['rel_bits'] != '')
-                                foreach($view_data['rel_bits'] as $v){echo $v;
+                        if($_t['rel_bits'] && $_t['rel_bits'] != '')
+                                foreach($_t['rel_bits'] as $v){echo $v;
                         } else {
                                 echo "<span class='null_info' id='null_rel'>You have no filters set, <a href='rel'>here</a> to find rel to tap</span>";
                         }
@@ -1237,8 +1287,8 @@ EOF;
 		</div>
 
 		<?
-                        if($view_data['individual_rel_bits'] && $view_data['individual_rel_bits'] != '')
-                                foreach($view_data['individual_rel_bits'] as $v){echo $v;
+                        if($_t['individual_rel_bits'] && $_t['individual_rel_bits'] != '')
+                                foreach($_t['individual_rel_bits'] as $v){echo $v;
                         } else {
                         }
                 ?>
@@ -1270,8 +1320,8 @@ window.onload=function() { show_info('groups','Groups'); } ;
 		<div id="notifications">
 			<ul>
 			<?
-			if(is_array($view_data['init_notifications']))
-				foreach($view_data['init_notifications'] as $v)
+			if(is_array($_t['init_notifications']))
+				foreach($_t['init_notifications'] as $v)
 					echo $v;
 			?>
 			<li></li>
@@ -1287,8 +1337,8 @@ window.onload=function() { show_info('groups','Groups'); } ;
 				<div id="friends_tab_slide">
 				<!-- START of Network -->
 				<?php
-				if(isset($view_data['network_tab_list']) && $view_data['network_tab_list'] != ''){
-					foreach($view_data['network_tab_list'] as $v){
+				if(isset($_t['network_tab_list']) && $_t['network_tab_list'] != ''){
+					foreach($_t['network_tab_list'] as $v){
 						echo $v;
 					}
 				}
@@ -1301,8 +1351,8 @@ window.onload=function() { show_info('groups','Groups'); } ;
 				<div id="groups_tab_slide">
 				<!-- START of Individual Groups -->	
 				<?php
-				if(isset($view_data['group_tab_list']) && $view_data['group_tab_list'] != ''){
-					foreach($view_data['group_tab_list'] as $v){
+				if(isset($_t['group_tab_list']) && $_t['group_tab_list'] != ''){
+					foreach($_t['group_tab_list'] as $v){
 						echo $v;
 					}
 				}
@@ -1314,8 +1364,8 @@ window.onload=function() { show_info('groups','Groups'); } ;
 				<div id="rel_tab_slide">
 				<!-- START of Relevancy Settings -->	
 				<?php
-				if(isset($view_data['get_rel_tab_names'])){
-					foreach($view_data['get_rel_tab_names'] as $value){
+				if(isset($_t['get_rel_tab_names'])){
+					foreach($_t['get_rel_tab_names'] as $value){
 						echo $value;
 					}
 				}
@@ -1344,7 +1394,7 @@ window.onload=function() { show_info('groups','Groups'); } ;
     Meteor.registerEventCallback("process", function(data) { bg2.grab_bits(data); } );
 
     // Join the demo channel and get last five events, then stream
-    Meteor.joinChannel("<?=$view_data['pcid'];?>", 0);
+    Meteor.joinChannel("<?=$_t['pcid'];?>", 0);
     Meteor.mode = 'stream';
 
     // Start streaming!

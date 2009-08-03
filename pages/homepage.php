@@ -224,16 +224,13 @@ EOF;
 
 		//NEW GROUPS QUERY	
 		$group_list_query = <<<EOF
-			(SELECT t2.connected,t1.tapd,t1.inherit,t2.pic_100,t2.focus, t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid={$uid}) 				UNION ALL
-			(SELECT t2.connected,t1.tapd,t1.inherit,t2.pic_100,t2.focus, t2.domain AS gname,t1.gid  FROM group_members AS t1 JOIN connected_groups AS t2 ON t1.gid = t2.gid WHERE t1.uid={$uid} AND t1.connected=1 AND t1.status=1);
+			SELECT t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_100,t2.focus,t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid={$uid};
 EOF;
 
 		$this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                                 $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
                         $this->set($groups_you_are_in,'your_groups');
 			//END rel setting creation
-
-
 
 
 
@@ -429,6 +426,7 @@ $old_uid = '';
 while($res = $groups_you_are_in->fetch_assoc() ){
         $gid = $res['gid'];
         $gname = $res['gname'];
+        $symbol = $res['symbol'];
 	$slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
                                 $counting++;
                                if($counting !== 1){
@@ -440,7 +438,7 @@ while($res = $groups_you_are_in->fetch_assoc() ){
                                 $old_gname = $gname;
 	
 	$html_group_list[$gid] = <<<EOF
-	<li class="toggle_list_el toggle_list_group" id="group_{$gid}"  onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$gname}{$connected_img}</span></li>
+	<li class="toggle_list_el toggle_list_group" id="group_{$gid}"  onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span></li>
 EOF;
 }
 $counting=0;

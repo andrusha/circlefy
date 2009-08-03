@@ -30,12 +30,6 @@ class network extends Base{
 		$this->set($groups_you_are_in,'your_groups');
 
 	
-/* OLD QUERY 0	
-		 SELECT t2.uid,t2.uname,t2.fname,t2.lname,t4.chat_text AS last_chat FROM friends AS t1 
-		 JOIN login AS t2 ON t1.fuid = t2.uid
-		 LEFT JOIN special_chat AS t4 ON t1.fuid = t4.uid
-		 WHERE t1.uid = {$uid} GROUP BY t1.fuid;
-*/
 		$query[0] = <<<EOF
 		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1 
 		LEFT JOIN 
@@ -46,13 +40,6 @@ class network extends Base{
 		WHERE t1.uid = {$uid} GROUP BY t1.fuid;
 EOF;
 
-/* OLD QUERY 1
-
-                 SELECT t2.uid,t2.uname,t2.fname,t2.lname,t4.chat_text AS last_chat FROM friends AS t1
-                 JOIN login AS t2 ON t1.uid = t2.uid
-                 LEFT JOIN special_chat AS t4 ON t1.fuid = t4.uid
-                 WHERE t1.fuid = {$uid} GROUP BY t1.uid;
-*/
 
                 $query[1] = <<<EOF
 		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1 
@@ -80,7 +67,10 @@ foreach($query as $k_query => $v_query){
                                                                         }
                                                  }
 
-                                                $group_query = "SELECT groups.gid,uid,gname FROM groups JOIN group_members ON groups.gid = group_members.gid WHERE uid IN ({$ids});";
+                                                $group_query = "SELECT
+								groups.gid,uid,gname,groups.connected AS connected FROM groups
+								JOIN group_members ON groups.gid = group_members.gid
+								WHERE uid IN ({$ids});";
 
                                                 $this->db_class_mysql->set_query($group_query,'users_groups',"Finds all of the group a specific user is in");
                                                 $search_groups = $this->db_class_mysql->execute_query('users_groups');
@@ -89,7 +79,10 @@ foreach($query as $k_query => $v_query){
                                                 while($res = $search_groups->fetch_assoc()){
                                                         $gname = $res['gname'];
 							$gid = $res['gid'];
+							$c = $res['connected'];
+
                                                         $group_array[$res['uid']][$gid] .= $gname;
+                                                        $group_array[$gname][$gid] .= $c;
                                                 }
                                                 $friend_query = "SELECT fuid FROM friends WHERE uid = {$uid} AND fuid IN({$ids});";
                                                 $this->db_class_mysql->set_query($friend_query,'friend_query',"This tells you if they're you haved them tap or not so the correct state can be set upon the page loading");
@@ -145,7 +138,11 @@ foreach($query as $k_query => $v_query){
 EOF;
                                                                                 if(is_array($group_array[$search_res['uid']])){
                                                                                         foreach($group_array[$search_res['uid']] as $v => $k){
-                                                                                                $res[$count] .= '<li><a href="group/'.$v.'">'. $k.'</a></li>';
+												if(!$group_array[$k])
+	                                                                                                $res[$count] .= '<li><a href="group/'.$v.'">'. $k.'</a></li>';
+												else
+													$res[$count] .= '<li>'.$k.' <img src="images/icons/accept.png" /></li>';
+ 
                                                                                         }
                                                                                 } else {
                                                                                                 $res[$count] .= "This member is in no groups, get them to join some!";
@@ -170,10 +167,6 @@ EOF;
                                         }
 					 $this->set($res,'html_'.$k_query);
 }
-	}
-
-	function test(){
-
 	}
 	
 }

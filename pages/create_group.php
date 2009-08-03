@@ -39,6 +39,7 @@ class create_group extends Base{
 			//All form settings	
 			$gadmin = $uid;
 			$gname = addslashes($_POST['gname']);
+			$symbol = addslashes($_POST['symbol']);
 			$descr = addslashes($_POST['descr']);
 			$focus = addslashes($_POST['focus']);
 		
@@ -82,7 +83,7 @@ class create_group extends Base{
 
 			$this->db_class_mysql->set_query('
 			
-			INSERT INTO groups(gname,gadmin,descr,focus,private,invite_only,email_suffix,picture_path,invite_priv) values("'.$gname.'",'.$gadmin.',"'.$descr.'","'.$focus.'",'.$private.','.$invite_only.','.$email_suffix.',"'.$new_path.'",'.$invite_priv.')
+			INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,picture_path,invite_priv) values("'.$gname.'","'.$symbol.'",'.$gadmin.',"'.$descr.'","'.$focus.'",'.$private.','.$invite_only.','.$email_suffix.',"'.$new_path.'",'.$invite_priv.')
 			
 			','insert_query','This query insert the new group into the GROUPS table');
 

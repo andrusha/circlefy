@@ -33,6 +33,7 @@ class groups_manage extends Base{
 			) AS ugm
 			JOIN group_members AS t1 ON t1.gid=ugm.gid
 			JOIN groups AS t2 ON t2.gid = ugm.gid 
+			AND t2.connected=0
 			GROUP BY ugm.gid;
 EOF;
 
@@ -41,17 +42,17 @@ EOF;
 EOF;
 
 			$group_random_pick = <<<EOF
-			SELECT t1.gname,t1.gid,t1.focus,t1.descr,t1.pic_100 FROM groups AS t1 ORDER BY gid DESC LIMIT 2;
+			SELECT t1.gname,t1.gid,t1.focus,t1.descr,t1.pic_100 FROM groups AS t1 WHERE t1.connected = 0 ORDER BY gid DESC LIMIT 2;
 EOF;
 
 	
 			$connected_group_query = <<<EOF
-			SELECT t3.email,t1.gid,t1.gname,t1.domain,t2.uid,t2.status FROM group_members AS t2
-			JOIN connected_groups AS t1
+			SELECT t3.email,t1.gid,t1.gname,t1.symbol,t2.uid,t2.status FROM group_members AS t2
+			JOIN groups AS t1
 			ON t1.gid = t2.gid
 			JOIN join_group_status as t3
 			ON t1.gid = t3.gid AND t2.uid = t3.uid
-			WHERE t2.uid = {$uid} and t2.connected = 1
+			WHERE t2.uid = {$uid} 
 EOF;
 
 			$this->db_class_mysql->set_query($connected_group_query,'get_connected_groups','This gets the status and attributes of all connected groups to display to the user');

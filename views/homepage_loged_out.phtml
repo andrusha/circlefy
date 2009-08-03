@@ -20,6 +20,7 @@ window.addEvent('domready', function() {
                 Cookie.write('profile_edit',1,{duration:999})
                 Cookie.write('rel_settings',1,{duration:999})
                 Cookie.write('groups',1,{duration:999})
+                Cookie.write('new_user',1,{duration:999})
         });
 
 });
@@ -48,7 +49,7 @@ window.addEvent('domready', function() {
 	</div>
 
 <div id="top_container">
-	<div id="top">How it works. &nbsp;&nbsp;&nbsp;&nbsp; Why it works. &nbsp;&nbsp;&nbsp;&nbsp; What it is. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php print $view_data['signup'] ?></div>
+	<div id="top">How it works. &nbsp;&nbsp;&nbsp;&nbsp; Why it works. &nbsp;&nbsp;&nbsp;&nbsp; What it is. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php print $_t['signup'] ?></div>
 
 	
 </div>
@@ -59,7 +60,7 @@ window.addEvent('domready', function() {
 <?php include(SIGNUP);?>
 
 	<div id="top_logo"><img id="click_main_forms" src="images/tap_logo.gif" alt="logo" onclick="window_swapper(this); return false;" /></div>
-<?php echo $view_data['errors']; ?>
+<?php echo $_t['errors']; ?>
 	
 	<div id="info">
 	<!--

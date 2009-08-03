@@ -61,12 +61,12 @@
 		<div class="friend_category">People who you have tap'd</div>
 
 		<div>
-		<? if($view_data['html_0'] && $view_data['html_0'] != '')foreach($view_data['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='people_search'>here</a> to find people to tap";}?>
+		<? if($_t['html_0'] && $_t['html_0'] != '')foreach($_t['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='people_search'>here</a> to find people to tap";}?>
 		</div>
 
 		<div class="friend_category">People who have you tap'd</div>
 		<div>
-		<? if($view_data['html_1'] && $view_data['html_1'] != '')foreach($view_data['html_1'] as $v){echo $v;} else { echo "Have someone do something for me you";} ?>
+		<? if($_t['html_1'] && $_t['html_1'] != '')foreach($_t['html_1'] as $v){echo $v;} else { echo "Have someone do something for me you";} ?>
 		</div>
 			
 

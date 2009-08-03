@@ -11,12 +11,14 @@ $group_to = $to_list->group_to;
 $friend_to = $to_list->friend_to;
 $keyword_to = $to_list->keyword_to;
 
+$my_gids = $_SESSION['gid'];
+$my_zip = $_SESSION['zip'];
 $msg = $_POST['msg'];
 $time = $_POST['time'];
 $channel_id = $_POST['channel_id'];
 
 if($msg){
-	$chat_obj = new chat_functions($group_to,$friend_to,$keyword_to);
+	$chat_obj = new chat_functions($group_to,$friend_to,$keyword_to,$my_gids,$my_zip);
 	$chat_id = $chat_obj->create_channel($msg);
 	echo $chat_id;
 }
@@ -31,12 +33,26 @@ class chat_functions{
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
                 private $results;
 
-		public $counter_data;
+		private $my_groups;
+		private $my_zip;
 
-        function __construct($groups,$friends,$keywords){
+		private $permissions = array();
+		private $filter_group_queries;
+
+		public $counter_data;
+		
+
+        function __construct($groups,$friends,$keywords,$my_gids,$my_zip){
 				$this->group_to = $groups;
 				$this->friend_to = $friends;
 				$this->keyword_to = $keywords;
+				$this->my_groups = $my_gids;
+				$this->my_zip = $my_zip;
+
+				//This sets initial group permissions
+				$perm_list = explode(',',$this->my_groups);
+				foreach($perm_list as $gid)
+					$this->permissions[$gid] = "0,3";
 
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
@@ -192,6 +208,7 @@ class chat_functions{
 			$this->counter_data['building'] = $x++;
                         $uid_list['building'][] .= $res['uid'];
                 }
+
 	return $uid_list;
 	}
 
@@ -237,41 +254,120 @@ class chat_functions{
 			$group_list .= '"'.$v.'",';
 		}
 		$groups = rtrim($group_list,',');
+	
+		$permission_query = <<<EOF
+		SELECT t1.gname as gname,t1.gid AS gid,t1.symbol FROM groups AS t1
+		WHERE symbol IN ( $groups ) GROUP BY symbol
+EOF;
+
+		$group_perm_matches = $this->mysqli->query($permission_query);
+
+		$group_list = explode(',',$this->my_groups);
+
+
+		//This is where the permissions are set per group
+		//0 = Originating, 1 = Destin , 2 = Destin + Originating, 3 = Destin + Originating
+		//Only people who are part of groups get all 0,1,2,3, everyone else gets 0,3	
+		if($group_perm_matches->num_rows > 0)	
+		while($res = $group_perm_matches->fetch_assoc()){
+			if(strpos(','.$this->my_groups.',',','.$res['gid'].',') != false){
+					$this->permissions[$res['gid']] = "1,3";
+					$out_groups .= $res['gid'].',';
+			} else { 
+					$this->permissions[$res['gid']] = "0,1,2,3";
+					$in_groups .= $res['gid'].',';
+			}
+					unset($group_list[array_search($res['gid'],$group_list)]);
+		}
+		$in_groups = substr($in_groups,0,-1);
+		$out_groups = substr($out_groups,0,-1);
+
+		//This is the array for group filterings
+		$dynamic_query_list = array();
+		//This is the array for filter filtering
+		$filter_query_list = array();
+
+		//The follow queries correspon to the 2 above arrays.  The first array ( for group filtering ) is for this method.  The second array ( for filter filtering is for the filters )
+		//This is needed twice becasue the tables/data structures/processing are different
+		$groups_left = implode(',',$group_list);
+		if($group_list != '' && $groups_left){
+			$groups_left_query = "( t1.gid IN ( $groups_left ) AND t2.group_outside_state IN (0,3) )";
+			$dynamic_query_list[] .= $groups_left_query;
+
+			$filter_left_query = "( gid IN ( $groups_left ) AND group_outside_state IN (0,3) )";
+			$filter_query_list[] .= $filter_left_query;
+		}
+
+		if($in_groups != ''){
+			$in_groups_query = "( t1.gid IN ( $in_groups ) AND t2.group_outside_state IN(0,1,2,3) )";
+			$dynamic_query_list[] .= $in_groups_query;
+
+			$in_filter_query = "( gid IN ( $in_groups ) AND group_outside_state IN(0,1,2,3) )";
+			$filter_query_list[] .= $in_filter_query;
+		}
+
+		if($out_groups != ''){
+			$out_groups_query = "( t1.gid IN ( $out_groups ) AND t2.group_outside_state IN(1,3) )";
+			$dynamic_query_list[] .= $out_groups_query;
+
+			$out_filter_query = "( gid IN ( $out_groups ) AND group_outside_state IN(1,3) ) ";
+			$filter_query_list[] .= $out_filter_query;
+		}
+
+		$all_group_queries = implode(" OR ",$dynamic_query_list);
+
+		$filter_group_queries = implode(" OR ",$filter_query_list);
+
+		//START this says states a filter tied to no group ( which would be a keyword or whatever ) 
+		if($filter_group_queries != array() )
+			$filter_group_queries .= " OR gid=0 ";
+		else
+			$filter_group_queries .= " gid=0 ";
+
+		$this->filter_group_queries = $filter_group_queries;
 
 		$groups_query = <<<EOF
-		(
 		SELECT t1.gname as gname,t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM groups AS t1
 		JOIN group_members AS t2
-		ON t2.gid = t1.gid
-		WHERE t1.gname IN ( $groups )
-		) UNION ALL (
-		SELECT t1.domain as gname,t1.gid AS gid,t1.connected AS c,t2.uid AS uid FROM connected_groups AS t1
-                JOIN group_members AS t2
-                ON t2.gid = t1.gid
-                WHERE t1.domain IN ( $groups)
-		)
+		ON t2.gid = t1.gid 
+		WHERE 
+		$all_group_queries
 EOF;
+
 		$group_matches = $this->mysqli->query($groups_query);
 
 		if($group_matches->num_rows > 0){
 		while($res = $group_matches->fetch_assoc() ) {
 			$c = $res['c'];
+		
+
 			$uid_list['groups'][$res['gid']][] .= $res['uid'];
 			if(!$c){
-				$uid_list['gids'][] .= $res['gid'];
-				$g = 1;
+				$uid_list['gids'][] = $res['gid'];
+				$g = 0;
 			} else {
-				$uid_list['cgids'][] .= $res['gid'];
+				$uid_list['cgids'][] = $res['gid'];
 				$c = 1;
 			}
 				$this->counter_data['groups'][$res['gname']][0]++;
 		}
+
+
 		if($g)
 		$uid_list['gids'] = array_unique($uid_list['gids']);
 		if($c)
 		$uid_list['cgids'] = array_unique($uid_list['cgids']);
 		$g = 0;
 		$c = 0;
+		}
+
+		if($group_perm_matches->num_rows > 0){
+		$group_perm_matches->data_seek(0);
+		while($res = $group_perm_matches->fetch_assoc() )
+			if($this->counter_data['groups'][$res['gname']] == 0)
+				$null_msg = "<span class='null_tap'>Nobody at {$res['symbol']} got your msg</span>";
+				$this->counter_data['groups'][$null_msg] = '';
+
 		}
 	return $uid_list;
 	}
@@ -280,22 +376,14 @@ EOF;
 	//$static_zip = persons zipcode
 	//$string = message
 	private function filter_matches($string,$sent_zip=array(0),$static_zip=0,$gid_list='',$cgid_list=''){
-	
+		if($this->my_zip)
+		$static_zip = $this->my_zip;
+		
 		//START parsing to see who gets what
 		$array =  explode(' ',$string);
 		$temp = $array;
-
-		//Create Group String
-		if($gid_list != ''){
-			$gid_list = implode(",",$gid_list);
-			$gid_list = $gid_list.",";
-		}
-		
-		if($cgid_list != ''){
-			$cgid_list = implode(",",$cgid_list);
-			$cgid_list = $cgid_list.",";
-		}
-
+	
+	
 		//This parses out every single gramitical phrase in the message.  The phrases are then sent into the IN() clause
 		//This method is A LOT faster then a full-text search and has many more perks. As each keyword is indexed. It's also much more real-time.
 		while($array){
@@ -305,6 +393,7 @@ EOF;
 				if($count < 8){
 					$match = implode(' ',$temp);
 					$total++;
+					if($match != "")
 					$final .= '"'.$match.'",';
 				}
 				$flag = 1;
@@ -330,20 +419,29 @@ EOF;
 	
 		$zip_list = implode('',$zips);
 
+		$gpm = $this->filter_group_queries;
+
+		/*
+		Data Processing via SQL
+
+		IN() Clauses Represent:
+			
+		1) Tags + Zipcode(any) + Group(any)
+		2) Zipcode
+		3) Zipcode + Group
+				
+	
+		*/
+
 		$phrase_query = <<<EOF
 		SELECT rrid,tags,zip,gid,uid,enabled,type FROM rel_settings_query WHERE
-		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$gid_list}0) AND connected=0 )
+		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND ( {$gpm} )  )
 		OR
-		(tags IN({$phrase_list}) AND zip IN({$zip_list},0) AND gid IN ({$gid_list}0) AND connected=1 )
+		(tags="" AND zip IN({$zip_list}) AND gid=0)
 		OR
-		(tags IN("") AND zip IN({$zip_list}) AND gid=0)
-		OR
-		(tags IN("") AND zip IN({$zip_list}) AND gid IN ({$gid_list}0) AND connected=0  )
-		OR
-		(tags IN("") AND zip IN({$zip_list}) AND gid IN ({$cgid_list}0) AND connected=1 )
+		(tags="" AND zip IN({$zip_list}) AND ( {$gpm} ) )
 		AND enabled = 1;
 EOF;
-
 
 		$phrase_matches = $this->mysqli->query($phrase_query);
 

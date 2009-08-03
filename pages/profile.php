@@ -42,7 +42,7 @@ EOF;
 		$this->db_class_mysql->set_query('SELECT COUNT(*) AS count FROM friends WHERE uid='.$uid.';','get_friends','Gets count of "followers"');
 		$this->db_class_mysql->set_query('SELECT COUNT(*) AS count FROM special_chat WHERE uid='.$uid.';','get_postings','Shows how many times you tapd something');
 		$this->db_class_mysql->set_query('SELECT COUNT(*) AS count FROM chat WHERE uid='.$uid.';','get_chat','shows how many times you replied/chatted');
-		$this->db_class_mysql->set_query('SELECT t1.pic_36,t1.gname,t1.gid FROM groups AS t1 JOIN group_members ON t1.gid = group_members.gid WHERE uid ='.$uid.';','get_groups','Gets all groups for the groups you are apart of');
+		$this->db_class_mysql->set_query('SELECT t1.pic_36,t1.gname,t1.gid,t1.connected FROM groups AS t1 JOIN group_members ON t1.gid = group_members.gid WHERE uid ='.$uid.';','get_groups','Gets all groups for the groups you are apart of');
 
 			$last_chat_results = $this->db_class_mysql->execute_query('get_last_chat');
 			$rel_profile_results = $this->db_class_mysql->execute_query('get_rel_profile');
