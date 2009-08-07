@@ -180,7 +180,11 @@ public function login_user($uname,$pass,$hash,$auto_login){
 								$zip = $res['zip'];
 								$gids[] .= $res['gid'];
 							}
-								$_SESSION['gid'] = implode(',',$gids);
+								if($gids)
+									$gids =implode(',',$gids);
+								else
+									$gids = 'null';
+								$_SESSION['gid'] = $gids;
 								$_SESSION['zip'] = $zip;
 				}
 		// END SESSION UPDATE BASED ON HASH

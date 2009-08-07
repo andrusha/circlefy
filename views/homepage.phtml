@@ -100,45 +100,6 @@ Bit_Grabber2 = new Class({
 });
 var bg2 = new Bit_Grabber2;
 
-//{'offsets' : bg2.offset_array, 'bit_grabber' : true}
-
-Bit_Grabber = new Class({
-
-	offset_array: [],
-
-	grab_bits: function(){
-	var self = this;
-	self.offset_array = [];
-
-	$$('.offsets').each(function( el ) {
-		self.offset_array.push(el.innerHTML);
-	});
-
-	var req_res = new Request.JSON({
-			url:"AJAX/response_poller.php",
-			onComplete: function(data){
-				var counter = 0;	
-				$$('.offsets').each(function( el ) {
-					var new_offset = data.new_offsets[counter];
-					el.innerHTML = new_offset;
-					counter++;
-				})
-				if(data.results != false){
-					Hash.each(data.data,function(value){ Hash.each(value,
-					function(html,key){ 
-						var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
-						var id = key+'_information';
-						newel.inject(id,'top');
-						newel.tween('opacity', 0, 1);
-						$(key+'_bullet').src = "images/icons/bullet_blue.png";
-					 })    
-								});
-				}
-			}
-	}).post({'offsets' : self.offset_array, 'bit_grabber' : true});
-			//Actually, I realize that I could have initialzed the offsets in an array an manipulated the array... will chaange in a bit, as well as everything I did HTML with
-	}
-});
 
 Response_Grabber = new Class({
 
@@ -546,6 +507,168 @@ Intro = new Class({
 
 });
 
+var search_friends_hash  = new Hash({
+	<? foreach($_t['friend_search_list'] as $k => $v)
+			echo "'".$v."':$k,";
+	?>
+});
+
+var search_groups_hash = new Hash({
+	<? foreach($_t['group_search_list'] as $k => $v)
+			echo "'".$v."':$k,";
+	?>
+});
+
+function stop_me(id){
+	$(id).addEvent('submit',function(event){
+		event.stop();
+	});
+
+}
+
+Nav_Search = new Class({
+
+	result:0,
+
+	friends:function(){
+		$('search_friends').addEvent('click',function(){ vanish_text(0,$('search_friends')); });
+		stop_me('form_search_friends');
+		this.process('search_friends',search_friends_hash,'friend');
+	},
+
+	groups:function(){
+		$('search_groups').addEvent('click',function(){ vanish_text(0,$('search_groups')); });
+		stop_me('form_search_groups');
+		this.process('search_groups',search_groups_hash,'group');
+	},
+
+	process:function(id,xhash,type){
+		var self = this;
+		$(id).addEvent('blur',function(){
+			if(self.result == 0){
+				 $(id+'_results').empty();
+			}
+		});
+
+		$(id).addEvent('keyup',function(event){
+			if(event.key == 'tab' || event.code == 16) return;
+
+			
+
+			self.result = 0;
+			$(id+'_results').empty();
+
+				val_length = this.value.length;
+				val_value = this.value.toLowerCase();
+
+				xhash.each(function(v,k){
+					if(k.substr(0,val_length).toLowerCase() == val_value && (val_value != '') ){
+					
+						var new_img = new Element('img',{'class':'tab_bullet','id':type+'_'+v+'_bullet','src':'images/icons/bullet_white.png'});
+						var new_el = new Element('li',{'html':k,'class':'toggle_list_el toggle_list_'+type});
+						new_el.adopt(new_img);
+							new_el.store('symbol',k);
+							new_el.store('id',v);
+							new_el.store('type',type);
+
+						$(id+'_results').adopt(new_el);	
+						self.result = 1;
+					} else { 
+						if(self.result != 1) self.result = 0;
+					}
+				});
+						if(!self.result){
+							$(id+'_results').adopt(new Element('li',{'html':'No result for '+val_value}));
+						} else { 
+							self.fire_events();
+						}
+						
+		});
+	},
+
+	fire_events:function(){
+		$$('.toggle_list_el').each(function(el){
+			el.addEvent('click',function(){
+				var symbol = el.retrieve('symbol');
+				var id = el.retrieve('id');
+				var type = el.retrieve('type');
+
+				show_info(type+'_'+id,symbol);
+
+			});
+		});
+	}
+
+});
+
+
+Tips_Stuff = new Class({
+
+
+titles : new Hash({}),
+tipz:0,
+
+init_tips:function(type){
+		Cookie.write('tip_toggle',1,{ duration: 7 } );
+		var self = this;
+		$$('.tips').each(function(element,index) {
+			if(type == 'init')
+				var el_title = element.title;
+			if(type == 'on')
+				var el_title = self.titles.get(element.id);
+			element.title = el_title;
+                	var content = el_title.split('::');
+	                element.store('tip:title', content[0]);
+        	        element.store('tip:text', content[1]);
+		});
+
+		self.tipz = new Tips('.tips',{
+			className: 'tips',
+		});
+
+		self.tipz.addEvents({
+			'show': function(tip) {
+				tip.fade('in');
+			},
+			'hide': function(tip) {
+				tip.fade('out');
+			}
+		});
+},
+
+tips_toggle:function(){
+	var self = this;
+	
+	$('tips_toggle').addEvent('click',function(){
+		var toggle_state  = Cookie.read('tip_toggle');	
+		if(toggle_state == 1)
+			self.tips_off();
+		else
+			self.tips_on();
+	});
+
+},
+tips_on: function(){
+	var self = this;
+	$('tips_toggle').set('html','Tips On');
+	self.init_tips('on');
+},
+
+tips_off:function(){
+	var self = this;
+		Cookie.write('tip_toggle',0, { duration: 7 } );
+		$('tips_toggle').set('html','Tips Off');
+
+		$$('.tips').each(function(el){
+			if(self.tipz != 0)
+				self.tipz.detach(el);
+			self.titles.set(el.id,el.title);
+			el.title = '';
+		});
+}
+
+});
+
 var active_convo;
 var autocompleter;
 var inputBox;
@@ -553,6 +676,86 @@ var grabber_obj;
 var poller_obj;
 var response_event_obj;
 window.addEvent('domready', function() {
+
+	tips_obj = new Tips_Stuff;
+	var tip_state = Cookie.read('tip_toggle');
+	if(tip_state == 1){
+		$('tips_toggle').set('html','Tips On');
+		tips_obj.init_tips('init');
+	} else { 
+		$('tips_toggle').set('html','Tips Off');
+		tips_obj.tips_off();
+	}
+		
+	tips_obj.tips_toggle();
+
+	nav_search_obj = new Nav_Search;
+	nav_search_obj.friends();
+	nav_search_obj.groups();
+
+	
+	show_info('groups','Groups');
+
+
+	$('submit_button').addEvent('click',function(e){
+		e.stop();
+		open_window($('question').value);
+	});
+
+	$('rel').addEvent('click',function(){
+		show_info('rel','Filters Aggragate');
+	});
+
+	$('friends').addEvent('click',function(){
+		show_info('friends','Friends Aggragate');
+	});
+
+	$('groups').addEvent('click',function(){
+		show_info('groups','Groups Aggragate');
+	});
+   
+	$('active').addEvent('click',function(){
+  
+		show_info('active','Active Conversations');
+	});
+
+	$('building').addEvent('click',function(){
+		show_info('building','Same Building');
+	});
+
+	 $('main_sym_search').addEvent('click',function(event){
+			vanish_text(0,this);
+        });
+
+	$('main_sym_search').addEvent('submit',function(e){
+		e.stop();
+	
+	});
+
+	$('clear_chat_windows').addEvent('click',function(){
+			clear_current_chats();
+	});
+
+	$('direct').addEvent('click',function(){
+		show_info('direct','Direct Messages');
+	});
+
+	$('archives').addEvent('click',function(){
+		show_info('archives','Archives');
+	});
+
+	$('question').addEvent('keypress',function(event){
+		if(!autocompleter.toggleEnabled){
+        	if (event.key == 'enter'){
+			open_window(document.getElementById('question').value);
+                return false;
+		        } else {
+                return true;
+
+		}
+        }
+
+	});	
 
 	$('question').addEvent('click',function() { if(this.value == 'Tap the connected...') this.value = ''; });
 	$('question').addEvent('blur',function() { if(this.value == '') this.value = 'Tap the connected...'; });
@@ -659,47 +862,6 @@ myFx.hide();
 		rel_slide.toggle();
 	});
 
-/*	
-	$('text_state_toggle').addEvent('click', function(e) { 
-		e.stop();
-		
-		if($('text_state').className == 'hide_class'){
-			$('text_state').setStyle('display', 'block');
-			$('text_state').set('class','display');
-			$('text_state_toggle').innerHTML = '<a href="#">Hide Help</a>';
-			$('text_state_toggle').className = 'hide_help';
-			myFx.toggle();
-		} else { 
-			myFx.toggle();
-			if($('text_state_toggle').className == 'show_help'){
-				$('text_state_toggle').innerHTML = '<a href="#">Hide Help</a>';
-				$('text_state_toggle').className = 'hide_help';
-			} else { 
-				$('text_state_toggle').innerHTML = '<a href="#">Show Help</a>';
-				$('text_state_toggle').className = 'show_help';
-			}
-		}
-	
-	});
-*/
-/*	
-	responseBoxes.each(function(el){
-		el.addEvent('keydown',function(event){
-			if(event.key == 'enter'){
-				event.stop();
-				var id = el.get('id').substr(18);
-				var text = el.value;
-				var req_res = new Request.JSON({
-E
-
-					onComplete: function(data){
-						el.value = '';
-					}
-				}).post({'response' : text , 'channel_id' : id});
-			}
-		});
-	});
-*/
 	
 	response_event_obj = new Response_Sender;
 	response_event_obj.add_action();
@@ -708,51 +870,14 @@ E
 
 	inputBox.addEvent('keydown', function(event){
 		if((event.key =='3' && event.shift) && !autocompleter.toggleEnabled){
-			//$('text_state').style.background = 'lightyellow';
-			//$('text_state').innerHTML = 'Direct your message to people using the symbols below (Example: the group Harvard would be #Harvard, your friend Bill22 would be @Biill22 , *cats for people interested in cats). Press ! when complete, then start typing your message';
-//			$('mode_text').innerHTML = '<img src="images/icons/bullet_add.png" />Targeting, press ! to enter message mode';
-//			$('mode_text').style.background = 'lightblue';
-/*
-			exampleFx = new Fx.Style(’text_state’, ‘opacity’, {
-			    duration: 500,
-			    transition: Fx.Transitions.quartInOut
-			    });
-			    exampleFx.start(0,1); /*fade it in*/
-
 			autocompleter.enable();
-
 		}else if((event.key =='space')  && autocompleter.toggleEnabled){
 			autocompleter.disable();
-			//$('text_state').style.background = 'lightgreen';
-//			$('text_state').innerHTML = '<img src="images/icons/comment_edit.png" />Now type your message to the people who you\'re sending it to and press enter to send';
-//			$('mode_text').innerHTML = '<img src="images/icons/comment_edit.png" />Messaging, press enter to send your message';
-//			$('mode_text').style.background = 'lightgreen';
-	//		inputBox.removeEvents();
-		//	setTimeout("autocompleter.disable()",1000);
-			
 		}
 	});
 
 });
 
-/*
-window.addEvent('domready', function() {
-	var completer_created = false;
-	var inputBox = $('question');
-
-	inputBox.addEvent('keydown', function(event){
-		if(event.key == 'a' && !completer_created){
-			var autocompleter = new Autocompleter.Request.JSON('question', 'AJAX/query_assoc.php', {
-				postVar: 'search',
-				maxChoices: 1
-			});
-		}else if(event.key == ';' && autocompleter){
-			autocompleter.destroy();
-		}
-	});
-
-});
-*/
 function show_mang(mang_id){
 	var current_mang = document.getElementById('current_mang').innerHTML;
 	if(current_mang != ''){
@@ -867,13 +992,14 @@ function clear_current_chats(){
 
 
 }
+
+
     </script>
 
     
 </head>
 
 <body>
-
 <span id="errors_show"></span>
 <span id="last_mid"><?=$_t['max_mid'];?></span>
 <?php/*
@@ -882,173 +1008,11 @@ foreach($offsets as $offset)
 	echo '<span class="offsets">'.$offset.'</span><br/>';
 */
 ?>
-<!--
-<div id="top">
-<span onclick="show_mang('rel')" class="top_links" id="top_rel">Relevancy Settings</span>
-<span onclick="show_mang('group')" class="top_links" id="top_group">Groups</span>
-<span onclick="show_mang('network')" class="top_links" id="top_network">Network</span>
-<span onclick="show_mang('prefrences')" class="top_links" id="top_prefrences">Prefrences</span> -->
 .
 </div>
 
+
 <!-- This is the start of the 3 controlling windows -->
-<span id="current_mang"></span>
-<div id="mang_prefrences">
-<div  class="close_bar" id="mang_rel_bar" onclick="hide_mang('rel');" ><img src="images/icons/cross.png" /></div>
-
-	<form id="edit_you_form" action="profile_edit" method="POST">
-	<ul id="prefrences_list">
-	<li>
-	<span class='style_bold'>Display All Responses Automatically?</span>
-	</li>
-	<li>
-	<input type="radio" id="auto_resp_yes" name="auto_resp" value="Yes" /> <label for="auto_resp_yes">Yes</label>
-	<input type="radio" id="auto_resp_no" name="auto_resp" value="No"/> <label for="auto_resp_no">No</label>
-	</li>
-
-	<li>
-	<span class='style_bold'>Any * keyword overrides all keywords in message</span>
-	</li>
-	<li>
-	<input type="radio" id="auto_resp_yes" name="auto_resp" value="Yes" /> <label for="auto_resp_yes">Yes</label>
-	<input type="radio" id="auto_resp_no" name="auto_resp" value="No"/> <label for="auto_resp_no">No</label>
-	</li>
-
-	<li>
-	<span class='style_bold'>Audio Alerts On/Off</span>
-	</li>
-	<li>
-	<input type="radio" id="auto_resp_yes" name="auto_resp" value="Yes" /> <label for="auto_resp_yes">Yes</label>
-	<input type="radio" id="auto_resp_no" name="auto_resp" value="No"/> <label for="auto_resp_no">No</label>
-	</li>
-
-	</ul>
-	</form>
-
-</div>
-<div id="mang_rel">
-<div  class="close_bar" id="mang_rel_bar" onclick="hide_mang('rel');" ><img src="images/icons/cross.png" /></div>
- <div id="rel_area_used">
-
-        <table id="rel_table">
-
-                                <colgroup span="6">
-                                        <col width="140"></col>
-                                        <col width="200"></col>
-                                        <col width="80"></col>
-                                        <col width="80"></col>
-                                        <col width="80"></col>
-                                        <col width="40"></col>
-                                </colgroup>
-
-                                <thead id="rel_table_head">
-                                <tr><td>-Name-</td><td>-Tags-</td><td>-Location-</td><td>-Group-</td><td>-Enabled-</td><td>Remove</td></tr>
-                                </thead>
-
-                                <tbody id="rel_table_body">
-
-        <?php
-        if(isset($_t['get_rel_results'])){
-                foreach($_t['get_rel_results'] as $value){
-                        echo $value;
-                }
-        } else {
-                echo '<span id="rel_not_setup" style="color:red;font-size:12px">Setup your relevancy settings... click <a href="relevancy_settings">here</a> to do so</span>';
-        }
-        ?>
-                                </tbody>
-                                </table>
-        </div>
-</div>
-
-<div id="mang_group">
-<div class="close_bar" id="mang_group_bar"  onclick="hide_mang('group');" ><img src="images/icons/cross.png" /></div>
-<!--    This is where the groups starts         -->
-
-<?php
-
-$group_results = $_t['your_groups'];
-
-if($group_results->num_rows > 0){
-        echo "<div class=\"groups_your_in\">";
-
-        while($res = $group_results->fetch_assoc()){
-        $pic_100 = $res['pic_100'];
-        $gname = $res['gname'];
-        $focus = $res['focus'];
-        $size = $res['size'];
-        $status = $res['admin'];
-        $gid = $res['gid'];
-
-        switch($status){
-                case 1:
-                        $status = "Group Owner";
-                case 2:
-                        $status = "Group Admin";
-                default:
-                        $status = "";
-        }
-
-                                $tap_status = ( $res['tapd'] == 1 ) ? "enable" : "disable";
-                                $inherit_status = ( $res['inherit'] == 1 ) ? "enable" : "disable";
-                                $tap_display = ( $res['tapd'] == 1 ) ? "Yes" : "No";
-                                $inherit_display = ( $res['inherit'] == 1 ) ? "Yes" : "No";
-
-                        $html_status = <<<EOF
-                                 <ul class="group_status">
-                                        <li class="group_status_boxes">Tap:
-<span class="group_status_tapd_{$tap_status} {$res['tapd']} group_tap" id="group_tap" onclick="update_enable_status('tapd',{$gid},this.className[this.className.length-1]);">{$tap_display}</span>
-                                        </li> &nbsp &nbsp  <img class="group_status_boxes2" src='images/icons/connect.png' />
-
-                                </ul>
-EOF;
-
-
-                $group_output[] .=
-                        <<<EOF
-                                        <div class="group_result">
-                                                        <div class="group_result_name"><span class="group_result_name_span">{$gname} <span class="group_status">{$status}</span></span></div>
-
-                                                        <div class="thumbnail_group_result"><img src="<?=PROFILE_PIC_REL?>{$pic_100}" alt="group_pic" /></div>
-
-                                                        <div class="group_result_info">
-                                                                <ul class="group_result_info_list">
-									{$html_status}
-                                                                </ul>
-
-                                                                <ul class="group_result_info_list">
-                                                                        <!-- <li><span class="style_bold"><a href="group/{$gid}">Manage</a></span></li> -->
-                                                                </ul>
-
-
-                                                                <ul class="group_result_option_list">
-                                                                </ul>
-
-
-                                                        </div>
-                                        </div>
-
-
-EOF;
-}
-        } else {
-                echo '<div class="groups_your_in_null">';
-                echo '<span id="no_groups">You are currently in no groups, search above to join groups that you\'re interested in.</span>';
-   }
-
-	if($group_output)
-	foreach($group_output as $group)
-		echo $group;
-?>
-</div>
-
-</div>
-
-<div id="mang_network">
-<div  class="close_bar" id="mang_network_bar"  onclick="hide_mang('network');" ><img src="images/icons/cross.png" /></div>
-<? if($_t['html_0'] && $_t['html_0'] != '')foreach($_t['html_0'] as $v){echo $v;} else { echo "You have nobody on tap click <a href='people_search'>here</a> to find people to tap";}?>
-</div>
-
 <div id="large_container">
 
 	<div id="left_container">
@@ -1072,27 +1036,13 @@ EOF;
 			<tr><td># of people you tapd</td></tr>
 			</tfoot>	
 			</table>
-<!--				<ul>
-					<li><span class="tap_notification_char">#nyu.edu </span> 940</li>
-					<li><span class="tap_notification_char">direct </span>3</li>
-					<li><span class="tap_notification_char">on tap </span>4010</li>
-					<li><span class="tap_notification_char">total </span>4953</li>
 
-				</ul>
-				<table>
-					<col width="100px" align="left">
-					<col width="24px"align="right">
-					<tr><td><span class="tap_notification_char">#nyu.edu </span></td><td>940</td><tr>
-					<tr><td><span class="tap_notification_char">#stanford.edu </span></td><td>940</td><tr>
-					<tr><td><span class="tap_notification_char">total </span></td><td>1180</td><tr>
-				</table>
--->
 		</div>
 
 		<div id="left_tabs">
 			<ul id="left_tabs_list">
-				<li style="color:red;" class="tab" id="archives" onclick="show_info('archives','Archives')"><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
-				<li class="tab" id="active" onclick="show_info('active','Active Convos')"><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
+				<li style="color:red;" class="tab" id="archives" ><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
+				<li class="tab tips" id="active"   title="Active Convo :: Active Convos are conversations you're currently engaged with.  Usually a tap you've said or replied to."><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
 				<?php
 				if(isset($_t['active_bits_tabs']) && $_t['active_bits_tabs'] != ''){
 					foreach($_t['active_bits_tabs'] as $v){
@@ -1119,30 +1069,14 @@ EOF;
 			$text_state_html = <<<EOF
 			<li class="{$hide_class}" id="text_state"><img src="images/icons/error.png" /> Target your message to people using the symbols below 
 		
-			<ul id="examples_list">	
-				<li><u>Examples:</u> to send to ...</li>
-				<li><img src="images/icons/connect.png" /> @ <b>Direct:</b>  Bill22 would be @Biill22</li>
-				<li><img src="images/icons/group.png" /> # <b>Groups:</b> Stanford would be #Stanford</li>
-				<li><img src="images/icons/transmit_go.png" /> * <b>Tags:</b> people interested in Mike Tyson, *Mike Tyson</li>
-				<!-- <li><img src="images/icons/application_cascade.png" /> & <b>Categroy:</b> people subscribed to the the news category, &Sports </li> -->
-				<!-- <li id="when_done">When done typing who you want to direct your message to, press !, then start typing your message</li> -->
-				<li id="when_done">When done targeting your message to those who you want to reach, press !</li>
-				<li id="full_example"> <u>Full Example</u>: @Bill22, #Stanford, *Mike Tyson, ! Hey all, the Stanford Cardinals won game. Mike Tyson ran on the field..</li>
-				<!-- <li/>( This message would send to Bill22, everyone at Stanford, people interested in dogs,cats and/or people interested in the Sports Categroy )</li> -->
-			</ul>
 EOF;
 			echo $text_state_html;
 ?>
 			
-<!--			<ul>
-				<li><b>Pointers:</b></li>
-				<li>-Look to the list at your right to see Groups/People/Categories to send to.</li>
-				<li>-If you don't see any you like, click on Groups / Network in the center and add them.</li>
-				<li>-You can type in any tag. Press ! when complete, then start typing your message</li>
-			</ul> -->
 			<li>
 			<form id="sym_search">
-				<input class="0 gray_text" onclick="vanish_text(0,this); return false;" type="text" id="main_sym_search" value="Schools/Companies"></input>
+				<input class="0 gray_text tips" type="text" id="main_sym_search" value="Schools/Companies" title="Target Schools/Companies/Groups::This allows you to find groups that you're trying to target or reach.  If you're not part of a group and your target it, the group _may_ not get the information in real-time if they have a filter that states to block users outside of the group."></input>
+
 	 			</form>
 			</form>
 			</li>
@@ -1184,9 +1118,9 @@ EOF;
 					</ul>
 			
 					<ul id="top_form">
-						<li><textarea class="gray_text" maxlength="254" rows="2" cols="15" id="question" onkeypress="if(!autocompleter.toggleEnabled) { ifEnter(this,event);  document.getElementById('question').focus(); } ">Tap the connected...</textarea></li>
+						<li><textarea class="gray_text question tips" maxlength="254" rows="2" cols="15" id="question" title="Tap Box :: Once you've targeted people say something to them that might either interest them or make them want to respond to you.">Tap the connected...</textarea></li>
 						<li id="outter_button"><span id="inner_button">
-						<input type="submit" id="submit_button" onclick="open_window(document.getElementById('question').value); return false;" value="Tap"></input>
+						<input type="submit" id="submit_button"  value="Tap"></input>
 
 						</span></li>
 					</ul>
@@ -1198,13 +1132,13 @@ EOF;
 	
 	</div>
 
-	<span id="clear_chat_windows" onclick="clear_current_chats()"></span><span id="clear_err">You have no taps to clear</span>
+	<span id="clear_chat_windows" ></span><span id="clear_err">You have no taps to clear</span>
 	<div id="chat_windows"></div>
 	<!--	
 	-->
 
 	<div id="current_info_div"><b>Currently Viewing:</b> <span id="current_info_display"></span> Feed <span id="current_info"></span><div><br/>
-	<div id="main_information">
+	<div class="tips" title="Feed::The feed is where all information relevant to the current Group/Person/Filter you have selected.  All information will flow here, even if you say it! Give it a whirl." id="main_information">
 		<div class="sub_information" id="direct_information">
 		<?
                         if($_t['direct_bits'] && $_t['direct_bits'] != '')
@@ -1295,9 +1229,6 @@ EOF;
 
 	</div>
 
-<script type="text/javascript">
-window.onload=function() { show_info('groups','Groups'); } ; 
-</script>	
 	<div id="footer">
 
 
@@ -1315,7 +1246,8 @@ window.onload=function() { show_info('groups','Groups'); } ;
 
 
 	<div id="right_container">
-		<span id="user">Logged in as <?=$user?></span><span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
+	<span id="user"> Logged in as <?=$user?></span><span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
+	<span id="tips_toggle"></span>
 
 		<div id="notifications">
 			<ul>
@@ -1331,38 +1263,45 @@ window.onload=function() { show_info('groups','Groups'); } ;
 		<div id="main_tabs">
 			<span id="clear_bullets"><b>Reset Tabs</b></span>
 			<ul id="tab_list">
-				<li class="tab" id="direct" onclick="show_info('direct','Direct Messages')"><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /> <span class="tab_counter" id="direct_counter">0</span></li>
-				<li class="tab" id="building" onclick="show_info('building','Same Building')"><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp <img src="images/icons/building.png" /> <span class="tab_counter" id="building_counter">0</span> </li>
-				<li class="tab" id="friends" onclick="show_info('friends','Friends Aggragate')"><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp <img src="images/icons/connect.png" /> <span class="tab_counter" id="friends_counter">0</span></li>
+				<li class="tab" id="direct" ><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /> <span class="tab_counter" id="direct_counter">0</span></li>
+				<li class="tab" id="building" ><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp <img src="images/icons/building.png" /> <span class="tab_counter" id="building_counter">0</span> </li>
+				<li class="tab" id="friends" ><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp <img src="images/icons/connect.png" /> <span class="tab_counter" id="friends_counter">0</span></li>
 				<div id="friends_tab_slide">
 				<!-- START of Network -->
-				<?php
-				if(isset($_t['network_tab_list']) && $_t['network_tab_list'] != ''){
-					foreach($_t['network_tab_list'] as $v){
-						echo $v;
-					}
-				}
-				?>
+
+				<form id="form_search_friends">
+					<input class="tips" type="input" id="search_friends" autocomplete="off" title="People Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message"></input>
+				</form>
+
+				<ul id="search_friends_results">
+				</ul>
+		
 				</div>
 
 				<!-- END of Network -->	
 
-				<li class="tab" id="groups" onclick="show_info('groups','Groups Aggragate')"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /> <span class="tab_counter" id="groups_counter">0</span> </li>
+				<li class="tab" id="groups"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /> <span class="tab_counter" id="groups_counter">0</span> </li>
 				<div id="groups_tab_slide">
 				<!-- START of Individual Groups -->	
-				<?php
-				if(isset($_t['group_tab_list']) && $_t['group_tab_list'] != ''){
-					foreach($_t['group_tab_list'] as $v){
-						echo $v;
-					}
-				}
-				?>
+
+				<form id="form_search_groups">
+					<input  class="tips" type="input" id="search_groups" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
+				</form>	
+
+				<ul id="search_groups_results">
+				</ul>
+
 				</div>
 				<!-- END of Individual Groups -->	
 
-				<li class="tab" id="rel" onclick="show_info('rel','Relevant Aggragate')"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /> <span class="tab_counter" id="rel_counter">0</span> </li>
+				<li class="tab" id="rel"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /> <span class="tab_counter" id="rel_counter">0</span> </li>
 				<div id="rel_tab_slide">
 				<!-- START of Relevancy Settings -->	
+				<form id="form_search_filters">
+					<input type="input" id="search_filters" autocomplete="off"></input>
+				</form>	
+				<ul id="search_filters_results">
+				</ul>
 				<?php
 				if(isset($_t['get_rel_tab_names'])){
 					foreach($_t['get_rel_tab_names'] as $value){

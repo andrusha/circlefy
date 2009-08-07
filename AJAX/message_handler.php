@@ -443,6 +443,7 @@ EOF;
 		AND enabled = 1;
 EOF;
 
+		echo $phrase_query;
 		$phrase_matches = $this->mysqli->query($phrase_query);
 
 		//This processes the uid's while keeping AND/OR logic in mind
@@ -490,6 +491,7 @@ EOF;
                         WHERE t3.mid = {$mid}
                         LIMIT 1;
 EOF;
+
 			$type = "self";
 			$counter = 0;
 			$bit_gen_results = $this->mysqli->query($query);

@@ -337,8 +337,10 @@ EOF;
 
                                                 $this->db_class_mysql->set_query($check_friend_special_chat,'check_friend_special_chat','Getting each individual bit_set for each friend');
                                                 $check_friend_bits = $this->db_class_mysql->execute_query('check_friend_special_chat');
-	
-					
+
+						$friend_search_data[$search_res['uid']] = $search_res['uname'];
+
+						//STRIP THIS LINE BELOW
 						$friend_tab_list[$search_res['uid']] = <<<EOF
 		                                                <li class="toggle_list_el toggle_list_friend" id="friend_{$search_res['uid']}" onclick="show_info('friend_{$search_res['uid']}','{$search_res['uname']}')" ><img  class="tab_bullet" id="friend_{$search_res['uid']}_bullet" src="images/icons/bullet_white.png" /> <span>{$search_res['uname']}</span> ( {$search_res['fname']} )</li>
 EOF;
@@ -389,7 +391,11 @@ $mid_list = '';
                                         }
                                          $this->set($html_network_top,'html_'.$k_query);
 }
+
+					//STRIP 1 LINE BELOW
 					 $this->set($friend_tab_list,'network_tab_list');
+					 
+					 $this->set($friend_search_data,'friend_search_list');
 					 $this->set($html_friend_bits,'individual_friend_bits');
 //END populate friends list
 
@@ -436,7 +442,9 @@ while($res = $groups_you_are_in->fetch_assoc() ){
                                         $gname_list .= "'%#".$slashes_gname."%'";
                                 }
                                 $old_gname = $gname;
-	
+
+	$group_search_data[$gid] = $symbol;
+	//STIP ONE LINE BELOW	
 	$html_group_list[$gid] = <<<EOF
 	<li class="toggle_list_el toggle_list_group" id="group_{$gid}"  onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span></li>
 EOF;
@@ -558,7 +566,9 @@ EOF;
 
 }
 $this->set($html_group_bits,'group_bits');
+//STRIP ONE LINE BELOW
 $this->set($html_group_list,'group_tab_list');
+$this->set($group_search_data,'group_search_list');
 // END GROUP IND BITS
 
 
@@ -924,12 +934,6 @@ $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT'
 
 
 //START initial user stuff
-
-/*	
-			setcookie('profile_edit',1,time()+360000);
-			setcookie('rel_settings',1,time()+360000);
-			setcookie('groups',1,time()+360000);
-*/
 			if($_COOKIE['profile_edit'])
                         $init_notifications[] .=  <<<EOF
 <li><img src="images/icons/error.png" /> <a href="profile_edit">Update your profile !</a></li>

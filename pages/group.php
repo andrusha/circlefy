@@ -106,7 +106,6 @@ EOF;
 			//If the program enters this loop that means the user IS NOT apart of the group currently
 			$joined = False;
 			$admin_status = 0;
-			$gid = substr($_SERVER['REQUEST_URI'],-1);
 			$html_status = '<div onclick="join_group('.$gid.',this);" id="join_group_logo"><img src="'.$rewrite.'images/join.gif" alt="join" /></div>';
 			$gid = '';
 		}

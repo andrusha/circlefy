@@ -1,28 +1,5 @@
 var sTimer;
 
-function ifEnter(field,event) {
-	var theCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-	if (theCode == 13){
-		open_window(document.getElementById('question').value);
-		return false;
-	} else {
-		return true;
-	}
-}  
-
-/*
-function ifEnterChat(field,event,msg,channel_id,msg_id) {
-	var theCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-	if (theCode == 13){
-		send_msg(msg,channel_id,msg_id);
-		document.getElementById('typingspace').value = '';
-		return false;
-	} else {
-		return true;
-	}
-}
-*/
-
 function getXmlHttpRequestObject() {
         if (window.XMLHttpRequest) {
                 return new XMLHttpRequest();

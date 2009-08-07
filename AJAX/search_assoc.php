@@ -39,12 +39,12 @@ class assoc_functions{
 
 		if($search != '' && $symbol == '#'){
 			$create_assoc_query = <<<EOF
-				SELECT t2.symbol,t1.gname AS name,COUNT(t3.uid) AS members FROM 
+				SELECT t2.connected,t2.symbol,t1.gname AS name,COUNT(t3.uid) AS members FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
 				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid  
 				GROUP BY t2.gid
-			LIMIT 2;
+			LIMIT 5;
 EOF;
 
 
@@ -100,12 +100,14 @@ EOF;
 			$create_assoc_results = $this->mysqli->query($create_assoc_query);
 			if($create_assoc_results->num_rows > 0){
 				while($res = $create_assoc_results->fetch_assoc() ) {
-					$count++;
-					$results[$count]['name'][] = substr($res['name'],0,28);
-					$results[$count]['symbol'][] = substr($res['symbol'],0,28);
-					if(!$res['members'])
-						$$res['members'] = 0;
-					$results[$count]['members'][] = $res['members'];
+					$name = $res['name'];
+					$symbol = $res['symbol'];
+					$type = $res['connected'];
+					if($type == 2)
+						$type = '<img src="/tap_repo_taso/images/icons/building.png" />';
+					if($type == 1)
+						$type = '<img src="/tap_repo_taso/images/icons/book_open.png" />';
+				 	$response[] = array("$name", "$symbol", null, "$name $type");
 				}
 			} elseif($search != '') { 
 				$string = trim("<span id='no_results'><b>$symbol$search</b> returned no results
@@ -114,7 +116,9 @@ EOF;
 				</span>");
 				$results = array($string);
 			}
-			return json_encode($results);
+
+
+			return json_encode($response);
 	}
 
 }

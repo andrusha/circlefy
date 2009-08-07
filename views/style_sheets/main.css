@@ -1,3 +1,11 @@
+.tip{ border:1px solid gray;width:295px; font-family:tahoma,arial; background:lightyellow left top repeat-y; }
+.tip-top{ height:26px; width:295px; }
+.tip-title{ color:#e95e25; font-weight:bold; margin:0 30px 0 50px; }
+.tip-text{  color:#000; padding:10px 10px 20px 22px; }
+.tip-bottom{ width:295px; height:81px; }
+#tips_toggle{ cursor:pointer; margin:4px;font-size:11px;color:gray;font-weight:bold;float:left; } 
+
+
 .intro_text{
 font-weight:bold;
 color:gray;
