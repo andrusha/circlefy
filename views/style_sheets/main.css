@@ -5,6 +5,9 @@
 .tip-bottom{ width:295px; height:81px; }
 #tips_toggle{ cursor:pointer; margin:4px;font-size:11px;color:gray;font-weight:bold;float:left; } 
 
+#main_signup{
+
+}
 
 .intro_text{
 font-weight:bold;
@@ -972,17 +975,25 @@ margin-bottom:10px;
 
 	
 	#submit_button {
+	float:left;
 	font-size:12px;
 	font-family:arial;
-	width:46px;
-	height:67px;
+	margin-left:6px;
+	height:28px;
+	width:66px;
 	}
 	
 	textarea{
+	float:left;
 	padding:9px;
-	height:88px;
-	width:285px;
+	height:20px;
+	width:350px;
+	border:1px solid gray ;
 	font-size:12px;
+	}
+
+	#form_targets{
+		margin-top:2px;
 	}
 
 	#directions{
@@ -1042,7 +1053,10 @@ margin-bottom:10px;
 	}
 		
 	#outter_button{
-	position:relative;
+	cursor:pointer;
+	width:15px;
+	height:14px;
+	background:url('../../images/icons/asterisk_yellow.png')  no-repeat top ;
 	}
 
 	#to{
@@ -1091,9 +1105,8 @@ margin-bottom:10px;
 	}
 	
 	#inner_button{
-	margin-top:14px;
 	margin-left:20px;
-	position:absolute; top:50%;height:70px;}
+	position:absolute; }
 	
 	#top_form{
 		padding-bottom:4px;
@@ -1122,11 +1135,11 @@ margin-bottom:10px;
 	}
 	
 	#forms fieldset{
-		padding:0px 0 18px 0;
+	background:url('../../images/tapbg.gif')  no-repeat top ;
+		padding:0px 0 0px 0;
 		width:500px;
 		margin:0 auto;
 		border:none;
-		background:url('../../images/bg.gif') no-repeat 20px 0px;
 	}
 	
 	#forms li{

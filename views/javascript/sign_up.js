@@ -161,7 +161,7 @@ function sign_up(){
 
  	if(email_errors.innerHTML == 1 || uname_errors.innerHTML == 1 || pass_errors.innerHTML == 1){
  		if(click != 0){
- 		show_errors.innerHTML = 'You have error(s) you need to fix to proceed <img src="images/icons/exclamation.png" />';
+ 		show_errors.innerHTML = 'You have error(s)!  Fix to proceed <img src="images/icons/exclamation.png" />';
  		}
  	} else {
  	

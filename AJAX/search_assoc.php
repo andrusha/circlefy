@@ -104,9 +104,9 @@ EOF;
 					$symbol = $res['symbol'];
 					$type = $res['connected'];
 					if($type == 2)
-						$type = '<img src="/tap_repo_taso/images/icons/building.png" />';
+						$type = '<img src="images/icons/building.png" />';
 					if($type == 1)
-						$type = '<img src="/tap_repo_taso/images/icons/book_open.png" />';
+						$type = '<img src="images/icons/book_open.png" />';
 				 	$response[] = array("$name", "$symbol", null, "$name $type");
 				}
 			} elseif($search != '') { 

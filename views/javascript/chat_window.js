@@ -62,8 +62,8 @@ function send_msg(msg,time,channel_id){
 	//msg is the message
 	if(msg != ''){param += '&msg='+msg;}
 	
+	send_to_obj.get_all();
 	to_box = JSON.encode(send_to_obj.added.getClean());
-	console.log(to_box);
 
 	param += '&to_box='+to_box;
 	postText.send(param);
@@ -105,8 +105,6 @@ function handlePending(imStatus,time,channel_id) {
 					$('tap_status_table_body').innerHTML += "<tr><td class='lt'>Other </td><td class='rt'>"+counter_data.other+"</td></tr>";
 				});
 				$('tap_status_table_body').tween('opacity', 0, 1);
-				$('to_output').tween('opacity', 1, 0);
-				$('to_output').empty();	
 				send_to_obj.del_all();
 			} else if(json_result.results != 'false') {
 

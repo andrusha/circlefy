@@ -10,16 +10,37 @@
 <meta name="description" content="" />
 <!-- <link href="main.css" rel="stylesheet" type="text/css" media="screen" /> -->
 <style type="text/css" media="all">@import "views/style_sheets/main.css";</style>
+
+<style type="text/css" media="all">@import "views/style_sheets/TextboxList.css";</style>
+<style type="text/css" media="all">@import "views/style_sheets/TextboxList.Autocomplete.css";</style>
+
 <script type="text/javascript" src="http://<?=DOMAIN?>:8080/meteor.js"></script>
+
 <script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
 <script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
-<script type="text/javascript" src="views/javascript/Autocompleter.js"></script>
-<script type="text/javascript" src="views/javascript/Autocompleter.Request.js"></script>
-<script type="text/javascript" src="views/javascript/Observer.js"></script>
-<script type="text/javascript" src="views/javascript/rel.js"></script>
-<script type="text/javascript" src="views/javascript/homepage_group_status.js"></script>
-<script type="text/javascript" src="views/javascript/homepage_tap_friend.js"></script>
 
+<script type="text/javascript" src="views/javascript/TextboxList.js"></script>
+<script type="text/javascript" src="views/javascript/TextboxList.Autocomplete.js"></script>
+<script type="text/javascript" src="views/javascript/GrowingInput.js"></script>
+
+
+
+ <style type="text/css" media="screen">
+                        .form_tags { margin-bottom: 10px; }
+
+                        /* Setting widget width example */
+                        .textboxlist {  background:white url('../../images/icons/magnifier.png') no-repeat ;padding-left:17px; height:15px;margin-left:66px;float:left;width: 360px; }
+
+                        /* Preloader for autocomplete */
+                        .textboxlist-loading { background: url('../../images/spinner.gif') no-repeat 380px center; }
+
+                        /* Autocomplete results styling */
+                        .textboxlist-autocomplete-result { overflow: hidden; zoom: 1; }
+                        .textboxlist-autocomplete-result img { float: left; padding-right: 10px; }
+
+                        .note { color: #666; font-size: 90%; }
+                        #footer { margin: 50px; text-align: center; }
+                </style>
 
 
     <script type="text/javascript" src="views/javascript/chat_window.js"></script>
@@ -29,41 +50,6 @@
 String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g,"");
 }
-
-Autocompleter.Request.JSON.Toggle = new Class({
-
-    Extends: Autocompleter.Request.JSON,
-
-    initialize: function(el, url, options) {
-        this.parent(el, url, options);
-
-        this.toggleEnabled = true;
-    },
-
-    enable: function() {
-        this.toggleEnabled = true;
-    },
-
-    disable: function() {
-        this.toggleEnabled = false;
-        this.hideChoices(true);
-    },
-
-    onCommand: function(e) {
-        if (this.toggleEnabled) {
-            this.parent(e);
-        }
-    },
-
-    prefetch: function(e) {
-        if (this.toggleEnabled) {
-            this.parent(e);
-        }
-    }
-
-});
-
-
 
 Bit_Grabber2 = new Class({
 
@@ -306,6 +292,7 @@ Active_Convo = new Class({
 
 });
 
+//Obsolete
 Sym_Search = new Class({
 
 
@@ -355,121 +342,32 @@ Sym_Search = new Class({
 	}
 });
 
+
 Send_To = new Class({
 
 	stringPos: 0,
 	stringPos2: 0,
 	added: new Hash({'group_to': [], 'friend_to':[],'keyword_to':[]}),
 
-	enable:function(){
-		$('to_clear').addEvent('click',function(event){
-			this.del_all();
-		}.bind(this));
 
+	get_all:function(){
+		var self = this;
+		self.del_all();
+		values = tb_obj.t.getValues();
+		values.each(
+			function(v){ self.add('group_to',v[1]); }
 
-		$('question').addEvent('keyup',function(event){
-			if($('question').value == '')
-				this.stringPos2 = 0;
-
-			whole_text = $('question').value;
-			lchar = false;
-			match = null;
-			type = null;
-			current_text = $('question').value.slice(this.stringPos2);
-			if(event.key == 'enter'||event.key == 'space'){
-
-				match = current_text.match(/(#|@|\*)\S+/);
-				if(match != null){
-
-				if(match[0].substr(-1) != ',')
-					var lchar = true;
-	
-				if(match[0].substr(0,1) == '#' && lchar){
-					type = 'group_to';
-				}
-				if(match[0].substr(0,1) == '*' && lchar){
-					type = 'keyword_to';
-				}
-				if(match[0].substr(0,1) == '@' && lchar){
-					type = 'friend_to';
-				}
-				if(!type && this.added.getKeys().length == 0)
-					$('to_output').innerHTML = ' Try targeting a group and users using the symbols to the right';
-
-				}
-			}
-	
-			if(match != null){
-				match = match[0];
-				pos = current_text.split(match);
-				this.stringPos2 = whole_text.lastIndexOf(pos[1]);
-				match = match.substr(1);
-				this.add(type,match);
-			}
-		}.bind(this));
-
-		$('to_input').addEvent('keyup',function(event){
-			match = null;
-			type = null;
-			current_text = $('to_input').value.slice(this.stringPos);
-			if(event.key == 'enter'||event.key == 'space'){
-
-				if(current_text.substr(0,1) == '#'){
-					match = current_text.match(/#\S+/);
-					type = 'group_to';
-				}
-				if(current_text.substr(0,1) == '*'){
-					match = current_text.match(/\*\S+/);
-					type = 'keyword_to';
-				}
-				if(current_text.substr(0,1) == '@'){
-					match = current_text.match(/@\S+/);
-					type = 'friend_to';
-				}
-				if(!type && this.added.getKeys().length == 0)
-					$('to_output').innerHTML = ' You should do x,y,z seriiously';
-
-			}
-	
-			if(match != null){
-				match = match[0];
-				//pos = current_text.split(match);
-				//this.stringPos = current_text.indexOf(pos[1]);
-			 	var y = current_text.replace(match,match.substr(1))
-				this.add(type,y);
-				$('to_input').value = '';
-			}
-		}.bind(this));
+		);
 	},
-
-	outside_x:function(){
-		$$('.outside_x').addEvent('click',function(event){
-				send_to_obj.add(this.retrieve('type'),this.retrieve('symbol')[0]);
-		});
 	
-	},
-
 	add:function(type,val){
 		this.added[type].include(val);
-		this.list();
 	},
 
 	del_all:function(){
 		this.added = new Hash({'group_to': [], 'friend_to':[],'keyword_to':[]});
-		this.list();
-	},
-
-	list:function(){
-		el = $('to_output');
-		el.empty();
-		el.tween('opacity', 1, 0);
-		$each(this.added,function(val,type){
-			if(val != '')
-			el.innerHTML += '<span class="to_box '+type+'">'+val+'</span>';	
-		});
-		el.tween('opacity', 0, 1);
-
 	}
+
 });
 
 Intro = new Class({
@@ -669,13 +567,36 @@ tips_off:function(){
 
 });
 
+TextBox_Stuff = new Class({
+
+t:null,
+
+init_it:function(){
+
+        var self = this;
+        self.t = new TextboxList('input_targets', 
+{unique: true, plugins: {autocomplete: {
+        minLength: 3,
+	maxResults: 5,
+        queryRemote: true,
+        remote: {url: 'AJAX/search_assoc.php'}
+}}});
+}
+
+});
+
+
 var active_convo;
-var autocompleter;
 var inputBox;
 var grabber_obj;
 var poller_obj;
 var response_event_obj;
 window.addEvent('domready', function() {
+
+send_to_obj = new Send_To;
+
+tb_obj = new TextBox_Stuff;
+tb_obj.init_it();
 
 	tips_obj = new Tips_Stuff;
 	var tip_state = Cookie.read('tip_toggle');
@@ -722,7 +643,7 @@ window.addEvent('domready', function() {
 	$('building').addEvent('click',function(){
 		show_info('building','Same Building');
 	});
-
+/*
 	 $('main_sym_search').addEvent('click',function(event){
 			vanish_text(0,this);
         });
@@ -731,7 +652,7 @@ window.addEvent('domready', function() {
 		e.stop();
 	
 	});
-
+*/
 	$('clear_chat_windows').addEvent('click',function(){
 			clear_current_chats();
 	});
@@ -745,14 +666,12 @@ window.addEvent('domready', function() {
 	});
 
 	$('question').addEvent('keypress',function(event){
-		if(!autocompleter.toggleEnabled){
         	if (event.key == 'enter'){
 			open_window(document.getElementById('question').value);
                 return false;
 		        } else {
                 return true;
 
-		}
         }
 
 	});	
@@ -763,12 +682,6 @@ window.addEvent('domready', function() {
 	
 	intro_obj = new Intro;	
 
-	send_to_obj = new Send_To;
-	send_to_obj.enable();
-
-	sym_search_obj = new Sym_Search;
-	sym_search_obj.search();
-	
 	active_convo = new Active_Convo;
 	active_convo.remove_active();
 	active_convo.get_active_list();
@@ -776,12 +689,6 @@ window.addEvent('domready', function() {
 
 	inputBox = $('question');
 	responseBoxes = $$('.textarea_response');
-	autocompleter = new Autocompleter.Request.JSON.Toggle('question', 'AJAX/query_assoc.php', {
-	postVar: 'search',
-	multiple: 'true',
-	selectMode: 'select',
-	minLength: 2
-			});
 
 grabber_obj = new Response_Grabber;
 grabber_obj.grab_all();
@@ -866,15 +773,7 @@ myFx.hide();
 	response_event_obj = new Response_Sender;
 	response_event_obj.add_action();
 	
-	autocompleter.enable();
 
-	inputBox.addEvent('keydown', function(event){
-		if((event.key =='3' && event.shift) && !autocompleter.toggleEnabled){
-			autocompleter.enable();
-		}else if((event.key =='space')  && autocompleter.toggleEnabled){
-			autocompleter.disable();
-		}
-	});
 
 });
 
@@ -1074,60 +973,35 @@ EOF;
 ?>
 			
 			<li>
-			<form id="sym_search">
-				<input class="0 gray_text tips" type="text" id="main_sym_search" value="Schools/Companies" title="Target Schools/Companies/Groups::This allows you to find groups that you're trying to target or reach.  If you're not part of a group and your target it, the group _may_ not get the information in real-time if they have a filter that states to block users outside of the group."></input>
+			</li>
 
-	 			</form>
-			</form>
-			</li>
-			<li id="sym_results">
-				<table id="sym_results_table">
-					<thead>
-						<td></td>
-						<td></td>
-						<td>members</td>
-						<td>add</td>
-						<col width="170px">
-						<col width="40px">
-						<col width="20px">
-						<col width="20px">
-					</thead>
-					<tbody id="sym_results_table_body">
-					</tbody>
-				</table>
-			</li>
 		</ul>
 	
 	</div>
 
 	<div id="forms">
 		<ul>
-			<li id="to">To:
-			<input id="to_input" type="input"></input><span id="to_output"></span>
-			</li>
-			<li id="to_clear">clear</li></ul>
 		<form action="<?=ROOT?>" method="post" >
 				<fieldset>
 					<div id="core">
-					<ul id="directions">
-						<li><b>Symbols:</b></li>
-						<li>@ = Direct</li>
-						<li># = Groups</li>
-						<li>* = Tags</li>
-						<li style="color:red;">& = Category</li>
-					</ul>
 			
 					<ul id="top_form">
 						<li><textarea class="gray_text question tips" maxlength="254" rows="2" cols="15" id="question" title="Tap Box :: Once you've targeted people say something to them that might either interest them or make them want to respond to you.">Tap the connected...</textarea></li>
-						<li id="outter_button"><span id="inner_button">
-						<input type="submit" id="submit_button"  value="Tap"></input>
-
-						</span></li>
+						<li id="outter_button">
+						</li>
 					</ul>
 					
 					</div>
 			
 				</fieldset>
+		</form>
+	
+	</div>
+
+	<div id="targets">
+		<form id="form_targets">
+					<input id="input_targets" type="text"></input>
+					<input type="submit" id="submit_button"  value="Tap"></input>
 		</form>
 	
 	</div>
@@ -1270,7 +1144,7 @@ EOF;
 				<!-- START of Network -->
 
 				<form id="form_search_friends">
-					<input class="tips" type="input" id="search_friends" autocomplete="off" title="People Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message"></input>
+					<input class="tips gray_text" value="Search your people..." type="input" id="search_friends" autocomplete="off" title="People Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message"></input>
 				</form>
 
 				<ul id="search_friends_results">
@@ -1285,7 +1159,7 @@ EOF;
 				<!-- START of Individual Groups -->	
 
 				<form id="form_search_groups">
-					<input  class="tips" type="input" id="search_groups" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
+					<input  class="tips gray_text" value="Search your groups..." type="input" id="search_groups" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
 				</form>	
 
 				<ul id="search_groups_results">
@@ -1298,7 +1172,7 @@ EOF;
 				<div id="rel_tab_slide">
 				<!-- START of Relevancy Settings -->	
 				<form id="form_search_filters">
-					<input type="input" id="search_filters" autocomplete="off"></input>
+					<input class="tips gray_text" value="Search your filters..." type="input" id="search_filters" autocomplete="off"></input>
 				</form>	
 				<ul id="search_filters_results">
 				</ul>
