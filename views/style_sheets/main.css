@@ -152,13 +152,11 @@ display:block;
 cursor:pointer;
 background:url('../../images/left_bg.gif') no-repeat 8px top;
 /*border-right:1px dotted #10F0FF;*/
-margin-top:60px;
 text-align:left;
 float:left;
 overflow-y:auto;
 width:180px;
 height:740px;
-clear:both;
 }
 
 .toggle_list_active{
@@ -193,6 +191,7 @@ text-decoration:none;
 }
 
 #left_notifications{
+border: 1px solid yellow;
 background:lightyellow;
 padding:8px;
 margin:40px 0px 0px 16px;
@@ -240,6 +239,7 @@ thead{
 	}
 
 #notifications{
+border:1px solid yellow;
 width:100px
 height:200px;
 overflow:hidden;
@@ -278,7 +278,7 @@ float:left;
 right:0;
 overflow-y:auto;
 width:207px;
-height:840px;
+height:340px;
 }
 	.toggle_list_el{
 	cursor:pointer;
@@ -362,8 +362,8 @@ clear:both;
 
 .self_bit{
 width:520px;
-border-bottom:1px solid #F0F0F0 ;
-background:#FFFFCC;
+border:2px solid #F0F0F0 ;
+background:#DFEFCC;
 margin:0px auto;
 margin-bottom:8px;
 }
@@ -1006,6 +1006,13 @@ margin-bottom:10px;
 
 	#directions li{
 	margin:4px;
+	}
+
+	.left_search_box{
+		background:white url('../../images/icons/magnifier.png') no-repeat 2px;
+		margin-left:12px;	
+	padding-left:20px;
+	width:134px;
 	}
 
 	#sym_search{

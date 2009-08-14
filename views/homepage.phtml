@@ -417,6 +417,12 @@ var search_groups_hash = new Hash({
 	?>
 });
 
+var search_filters_hash = new Hash({
+	<? foreach($_t['filter_search_list'] as $k => $v)
+			echo "'".$v."':$k,";
+	?>
+});
+
 function stop_me(id){
 	$(id).addEvent('submit',function(event){
 		event.stop();
@@ -438,6 +444,12 @@ Nav_Search = new Class({
 		$('search_groups').addEvent('click',function(){ vanish_text(0,$('search_groups')); });
 		stop_me('form_search_groups');
 		this.process('search_groups',search_groups_hash,'group');
+	},
+	
+	filters:function(){
+		$('search_filters').addEvent('click',function(){ vanish_text(0,$('search_filters')); });
+		stop_me('form_search_filters');
+		this.process('search_filters',search_filters_hash,'tab_rel');
 	},
 
 	process:function(id,xhash,type){
@@ -613,6 +625,7 @@ tb_obj.init_it();
 	nav_search_obj = new Nav_Search;
 	nav_search_obj.friends();
 	nav_search_obj.groups();
+	nav_search_obj.filters();
 
 	
 	show_info('groups','Groups');
@@ -836,7 +849,6 @@ function toggle_show_response(id,e){
 
 function vanish_text(classAppend,e){
 e.value = '';
-e.className = classAppend+' 1';
 }
 
 function getXmlHttpRequestObject() {
@@ -938,20 +950,6 @@ foreach($offsets as $offset)
 
 		</div>
 
-		<div id="left_tabs">
-			<ul id="left_tabs_list">
-				<li style="color:red;" class="tab" id="archives" ><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
-				<li class="tab tips" id="active"   title="Active Convo :: Active Convos are conversations you're currently engaged with.  Usually a tap you've said or replied to."><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
-				<?php
-				if(isset($_t['active_bits_tabs']) && $_t['active_bits_tabs'] != ''){
-					foreach($_t['active_bits_tabs'] as $v){
-						echo $v;
-					}
-				}
-				?>
-
-			</ul>
-		</div>
 	</div>
 
 <div id="container">
@@ -1144,7 +1142,7 @@ EOF;
 				<!-- START of Network -->
 
 				<form id="form_search_friends">
-					<input class="tips gray_text" value="Search your people..." type="input" id="search_friends" autocomplete="off" title="People Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message"></input>
+					<input class="left_search_box tips gray_text" value="Search your people..." type="input" id="search_friends" autocomplete="off" title="People Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message"></input>
 				</form>
 
 				<ul id="search_friends_results">
@@ -1159,7 +1157,7 @@ EOF;
 				<!-- START of Individual Groups -->	
 
 				<form id="form_search_groups">
-					<input  class="tips gray_text" value="Search your groups..." type="input" id="search_groups" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
+					<input  class="left_search_box tips gray_text" value="Search your groups..." type="input" id="search_groups" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
 				</form>	
 
 				<ul id="search_groups_results">
@@ -1172,22 +1170,29 @@ EOF;
 				<div id="rel_tab_slide">
 				<!-- START of Relevancy Settings -->	
 				<form id="form_search_filters">
-					<input class="tips gray_text" value="Search your filters..." type="input" id="search_filters" autocomplete="off"></input>
+					<input class="left_search_box tips gray_text" value="Search your filters..." type="input" id="search_filters" autocomplete="off" title="Search Filters :: Searching filters allows you to search through your filters from their label name. Type in 'My' to test.  To view/create all filters, click filters tab"></input>
 				</form>	
 				<ul id="search_filters_results">
 				</ul>
-				<?php
-				if(isset($_t['get_rel_tab_names'])){
-					foreach($_t['get_rel_tab_names'] as $value){
-						echo $value;
-					}
-				}
-				?>
 				</div>
 				<!-- END of Relevancy Settings -->	
 			</ul>
 		</div>
 	</div>
+		<div id="left_tabs">
+			<ul id="left_tabs_list">
+				<li style="color:red;" class="tab" id="archives" ><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
+				<li class="tab tips" id="active"   title="Active Convo :: Active Convos are conversations you're currently engaged with.  Usually a tap you've said or replied to."><img id="active_bullet" src="images/icons/bullet_white.png" />Active Convos &nbsp<img src="images/icons/comments.png" /></li>
+				<?php
+				if(isset($_t['active_bits_tabs']) && $_t['active_bits_tabs'] != ''){
+					foreach($_t['active_bits_tabs'] as $v){
+						echo $v;
+					}
+				}
+				?>
+
+			</ul>
+		</div>
 
 <!-- End large container -->
 </div>

@@ -212,14 +212,16 @@ EOF;
                 </tr>
 
 EOF;
-
+	
+			$filter_search_list[$rid] = $display_name;
 			$html_results_2[$counter] = <<<EOF
 			<li class="toggle_list_el" id="tab_rel_{$rid}" onclick="show_info('tab_rel_{$rid}','{$display_name}');"><img  class="tab_bullet" id="tab_rel_{$rid}_bullet" src="images/icons/bullet_white.png" /> {$counter}. {$name}</li>
 EOF;
                 }
 }
                 $this->set($html_results,'get_rel_results');                                                                                                     
-                $this->set($html_results_2,'get_rel_tab_names');                                                                                                     
+                $this->set($html_results_2,'get_rel_tab_names'); 
+                $this->set($filter_search_list,'filter_search_list'); 
 		/* END copy of rel_settings.php */
 
 		//NEW GROUPS QUERY	
@@ -885,6 +887,7 @@ EOF;
 	$html_individual_rel_bits[$rid] = '<div class="sub_information" id="tab_rel_'.$rid.'_information">';
 	$html_individual_rel_bits[$rid] .= implode(' ',$this->bit_generator($rel_query_individual_final,'rel_ind')).'</div>';
 	//END of creating HTML bits
+
 
 			} else {
 
