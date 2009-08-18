@@ -73,14 +73,14 @@ Bit_Grabber2 = new Class({
 			self.tab_counter.set(key,count);
 		}
 
+			var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
+			var id = key+'_information';
+			newel.inject(id,'top');
+			newel.tween('opacity', 0, 1);
 		//This if bracket will be stripped once active_tabs is implemented
 		// and replaced with a check of an array/hash to see if the tab is visible/active
 		if(key == 'groups' || key == 'friends' || key == 'tab_rel'){
-			var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
-			var id = key+'_information';
-			
-			newel.inject(id,'top');
-			newel.tween('opacity', 0, 1);
+
 			new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#fff');
 			$(key+'_bullet').src = "images/icons/bullet_blue.png";
 		}
