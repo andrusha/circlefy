@@ -2,7 +2,7 @@
 define("D_ADDR","127.0.0.1");
 define("D_PASS","root");
 define("D_USER","root");
-define("D_DATABASE","rewrite");
+define("D_DATABASE","rewrite2");
 
 define("FOOTER","parts/footer.phtml");
 define("HEADER","parts/header.phtml");
@@ -11,7 +11,7 @@ define("SIGNUP","parts/sign_up/sign_up.phtml");
 define("CATEGORY","parts/lists/category.phtml");
 define("TITLE","tap");
 
-define("DOMAIN","localhost.com");
+define("DOMAIN","tap.info");
 
 define("PROFILE_PIC_REL", "/user_pics/");
 define("D_GROUP_PIC_REL", "/group_pics/");

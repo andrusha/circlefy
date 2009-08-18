@@ -87,6 +87,34 @@ class homepage extends Base{
 	
 
 		if($uid){
+	
+		//This gets all users initial settings such as the groups he's in etc...
+		//this is used for message_handle to check what groups he's in and also says
+		//which groups he'll be able to filter off of
+		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
+					LEFT JOIN group_members AS t2
+					ON t1.uid = t2.uid
+					LEFT JOIN display_rel_profile AS t3
+					ON t1.uid = t3.uid
+					WHERE t1.uname='{$uname}' AND t2.status=1;";
+
+		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
+
+
+			while($res = $get_user_id_result->fetch_assoc()){
+				$uid = $res['uid'];
+				$uname = $res['uname'];
+				$zip = $res['zip'];
+				$gids[] .= $res['gid'];
+			}
+				if($gids)
+					$gids =implode(',',$gids);
+				else
+					$gids = 'null';
+				$_SESSION['gid'] = $gids;
+				$_SESSION['zip'] = $zip;
+
+
 		//START User Prefences
 		$user_query = <<<EOF
                         SELECT t1.pic_100,t1.pic_36,t1.uname,t1.help FROM login AS t1

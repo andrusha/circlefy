@@ -63,6 +63,8 @@ Bit_Grabber2 = new Class({
 	var self = this;
 	Hash.each(data,function(value){ Hash.each(value,
 	function(html,key){ 
+			
+	
 		var tab_counter	= key+'_counter';
 		if($(tab_counter)){
 			count = self.tab_counter.get(key);
@@ -71,12 +73,17 @@ Bit_Grabber2 = new Class({
 			self.tab_counter.set(key,count);
 		}
 
-		var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
-		var id = key+'_information';
-		newel.inject(id,'top');
-		newel.tween('opacity', 0, 1);
-						 new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#fff');
-		$(key+'_bullet').src = "images/icons/bullet_blue.png";
+		//This if bracket will be stripped once active_tabs is implemented
+		// and replaced with a check of an array/hash to see if the tab is visible/active
+		if(key == 'groups' || key == 'friends' || key == 'tab_rel'){
+			var newel = new Element('div', {'html': html, 'style':'visibility: hidden'});
+			var id = key+'_information';
+			
+			newel.inject(id,'top');
+			newel.tween('opacity', 0, 1);
+			new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#fff');
+			$(key+'_bullet').src = "images/icons/bullet_blue.png";
+		}
 	 })    
 				});
 				response_event_obj.remove_action();
@@ -406,7 +413,9 @@ Intro = new Class({
 });
 
 var search_friends_hash  = new Hash({
-	<? foreach($_t['friend_search_list'] as $k => $v)
+	<? 
+	if($_t['friend_search_list'])
+	foreach($_t['friend_search_list'] as $k => $v)
 			echo "'".$v."':$k,";
 	?>
 });

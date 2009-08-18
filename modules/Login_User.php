@@ -36,6 +36,7 @@ protected function __default(){
 
 public function __construct($db_class=''){
 	
+	
 	if(!$this->session_started){
 		session_start();
 	}
@@ -153,6 +154,8 @@ public function login_user($uname,$pass,$hash,$auto_login){
 	$addr = $_SERVER['REMOTE_ADDR'];
 	
 	$this->results = $this->db_class_mysql->db->query("UPDATE login SET last_login=CURRENT_TIMESTAMP(),ip=INET_ATON('{$addr}') WHERE uname='{$uname}' AND pass='{$pass}'; ");
+
+
 	
 	if ($this->db_class_mysql->db->affected_rows  == 1) {
 		
@@ -160,32 +163,21 @@ public function login_user($uname,$pass,$hash,$auto_login){
 				if(1){
 			    //When the user logs in, update his hash to his current hash and username
 			    $hash_update_query = "UPDATE login SET hash='{$hash}' WHERE uname='{$uname}';";
+		
 			    //echo $hash_update_query;
 			   $hash_results = $this->db_class_mysql->db->query($hash_update_query);
 			   
 			   		//Get the users ID to use for the rest of the application
-			   			$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
-									LEFT JOIN group_members AS t2
-									ON t1.uid = t2.uid
-									LEFT JOIN display_rel_profile AS t3
-									ON t1.uid = t3.uid
-									WHERE t1.uname='{$uname}' AND t2.status=1;";
-	
+			   			$get_user_id_query = "SELECT t1.uname,t1.uid FROM login AS t1
+									WHERE t1.uname='{$uname}'";
+
 			   			$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
 
 		
 							while($res = $get_user_id_result->fetch_assoc()){
 								$uid = $res['uid'];
 								$uname = $res['uname'];
-								$zip = $res['zip'];
-								$gids[] .= $res['gid'];
 							}
-								if($gids)
-									$gids =implode(',',$gids);
-								else
-									$gids = 'null';
-								$_SESSION['gid'] = $gids;
-								$_SESSION['zip'] = $zip;
 				}
 		// END SESSION UPDATE BASED ON HASH
 			

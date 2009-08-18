@@ -237,7 +237,7 @@ class chat_functions{
 		$friends_query = "SELECT uid FROM friends WHERE fuid = {$_SESSION['uid']}";
 		$friends_results = $this->mysqli->query($friends_query);
 
-		$x=0;
+		$x=1;
 		if($friends_results->num_rows > 0)
 		while($res = $friends_results->fetch_assoc()){
 			$this->counter_data['friends'] = $x++;
