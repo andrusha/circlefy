@@ -1,5 +1,6 @@
 <?php
 require_once('config.php');
+//test
 //echo "These are the classes that are dynamically loaded:<br/>";
 
 function __autoload($className){
