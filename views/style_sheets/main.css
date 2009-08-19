@@ -494,9 +494,17 @@ float:right;
 cursor:pointer;
 }
 
+.respond_text_area_div {
+width:500px;
+}
+
+.respond_text_area_div {
+width:500px;
+}
+
 .respond_text_area_div textarea{
 height:40px;
-width:280px;
+width:480px;
 }
 
 .initial_respond_text{
@@ -516,7 +524,7 @@ margin-bottom:10px;
 .responses{
 float:right;
 margin:6px;
-width:290px;
+width:510px;
 overflow:hidden;
 }
 

@@ -39,7 +39,7 @@ class chat_functions():
 
 		#Initiate MySQL Connection
 		try:
-			self.conn = MySQLdb.connect (host = "localhost",user = "root",passwd = "root",db = "rewrite")
+			self.conn = MySQLdb.connect (host = "localhost",user = "root",passwd = "root",db = "rewrite2")
 		except MySQLdb.Error, e:
 			print "Error %d: %s" % (e.args[0], e.args[1])
 			sys.exit (1)

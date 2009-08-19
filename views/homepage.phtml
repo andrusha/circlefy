@@ -421,7 +421,9 @@ var search_friends_hash  = new Hash({
 });
 
 var search_groups_hash = new Hash({
-	<? foreach($_t['group_search_list'] as $k => $v)
+	<? 
+	if($_t['group_search_list'])
+	foreach($_t['group_search_list'] as $k => $v)
 			echo "'".$v."':$k,";
 	?>
 });
