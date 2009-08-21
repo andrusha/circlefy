@@ -55,10 +55,10 @@ class chat_functions():
 			f.close()
 
         def get_users(self):
-		self.cursor.execute ("SELECT uid,cid,timeout FROM TEMP_ONLINE")
+		self.cursor.execute ("SELECT uid,cid,timeout,gids FROM TEMP_ONLINE")
 		result_set = self.cursor.fetchall()
 		for row in result_set:
-			self.id_chan.insert(0,(int(row["uid"]),row["cid"],int(row["timeout"]) ))
+			self.id_chan.insert(0,(int(row["uid"]),row["cid"],int(row["timeout"]),row["gids"] ))
 
         def loop_start(self):
 		while(1):
@@ -69,8 +69,8 @@ class chat_functions():
 				self.s_adm.send('COUNTSUBSCRIBERS %s\n' % (item[1]))
 				online_status = self.s_adm.recv(10)
 				print online_status
-				status_id.insert(0,(int(online_status.strip("\n").strip("\r").strip("OK")),item[0],item[2]) )
-			self.offline_ids = [ (int(x[1]),x[2]) for x in status_id if x[0] == 0 ]
+				status_id.insert(0,(int(online_status.strip("\n").strip("\r").strip("OK")),item[0],item[2],item[3]) )
+			self.offline_ids = [ (int(x[1]),x[2],x[3]) for x in status_id if x[0] == 0 ]
 			self.online_ids = [ int(x[1]) for x in status_id if x[0] > 0 ]
 
 			print "Updating Online ID's"
@@ -82,12 +82,16 @@ class chat_functions():
 			print "Offline_ids %s" %(self.offline_ids)
 			updated_users = []
 			del_users = []
+			minus_gids = []
+			del_state = 0
 			for offline_user in self.offline_ids:
-				if offline_user[1] != 29:
+				if offline_user[1] != 6:
 					updated_users.append("OR uid = %s" % (offline_user[0]))
 					print "UPDATE"
 				else:
+					del_state = 1
 					del_users.append("OR uid = %s" % (offline_user[0]))
+					minus_gids.append("%s" % (offline_user[2]))
 					print "DELETE"
 	
 			#Update Online Users ( Reset their timeout values )
@@ -102,7 +106,13 @@ class chat_functions():
 			del_users = ' '.join(del_users)
 			del_query = "DELETE FROM TEMP_ONLINE WHERE uid = 0 %s" % ( del_users )
 			self.cursor.execute( del_query )
-	
+			#For each group they're in , minus one online state
+			if del_state:
+				minus_gids = ','.join( minus_gids )
+				minus_group_query = "UPDATE GROUP_ONLINE SET online = online-1 WHERE gid IN(%s)" % ( minus_gids )
+				print minus_group_query
+				self.cursor.execute( minus_group_query )
+
 			'''	self.cursor.execute ("DELETE FROM TEMP_ONLINE WHERE uid = %s" % ( offline_user ) )
 				print "DELETE FROM TEMP_ONLINE WHERE uid = %s" % ( offline_user )
 				print "User %s Deleted" % ( offline_user )

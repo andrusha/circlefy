@@ -39,10 +39,11 @@ class assoc_functions{
 
 		if($search != '' && $symbol == '#'){
 			$create_assoc_query = <<<EOF
-				SELECT t2.connected,t2.symbol,t1.gname AS name,COUNT(t3.uid) AS members FROM 
+				SELECT t2.connected,t2.symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
-				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid  
+				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
+				LEFT JOIN GROUP_ONLINE AS t4 ON t4.gid=t2.gid
 				GROUP BY t2.gid
 			LIMIT 5;
 EOF;
@@ -103,10 +104,22 @@ EOF;
 					$name = $res['name'];
 					$symbol = $res['symbol'];
 					$type = $res['connected'];
+					$online = $res['online'];
+					if($online == 0){
+						$online_class = 'offline';
+						$online = 'offline';
+					} else { 
+						$online_class = 'online';
+						$online = "online ($online)";
+					} 
+
 					if($type == 2)
-						$type = '<img src="images/icons/building.png" />';
+						$type = "<img src='images/icons/building.png' /><span class='online $online_class'>".$online."</span>";
 					if($type == 1)
-						$type = '<img src="images/icons/book_open.png" />';
+						$type = "<img src='images/icons/book_open.png' /><span class='online $online_class'>".$online."</span>";
+					if($type == 0)
+						$type = "<img src='images/icons/group.png' /><span class='online $online_class'>".$online."</span>";
+
 				 	$response[] = array("$name", "$symbol", null, "$name $type");
 				}
 			} elseif($search != '') { 

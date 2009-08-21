@@ -959,9 +959,36 @@ $this->set($push_channel_id,'pcid');
 
 $this->db_class_mysql->set_query('UPDATE TEMP_ONLINE SET timeout = 0,cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';','TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');
-$this->db_class_mysql->set_query('INSERT INTO TEMP_ONLINE(uid,cid) values('.$uid.',"'.$push_channel_id.'");','TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
-$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
 
+if(!$this->db_class_mysql->db->affected_rows){
+	$gid_count = 0;
+	while($res = $groups_you_are_in->fetch_assoc() ){
+		$gid_string .= $res['gid'].',';
+		$gid_count++;
+	}
+	$gid_string = substr($gid_string,0,-1);
+
+	$this->db_class_mysql->set_query('INSERT INTO TEMP_ONLINE(uid,cid,gids) values('.$uid.',"'.$push_channel_id.'","'.$gid_string.'");','TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
+	$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
+
+	//START gid presence updateding
+	$query_string = "UPDATE GROUP_ONLINE SET online = online+1 WHERE gid IN($gid_string)";
+	$this->db_class_mysql->set_query($query_string,'GROUP_ONLINE_UPDATE','Updates group online presence');
+	$GROUP_ONLINE_results = $this->db_class_mysql->execute_query('GROUP_ONLINE_UPDATE');
+
+
+	if($this->db_class_mysql->db->affected_rows != $gid_count){
+		$groups_you_are_in->data_seek(0);
+		while($res = $groups_you_are_in->fetch_assoc() ){
+			$gid = $res['gid'];
+			$insert_string = "INSERT INTO GROUP_ONLINE(gid,online) values($gid,1);";
+			$this->db_class_mysql->set_query($insert_string,'GROUP_ONLINE_INSERT','INSERTS users GROUP_ONLINE status');
+			$GROUP_ONLINE_results = $this->db_class_mysql->execute_query('GROUP_ONLINE_INSERT');
+		}
+	}
+	//END gid presence updating
+}
+$groups_you_are_in->data_seek(0);
 
 //START initial user stuff
 			if($_COOKIE['profile_edit'])
