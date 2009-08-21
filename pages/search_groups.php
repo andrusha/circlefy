@@ -29,8 +29,6 @@ class search_groups extends Base{
 		
 		
 		$search_group_query = "SELECT * FROM groups WHERE gname LIKE \"%".$search_group_name."%\" LIMIT 10";
-		echo		$search_group_query;
-
 		$this->db_class_mysql->set_query($search_group_query,'search_groups','This query is for searching the groups');
 		$result = $this->db_class_mysql->execute_query('search_groups');
 

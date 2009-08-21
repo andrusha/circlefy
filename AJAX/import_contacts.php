@@ -144,7 +144,7 @@ class invite_functions {
 				}
 			}
 		if (count($this->err)==0)
-			{
+			{ 
 			$sendMessage=$this->inviter->sendMessage($this->session,$message,$selected_contacts);
 			$this->inviter->logout();
 			if ($sendMessage===-1)
@@ -153,6 +153,7 @@ class invite_functions {
 				$message_subject=$_POST['fname']." ( ".$_POST['email_box']." )".$message['subject'];
 				$message_body=$message['body'].$message['attachment'].$message_footer; 
 				foreach ($selected_contacts as $email=>$name)
+					mail($email,$message_subject,$message_body,$headers);
 				$this->ok['mails']="Mails sent successfully";
 				}
 			elseif ($sendMessage===false)

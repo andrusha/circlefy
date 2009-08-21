@@ -271,14 +271,14 @@ margin:5px;
 
 #main_tabs{
 padding:10px 0px 0px 4px;
-background:url('../../images/left_bg.gif') no-repeat 8px top;
+background:url('../../images/left_bg.gif') repeat-y 8px top;
 margin-top:80px;
 text-align:left;
 float:left;
 right:0;
 overflow-y:auto;
 width:207px;
-height:340px;
+height:440px;
 }
 	.toggle_list_el{
 	cursor:pointer;
@@ -588,7 +588,6 @@ overflow:hidden;
 
                                                                                 .group_result_option_list li{
                                                                                 padding:6px 40px 0 0;
-                                                                                color:blue;
                                                                                 font-size:14px;
                                                                                 cursor:crosshair;
                                                                                 }

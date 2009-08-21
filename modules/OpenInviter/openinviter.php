@@ -144,6 +144,12 @@ class OpenInviter
 	 */
 	public function sendMessage($session_id,$message,$contacts)
 		{
+			echo "START";
+		var_dump($contacts);
+		echo $session_id;
+		var_dump($message);
+					echo "DUMP\n\n";
+
 		$this->plugin->init($session_id);
 		$internal=$this->getInternalError();
 		if ($internal) return false;

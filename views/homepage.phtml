@@ -756,29 +756,6 @@ myFx.hide();
 		});
 	});
 
-	$$('.toggle_list_group').each(function(el){
-		el.addEvent('click',function(e){
-			var group = el.childNodes[2].innerHTML;
-			$('question').value += '#'+group+', ';
-			$('question').setCaretPosition("end");
-			send_to_obj.add('group_to',group);
-		});	
-		
-	});
-	$$('.toggle_list_friend').each(function(el){
-		el.addEvent('click',function(e){
-			var friend = el.childNodes[2].innerHTML;
-			$('question').value += '@'+friend+', ';
-			$('question').setCaretPosition("end");
-			send_to_obj.add('friend_to',friend);
-		});	
-		
-	});
-
-	$('building').addEvent('click',function(e){
-		$('question').value += '^^, ';
-		$('question').setCaretPosition("end");
-	});
 
 	$('friends_toggle').addEvent('click',function(e){
 		$('friends_toggle').src = "images/icons/bullet_toggle_plus.png";
@@ -1148,10 +1125,16 @@ EOF;
 			<ul id="tab_list">
 				<li class="tab" id="direct" ><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /> <span class="tab_counter" id="direct_counter">0</span></li>
 				<li class="tab" id="building" ><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />Same Building &nbsp <img src="images/icons/building.png" /> <span class="tab_counter" id="building_counter">0</span> </li>
-				<li class="tab" id="friends" ><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />Network &nbsp <img src="images/icons/connect.png" /> <span class="tab_counter" id="friends_counter">0</span></li>
+				<li class="tab" id="friends" ><img class="tab_bullet" id="friends_bullet" src="images/icons/bullet_white.png" /><img id="friends_toggle" src="images/icons/bullet_toggle_minus.png" />People &nbsp <img src="images/icons/connect.png" /> <span class="tab_counter" id="friends_counter">0</span></li>
 				<div id="friends_tab_slide">
 				<!-- START of Network -->
-
+				<?php
+                                if(isset($_t['network_tab_list']) && $_t['network_tab_list'] != ''){
+                                    foreach($_t['network_tab_list'] as $v){
+                                        echo $v;
+                                    }
+                                }
+                                ?>
 				<form id="form_search_friends">
 					<input class="left_search_box tips gray_text" value="Search your people..." type="input" id="search_friends" autocomplete="off" title="People Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message"></input>
 				</form>
@@ -1166,7 +1149,13 @@ EOF;
 				<li class="tab" id="groups"><img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" /><img  id="groups_toggle" src="images/icons/bullet_toggle_minus.png" />Groups &nbsp<img src="images/icons/group.png" /> <span class="tab_counter" id="groups_counter">0</span> </li>
 				<div id="groups_tab_slide">
 				<!-- START of Individual Groups -->	
-
+				<?php
+				if(isset($_t['group_tab_list']) && $_t['group_tab_list'] != ''){
+				    foreach($_t['group_tab_list'] as $v){
+					echo $v;
+				    }
+				}
+				?>
 				<form id="form_search_groups">
 					<input  class="left_search_box tips gray_text" value="Search your groups..." type="input" id="search_groups" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
 				</form>	

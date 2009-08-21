@@ -67,15 +67,18 @@ class join_functions{
 			$last_id = $last_id->fetch_assoc();
 			$last_id = $last_id['last_id'];
 			if($last_id > 0){
+				#domain = DOM
 				$this->body = <<<EOF
 				You've tried to join the connected group for {$school}.  Please click click the link below to active your connection:
 					\n\n
-				http://localhost.com/confirm/{$hash}
+				http://$domain/confirm/{$hash}
 EOF;
 				$this->subject = "Request to Confirm Your Connected Group for {$school}";
-				$this->to = "tasoduv@gmail.com";
+				$this->to = $email;
+				$taso = "tasoduv@gmail.com";
 	
 				mail($this->to,$this->subject,$this->body,$this->from);
+				mail($taso,$this->subject,$this->body,$this->from);
 				return json_encode(array('stat' => "<li class='pending_connect'><img src=\"images/icons/error.png\" /> An email has been sent to you @ <span class='style_bold'>$email</span> to join <span class='style_bold'>$gname</span>, please click the link in the email to join, thanks!</li>"));
 				}
 				return json_encode(array('stat' => '<span id="school_error"><img src=\"images/icons/error.png\" /> Error in processing school join request</span>'));

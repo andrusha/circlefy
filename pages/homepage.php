@@ -40,7 +40,6 @@ class homepage extends Base{
 			
 			switch ($bypass){
 				case 'bypassed':
-					$this->set("You're being logged in automatically",'errors');
 					break;
 					
 				case 'fraud':
@@ -476,7 +475,7 @@ while($res = $groups_you_are_in->fetch_assoc() ){
 	$group_search_data[$gid] = $symbol;
 	//STIP ONE LINE BELOW	
 	$html_group_list[$gid] = <<<EOF
-	<li class="toggle_list_el toggle_list_group" id="group_{$gid}"  onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span></li>
+	<li class="toggle_list_el toggle_list_group" id="group_{$gid}" onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span></li>
 EOF;
 }
 $counting=0;

@@ -24,7 +24,7 @@ class group extends Base{
 		parent::__construct();
 		
 		$uid = $_SESSION['uid'];
-
+	
 		$gid = $_GET['group'];
 		
 //Create all of the queries for every task

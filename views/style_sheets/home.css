@@ -1670,8 +1670,6 @@ display:block;
                                                         overflow:hidden;
                                                         padding:10px;
                                                         margin:5px;
-							border-right:1px solid lightblue;
-							border-bottom:1px solid lightblue;
 
                                                         }
 
@@ -1682,7 +1680,6 @@ display:block;
                                                 .group_result_blue{
                                                         display:inline-block;
                                                         overflow:hidden;
-                                                        background:#EFF4F0;
                                                         padding:10px;
                                                         margin:5px;
                                                         }
@@ -2627,8 +2624,6 @@ color:red;
 	.thumbnail_group_result{
 		width:122px;
 		height:86px;
-		background:lightgray;
-		border:1px solid lightblue;
 		margin-bottom:12px;
 		margin:0 auto;
 		float:left;
