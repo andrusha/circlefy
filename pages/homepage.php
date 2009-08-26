@@ -86,17 +86,19 @@ class homepage extends Base{
 	
 
 		if($uid){
-	
+		$uname = $_SESSION['uname'];	
 		//This gets all users initial settings such as the groups he's in etc...
 		//this is used for message_handle to check what groups he's in and also says
 		//which groups he'll be able to filter off of
+	
+		//SECURITY ... I SHOULD at t2.status = 1 so that only members who are confirmed get updates	
 		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
 					LEFT JOIN group_members AS t2
 					ON t1.uid = t2.uid
 					LEFT JOIN display_rel_profile AS t3
 					ON t1.uid = t3.uid
-					WHERE t1.uname='{$uname}' AND t2.status=1;";
-
+					WHERE t1.uname='{$uname}'";
+	
 		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
 
 
@@ -253,7 +255,9 @@ EOF;
 
 		//NEW GROUPS QUERY	
 		$group_list_query = <<<EOF
-			SELECT t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_100,t2.focus,t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid={$uid};
+			SELECT t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_100,t2.focus,t2.gname,t1.gid FROM group_members AS t1
+			JOIN groups AS t2 ON t2.gid=t1.gid
+			WHERE t1.uid={$uid};
 EOF;
 
 		$this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
@@ -475,7 +479,7 @@ while($res = $groups_you_are_in->fetch_assoc() ){
 	$group_search_data[$gid] = $symbol;
 	//STIP ONE LINE BELOW	
 	$html_group_list[$gid] = <<<EOF
-	<li class="toggle_list_el toggle_list_group" id="group_{$gid}" onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span></li>
+	<li class="toggle_list_el toggle_list_group" id="group_{$gid}" onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span><span class="online_tab"></span></li>
 EOF;
 }
 $counting=0;

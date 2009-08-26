@@ -85,7 +85,7 @@ class chat_functions():
 			minus_gids = []
 			del_state = 0
 			for offline_user in self.offline_ids:
-				if offline_user[1] != 6:
+				if offline_user[1] != 20:
 					updated_users.append("OR uid = %s" % (offline_user[0]))
 					print "UPDATE"
 				else:
@@ -130,6 +130,7 @@ class chat_functions():
 				results = self.bit_generator(matches_list)
 				dict_id_chan = dict( [(int(items[0]),items[1]) for items in self.id_chan] )
 				for item in results:
+					print "FUCK IM SENDING %s %s %s %s" % ( dict_id_chan[item[0]], item[0], item[3], item[1] ) 
 					self.s_ctlr.send('ADDMESSAGE %s %r\n' % (dict_id_chan[item[0]],json.dumps({"data": {item[1]: item[2]},"cid":item[3] })) )
 					'''test =  json.dumps({"data": {item[1]: item[2]} })
 					print test'''

@@ -38,18 +38,25 @@ class assoc_functions{
 //		$search = substr($search, 1, $strlen--);
 
 		if($search != '' && $symbol == '#'){
+			//remove min() to set precedence back for businesses
 			$create_assoc_query = <<<EOF
-				SELECT t2.connected,t2.symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
+			(
+				SELECT min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
 				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
 				LEFT JOIN GROUP_ONLINE AS t4 ON t4.gid=t2.gid
 				GROUP BY t2.gid
-			LIMIT 5;
+			LIMIT 10
+			) UNION ALL (
+				SELECT 99 as connected,t2.uname AS symbol,CONCAT(t2.fname,' ',t2.lname) AS name,NULL as members,NULL as online FROM login as t2
+                                WHERE t2.uname LIKE '{$search}%'
+			LIMIT 5
+			) ORDER BY connected ASC;
 EOF;
 
+		} 
 
-		}
 		if($search != '' && $symbol == '@'){
 			$create_assoc_query = <<<EOF
 				SELECT t2.uname AS name,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid,t1.fuid FROM friends as t1
@@ -108,19 +115,33 @@ EOF;
 					if($online == 0){
 						$online_class = 'offline';
 						$online = 'offline';
+						$online_count = '';
 					} else { 
 						$online_class = 'online';
+						$online_count = "($online)";
 						$online = "online ($online)";
 					} 
 
-					if($type == 2)
-						$type = "<img src='images/icons/building.png' /><span class='online $online_class'>".$online."</span>";
-					if($type == 1)
-						$type = "<img src='images/icons/book_open.png' /><span class='online $online_class'>".$online."</span>";
-					if($type == 0)
-						$type = "<img src='images/icons/group.png' /><span class='online $online_class'>".$online."</span>";
+					$bullet_name = $symbol;
 
-				 	$response[] = array("$name", "$symbol", null, "$name $type");
+					if($type == 99){
+						$type_display = "<img src='images/icons/user_suit.png' /><span class='online $online_class'>".$online."</span>";
+						$bullet_display = "<img src='images/icons/user_suit.png' /> $bullet_name $online_count"; 
+						}
+					if($type == 0){
+						$type_display = "<img src='images/icons/group.png' /><span class='online $online_class'>".$online."</span>";
+						$bullet_display = "<img src='images/icons/group.png' /> $bullet_name $online_count"; 
+						}
+					if($type == 2){
+						$type_display = "<img src='images/icons/building.png' /><span class='online $online_class'>".$online."</span>";
+						$bullet_display = "<img src='images/icons/building.png' /> $bullet_name $online_count"; 
+						}
+					if($type == 1){
+						$type_display = "<img src='images/icons/book_open.png' /><span class='online $online_class'>".$online."</span>";
+						$bullet_display = "<img src='images/icons/book_open.png' /> $bullet_name $online_count"; 
+					}
+
+				 	$response[] = array($name,"$name:$symbol:$type",$bullet_display,"$name $type_display");
 				}
 			} elseif($search != '') { 
 				$string = trim("<span id='no_results'><b>$symbol$search</b> returned no results

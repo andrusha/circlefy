@@ -7,9 +7,26 @@ require('../config.php');
 
 $to_list = json_decode(stripslashes($_POST['to_box']));
 
-$group_to = $to_list->group_to;
-$friend_to = $to_list->friend_to;
-$keyword_to = $to_list->keyword_to;
+
+$group_to = array();
+$friend_to = array();
+$keyword_to = array();
+foreach($to_list->group_to as $v){
+	$to_string = explode(":",$v);
+	//symbol type
+	$type = $to_string[2];
+	//actual symbol	
+	$symbol = $to_string[1];
+	//meta data about symbol
+	$name = $to_string[0];
+	
+	if($type == 0 || $type == 1 || $type == 2)
+		$group_to[] = $symbol;
+	if($type == 99)
+		$friend_to[] = $symbol;
+	if($type == null) 
+		$keyword_to[] = $symbol;
+}
 
 $my_gids = $_SESSION['gid'];
 $my_zip = $_SESSION['zip'];
@@ -38,6 +55,12 @@ class chat_functions{
 
 		private $permissions = array();
 		private $filter_group_queries;
+
+		//START variables used to store meta-data
+		private $meta_groups;
+		private $meta_people;
+		private $meta_keywords;
+		//END variables used to store meta-data
 
 		public $counter_data;
 		
@@ -79,6 +102,8 @@ class chat_functions{
 		$init_message_query = "INSERT INTO special_chat(cid,uid,uname,chat_text,ip) values('{$last_id}','{$uid}','{$uname}','{$msg}',INET_ATON('{$addr}'))";
 		$this->mysqli->query($init_message_query);
 		$last_id2 = $this->mysqli->query($this->last_id);
+		$init_message_query_ft = "INSERT INTO special_chat_fulltext(cid,uid,uname,chat_text,ip) values('{$last_id}','{$uid}','{$uname}','{$msg}',INET_ATON('{$addr}'))";
+		$this->mysqli->query($init_message_query_ft);
 	
 		$html_msg = $this->bit_generator($last_id);
 		$time = time();
@@ -100,6 +125,10 @@ class chat_functions{
 		
 		$direct_uids = $this->direct_matches($parsed_symbols['friends']);		
 		$friend_uids = $this->friend_matches();
+
+		//Calls the function to insert the meta data about the message into the specail_chat_meta table	
+		$this->insert_meta_data($last_id);
+
 		if($parsed_symbols['building'] !== false)
 			$building_uids = $this->building_matches();
 		$filter_uids = $this->filter_matches($msg,$sent_zip=$parsed_symbols['zips'],$static_zip=0,$gid_list=$group_gids,$cgid_list=$cgroup_gids);
@@ -115,6 +144,15 @@ class chat_functions{
 	//Returns the string without the first character
 	static function remove_first_char($str){
 		return substr($str, 1);
+	}
+
+	private function insert_meta_data($mid){
+		foreach($this->meta_groups as $gid => $perm)
+			$rows .= "($mid,$gid,$perm),";
+		$rows = substr($rows,0,-1);
+
+		$init_meta_query = "INSERT INTO special_chat_meta(mid,gid,connected) values $rows";
+                $this->mysqli->query($init_meta_query);
 	}
 
 	//Parses out all and extracts all tokens into a clean, user-friendly associative array
@@ -264,20 +302,23 @@ EOF;
 
 		$group_list = explode(',',$this->my_groups);
 
-
 		//This is where the permissions are set per group
 		//0 = Originating, 1 = Destin , 2 = Destin + Originating, 3 = Destin + Originating
 		//Only people who are part of groups get all 0,1,2,3, everyone else gets 0,3	
 		if($group_perm_matches->num_rows > 0)	
 		while($res = $group_perm_matches->fetch_assoc()){
-			if(strpos(','.$this->my_groups.',',','.$res['gid'].',') != false){
-					$this->permissions[$res['gid']] = "1,3";
-					$out_groups .= $res['gid'].',';
+			$gid = $res['gid'];
+			
+			if(strpos(','.$this->my_groups.',',','.$gid.',') != false){
+					$this->meta_groups[$gid] = 1;
+					$this->permissions[$gid] = "1,3";
+					$out_groups .= $gid.',';
 			} else { 
-					$this->permissions[$res['gid']] = "0,1,2,3";
-					$in_groups .= $res['gid'].',';
+					$this->meta_groups[$gid] = 2;
+					$this->permissions[$gid] = "0,1,2,3";
+					$in_groups .= $gid.',';
 			}
-					unset($group_list[array_search($res['gid'],$group_list)]);
+					unset($group_list[array_search($gid,$group_list)]);
 		}
 		$in_groups = substr($in_groups,0,-1);
 		$out_groups = substr($out_groups,0,-1);
@@ -289,6 +330,9 @@ EOF;
 
 		//The follow queries correspon to the 2 above arrays.  The first array ( for group filtering ) is for this method.  The second array ( for filter filtering is for the filters )
 		//This is needed twice becasue the tables/data structures/processing are different
+		foreach($group_list as $gid)
+			$this->meta_groups[$gid] = 0;
+
 		$groups_left = implode(',',$group_list);
 		if($group_list != '' && $groups_left){
 			$groups_left_query = "( t1.gid IN ( $groups_left ) AND t2.group_outside_state IN (0,3) )";

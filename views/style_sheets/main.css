@@ -135,16 +135,19 @@ display:block;
 			color:blue;
 			}
 #tab_list{ 
-height:22px;
+}
+
+#tab_list li{ 
+width:170px;
 }
 
 .tab{
 font-weight:bold;
 cursor:pointer;
 font-size:14px;
-padding:0px 9px 0px 9px;
+padding:1px 4px 1px 2px;
 text-align:left;
-margin:8px;
+margin:2px 0px 2px 0px;
 display:block;
 }
 
@@ -271,13 +274,13 @@ margin:5px;
 
 #main_tabs{
 padding:10px 0px 0px 4px;
-background:url('../../images/left_bg.gif') repeat-y 8px top;
+background:#F0F0F0;
 margin-top:80px;
 text-align:left;
 float:left;
 right:0;
 overflow-y:auto;
-width:207px;
+width:227px;
 height:440px;
 }
 	.toggle_list_el{
@@ -1015,12 +1018,39 @@ margin-bottom:10px;
 	margin:4px;
 	}
 
+	.default_tabs{
+	display:block;
+	clear:both;
+	}
+
 	.left_search_box{
 		background:white url('../../images/icons/magnifier.png') no-repeat 2px;
-		margin-left:12px;	
-	padding-left:20px;
-	width:134px;
+		padding-left:20px;
+		width:105px;
 	}
+
+	.inner_tab_content{
+	display:inline-block;
+	}
+
+	.tab{ 
+	/*background:url('../../images/left_bg.gif') no-repeat -2px -4px;*/
+	background:lightgreen;
+	width:150px;
+	} 
+
+	.search_toggle_mag{
+		display:block;float:right;
+	}
+
+	.hidden_content{
+		display:none;
+	}
+	
+	.my_search_results{
+	clear:both;
+	}
+
 
 	#sym_search{
 	padding:8px 0px 5px 0px;
