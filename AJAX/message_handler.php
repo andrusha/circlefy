@@ -147,11 +147,15 @@ class chat_functions{
 	}
 
 	private function insert_meta_data($mid){
+		if($this->meta_groups)
 		foreach($this->meta_groups as $gid => $perm)
-			$rows .= "($mid,$gid,$perm),";
+			$rows .= "($mid,$gid,$perm,NULL),";
+		if($this->meta_people)
+		foreach($this->meta_people as $uid)
+			$rows .= "($mid,NULL,NULL,$uid),";
 		$rows = substr($rows,0,-1);
 
-		$init_meta_query = "INSERT INTO special_chat_meta(mid,gid,connected) values $rows";
+		$init_meta_query = "INSERT INTO special_chat_meta(mid,gid,connected,uid) values $rows";
                 $this->mysqli->query($init_meta_query);
 	}
 
@@ -253,9 +257,12 @@ class chat_functions{
 	//This function gets all the matches that have to do with sending a message directly to someon via the @ symbol ( i.e. @Taso22 )
 	//$friends_array = an array of all friends you sent a message to directly
 	private function direct_matches($friends_array){
-		foreach($friends_array as $v){
+		foreach($friends_array as $v)
                         $friend_list .= '"'.$v.'",';
-                }
+		foreach($this->friend_to as $v)
+                        $friend_list .= '"'.$v.'",';
+
+		
                 $friends = rtrim($friend_list,',');
 
 		$direct_query = "SELECT uid,uname FROM login WHERE uname IN ( $friends );";
@@ -266,6 +273,7 @@ class chat_functions{
 		while($res = $direct_results->fetch_assoc()){
 			$this->counter_data['direct'][] = $res['uname'];
                         $uid_list['direct'][] .= $res['uid'];
+			$this->meta_people[] .= $res['uid'];
                 }
 	return $uid_list;
 	}
@@ -308,15 +316,17 @@ EOF;
 		if($group_perm_matches->num_rows > 0)	
 		while($res = $group_perm_matches->fetch_assoc()){
 			$gid = $res['gid'];
-			
-			if(strpos(','.$this->my_groups.',',','.$gid.',') != false){
-					$this->meta_groups[$gid] = 1;
-					$this->permissions[$gid] = "1,3";
-					$out_groups .= $gid.',';
-			} else { 
+	
+
+			$sc =  strpos('x,'.$this->my_groups.',',','.$gid.',');
+			if($sc != false){
 					$this->meta_groups[$gid] = 2;
 					$this->permissions[$gid] = "0,1,2,3";
 					$in_groups .= $gid.',';
+			} else { 
+					$this->meta_groups[$gid] = 1;
+					$this->permissions[$gid] = "1,3";
+					$out_groups .= $gid.',';
 			}
 					unset($group_list[array_search($gid,$group_list)]);
 		}
