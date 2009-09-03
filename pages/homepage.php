@@ -462,31 +462,29 @@ $groups_you_are_in->data_seek(0);
 $uid_list = '';
 $mid_list = '';
 $old_uid = '';
+
+$gid_query_list = '';
 while($res = $groups_you_are_in->fetch_assoc() ){
         $gid = $res['gid'];
         $gname = $res['gname'];
         $symbol = $res['symbol'];
 	$slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
-                                $counting++;
-                               if($counting !== 1){
-                                        /* This if statement is here to ensure a unique list */
-                                        if($gname != $old_gname) { $gname_list .= " OR chat_text LIKE '%#".$slashes_gname."%' "; }
-                                } else {
-                                        $gname_list .= "'%#".$slashes_gname."%'";
-                                }
-                                $old_gname = $gname;
+
+		$gid_query_list.= $gid.',';
 
 	$group_search_data[$gid] = $symbol;
 	//STIP ONE LINE BELOW	
 	$html_group_list[$gid] = <<<EOF
-	<li class="toggle_list_el toggle_list_group" id="group_{$gid}" onclick="show_info('group_{$gid}','{$slasesh_gname2}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span><span class="online_tab"></span></li>
+	<li class="toggle_list_el toggle_list_group" id="group_{$gid}" onclick="show_info('group_{$gid}','{$slashes_gname}')"><img class="tab_bullet" id="group_{$gid}_bullet" src="images/icons/bullet_white.png" /> <span>{$symbol}{$connected_img}</span><span class="online_tab"></span></li>
 EOF;
 }
+$gid_query_list = substr($gid_query_list,0,-1);
+		
 $counting=0;
 
         $slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
         $get_groups_bits_query = <<<EOF
-                SELECT mid,uid FROM special_chat WHERE chat_text LIKE {$gname_list} ORDER BY mid DESC LIMIT 10;
+                SELECT mid FROM special_chat_meta WHERE gid IN ( {$gid_query_list} ) AND connected IN (2) GROUP BY mid ORDER BY mid DESC LIMIT 10;
 EOF;
 
         $this->db_class_mysql->set_query($get_groups_bits_query,'group_query_ALL',"This is a SPECIAL QUERY that is part of a group of queries - This is for group: ALL ");
@@ -506,7 +504,7 @@ LEFT JOIN (
 SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$_SESSION['uid']}
 ) AS t4
 ON t4.mid = t3.cid
-WHERE t2.uid IN ( {$uid_list} ) AND t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10) 
+WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10) 
 UNION ALL
 (SELECT null as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_time) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2 
 JOIN chat as t3 ON t3.uid = t2.uid WHERE t3.cid IN ( {$mid_list} ) ORDER BY t3.cid DESC) ;
@@ -526,12 +524,9 @@ $mid_list = '';
 while($res = $groups_you_are_in->fetch_assoc() ){
 	$gid = $res['gid'];
 	$gname = $res['gname'];
-	$slasesh_gname2 = addslashes($gname);
-	$slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
 	$get_group_bits_query[$gid] = <<<EOF
-		SELECT mid,uid FROM special_chat WHERE chat_text LIKE '%#{$slashes_gname}%' ORDER BY mid DESC LIMIT 10;
+                SELECT mid FROM special_chat_meta WHERE gid IN ( {$gid} ) AND connected IN (2) GROUP BY mid ORDER BY mid DESC LIMIT 10;
 EOF;
-
 	$this->db_class_mysql->set_query($get_group_bits_query[$gid],'group_query_'.$v,"This is a SPECIAL QUERY that is part of a group of queries - This is for group: {$v} ");
 	$group_bits_results[$gid] = $this->db_class_mysql->execute_query('group_query_'.$v);
 
@@ -555,7 +550,7 @@ if($group_bits_results[$gid]->num_rows > 0){
 	SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$_SESSION['uid']}
 	) AS t4
 	ON t4.mid = t3.cid
-	WHERE t2.uid IN ( {$uid_list} ) AND t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10)
+	WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10)
 	UNION ALL
 	(SELECT null as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_time) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 	JOIN chat as t3 ON t3.uid = t2.uid WHERE t3.cid IN ( {$mid_list} ) ORDER BY t3.cid DESC) ;
@@ -611,7 +606,7 @@ $uid_list = '';
 $mid_list = '';
 $old_uid = '';
 $get_directs_bits_query = <<<EOF
-                SELECT mid,uid FROM special_chat WHERE chat_text LIKE '%@{$global_uname}%' ORDER BY mid DESC LIMIT 10;
+                SELECT mid FROM special_chat_meta WHERE uid IN ({$_SESSION['uid']}) GROUP BY mid ORDER BY mid DESC LIMIT 10;
 EOF;
 
         $this->db_class_mysql->set_query($get_directs_bits_query,'direct_query_ALL',"This is a SPECIAL QUERY that is part of a direct of queries - This is for direct: ALL ");
@@ -619,7 +614,6 @@ EOF;
 
 if($directs_bits_results->num_rows > 0){
 	$return_list = $this->get_unique_id_list($directs_bits_results);
-	$uid_list = $return_list['uid_list'];
 	$mid_list = $return_list['mid_list'];
 
 	$directs_query_bits_info = <<<EOF
@@ -630,7 +624,7 @@ if($directs_bits_results->num_rows > 0){
 	SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$_SESSION['uid']}
 	) AS t4
 	ON t4.mid = t3.cid
-	WHERE t2.uid IN ( {$uid_list} ) AND t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10) 
+	WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10) 
 	UNION ALL
 	(SELECT null as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_time) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2 
 	JOIN chat as t3 ON t3.uid = t2.uid WHERE t3.cid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10) ;

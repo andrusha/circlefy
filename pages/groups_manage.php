@@ -16,7 +16,7 @@ class groups_manage extends Base{
 
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
-		$this->page_name = "groups_manage";
+		$this->page_name = "new_groups_manage";
 		$this->need_login = 1;
 		$this->need_db = 1;
 
@@ -25,7 +25,7 @@ class groups_manage extends Base{
 		$uid = $_SESSION['uid'];
 
 		$get_group_query = <<<EOF
-			SELECT ugm.admin,ugm.gid,t2.gid,t2.gname,t2.focus,t2.pic_100,count(t1.uid) AS size
+			SELECT ugm.admin,ugm.gid,t2.gid,t2.gname,t2.connected,t2.focus,t2.pic_100,count(t1.uid) AS size
 			FROM (
 			  SELECT DISTINCT gid,admin
 			  FROM group_members
@@ -33,7 +33,6 @@ class groups_manage extends Base{
 			) AS ugm
 			JOIN group_members AS t1 ON t1.gid=ugm.gid
 			JOIN groups AS t2 ON t2.gid = ugm.gid 
-			AND t2.connected=0
 			GROUP BY ugm.gid;
 EOF;
 
