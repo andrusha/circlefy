@@ -1,0 +1,127 @@
+<?php echo $_t['errors']?>
+<?php $user = $_t['user'];?>
+<?php $user_pic = $_t['user_pic'];?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Tap</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<!-- <link href="main.css" rel="stylesheet" type="text/css" media="screen" /> -->
+<style type="text/css" media="all">@import "views/style_sheets/main2.css";</style>
+
+<style type="text/css" media="all">@import "views/style_sheets/TextboxList.css";</style>
+<style type="text/css" media="all">@import "views/style_sheets/TextboxList.Autocomplete.css";</style>
+
+<script type="text/javascript" src="http://<?=DOMAIN?>:8080/meteor.js"></script>
+
+<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
+
+    <script type="text/javascript">
+    </script>
+
+    
+</head>
+
+<body>
+<?php include(NEW_HEADER);?>
+<div id="large_container">
+
+	<div id="left_container">
+
+		<div id="main_tabs">
+			<ul id="tab_list">
+				<li class="tab">Suggested Groups</li>
+				<li>Hi! Suggest Me! mememememe</li>
+			<ul>
+		</div>
+	</div>
+
+<div id="container">
+
+
+
+<div id="main_group_search">
+
+	<ul id="group_search_list">
+		<li>Looking for new groups?</li>
+		<li><input type="text" id="group_search_input" class="searchText" name="group_search_input"></input></li>
+		<li><input type="submit" id="group_search_button" value="search"></input></li>
+	</ul>
+
+</div>
+
+<div id="my_group_list">
+
+	<div id="my_group_header">
+		<ul id="group_header_items">
+			<li><h2>My Groups</h2></li>
+			<li><input type="text" class="searchText" id="group_search_input" name="group_search_input"></input></li>
+		</ul>
+	</div>
+
+	<div id="my_group_header_2">
+	
+		<ul id="group_header_items_2">
+			<li>Pic</li>
+			<li>Name</li>
+			<li>Location</li>
+			<li>Focus</li>
+		</ul>
+		
+	</div>
+
+	<ul id="group_list">
+		<?php
+			$groups = array();
+			while($res = $_t['group_results']->fetch_assoc()){
+				$pic = $res['pic_100'];
+				$gname = $res['gname'];
+				$type = $res['connected'];
+				$size = $res['size'];
+				if($type)
+					$official = "*";
+				else	$official = "";
+
+				$groups[] .= <<<EOF
+					<li class="">
+						<img src="group_pics/{$pic}" /> {$official} {$gname} {$size}
+					</li>
+EOF;
+		
+			}
+
+			foreach($groups as $html)
+				echo $html;
+			
+		?>
+	</ul>
+
+
+
+</div>
+
+
+<!-- End container -->
+</div>
+
+
+	<div id="right_container">
+
+		<div id="left_tabs">
+			<ul id="left_tabs_list">
+				<li class="tab">
+					Tips <img src="images/icons/information.png" />
+				</li>
+				<li>Find official groups that you're in and join them</li>
+				<li>Search for groups that are saying things you're interestinged in, in really real-time!</li>
+			</ul>
+		</div>
+
+<!-- End large container -->
+</div>
+</body>
+</html>
+

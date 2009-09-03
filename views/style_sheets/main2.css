@@ -1,139 +1,53 @@
-.tip{ border:1px solid gray;width:295px; font-family:tahoma,arial; background:lightyellow left top repeat-y; }
-.tip-top{ height:26px; width:295px; }
-.tip-title{ color:#e95e25; font-weight:bold; margin:0 30px 0 50px; }
-.tip-text{  color:#000; padding:10px 10px 20px 22px; }
-.tip-bottom{ width:295px; height:81px; }
-#tips_toggle{ cursor:pointer; margin:4px;font-size:11px;color:#F0F0F0;font-weight:bold;float:left; } 
-
-#main_signup{
-
-}
-
-.intro_text{
-font-weight:bold;
-color:gray;
-}
-
-.intro_link{
-color:blue;
-text-decoration:underline;
-cursor:pointer;
-}
-
-#connected_status li{
-float:left;
+#main_group_search{
 text-align:left;
-color:red;
-}
-
-#connected_you_are_in_list li{
-text-align:left;
-}
-
-#connected_list ul li{
-text-align:right;
-}
-
-.pending_conenct li{
-text-align:left;
-float:left;
-display:block;
-}
-
-#school_error li{
-color:red;
-text-align:left;
-display:block;
-}
-
-
-.friend_result{
-display:inline-block;
+padding:4px;
+margin:0 auto;
+margin-top:40px;
+width:550px;
+background:#F0F0F0;
 overflow:hidden;
-margin:2px;
+
 }
 
-.friend_result{
+#main_group_search li{
+list-style:none;
+padding:4px;
+margin-left:20px;
+float:left;
+}
+
+#group_list{
+background:white;
 clear:both;
-display:block;
 }
-
-.friend_result_blue{
-background:#EFF4F0;
-display:inline-block;
+#my_group_list{
 overflow:hidden;
-margin:2px;
+text-align:left;
+padding:4px;
+margin:0 auto;
+margin-top:40px;
+width:550px;
+background:#F0F0F0;
+
 }
 
-.friend_result_blue{
-display:block;
+#my_group_header{
+	background:lightblue;
+	overflow:hidden;
 }
 
-	.friend_result_name{
-	text-align:left;
-	font-weight:bold;
-	}
+#my_group_header li{
+float:left;
+list-style:none;
+margin-left:20px;
+}
 
-		.thumbnail_friend_result{
-		margin-left:4px;	
-		background:blue;
-		float:left;
-		}
+#my_group_header_2 li{
+float:left;
+list-style:none;
+margin-left:20px;
+}
 
-			.friend_result_info_list{
-			width:230px;float:left;
-			}
-
-			.friend_result_info{
-			width:240px;
-			margin:6px 0 0 18px;
-			float:left;
-			text-align:left;
-			overflow:hidden;
-			}
-
-			.friend_result_info ul{
-			margin-left:10px;
-			display:inline-block;float:left;
-			}
-
-			.friend_result_name_span{
-			margin-bottom:2px;
-			display:block;
-			text-align:center;
-			}
-
-			.friend_tap_box{float:left;display:block;}
-
-			.result_info_list{
-			padding:2px;
-			padding-left:4px;
-			width:160px;
-			float:left;
-			}
-
-			.notalk{ color:red; }  
-
-			 .result_option_list{
-			float:left;
-			text-align:middle;
-			vertical-align:center;
-			}
-
-			li{ list-style:none;}
-				
-			.result_option_list li{
-			color:blue;
-			font-size:14px;
-			cursor:pointer;
-			}
-
-			#invite_friend_msg{
-			display:block;
-			margin:18px;
-			font-weight:bold;
-			color:blue;
-			}
 #tab_list{ 
 }
 
@@ -141,10 +55,13 @@ display:block;
 width:170px;
 }
 
+#left_tabs li {
+padding:4px;
+}
 
 #left_tabs{
+margin-top:40px;
 cursor:pointer;
-/*border-right:1px dotted #10F0FF;*/
 background:#F2F2F2;
 text-align:left;
 float:left;
@@ -264,8 +181,8 @@ margin:5px;
 }
 
 #main_tabs{
+margin-top:40px;
 background:#F2F2F2;
-margin-top:10px;
 text-align:left;
 clear:both;
 float:left;

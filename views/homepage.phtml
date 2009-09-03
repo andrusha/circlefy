@@ -60,13 +60,16 @@ Bit_Grabber2 = new Class({
 	offset_array: [],
 
 	grab_bits: function(data){
-	console.log('something2');
 		data = JSON.decode(data)
 		grabber_obj.add_bit(data.cid);
 		
 		var self = this;
 		Hash.each(data,function(value){ Hash.each(value,
 		function(html,key){ 
+
+		//This is a hack, need to change rels in Python source
+		if(key == 'rel')
+			key = 'rels';
 			
 	
 		var tab_counter	= key+'_counter';
@@ -83,12 +86,11 @@ Bit_Grabber2 = new Class({
 			newel.tween('opacity', 0, 1);
 		//This if bracket will be stripped once active_tabs is implemented
 		// and replaced with a check of an array/hash to see if the tab is visible/active
-		if(key == 'groups' || key == 'friends' || key == 'rel'){
+		if(key == 'groups' || key == 'friends' || key == 'rels'){
 
-			new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#66FF66');
+//			new Fx.Tween($(key), {property: 'background-color', link: 'chain'}).start('#fa0').start('#66FF66');
 			$(key+'_bullet').src = "images/icons/bullet_blue.png";
 		}
-		console.log('something');
 	 })    
 				});
 				response_event_obj.remove_action();
@@ -462,10 +464,10 @@ Nav_Search = new Class({
 		this.process('search_groups',search_groups_hash,'group');
 	},
 	
-	filters:function(){
-		$('search_filters').addEvent('click',function(){ vanish_text(0,$('search_filters')); });
-		stop_me('form_search_filters');
-		this.process('search_filters',search_filters_hash,'tab_rel');
+	rels:function(){
+		$('search_rels').addEvent('click',function(){ vanish_text(0,$('search_filters')); });
+		stop_me('form_search_rels');
+		this.process('search_rels',search_filters_hash,'rel');
 	},
 
 	process:function(id,xhash,type){
@@ -618,19 +620,26 @@ init_it:function(){
 Search_Toggle_Tabs = new Class({
 
 	something:new Hash({}),
-	state: new Hash({'group':0,'friend':0}),
+	state: new Hash({'group':0,'friend':0,'rel':0}),
 	
 	init: function(){
 		var self = this;
 		self.something.set('friend',$('form_search_friends'));
 		self.something.set('group',$('form_search_groups'));
+		self.something.set('rel',$('form_search_rels'));
 		self.friends_toggle();
 		self.groups_toggle();
+		self.rels_toggle();
 	},
 
 	friends_toggle: function() { 
 		var self = this;
 		self.process('friend');
+	},
+
+	rels_toggle: function() { 
+		var self = this;
+		self.process('rel');
 	},
 
 	groups_toggle: function() { 
@@ -696,7 +705,7 @@ tb_obj.init_it();
 	nav_search_obj = new Nav_Search;
 	nav_search_obj.friends();
 	nav_search_obj.groups();
-	nav_search_obj.filters();
+	nav_search_obj.rels();
 
 	
 	show_info('groups','Groups');
@@ -707,8 +716,8 @@ tb_obj.init_it();
 		open_window($('question').value);
 	});
 
-	$('rel').addEvent('click',function(){
-		show_info('rel','Filters Aggragate');
+	$('rels').addEvent('click',function(){
+		show_info('rels','Filters Aggragate');
 	});
 
 	$('friends').addEvent('click',function(){
@@ -787,12 +796,6 @@ poller_obj.grab_bits();
 //setInterval('poller_obj.grab_bits()',8000);
 */
 
-var myFx = new Fx.Slide('text_state', {
-    duration: 1000,
-    transition: Fx.Transitions.Pow.easeOut
-});
-$('text_state').style.margin = '0px auto';
-myFx.hide();
 /*
 	var friends_slide = new Fx.Slide('friends_tab_slide', {
    		 duration: 1000,
@@ -806,7 +809,6 @@ myFx.hide();
    		 duration: 1000,
 	    transition: Fx.Transitions.Pow.easeOut
 	});	
-*/
 	$('clear_bullets').addEvent('click',function(e){
 		$$('.tab_bullet').each(function(el){
 			el.src = 'images/icons/bullet_white.png';
@@ -815,6 +817,7 @@ myFx.hide();
 			el.set('text','0');
 		});
 	});
+*/
 
 
 	
@@ -962,221 +965,29 @@ foreach($offsets as $offset)
 	echo '<span class="offsets">'.$offset.'</span><br/>';
 */
 ?>
-.
-</div>
 
 
 <!-- This is the start of the 3 controlling windows -->
-<div id="large_container">
-
-	<div id="left_container">
 		<div id="links">
-			<ul>
+			<ul id="left_ul">
 			
+				<li id="this1"><a href="<?=ROOT?>"><img src="images/cimages/tap_logo_beta.gif" /></a></li>
 				<li id="this2"><a href="<?=ROOT?>profile">Profile</a></li>
 				<li id="this3"><a href="<?=ROOT?>relevancy_settings">Filters</a></li>
 				<li id="this5"><a href="<?=ROOT?>groups">Groups</a></li>
 			</ul>
-		</div>
 
-		<div id="left_notifications">
-			<span id="tap_status_title">tap status</span> <br/>
-			<span id="tap_status_descr"> <img src="images/icons/information.png" />  tap status shows you who's getting your message.  If nobody gets your message, we'll let you know, and you can pitch that message to different people</span>
-			<table id="tap_status_table">
-			<thead><td></td><td>tapped</td></thead>
-			<tbody id="tap_status_table_body">
-			</tbody>
-			<tfoot>
-			<tr><td># of people you tapd</td></tr>
-			</tfoot>	
-			</table>
-
-		</div>
-
-	</div>
-
-<div id="container">
-
-	<div id="top_logo"><img src="images/tap_logo.gif" alt="logo" /></div>
-	
-	<div id="info">
-	
-		<ul id="info_list">
-
-			<!-- <li id="number">There are currently 400 active users</li> -->
-	<?php $help = $_t['help']; if($help) $hide_class="hide_class";
-	
-			$text_state_html = <<<EOF
-			<li class="{$hide_class}" id="text_state"><img src="images/icons/error.png" /> Target your message to people using the symbols below 
-		
-EOF;
-			echo $text_state_html;
-?>
-			
-			<li>
-			</li>
-
-		</ul>
-	
-	</div>
-
-	<div id="forms">
-		<ul>
-		<form action="<?=ROOT?>" method="post" >
-				<fieldset>
-					<div id="core">
-			
-					<ul id="top_form">
-						<li><textarea class="gray_text question tips" maxlength="254" rows="2" cols="15" id="question" title="Tap Box :: Once you've targeted people say something to them that might either interest them or make them want to respond to you.">Tap the connected...</textarea></li>
-						<li id="outter_button">
-						</li>
-					</ul>
-					
-					</div>
-			
-				</fieldset>
-		</form>
-	
-	</div>
-
-	<div id="targets">
-		<form id="form_targets">
-					<input id="input_targets" type="text"></input>
-					<input type="submit" id="submit_button"  value="Tap"></input>
-		</form>
-	
-	</div>
-
-	<span id="clear_chat_windows" ></span><span id="clear_err">You have no taps to clear</span>
-	<div id="chat_windows"></div>
-	<!--	
-	-->
-
-	<div id="current_info_div"><b>Currently Viewing:</b> <span id="current_info_display"></span> Feed <span id="current_info"></span><div><br/>
-	<div class="tips" title="Feed::The feed is where all information relevant to the current Group/Person/Filter you have selected.  All information will flow here, even if you say it! Give it a whirl." id="main_information">
-		<div class="sub_information" id="direct_information">
-		<?
-                        if($_t['direct_bits'] && $_t['direct_bits'] != '')
-                                foreach($_t['direct_bits'] as $v){echo $v;
-                        } else {
-                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_direct'> You are not in any direct, <a href='search_people'>here</a> to find direct to tap</span>";
-                        }
-                ?>
-		</div>
-		<div class="sub_information" id="archives_information">
-		There are no archives in the testing mode.
-		</div>
-		<div class="sub_information" id="active_information">
-		To view your individual active conversations, click the individual tabs on the left ( if you don't see any, you don't have any active conversations ) 
-		</div>
-		<?php
-                        if(isset($_t['active_bits']) && $_t['active_bits'] != ''){
-                                foreach($_t['active_bits'] as $v){
-                                        echo $v;
-                                }
-                        }
-                ?>
-		<div class="sub_information" id="building_information">
-		<?
-                        if($_t['building_bits'] && $_t['building_bits'] != '')
-                                foreach($_t['building_bits'] as $v){echo $v;
-                        } else {
-                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_building'> You are not in any building, <a href='building'>here</a> to find building to tap</span>";
-                        }
-                ?>
-		</div>
-<? 
-
-		if($_t['individual_friend_bits'] && $_t['individual_friend_bits'] != '')
-			foreach($_t['individual_friend_bits'] as $v){echo $v;
-		} else {
-			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friend_ind'> You have nobody on tap who is active click <a href='people_search'>here</a> to find people to tap who are active!</span>";
-		}
-?>
-	
-		<div class="sub_information" id="friends_information">
-<? 
-
-		if($_t['friends_bits'] && $_t['friends_bits'] != '')
-			foreach($_t['friends_bits'] as $v){echo $v;
-		} else {
-			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friends_aggr'> You have nobody on tap who is active click <a href='people_search'>here</a> to find people to tap who are active!</span>";
-		}
-?>
-		</div>
-
-                <div class="sub_information" id="groups_information">
-		<!-- <div class="ihp_ad" id="groups_ad"><img src='pictures/<?=$user_pic?>' /><?=$uname?>: Hey people, check out my new ad! <a href="http://google.com">My New Site</a></div> -->
-		<?
-			if($_t['groups_bits'] && $_t['groups_bits'] != '') 
-				foreach($_t['groups_bits'] as $v){echo $v;
-			} else { 
-				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='groups'>here</a> to find groups to tap</span>";
-			}
-		?>      
-                </div>
-
-		<?php
-		if($_t['group_bits'] && $_t['group_bits'] != ''){
-			foreach($_t['group_bits'] as $v){
-				echo $v;
-			}
-		} else { 
-		}
-		?>
-
-                <div class="sub_information" id="rel_information">
-		<?
-                        if($_t['rel_bits'] && $_t['rel_bits'] != '')
-                                foreach($_t['rel_bits'] as $v){echo $v;
-                        } else {
-                                echo "<span class='null_info' id='null_rel'>You have no filters set, <a href='rel'>here</a> to find rel to tap</span>";
-                        }
-                ?>
-		</div>
-
-		<?
-                        if($_t['individual_rel_bits'] && $_t['individual_rel_bits'] != '')
-                                foreach($_t['individual_rel_bits'] as $v){echo $v;
-                        } else {
-                        }
-                ?>
-
-	</div>
-
-	<div id="footer">
-
-
-<?php include(FOOTER);?>
-	
-	</div>
-	
-</div>
-
-<!-- End main information -->
-</div>
-
-<!-- End container -->
-</div>
-
-
-	<div id="right_container">
-	<span id="user"> Logged in as <?=$user?></span><span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span>
-	<span id="tips_toggle"></span>
-
-		<div id="notifications">
-			<ul>
-			<?
-			if(is_array($_t['init_notifications']))
-				foreach($_t['init_notifications'] as $v)
-					echo $v;
-			?>
-			<li></li>
+			<ul id="right_ul">
+				<li><span id="user"> Logged in as <?=$user?></span><span id="sign_out"><a href="<?=ROOT?>?logout=true">Sign Out</a></span></li>
+				<li><span id="tips_toggle"></span></li>
 			</ul>
 		</div>
 
+<div id="large_container">
+
+	<div id="left_container">
+
 		<div id="main_tabs">
-			<span id="clear_bullets"><b>Reset Tabs</b></span>
 			<ul id="tab_list">
 				<li class="tab" id="direct" ><img class="tab_bullet" id="direct_bullet" src="images/icons/bullet_white.png" />Direct &nbsp<img src="images/icons/arrow_right.png" /> <span class="tab_counter" id="direct_counter">0</span></li>
 				<li class="tab" id="building" ><img class="tab_bullet" id="building_bullet" src="images/icons/bullet_white.png" />My Building &nbsp <img src="images/icons/building.png" /> <span class="tab_counter" id="building_counter">0</span> </li>
@@ -1254,19 +1065,223 @@ EOF;
 				</div>
 				<!-- END of Individual Groups -->	
 
-				<li class="tab" id="rel"><img class="tab_bullet" id="rel_bullet" src="images/icons/bullet_white.png" /><img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp<img src="images/icons/transmit_go.png" /> <span class="tab_counter" id="rel_counter">0</span> </li>
+				<li class="tab" id="rels">
+					<span id="rels_inner"  class="inner_tab_content">
+						<img class="tab_bullet" id="rels_bullet" src="images/icons/bullet_white.png" />
+						<img id="rel_toggle" src="images/icons/bullet_toggle_minus.png" />Filters &nbsp
+						<img src="images/icons/transmit_go.png" />
+						<span class="tab_counter" id="rels_counter">0</span>
+					</span>
+					 <span id="search_rels_toggle" class="search_toggle_mag">
+                                                <img id="search_rels_toggle_img" src="images/icons/magnifier.png" />
+                                        </span>
+
+				</li>
 				<div id="rel_tab_slide">
+
+				<span class="hidden_content">
+				<form id="form_search_rels">
+					<img class="tab_bullet" id="groups_bullet" src="images/icons/bullet_white.png" />
+					<input  class="left_search_box tips gray_text" value="Search your groups..." type="input" id="search_rels" autocomplete="off" title="Group Search::Allows you to search through groups you're apart of to see what's being said to them.  Click add on a group to add it to your message "></input>
+				</form>
+				</span>
+
+				<span id="default_rel_tabs"  class="default_tabs">
 				<!-- START of Relevancy Settings -->	
-				<form id="form_search_filters">
-					<input class="left_search_box tips gray_text" value="Search your filters..." type="input" id="search_filters" autocomplete="off" title="Search Filters :: Searching filters allows you to search through your filters from their label name. Type in 'My' to test.  To view/create all filters, click filters tab"></input>
-				</form>	
-				<ul id="search_filters_results">
+				 <?php
+                                if(isset($_t['get_rel_tab_names']) && $_t['get_rel_tab_names'] != ''){
+                                    foreach($_t['get_rel_tab_names'] as $v){
+                                        echo $v;
+                                    }
+                                }
+                                ?>
+				</span>
+
+				<ul id="search_rels_results" class="my_search_results">
 				</ul>
+
 				</div>
 				<!-- END of Relevancy Settings -->	
 			</ul>
 		</div>
+
 	</div>
+
+<div id="container">
+
+	<div id="forms">
+		<ul>
+		<form action="<?=ROOT?>" method="post" >
+				<fieldset>
+					<div id="core">
+			
+					<ul id="top_form">
+						<li><textarea class="gray_text question tips" maxlength="254" rows="2" cols="15" id="question" title="Tap Box :: Once you've targeted people say something to them that might either interest them or make them want to respond to you.">Tap the connected...</textarea></li>
+						<li id="outter_button">
+						</li>
+					</ul>
+					
+					</div>
+			
+				</fieldset>
+		</form>
+	
+	</div>
+
+	<div id="targets">
+		<form id="form_targets">
+					<input id="input_targets" type="text"></input>
+					<input type="submit" id="submit_button"  value="Tap"></input>
+		</form>
+	
+	</div>
+
+	<span id="clear_chat_windows" ></span><span id="clear_err">You have no taps to clear</span>
+	<div id="chat_windows"></div>
+	<!--	
+	-->
+
+	<div id="current_info_div">
+		<span id="current_info_display"></span>
+		<span id="current_info"></span>
+		<span id="search_bar_middle"><input type="text" value="I'm looking for..." class="searchText"></input></span>
+		
+
+	<div id="outter_info_div">
+	<div class="tips" title="Feed::The feed is where all information relevant to the current Group/Person/Filter you have selected.  All information will flow here, even if you say it! Give it a whirl." id="main_information">
+		<div class="sub_information" id="direct_information">
+		<?
+                        if($_t['direct_bits'] && $_t['direct_bits'] != '')
+                                foreach($_t['direct_bits'] as $v){echo $v;
+                        } else {
+                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_direct'> You are not in any direct, <a href='search_people'>here</a> to find direct to tap</span>";
+                        }
+                ?>
+		</div>
+		<div class="sub_information" id="archives_information">
+		There are no archives in the testing mode.
+		</div>
+		<div class="sub_information" id="active_information">
+		To view your individual active conversations, click the individual tabs on the left ( if you don't see any, you don't have any active conversations ) 
+		</div>
+		<?php
+                        if(isset($_t['active_bits']) && $_t['active_bits'] != ''){
+                                foreach($_t['active_bits'] as $v){
+                                        echo $v;
+                                }
+                        }
+                ?>
+		<div class="sub_information" id="building_information">
+		<?
+                        if($_t['building_bits'] && $_t['building_bits'] != '')
+                                foreach($_t['building_bits'] as $v){echo $v;
+                        } else {
+                                echo "<img src='images/icons/error.png' /><span class='null_info' id='null_building'> You are not in any building, <a href='building'>here</a> to find building to tap</span>";
+                        }
+                ?>
+		</div>
+<? 
+
+		if($_t['individual_friend_bits'] && $_t['individual_friend_bits'] != '')
+			foreach($_t['individual_friend_bits'] as $v){echo $v;
+		} else {
+			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friend_ind'> You have nobody on tap who is active click <a href='people_search'>here</a> to find people to tap who are active!</span>";
+		}
+?>
+	
+		<div class="sub_information" id="friends_information">
+<? 
+
+		if($_t['friends_bits'] && $_t['friends_bits'] != '')
+			foreach($_t['friends_bits'] as $v){echo $v;
+		} else {
+			echo "<img src='images/icons/error.png' /><span class='null_info' id='null_friends_aggr'> You have nobody on tap who is active click <a href='people_search'>here</a> to find people to tap who are active!</span>";
+		}
+?>
+		</div>
+
+                <div class="sub_information" id="groups_information">
+		<!-- <div class="ihp_ad" id="groups_ad"><img src='pictures/<?=$user_pic?>' /><?=$uname?>: Hey people, check out my new ad! <a href="http://google.com">My New Site</a></div> -->
+		<?
+			if($_t['groups_bits'] && $_t['groups_bits'] != '') 
+				foreach($_t['groups_bits'] as $v){echo $v;
+			} else { 
+				echo "<img src='images/icons/error.png' /> <span class='null_info' id='null_groups_aggr'> You are not in any groups, <a href='groups'>here</a> to find groups to tap</span>";
+			}
+		?>      
+                </div>
+
+		<?php
+		if($_t['group_bits'] && $_t['group_bits'] != ''){
+			foreach($_t['group_bits'] as $v){
+				echo $v;
+			}
+		} else { 
+		}
+		?>
+
+                <div class="sub_information" id="rels_information">
+		<?
+                        if($_t['rel_bits'] && $_t['rel_bits'] != '')
+                                foreach($_t['rel_bits'] as $v){echo $v;
+                        } else {
+                                echo "<span class='null_info' id='null_rel'>You have no filters set, <a href='rel'>here</a> to find rel to tap</span>";
+                        }
+                ?>
+		</div>
+
+		<?
+                        if($_t['individual_rel_bits'] && $_t['individual_rel_bits'] != '')
+                                foreach($_t['individual_rel_bits'] as $v){echo $v;
+                        } else {
+                        }
+                ?>
+
+	</div>
+
+	<div id="footer">
+
+
+<?php include(FOOTER);?>
+	
+	</div>
+	
+</div>
+
+<!-- End main information -->
+</div>
+
+<!-- End container -->
+</div>
+
+
+	<div id="right_container">
+
+		<div id="notifications">
+			<ul>
+			<?
+			if(is_array($_t['init_notifications']))
+				foreach($_t['init_notifications'] as $v)
+					echo $v;
+			?>
+			<li></li>
+			</ul>
+		</div>
+
+		   <div id="left_notifications"> 
+                        <span id="tap_status_title">tap status</span> <br/> 
+                        <span id="tap_status_descr"> <img src="images/icons/information.png" />  tap status shows you who's getting your message.  If nobody gets your message, we'll let you know, and you can pitch that message to different people</span> 
+                        <table id="tap_status_table">
+                        <thead><td></td><td>tapped</td></thead>
+                        <tbody id="tap_status_table_body">
+                        </tbody>
+                        <tfoot>
+                        <tr><td># of people you tapd</td></tr>
+                        </tfoot>
+                        </table>
+
+                </div>
+
 		<div id="left_tabs">
 			<ul id="left_tabs_list">
 				<li style="color:red;" class="tab" id="archives" ><img id="archives_bullet" src="images/icons/bullet_white.png" />Archive &nbsp<img src="images/icons/text_align_left.png" /></li>
