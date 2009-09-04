@@ -16,7 +16,7 @@ class create_group extends Base{
 
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
-		$this->page_name = "group_add";
+		$this->page_name = "create_group";
 		$this->need_login = 1;
 		$this->need_db = 1;
 

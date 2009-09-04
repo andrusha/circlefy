@@ -74,29 +74,16 @@
 	</div>
 
 	<ul id="group_list">
-		<?php
-			$groups = array();
-			while($res = $_t['group_results']->fetch_assoc()){
-				$pic = $res['pic_100'];
-				$gname = $res['gname'];
-				$type = $res['connected'];
-				$size = $res['size'];
-				if($type)
-					$official = "*";
-				else	$official = "";
-
-				$groups[] .= <<<EOF
-					<li class="">
-						<img src="group_pics/{$pic}" /> {$official} {$gname} {$size}
-					</li>
+	<?php
+		foreach($_t['group_results'] as $v){ 
+			$gid = $v['gid']; $gname = $v['gname']; $pic = $v['pic']; $type = $v['type']; $size = $v['size']; $official = $v['official'];
+			print <<<EOF
+				<li class="">
+					<img src="group_pics/{$pic}" /> {$official} {$gname} {$size}
+				</li>
 EOF;
-		
-			}
-
-			foreach($groups as $html)
-				echo $html;
-			
-		?>
+		}
+	?>
 	</ul>
 
 

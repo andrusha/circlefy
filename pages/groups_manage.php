@@ -65,7 +65,27 @@ EOF;
 
 			$this->db_class_mysql->set_query($get_group_query,'get_groups',"get_groups");
 					$group_results = $this->db_class_mysql->execute_query('get_groups');
-			$this->set($group_results,'group_results');
+
+                        while($res = $group_results->fetch_assoc()){
+                                $pic = $res['pic_100'];
+                                $gname = $res['gname'];
+                                $type = $res['connected'];
+                                $size = $res['size'];
+                                if($type)
+                                        $official = "*";
+                                else    $official = "";
+
+                                $groups[] = array(
+					'gid' => $gid,
+					'gname' => $gname,
+					'pic' => $pic,
+					'type' => $type,
+					'size' => $size,
+					'official' => $official
+				);
+			}
+
+			$this->set($groups,'group_results');
 				
 
                         $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
