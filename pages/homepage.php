@@ -192,56 +192,11 @@ EOF;
 
                 while($get_rel_output = $get_rel_result->fetch_assoc()){
                         $counter++;
-
-                        if($get_rel_output['tags']){
-                        $tags = "".$get_rel_output['tags'];
-                        } else {
-                        $tags = "Anything said in...";
-	                }
-
-                        if($get_rel_output['zip']){
-                        $zip = "".$get_rel_output['zip'];
-                        } else {
-                        $zip = 'Any Location';
-                        }
-
-                        if($get_rel_output['enabled']){
-                        $enable = 'green';
-                        $enable_txt = 'Enabled';
-                        $state = 1;
-                        } else {
-                        $enable = 'red';
-                        $enable_txt = 'Disabled';
-                        $state = 0;
-                        }
-
-                        if($get_rel_output['gid'] == 0){
-                                $gid = 'All';
-                        } else {
-                                $gid = $group_output[$get_rel_output['rid']];
-                        }
-
                         $rel_string = $keywords.$lang.$country.$zip;
                         $rid = $get_rel_output['rid'];
                         $name = stripslashes($get_rel_output['name']);
                         $display_name = $get_rel_output['name'];
 
-                        $bg = $counter & 1;
-
-                        if($bg == 1){ $bg = 'white'; } else { $bg = 'blue'; }
-
-                        $html_results[$counter] = <<<EOF
-                <tr class="rel_rid_{$bg}" id="rel_{$rid}">
-                                        <td class="rel_name_number">{$counter}. {$name}</td>
-                                        <td class="active_rel">{$tags}</td>
-                                        <td class="active_loc">{$zip}</td>
-                                        <td class="active_group">{$gid}</td>
-                                        <td class="enable_{$enable} {$state}" id="state_{$rid}" onclick="update_enable({$rid},this.className[this.className.length-1]);">{$enable_txt}</td>
-                                        <td class="delete_rel"><a href="#" onclick='del_rel({$rid});'>Delete</a></td>
-                </tr>
-
-EOF;
-	
 			$filter_search_list[$rid] = $display_name;
 			$html_results_2[$counter] = <<<EOF
 			<li class="toggle_list_el" id="tab_rel_{$rid}" onclick="show_info('tab_rel_{$rid}','{$display_name}');"><img  class="tab_bullet" id="tab_rel_{$rid}_bullet" src="images/icons/bullet_white.png" /> {$counter}. {$name}</li>
@@ -287,13 +242,9 @@ foreach($query as $k_query => $v_query){
 
                                         if($search_people->num_rows > 0){
                                                 while($search_res = $search_people->fetch_assoc()){
-                                                        $counting++;
-                                                        if($counting !== 1){
-                                                                $ids .= ','.$search_res['uid'];
-                                                                        } else {
-                                                                $ids .= $search_res['uid'];
-                                                                        }
+                                                                $ids .= $search_res['uid'].',';
                                                  }
+								$ids = substr($ids,0,-1);
 
                                                 $group_query = "SELECT groups.gid,uid,gname FROM groups JOIN group_members ON groups.gid = group_members.gid WHERE uid IN ({$ids});";
 
@@ -320,48 +271,6 @@ foreach($query as $k_query => $v_query){
                                                 $search_people->data_seek(0);
 
                                                 while($search_res = $search_people->fetch_assoc()){
-                                                        //color shifter
-                                                        ++$count;
-                                                        $color_offset = $count & 1;
-                                                        if($color_offset){$color="friend_result";} else {$color="friend_result_blue";}
-                                                        //end color shifter
-
-                                                        if($search_res['last_chat'] == NULL){
-                                                                $last_chat = '<span class="notalk"> This users has not chatt\'ed yet, get them to!<span>';
-                                                        } else {
-                                                                $last_chat = stripslashes($search_res['last_chat']);
-                                                        }
-
-                                                        if($state_array[$search_res['uid']] == 1){
-                                                                $tap_msg = "Untap <img src='images/icons/connect.png' />";
-                                                                $state = 1;
-                                                        }else{
-                                                                $tap_msg = "Tap";
-                                                                $state = 0;
-                                                        }
-							$path = PROFILE_PIC_REL;
-                                                        $html_network_top[$count] =
-                                                        <<<EOF
-                                                        <div class="{$color}">
-                                                                        <div class="friend_result_name"><span class="friend_result_name_span">{$search_res['fname']}  {$search_res['lname']}</span></div>
-
-                                                                        <div class="thumbnail_friend_result"> <span class="img_bit_container"><img class="bit_img" src="{$path}{$search_res['pic_100']}" alt='blank' /></span></div>
-
-                                                                        <div class="friend_result_info">
-                                                                                <ul class="friend_result_info_list">
-                                                                                        <li><span class="style_bold">Username: </span>{$search_res['uname']} </li>
-                                                                                        <li><span class="style_bold">Last chat: </span>{$last_chat}</li>
-                                                                                </ul>
-
-                                                                                <ul class="result_option_list">
-                                                                                        <li><span class="friend_tap_box style_bold {$state}" id="tap_{$search_res['uid']}" onclick="tap({$search_res['uid']},this.className[this.className.length-1])">{$tap_msg}</span></li>
-                                                                                </ul>
-
-
-                                                                        </div>
-
-                                                                </div>
-EOF;
 
                                                 /* START of specific information tabs */
                                                 $check_friend_special_chat = <<<EOF
