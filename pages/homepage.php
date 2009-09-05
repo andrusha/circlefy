@@ -163,13 +163,9 @@ EOF;
                 if($groups_IN_res){
                         //Build query for groups
                         foreach($groups_IN_res as $k => $v){
-                                 $counting++;
-                                if($counting !== 1){
-                                        $group_list .= ','.$v;
-                                } else {
-                                        $group_list .= $v;
-                                }
+                                        $group_list .= $v.',';
                         }
+					substr($group_list,0,-1);
 			$counting = 0;
 
                         $get_groups_query = <<<EOF
