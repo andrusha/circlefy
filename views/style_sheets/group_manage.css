@@ -1,0 +1,269 @@
+/* --- RESET + INITIAL STYLES ---------------------------------------------------------------> */
+
+html, body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, blockquote {
+	margin: 0; padding: 0; border: 0; outline: 0; font-weight: normal; font-style: inherit; font-size: 100%; font-family: inherit; vertical-align:baseline; list-style-type: none; list-style-image: none;
+}
+
+a:link, a:visited, a:active { outline: none; font-style: normal; text-decoration: none; }
+a:hover { text-decoration: underline; } 
+a img { border: 0; }
+
+div { position: relative; }
+
+
+/* --- BODY + TOP anchor --------------------------------------------------------------------> */
+
+body {
+	font-family: arial, Helvetica, sans-serif; 
+	background: #FFF; }
+	
+.holder {
+	height: auto; width: 970px;
+	margin-left: auto; margin-right: auto; }
+
+#header {
+	height: 38px; width: auto;
+	font-size: 14px;
+	color: white;
+	background: #4796dc url(/images/cimages/menu_bar.gif) repeat-x; }
+	
+	#header .holder { top: 9px; }
+	
+	#header a { color: white; }
+		
+	#logo {
+		float: left;
+		text-indent: -9999px;
+		height: 26px; width: 88px;
+		margin-top: -4px; 
+		background: url(/images/cimages/tap_logo_beta.gif); }
+		
+	#main-menu {
+		float: left;
+		margin-left: 18px; }
+		
+		#main-menu a { margin-right: 8px; }
+			
+	#login-info { float: right; }
+	
+		#login-info a { margin-left: 8px; }
+		
+#main {
+	height: auto; width: 970px;
+	margin: 20px auto; }
+	
+	#left-col {
+		height: auto; width: 194px;
+		float: left; }
+	
+	#ppl-tab {
+		height: 31px; width: 194px;
+		background: url(/images/cimages/tab_blue.gif); }
+		
+	#groups-tab {
+		height: 31px; width: 194px;
+		background: url(/images/cimages/tab_green.gif); }
+		
+	#filters-tab {
+		height: 31px; width: 194px;
+		background: url(/images/cimages/tab_yellow.gif); }
+		
+		.tab-in {
+			font-size: 14px;
+			padding: 6px 12px 0 12px; }
+		
+			.tab-in a { color: white; }
+		
+			#filters-tab .tab-in a { color: #333333; }
+		
+			.name { float: left; }
+		
+			.options { float: right; }
+		
+		.tab-in input {
+			float: right;
+			font-size: 11px;
+			padding: 2px;
+			margin-top: -1px; margin-right: 8px;
+			height: 12px; width: 60px;
+			border: 1px solid grey;
+			background: white; }
+			
+		.tab-list {
+			height: auto; width: 176px;
+			font-size: 12px;
+			padding: 8px 3px 13px 12px;
+			margin-right: 3px;
+			background: #f2f2f2; }
+			
+			.tab-list a { color: black; }
+			
+			.list-item { margin-bottom: 3px; }
+			
+			.item-filters, .item-add { font-size: 10px; }
+			
+			.more-btn1  {
+				float: right;
+				font-size: 10px;
+				margin-right: 6px; margin-top: 4px;}
+
+	#center-col {
+		float: left;
+		height: auto; width: 553px;
+		margin-left: 14px; }
+		
+	#group-search {	
+		height: 50px; width: 553px;
+		margin-top: -2px;
+		background: url(/images/cimages/group_srch_back.gif); }
+		
+		#group-search p {
+			padding: 12px 0 0 20px;
+			font-size: 14px;
+			font-weight: bold;
+			color: #707070; }
+			 
+		#search-field {
+			font-size: 12px;
+			margin: 0 4px 0 8px;
+			height: 16px; width: 200px;
+			border: 1px solid grey;
+			vertical-align: 0px;
+			background: white; }
+			
+		#search-btn {
+			height: 32px; width: 77px;
+			margin-top: -3px; margin-left: 6px;
+			vertical-align: -10px; }
+			
+		#group-search p #more-btn2 {
+			font-size: 10px;
+			color: #707070; }
+			
+	#gr-header {	
+		height: 41px; width: 553px;
+		margin-top: 10px;
+		color: white;
+		background: url(/images/cimages/main_bar_green.gif); }
+		
+			.gr-title {
+				margin-top: 10px; margin-left: 21px;
+				float: left;
+				font-size: 18px; }
+			
+			.gr-filters {
+				margin-top: 12px; margin-right: 17px;
+				float: right;
+				font-size: 12px; }
+				
+			a#gr-filter1 {
+				color: white;
+				margin-right: 6px; }
+				
+			#gr-header input {
+				font-size: 11px;
+				padding: 2px;
+				height: 12px; width: 60px;
+				border: 1px solid grey;
+				background: white; }
+				
+	.gr-sort-bar {
+		height: 20px; width: 545px;
+		margin-left: 3px; margin-bottom: -1px;
+		padding: 0;
+		font-size: 11px;
+		border: 1px solid #b4b4b4;
+		color: #545454;
+		background: #e5e5e5; }
+		
+		.gr-sort-bar p { margin-top: 3px; }
+		.gr-sort-bar a { color: #545454; }
+		
+		#sort-logo {  margin-left: 28px; }
+		#sort-name { margin-left: 25px; }
+		#sort-loc { margin-left: 6px; }
+		#sort-msgs { margin-left: 196px; }
+		#sort-mmbrs { margin-left: 23px; }
+		
+	#gr-list ul {
+		margin: 0 0 0 3px; }
+		
+		#gr-list li {
+			margin-bottom: -1px;
+			height: 77px; width: 545px;
+			color: #545454;
+			border: 1px solid #b4b4b4;
+			background: #f2f2f2 url(/images/cimages/message_back.gif); }
+			
+		.gr-image {
+			float: left;
+			margin-top: 15px; margin-left: 16px;
+			height: 46px; width: 46px;
+			border: 1px solid #c4c4c4; }
+			
+		.gr-offic {
+			vertical-align: -2px;
+			margin-right: 4px; }
+			
+		.gr-info {
+			float: left;
+			height: auto; width: 260px;
+			font-size: 12px;
+			margin-top: 14px; margin-left: 16px; }
+			
+			.gr-info p strong { color: black; font-weight: bold; }
+			
+			.gr-desc { font-size: 10px; }
+			
+			a.more-btn3 {
+				color: #545454;
+				margin: 0 0 0 10px; }
+				
+		.gr-numbers {
+			float: left;
+			margin-top: 23px; margin-left: 4px;
+			height: 46px; width: 58px; }
+			
+			.gr-numbers p { text-align: center; font-size: 10px; }
+			
+			.gr-numbers p strong { font-size: 11px; font-weight: bold; color: black; }
+				
+		.gr-btns {
+			float: left;
+			height: auto; width: 57px;
+			margin-left: 10px; margin-top: 20px;
+			font-size: 11px;
+			text-align: center; }
+			
+			.gr-btns a {
+				color: #545454; }
+			
+			/* for now this is not important
+			a.gr-invite-btn { height: 17px; width: 57px; }
+				
+				a.gr-invite-btn:hover {  }
+				
+			a.gr-edit-btn { height: 17px; width: 47px; background: url(/images/cimages/gr_edit_btn.gif); }
+				
+				a.gr-edit-btn:hover { background: url(/images/cimages/gr_edit_btn.gif) 47px 0; }*/
+				
+		.more-btn4 {
+			height: 21px; width: 91px;
+			text-align: center;
+			margin-left: auto; margin-right: auto; margin-top: 1px;
+			background: url(/images/cimages/more_btn.gif); }
+			
+			.more-btn4 a {
+				vertical-align: 4px;
+				font-size: 11px;
+				color: #545454; }
+				
+
+	#right-col { 
+		float: right; 
+		height: auto; width: 194px; }
+
+
+
+
+
