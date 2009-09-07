@@ -21,12 +21,15 @@ except:
 
 class ServerRoot(object):
     def __init__(self):
+        self.admin_server = AdminServer(self)
         self.user_server = UserServer(self)
         self.message_server = MessageServer(self)
     def start(self):
+        api.spawn(self.admin_server)
         api.spawn(self.user_server)
         api.spawn(self.message_server)
 
+#START of Message Server
 class MessageServer(object):
     def __init__(self, root):
         self.root = root
@@ -40,7 +43,6 @@ class MessageServer(object):
 class MessageConnection(object):
     
     def __init__(self,server, conn, addr):
-	print server, conn, addr
         self.conn = conn
         self.server = server
         self.addr = addr
@@ -58,7 +60,7 @@ class MessageConnection(object):
     def dispatchBuffer(self):
         while '\n' in self.buffer:
             rawFrame, self.buffer = self.buffer.split('\r\n', 1)
-            print 'json parse:', rawFrame
+            print 'Message Console:', rawFrame
 	    try:
 	            frame = json.loads(rawFrame)
 	    except(Exception):
@@ -72,9 +74,7 @@ class MessageConnection(object):
 
 	if matches_list != []:
 		results = self.bit_generator(matches_list)
-		print "RESULTS: %s" % ( results ) 
-		for item in results:
-			print "sending"
+		for item in results:pass
 
 		for uid in self.uids:
 		    if uid in self.server.root.user_server.users:
@@ -83,7 +83,6 @@ class MessageConnection(object):
 	
     def bit_generator(self,matches_list):
 		bits = []
-		print matches_list
 		for tuples in matches_list:
 			#Get row from memcache
 #			memc = memcache.Client(['127.0.0.1:11211'], debug=0)
@@ -102,7 +101,6 @@ class MessageConnection(object):
 			chat_text = 'Hey guys testing!!!'
 			pic_100 = 'ohjoifj4874848_picture.gif'
 			fuid = 100110101
-			print tuples
 			for els in tuples:
 				if type(els) == list:
 					#Create HTML/bits based on types ( there are either one or two types) 
@@ -124,16 +122,12 @@ class MessageConnection(object):
 						  'pic_100':pic_100,
 						  'chat_timestamp': chat_timestamp
 						 })
-			print "BITS %s" % (bits)
-			return bits
+		return bits
 
 
     def check_new_bits(self,uid_list,msg_data):
 		matches_list = []
-		print msg_data
-		print uid_list
 		for row in msg_data:
-				print "ROW: %s\n" %(row)
 				#FIGURE OUT WHICH LINES MATCH
 				col = row.split(' ')
 				col[0] = col[0].strip("\n")
@@ -168,7 +162,6 @@ class MessageConnection(object):
 					rid = col[3]
 					fuid =col[4]
 					row_type=col[5]
-					print "TYPE: %s" % (row_type)
 
 					#Group Processing
 					if row_type == 0:
@@ -202,9 +195,11 @@ class MessageConnection(object):
 							continue
 		return matches_list
 
+#START of User Server
 class UserServer(object):
     def __init__(self, root):
         self.users = {}
+	self.usernames = {}
         self.root = root
 
     def __call__(self):
@@ -254,10 +249,81 @@ class UserConnection(object):
         if self.state == "init":
             self.uid = frame['uid']
             self.state = 'connected'
+            self.server.usernames[self.uid] = frame['uname']
             self.server.users[self.uid] = self
 
     def send_message(self, data):
         self.conn.send(json.dumps({'msgData': data }) + '\r\n')
+
+
+#START of Admin Server
+class AdminServer(object):
+    def __init__(self, root):
+        self.root = root
+
+    def __call__(self):
+        server = api.tcp_listener(('0.0.0.0', 4444))
+        while True:
+            c = AdminConnection(self, *server.accept())
+            api.spawn(c)
+
+class AdminConnection(object):
+    def __init__(self, server, conn, addr):
+	self.users = {"admin":self}
+        self.conn = conn
+        self.addr = addr
+        self.server = server
+        self.buffer = ""
+        self.state = "connected"
+        self.uid = "admin"
+
+    def __call__(self):
+        """
+        This enters the user into an infinite loop.
+        When the user disconnects, there is a special case where no data is sent.
+        This will cause the while loop to break and will then check if the user is still in a connected state
+        if he is, cleanup his connection by deleting his id out of online users, etc
+        """
+        while True:
+            data = self.conn.recv(BUF_SIZE)
+            if not data: break
+            self.buffer += data
+            self.dispatchBuffer()
+        if self.state == 'connected':
+            del self.users['admin']
+
+    def dispatchBuffer(self):
+        while '\n' in self.buffer:
+            rawFrame, self.buffer = self.buffer.split('\r\n', 1)
+            print 'Admin Console:', rawFrame
+            try:
+		     frame = rawFrame.strip('\r').strip('\n')
+#JSON                frame = json.loads(rawFrame)
+            except(Exception):
+                    continue
+
+            self.receivedFrame(frame)
+
+    def receivedFrame(self, frame):
+        msg_data = frame
+	if msg_data:
+		try:
+			results = {
+			'online?' :  "%s users online" % ( len(self.server.root.user_server.users) ) 
+			}[msg_data]
+		except Exception:
+			results = """
+%s is not an option, please try the following:\n
+	online? ... This will show how many users are currently online
+	data_all? ... This will show how much data has flown through the system since start
+	data_user user? ... This will show how much data has flown through the system per a specific user
+	dump? ... TO DO
+			""" % ( msg_data )
+		self.users['admin'].send_message(results)
+	
+    def send_message(self, data):
+        self.conn.send("%s" % (data) + '\r\n')
+#JSON   self.conn.send(json.dumps({'adminData': data }) + '\r\n')
         
 
 if __name__ == "__main__":
