@@ -69,16 +69,20 @@ class MessageConnection(object):
             self.receivedFrame(frame)
 
     def receivedFrame(self, frame):
-        msg_data = frame['msg'].split('\n')
-	matches_list = self.check_new_bits(self.server.root.user_server.users,msg_data)
+	if frame.has_key('msg'):
+	        msg_data = frame['msg'].split('\n')
+	else:
+		return False
 
+	matches_list = self.check_new_bits(self.server.root.user_server.users,msg_data)
 	if matches_list != []:
 		results = self.bit_generator(matches_list)
 		for item in results:pass
 
 		for uid in self.uids:
 		    if uid in self.server.root.user_server.users:
-			self.server.root.user_server.users[uid].send_message(results)
+			for uniq_conn in self.server.root.user_server.users[uid]:
+				uniq_conn.send_message(results)
 		self.uids = []
 	
     def bit_generator(self,matches_list):
@@ -129,11 +133,10 @@ class MessageConnection(object):
 		matches_list = []
 		for row in msg_data:
 				#FIGURE OUT WHICH LINES MATCH
-				col = row.split(' ')
-				col[0] = col[0].strip("\n")
-				if col[0]:
-					col = [ int(x) for x in col ]
-					uid = col[0]
+				cols = row.split(' ')
+				if cols[0]:
+					cols = [ int(col) for col in cols ]
+					uid = cols[0]
 				else:
 					continue
 
@@ -155,13 +158,13 @@ class MessageConnection(object):
 				group_hit=1
 				friend_hit=1
 				rel_hit=1
-				if len(row) > 4:
-					uid = col[0]
-					cid = col[1]
-					gid = col[2]
-					rid = col[3]
-					fuid =col[4]
-					row_type=col[5]
+				if len(cols) is 6:
+					uid = cols[0]
+					cid = cols[1]
+					gid = cols[2]
+					rid = cols[3]
+					fuid =cols[4]
+					row_type=cols[5]
 
 					#Group Processing
 					if row_type == 0:
@@ -230,7 +233,10 @@ class UserConnection(object):
             self.buffer += data
             self.dispatchBuffer()
         if self.state == 'connected':
-            del self.server.users[self.uid]
+	    if  len(self.server.users[self.uid]) is not 1:
+		self.server.users[self.uid].remove(self)
+	    else:
+	        del self.server.users[self.uid]
             # TODO: on disconnect
             # ...
 	    #I should probably run some querieis here and whatnot
@@ -248,12 +254,17 @@ class UserConnection(object):
 
     def receivedFrame(self, frame):
         if self.state == "init":
-            self.uid = frame['uid']
+	    if frame.has_key('uid'):
+	            self.uid = frame['uid']
+	    else:
+		    return False
+	
             self.state = 'connected'
             self.server.usernames[self.uid] = frame['uname']
 	    if not self.server.users.has_key(self.uid):
 		self.server.users[self.uid] = []
             self.server.users[self.uid].append(self)
+	    print self.server.users
 
     def send_message(self, data):
         self.conn.send(json.dumps({'msgData': data }) + '\r\n')
@@ -332,6 +343,10 @@ class AdminConnection(object):
 if __name__ == "__main__":
     root = ServerRoot()
     root.start()
+    print "Starting Multi-User/Connection TCP server...\n"
     from eventlet.green import time
-    while True:
-	time.sleep(1)
+    try:
+	    while True:
+		time.sleep(1)
+    except KeyboardInterrupt:
+	    print "Exiting Multi-User/Connection TCP server..."
