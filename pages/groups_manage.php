@@ -82,6 +82,7 @@ EOF;
 					'pic' => $pic,
 					'type' => $type,
 					'size' => $size,
+					'focus' => $focus,
 					'descr' => $descr,
 					'official' => $official
 				);
