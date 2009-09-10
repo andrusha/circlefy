@@ -25,7 +25,7 @@ class groups_manage extends Base{
 		$uid = $_SESSION['uid'];
 
 		$get_group_query = <<<EOF
-			SELECT ugm.admin,ugm.gid,t2.gid,t2.gname,t2.connected,t2.focus,t2.pic_100,count(t1.uid) AS size
+			SELECT ugm.admin,ugm.gid,t2.descr,t2.gid,t2.gname,t2.connected,t2.focus,t2.pic_100,count(t1.uid) AS size
 			FROM (
 			  SELECT DISTINCT gid,admin
 			  FROM group_members
