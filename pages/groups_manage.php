@@ -67,6 +67,7 @@ EOF;
 					$group_results = $this->db_class_mysql->execute_query('get_groups');
 
                         while($res = $group_results->fetch_assoc()){
+				$descr = $res['descr'];
                                 $pic = $res['pic_100'];
                                 $gname = $res['gname'];
                                 $type = $res['connected'];
@@ -81,6 +82,7 @@ EOF;
 					'pic' => $pic,
 					'type' => $type,
 					'size' => $size,
+					'descr' => $descr,
 					'official' => $official
 				);
 			}
