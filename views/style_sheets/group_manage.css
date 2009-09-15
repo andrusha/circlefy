@@ -139,6 +139,28 @@ body {
 		#group-search p #more-btn2 {
 			font-size: 10px;
 			color: #707070; }
+	
+	#group-search-more {
+		background: url(/images/cimages/group_srch_more.gif) bottom; 
+		height: 30px; 
+		width: 517px;
+		margin-top: 1px;
+		margin-left: 12px;
+		padding: 5px}
+		
+		#group-search-more div {
+			margin: auto; width: 450px
+			}
+			
+		#group-search-more label {
+			color: #707070;
+			font-weight: bold;
+			margin-left: 10px;
+			margin-right: 5px;
+			font-size: 12px }
+		
+		#group-search-more input {
+		}
 			
 	#gr-header {	
 		height: 41px; width: 553px;
@@ -152,20 +174,48 @@ body {
 				font-size: 18px; }
 			
 			.gr-filters {
-				margin-top: 12px; margin-right: 17px;
+				margin-top: 9px; margin-right: 17px;
 				float: right;
 				font-size: 12px; }
 				
 			a#gr-filter1 {
 				color: white;
 				margin-right: 6px; }
+
+			#gr-create-btn {
+				width:130px;
+				height:25px; display:block; float:left;
+				background: url(/images/cimages/gr_new_btn.gif) no-repeat left;}
+				
+				#gr-create-btn:hover { 
+					background-position: right; }
 				
 			#gr-header input {
-				font-size: 11px;
-				padding: 2px;
-				height: 12px; width: 60px;
-				border: 1px solid grey;
-				background: white; }
+				background: url(/images/cimages/gr_srch_field.gif) no-repeat;
+				border-style:hidden;
+				border-width:0px;
+				height:22px;
+				margin-top: 2px;
+				width:115px;
+				padding:4px 24px 0px 6px;}
+			
+			.overTxtLabel {
+				color: #ccc;
+			}
+
+	#gr-search {
+		display: none;
+		font-size: 12px;
+		height: 18px; width: 529px;
+		padding: 9px 12px 0 12px;
+		margin-top: 10px;
+		background: url(/images/cimages/gr_srch_results_top.gif); }
+		
+		#gr-search .gr-search-title {
+			float: left; }
+
+		#gr-search .gr-search-pages {
+			float: right; }
 				
 	.gr-sort-bar {
 		height: 20px; width: 545px;
@@ -193,7 +243,7 @@ body {
 			height: 77px; width: 545px;
 			color: #545454;
 			border: 1px solid #b4b4b4;
-			background: #f2f2f2 url(/images/cimages/message_back.gif); }
+			background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
 			
 		.gr-image {
 			float: left;
@@ -211,9 +261,13 @@ body {
 			font-size: 12px;
 			margin-top: 14px; margin-left: 16px; }
 			
+			div.gr-info > p:first-child { height: 15.2px; overflow: hidden; }
+			
 			.gr-info p strong { color: black; font-weight: bold; }
 			
-			.gr-desc { font-size: 10px; }
+			.gr-desc {
+				margin-top: 5px;
+				font-size: 10px; }
 			
 			a.more-btn3 {
 				color: #545454;
@@ -238,15 +292,36 @@ body {
 			.gr-btns a {
 				color: #545454; }
 			
-			/* for now this is not important
-			a.gr-invite-btn { height: 17px; width: 57px; }
-				
-				a.gr-invite-btn:hover {  }
-				
-			a.gr-edit-btn { height: 17px; width: 47px; background: url(/images/cimages/gr_edit_btn.gif); }
-				
-				a.gr-edit-btn:hover { background: url(/images/cimages/gr_edit_btn.gif) 47px 0; }*/
-				
+			a.gr-invite-btn {
+				padding: 0px 23.5px; 
+				height: 17px; 
+				float: right;
+				margin-bottom: 5px;
+				background: url(/images/cimages/gr_invite_btn.gif) left; }
+			
+			a.gr-invite-btn:hover {
+				background-position: right;
+			}
+							
+			a.gr-admin-btn {
+				clear: left;
+				padding: 0px 23.5px;
+				height: 17px;
+				float: right;
+				background: url(/images/cimages/gr_admin_btn.gif) left; }
+							
+			a.gr-admin-btn:hover {
+				background-position: right; }
+			
+			a.gr-join-btn {
+				padding: 0px 23.5px;
+				height: 29px;
+				float: right;
+				background: url(/images/cimages/gr_join_btn.gif) left; }
+
+			a.gr-join-btn:hover {
+				background-position: right; }
+		
 		.more-btn4 {
 			height: 21px; width: 91px;
 			text-align: center;
@@ -257,6 +332,14 @@ body {
 				vertical-align: 4px;
 				font-size: 11px;
 				color: #545454; }
+	
+		li.more-invite div, li.info div {
+			padding: 6px 10px;
+			font-size: 12px; 
+			height: auto; }
+			
+			li.more-invite p, li.info p {
+				margin-top: 10px; }
 				
 
 	#right-col { 

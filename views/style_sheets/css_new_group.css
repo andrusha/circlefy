@@ -1,0 +1,115 @@
+/* --- CREATE / EDIT GROUP styles --------------------------------------------------------------------> */
+
+	.main-frame {
+		height: auto; width: 553px;
+		padding-top: 30px; padding-bottom: 30px;
+		background: url(/images/cimages/main_frame_back.gif); }
+		
+	.main-frame-bottom {
+		height: 10px; width: 553px;
+		background: url(/images/cimages/main_frame_bottom.gif); }
+		
+		#gr-new h2.in-title {
+			line-height: 20px;
+			text-align: right;
+			font-size: 13px;
+			font-weight: bold;
+			color: #333333;
+			margin: 0 140px 0 50px; }
+			
+		#gr-new h2.in-title-left {
+			line-height: 30px;
+			text-align: left;
+			font-size: 13px;
+			font-weight: bold;
+			color: #333333;
+			margin: 0 0 0 54px; }
+			
+		#gr-new	.input-descr {
+			font-size: 11px;
+			color: #7f7f7f;
+			margin: 2px 0 18px 150px; }
+		
+		#gr-new input {
+			font-size: 13px;
+			padding: 4px;
+			margin-left: 10px;
+			height: 16px; width: 260px;
+			border: 1px solid #cccccc;
+			background: #f5f5f5; }
+			
+		#gr-new .input-err {
+			background: #fdebeb; }
+			
+		#gr-new .error-msg {
+			position: absolute;
+			left: 426px;
+			display: none;
+			text-align: left;
+			padding-left: 24px;
+			line-height: 12px;
+			height: auto; width: 80px;
+			color: #333333;
+			font-size: 10px;
+			background: url(/images/cimages/error_small.gif) 0 4px no-repeat; }
+			
+		#gr-new textarea {
+			font-family: arial, Helvetica, sans-serif;
+			vertical-align: text-top;
+			font-size: 12px;
+			padding: 4px;
+			margin-left: 10px;
+			height: 60px; width: 260px;
+			border: 1px solid #cccccc;
+			background: #f5f5f5; }
+		
+		#gr-new select { margin-left: 10px; margin-right: 20px; }
+			
+		#gr-new .input-short { width: 100px; }
+			
+		#gr-new	.radio-input { height: auto; width: auto; }
+		
+		#gr-new .file-input { height: auto; width: auto; }
+		
+		.hr-shady {
+			margin: 17px auto 20px auto;
+			height: 21px; width: 545px;
+			background: url(/images/cimages/hr_shady.gif) no-repeat; }
+		
+		#gr-new-btns {
+			width: 230px; margin: auto; }
+		
+		#gr-create {
+			float: left;
+			margin-right: 5px;
+			height: 36px; width: 118px;
+			background: url(/images/cimages/gr_create_btn.gif) left;
+		}
+		
+		#gr-create:hover {
+			background-position: right; }
+		
+		#gr-cancel {
+			float: left;
+			height: 36px; width: 78px;
+			background: url(/images/cimages/gr_cancel_btn.gif) left;
+		}
+
+		#gr-cancel:hover { 
+			background-position: right; }
+
+		#gr-save {
+			float: left;
+			height: 36px; width: 78px;
+			background: url(/images/cimages/gr_save_btn.gif) left;
+		}
+
+		#gr-save:hover { 
+			background-position: right; }
+		
+		#pic-preview {
+			text-align: center;
+			width: 300px;
+			margin: auto;
+			margin-top: 10px;
+		}
