@@ -95,7 +95,7 @@ class homepage extends Base{
 		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
 					LEFT JOIN group_members AS t2
 					ON t1.uid = t2.uid
-					LEFT JOIN display_rel_profile AS t3
+					LEFT JOIN profile AS t3
 					ON t1.uid = t3.uid
 					WHERE t1.uname='{$uname}'";
 	

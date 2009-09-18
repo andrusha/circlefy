@@ -26,8 +26,9 @@ class create_group extends Base{
 
 		//Match all user IDs with a specific ID, so you will have join the group_members table with the groups table
                 //matching the groups_members table with the groups table based off gid, you need to return the name
-                        $this->db_class_mysql->set_query('SELECT t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid='.$uid,
-                                        'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
+                        $this->db_class_mysql->set_query('SELECT t2.gname,t1.gid FROM group_members AS t1 
+							  JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid='.$uid,
+		                                        'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                                         $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
 					if($groups_you_are_in->num_rows > 0){
                                         $this->set($groups_you_are_in,'your_groups');

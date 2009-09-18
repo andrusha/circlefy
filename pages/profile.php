@@ -1,87 +1,115 @@
 <?php
-
+// !!!!!!!!!!!  MAKE SURE YOU CHANGE THE CLASS NAME FOR EACH NEW CLASS !!!!!!!
 class profile extends Base{
 
 	protected $text;
 	protected $top;
-	
+
 	function __default(){
 	}
-	
+
 	public function __toString(){
 		return "Homepage Object";
 	}
-	
+
 	function __construct(){
-				
+
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
-		$this->page_name = "profile";
-		$this->need_auth = 1;
+		$this->page_name = "about_me";
+		$this->need_login = 1;
 		$this->need_db = 1;
-		
-	
+
 		parent::__construct();
-		
+
 		$uid = $_SESSION['uid'];
-		
-		$friends_last_chat = <<<EOF
-                SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1
-                JOIN
-                (
-                 SELECT uid,mid,chat_text FROM special_chat AS t4 ORDER BY mid DESC
-                ) AS t4_sub ON t4_sub.uid = t1.fuid
-                JOIN login AS t2 ON t1.fuid = t2.uid
-                WHERE t1.uid = {$uid} GROUP BY t1.fuid; 
+		//Takes awayfist settings flag
+		setcookie('profile_edit','',time()-360000);
+
+	
+			$get_profile_query = <<<EOF
+				SELECT 
+				t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
+				t5.email,t5.pic_100,t5.fname,t5.lname
+				FROM profile AS t1
+				JOIN login AS t5
+				ON t1.uid = t5.uid
+				WHERE t1.uid={$uid}
 EOF;
-	
-		$this->db_class_mysql->set_query($friends_last_chat,'get_last_chat','This query gets everything the users has on tap last said');
-	
-		$this->db_class_mysql->set_query('SELECT t2.fname,t2.lname,t1.state,t1.country,t1.language,t1.zip FROM display_rel_profile AS t1 JOIN login AS t2 ON t2.uid = t1.uid WHERE t1.uid='.$uid.';','get_rel_profile','This is getting the users profile contents');
-		$this->db_class_mysql->set_query('SELECT uname,pic_180 FROM login WHERE uid='.$uid.';','get_login','This is getting the users login contents');
-		$this->db_class_mysql->set_query('SELECT COUNT(*) AS count FROM friends WHERE uid='.$uid.';','get_friends','Gets count of "followers"');
-		$this->db_class_mysql->set_query('SELECT COUNT(*) AS count FROM special_chat WHERE uid='.$uid.';','get_postings','Shows how many times you tapd something');
-		$this->db_class_mysql->set_query('SELECT COUNT(*) AS count FROM chat WHERE uid='.$uid.';','get_chat','shows how many times you replied/chatted');
-		$this->db_class_mysql->set_query('SELECT t1.pic_36,t1.gname,t1.gid,t1.connected FROM groups AS t1 JOIN group_members ON t1.gid = group_members.gid WHERE uid ='.$uid.';','get_groups','Gets all groups for the groups you are apart of');
-
-			$last_chat_results = $this->db_class_mysql->execute_query('get_last_chat');
-			$rel_profile_results = $this->db_class_mysql->execute_query('get_rel_profile');
-			$login_results = $this->db_class_mysql->execute_query('get_login');
-			$friends_results = $this->db_class_mysql->execute_query('get_friends');
-			$posting_results = $this->db_class_mysql->execute_query('get_postings');
-			$chat_results = $this->db_class_mysql->execute_query('get_chat');
-			$group_results = $this->db_class_mysql->execute_query('get_groups');
-
-				$rel_profile_results = $rel_profile_results->fetch_assoc();
-				$login_results = $login_results->fetch_assoc();
-				$friends_results = $friends_results->fetch_assoc();
-				$posting_results = $posting_results->fetch_assoc();
-				$chat_results = $chat_results->fetch_assoc();
-				
-				if($friends_results['count'] <= 0){
-					$friends_results['count'] = '<span class="null_attr">You have no friends</span>';
-				}
-				
-				if($posting_results['count'] <= 0){
-					$posting_results['count'] = '<span class="null_attr">You have not used tap, try it out!</span>';
-				}
-				
-				if($chat_results['count'] <= 0){
-					$chat_results['count'] = '<span class="null_attr">You have not chattap\'d</span>';
-				}
-				
-		$this->set($last_chat_results,'last_chat');
-		$this->set($rel_profile_results,'rel_profile');
-		$this->set($login_results,'login');
-		$this->set($friends_results,'friends');
-		$this->set($posting_results,'postings');
-		$this->set($chat_results,'chat');
-		$this->set($group_results,'groups');
+				$this->db_class_mysql->set_query($get_profile_query,'get_edit_profile','This is getting the users profile contents');
 		
+				$edit_profile_results = $this->db_class_mysql->execute_query('get_edit_profile');
 
+				$res =  $edit_profile_results->fetch_assoc();
+				$uname = $res['uname'];
+				$pic_100 = $res['pic_100'];				
+				$fname = $res['fname'];
+				$lname = $res['lname'];
+				$email = $res['email'];
+				$country = $res['country'];
+				$state = $res['state'];
+				$zip = $res['zip'];
+				
+	
+				$edit_profile_results = array(
+					'uname' => $uname,
+					'pic_180' => $pic_100,
+					'email' => $email,
+					'fname' => $fname,
+					'lname' => $lname,
+					'zip' => $zip,
+					'country' => $country,
+					'state' => $state
+				);
+
+			$this->set($edit_profile_results,'edit_profile');
+
+			$count_messages = <<<EOF
+			SELECT COUNT(*) AS message_count FROM special_chat WHERE uid = {$uid}
+EOF;
+			$this->db_class_mysql->set_query($count_messages,'count_messages','Counts amount of messages a user has for a stat');
+			$count_results = $this->db_class_mysql->execute_query('count_messages');
+			if($count_results->num_rows)
+			$res = $count_results->fetch_assoc();
+				$message_count = $res['message_count'];
+
+			$count_resp = <<<EOF
+			SELECT COUNT(*) AS resp_count FROM chat WHERE uid = {$uid}
+EOF;
+
+			$this->db_class_mysql->set_query($count_resp,'count_resp','Counts amount of responses a user has for a stat');
+			$count_results = $this->db_class_mysql->execute_query('count_resp');
+			if($count_results->num_rows)
+			$res = $count_results->fetch_assoc();
+                                $resp_count = $res['resp_count'];
+
+			$count_group = <<<EOF
+                        SELECT COUNT(*) AS group_count FROM group_members WHERE uid = {$uid}
+EOF;
+                        $this->db_class_mysql->set_query($count_group,'count_group','Counts amount of groups a user has for a stat');
+                        $count_results = $this->db_class_mysql->execute_query('count_group');
+			if($count_results->num_rows)
+                        $res = $count_results->fetch_assoc();
+                                $group_count = $res['group_count'];
+	
+			if(!$message_count)
+				$message_count = 0;
+			if(!$resp_count)
+				$resp_count = 0;
+			if(!$group_count)
+				$group_count = 0;
+
+			$stats = array(
+			'message_count' => $message_count,
+			'response_count' => $resp_count,
+			'group_count' => $group_count
+			);
+			$this->set($stats,'stats');
+
+			
+				
 	}
-
+	
+	
 }
-
-
 ?>

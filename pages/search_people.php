@@ -53,7 +53,7 @@ EOF;
 						$join['group_q1'] = 't1.gname FROM groups AS t1 INNER JOIN group_members AS t2 ON t1.gid';
 }*/
 					if($zipcode) { 
-						$join['zip_q1'] = 'JOIN display_rel_profile AS t2 ON t2.uid = t1.uid';
+						$join['zip_q1'] = 'JOIN profile AS t2 ON t2.uid = t1.uid';
 						$query_array['zip_q2'] = ' t2.zip="'.$zipcode.'"';
 					}
 					
