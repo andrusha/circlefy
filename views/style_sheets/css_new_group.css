@@ -38,6 +38,13 @@
 			border: 1px solid #cccccc;
 			background: #f5f5f5; }
 			
+		#gr-new .holder {
+			font-size: 13px;
+			padding: 4px;
+			margin-left: 10px;
+			height: 16px; width: 260px;
+		}
+			
 		#gr-new .input-err {
 			background: #fdebeb; }
 			

@@ -49,7 +49,7 @@ body {
 		#login-info a { margin-left: 8px; }
 		
 #main {
-	height: auto; width: 970px;
+	height: auto; width: 990px;
 	margin: 20px auto; }
 	
 	#left-col {
@@ -118,18 +118,18 @@ body {
 		background: url(/images/cimages/group_srch_back.gif); }
 		
 		#group-search p {
-			padding: 12px 0 0 20px;
+			padding: 12px 0 0 15px;
 			font-size: 14px;
 			font-weight: bold;
 			color: #707070; }
 			 
 		#search-field {
 			font-size: 12px;
-			margin: 0 4px 0 8px;
-			height: 16px; width: 200px;
-			border: 1px solid grey;
-			vertical-align: 0px;
-			background: white; }
+			margin: 0;
+			height: 20px; width: 180px;
+			padding-top: 5px; padding-left: 5px; padding-right: 30px;
+			border: none;
+			background: transparent url(/images/cimages/group_srch_field.gif) no-repeat scroll 0% 0%; }
 			
 		#search-btn {
 			height: 32px; width: 77px;
@@ -197,11 +197,18 @@ body {
 				height:22px;
 				margin-top: 2px;
 				width:115px;
-				padding:4px 24px 0px 6px;}
+				padding:4px 0 0px 6px;}
 			
 			.overTxtLabel {
 				color: #ccc;
 			}
+			
+			#gr-filter-btn {
+				background: url(/images/cimages/magn_green.gif) no-repeat left top;
+				padding-left: 22px; padding-top: 3px; padding-bottom: 3px; }
+
+				#gr-filter-btn:hover { 
+					background-position: right top; }
 
 	#gr-search {
 		display: none;
@@ -343,8 +350,45 @@ body {
 				
 
 	#right-col { 
-		float: right; 
-		height: auto; width: 194px; }
+		float: left;
+		height: auto; width: 184px;
+		padding: 5px;
+		background: #F2F2F2 url(/images/cimages/tab_grey.gif) no-repeat;
+		margin-left: 20px; }
+	
+		#right-col h1 {
+			color: #fff;
+			font-size: 14px;
+			padding: 2px 5px;
+			margin-bottom: 15px; }
+		
+		#right-col h2, #right-col p {
+			color: #666;
+			font-size: 12px; 
+			margin-left: 10px; 
+			margin-right: 10px; }
+		
+		#right-col h2 { 
+			margin-bottom: 5px;
+			font-size: 14px; 
+			font-weight: bold; }
+		
+		#right-col p {
+			margin-bottom: 15px;
+		}
+		
+		#left-col h2 {
+			font-size: 13px; 
+			color: #666;
+			font-weight: normal;
+			margin-bottom: 20px;
+		}
+		
+		#left-col h2 span {
+			font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
+			font-weight: bold;
+			font-size: 20px;
+		}
 
 
 

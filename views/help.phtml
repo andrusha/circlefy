@@ -1,0 +1,95 @@
+﻿<?php
+$res = $_t['edit_profile'];
+$fname = $res['fname'];
+$lname = $res['lname'];
+$uname = $_COOKIE['uname'];
+$email = $res['email'];
+$pic = $res['pic_180'];
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+		
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>TAP :: BETA</title>
+
+<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" ></link>
+<link rel="stylesheet" href="views/style_sheets/profile.css" type="text/css" ></link>
+
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+<!--[if lt IE 7]>
+        <script type="text/javascript" src="js/unitpngfix.js"></script>
+<![endif]-->
+
+<script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
+<script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
+<script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<style type="text/css" media="screen">
+#help-header { 
+	height: 41px; width: 553px;
+	margin-top: -1px;
+	color: white;
+	background: url(/images/cimages/main_bar_grey.gif); }
+
+#help-tab {
+	height: 31px; width: 194px;
+	background-image: url(/images/cimages/tab_grey.gif); }
+
+</style>
+
+
+</head>
+
+<body>
+	
+	<? include(NEW_HEADER); ?>
+	
+	<div id="main">
+		<div id="left-col">
+			<div id="help-tab">
+				<div class="tab-in">Topics</div>
+			</div>
+			<div class="tab-list">
+
+			</div>
+		</div>
+		
+		<div id="center-col">
+			<div id="profile">
+				<div id="help-header">
+					<h2 class="gr-title">Help</h2>
+				</div>
+
+				<div class="main-frame">
+					HELP!!!
+				</div>
+				<div class="main-frame-bottom"></div>
+			</div>
+		</div>
+
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Set your account info correctly.</h2>
+			<p>Your account information is not only required, but it's also useful for your friends and contacts to locate you on tap. So make sure to input correct information.</p>
+			<h2>Keep your password safe.</h2>
+			<p>Weak passwords could easily be sniffed using special tools, so make sure you use stronger passwords. Mix letters and numbers, and add a few symbols from your keyboard.</p>
+		</div>
+	</div>
+	
+	<div id="footer"></div>
+
+</body>
+</html>

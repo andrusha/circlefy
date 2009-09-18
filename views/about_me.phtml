@@ -1,0 +1,373 @@
+﻿<?php
+$res = $_t['edit_profile'];
+$fname = $res['fname'];
+$lname = $res['lname'];
+$uname = $_COOKIE['uname'];
+$email = $res['email'];
+$pic = $res['pic_180'];
+$stat = $_t['stats'];
+$message_count = $stat['message_count'];
+$response_count = $stat['response_count'];
+$group_count = $stat['group_count'];
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+		
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>TAP :: BETA</title>
+
+<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" ></link>
+<link rel="stylesheet" href="views/style_sheets/profile.css" type="text/css" ></link>
+
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+<!--[if lt IE 7]>
+        <script type="text/javascript" src="js/unitpngfix.js"></script>
+<![endif]-->
+
+<script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
+<script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
+<script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+
+Tap = window.Tap || {};
+
+Tap.Profile = {
+	
+	init: function(){
+		var self = this;
+		var body = $(document.body);
+		$('gr-create-success').set('tween', {duration: 3000}).fade('hide');
+		
+		var account_data = {
+			fname: body.getElement('input[name="fname"]').store('passed', true),
+			lname: body.getElement('input[name="lname"]').store('passed', true),
+			email: body.getElement('input[name="email"]').store('passed', true)
+			// state: body.getElement('select[name="state"]').set('passed', true),
+			// country: body.getElement('select[name="country"]').set('passed', true),
+			// zip: body.getElement('input[name="zip"]')
+		};
+		
+		account_data.fname.addEvent('blur', this.checkFname.toHandler(this));
+		account_data.lname.addEvent('blur', this.checkLname.toHandler(this));
+		account_data.email.addEvent('blur', this.checkEmail.toHandler(this));
+		// account_data.zip.addEvent('blur', this.checkZip.toHandler(this));
+		
+		var pass_data = {
+			current: body.getElement('input[name="current"]'),
+			newpass: body.getElement('input[name="newpass"]'),
+			repeat: body.getElement('input[name="newpass_repeat"]')
+		};
+		
+		pass_data.current.addEvent('blur', this.checkCurrent.toHandler(this));
+		pass_data.newpass.addEvent('blur', this.checkNew.toHandler(this));
+		pass_data.repeat.addEvent('blur', this.checkRepeat.toHandler(this));
+		
+		var tabs = body.getElements('.tab');
+		var panels = body.getElements('.panel');
+		tabs.addEvent('click', function(){
+			panels.filter('.selected').removeClass('selected');
+			tabs.filter('.on').removeClass('on');
+			this.addClass('on');
+			
+			if (this.get('id') === 'account') {
+				$('youraccount').addClass('selected');
+				self.data = account_data;
+			} else {
+				$('passchange').addClass('selected');
+				self.data = pass_data;
+			}
+		});
+		tabs[0].fireEvent('click');
+		
+		$('saveprofile').addEvent('click', this.onProfileSave.toHandler(this));
+		$('savepassword').addEvent('click', this.onPasswordSave.toHandler(this));
+		$('pic-uploader').addEvent('change', this.uploadPic.toHandler(this));
+		window.addEvent('uploaded', this.displayPic.bind(this));
+	},
+	
+	uploadPic: function(el){
+		if (!el.get('value').test(/\.(gif|png|bmp|jpeg|jpg)$/i)) {
+			return this.showError(el, 'You can only upload GIFs, PNGs, BMPs or JPEGs.');
+		}
+		this.removeError(el);
+		this.uploading = true;
+		el.getParent('form').submit();
+	},
+
+	displayPic: function(data){
+		this.uploading = false;
+		var pic = $('pic-uploader');
+		if (data.success) {
+			$('pic-preview').empty().adopt(new Element('img', {
+				'src': ['/user_pics/', data.path].join('')
+			}));
+			this.pic = data.path;
+			this.removeError(pic);
+		} else {
+			this.pic = null;
+			this.showError(pic, data.error);
+		}
+	},
+	
+	checkFname: function(el){
+		if (el.isEmpty() || !el.isAlpha()) {
+			return this.showError(el, 'Please enter a proper firstname');
+		}
+		return this.removeError(el);
+	},
+	
+	checkLname: function(el){
+		if (el.isEmpty() || !el.isAlpha()) {
+			return this.showError(el, 'Please enter a proper lastname');
+		}
+		return this.removeError(el);
+	},
+	
+	checkEmail: function(el){
+		if (el.isEmpty() || !el.isEmail()) {
+			return this.showError(el, 'Please enter a valid email address.');
+		}
+		return this.removeError(el);
+	},
+	
+	checkZip: function(el){
+		if (el.isEmpty() || !el.isNum()) {
+			return this.showError(el, 'Please enter a valid zip code.');
+		}
+		return this.removeError(el);
+	},
+	
+	checkCurrent: function(el){
+		if (el.isEmpty()) {
+			return this.showError(el, 'Please enter your current password.');
+		}
+		return this.removeError(el);
+	},
+	
+	checkNew: function(el){
+		if (el.isEmpty() || !el.ofLength(6, 40)) {
+			return this.showError(el, 'Passwords should be from 6 to 40 characters.');
+		} else if (!el.isAlphaNum()) {
+			return this.showError(el, 'You have invalid characters in your password.');
+		}
+		return this.removeError(el);
+	},
+	
+	checkRepeat: function(el){
+		if (el.isEmpty() || el.get('value') !== this.data.newpass.get('value')) {
+			return this.showError(el, 'Please repeat your new password.')
+		}
+		return this.removeError(el);
+	},
+	
+	showError: function(el, msg){
+		var parent = el.getParent('h2');
+		el.addClass('input-err').store('passed', false);
+		parent.getElement('div.error-msg').set({
+			text: msg,
+			style: 'display: inline;'
+		});
+	},
+
+	removeError: function(el){
+		var parent = el.getParent('h2');
+		el.removeClass('input-err').store('passed', true);
+		parent.getElement('div.error-msg').set({
+			text: '',
+			style: 'display: none;'
+		});
+	},
+
+	noErrors: function(){
+		return !$H(this.data).getValues().map(function(item){
+			return !!item.retrieve('passed');
+		}).contains(false);
+	},
+	
+	onProfileSave: function(_, e){
+		var data = this.data;
+		if (this.uploading) {
+			arguments.callee.delay(3000, this, [_, e]);
+			return null;
+		}
+		var send = {
+			fname: data.fname.get('value'),
+			lname: data.lname.get('value'),
+			email: data.email.get('value')
+		};
+		if (this.pic) $extend(send, { old_name: this.pic });
+		this.onSave(send, 'edit_profile', e);
+	},
+	
+	onPasswordSave: function(_, e){
+		var data = this.data;
+		var send = {
+			old_pass: data.current.get('value'),
+			new_pass: data.newpass.get('value')
+		};
+		this.onSave(send, 'password_profile', e, function(){
+			$$(data.current, data.newpass, data.newpass_repeat).set('value', '');
+		});
+	},
+	
+	onSave: function(send, url, e, callback){
+		var self = this;
+		var data = this.data;
+		if (this.noErrors()) {
+			var req = new Request({
+				'url': 'AJAX/' + url + '.php',
+				'async': false,
+				'data': send,
+				onSuccess: function(){
+					var response = JSON.decode(this.response.text);
+					if (response && response.success) {
+						$('gr-create-success').set('text', 'Your changes have been saved!').fade('show').highlight().fade('out');
+						if ($type(callback) == 'function') callback.apply(self);
+					} else {
+						$('gr-create-success').set('text', 'There was an error with your request, please try again.').fade('show').highlight('#fdebeb').fade('out');
+					}
+				}
+			});
+			req.send();
+		} else {
+			$$($H(this.data).getValues().filter(function(item){
+				return !item.retrieve('passed');
+			})).fireEvent('blur', [e]);
+		}
+	}
+};
+
+window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
+</script>
+</head>
+
+<body>
+	
+	<? include(NEW_HEADER); ?>
+	
+	<div id="main">
+		<div id="left-col">
+			<div id="profile-tab">
+				<div class="tab-in">Stats</div>
+			</div>
+			<div class="tab-list">
+				<h2><span><?= $message_count ?></span> taps from you.</h2>
+				<h2><span><?= $response_count ?></span> responses received.</h2>
+				<h2><span><?= $group_count ?></span> groups joined.</h2>
+			</div>
+		</div>
+		
+		<div id="center-col">
+			<div id="profile">
+				<div id="profile-header">
+					<h2 class="gr-title">My Profile</h2>
+					<span class="tab on" id="account">Your Account</span>
+					<span class="tab" id="pass">Password</span>
+				</div>
+
+				<div class="main-frame">
+					<div id="youraccount" class="panel">
+						<h1>Account</h1><hr class="hr2"/>
+						<h2 class="in-title">
+							Username: <input type="text" name="uname" disabled="disabled" value="<?= $uname ?>" />
+							<div class="error-msg"></div>
+						</h2>
+						<h2 class="in-title">
+							Email: <input type="text" name="email" value="<?= $email ?>" />
+							<div class="error-msg"></div>
+						</h2>
+						<h2 class="in-title">
+							Firstname: <input type="text" name="fname" value="<?= $fname ?>" />
+							<div class="error-msg"></div>
+						</h2>
+						<h2 class="in-title">
+							Lastname: <input type="text" name="lname" value="<?= $lname ?>" />
+							<div class="error-msg"></div>
+						</h2>
+						<br /><br />
+						<h1>Location </h1><hr class="hr2"/>
+						<h2 class="in-title">State &amp; Zip: <input type="text" name="zip" value="" id="input-zip"/>
+							<select name="state" id="select-state">
+								<option value="0" selected>select state</option>
+								<option value="1">one</option>
+								<option value="2">two</option>
+								<option value="3">three</option>
+							</select></h2>
+						<h2 class="in-title">Country:
+							<select name="country">
+								<option value="1" selected>United States</option>
+								<option value="2">two</option>
+								<option value="3">three</option>
+							</select>
+						</h2>
+						<h1>Picture </h1><hr class="hr2"/>
+						<form enctype="multipart/form-data" action="/AJAX/profile_picture_upload.php" method="post" target="picture">
+							<h2 class="in-title">
+								<div id="pic-preview" style="display:inline; float:left; margin-right:20px">
+									<img src="/user_pics/<?= $pic ?>" />
+								</div>
+								Change: <input id="pic-uploader" type="file" name="you-pic" value="" />
+								<div class="error-msg"></div>
+							</h2>
+							<iframe
+								name="picture"
+								style="display:none;">
+							</iframe>
+						</form>
+						
+						<p id="profile-btns"><a href="#" id="saveprofile" class="save-btn"></a></p><br />
+						
+					</div>
+					<div id="passchange" class="panel">
+						<h1>Change your password</h1><hr class="hr1"/>
+						<h2 class="in-title">
+							Current password: <input type="password" name="current" maxlength="40" value="" />
+							<div class="error-msg"></div>
+						</h2>
+						<h2 class="in-title">
+							New password: <input type="password" name="newpass" maxlength="40" value="" />
+							<div class="error-msg"></div>
+						</h2>
+						<h2 class="in-title">
+							Repeat password: <input type="password" name="newpass_repeat" maxlength="40" value="" />
+							<div class="error-msg"></div>
+						</h2>
+												
+						<p id="profile-btns"><a href="#" id="savepassword" class="save-btn"></a></p><br />
+						
+					</div>
+					<p id="gr-create-success" class="input-descr">Hooray</p>
+					<div style="clear:both"></div>
+				</div>
+				<div class="main-frame-bottom"></div>
+			</div>
+		</div>
+
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Set your account info correctly.</h2>
+			<p>Your account information is not only required, but it's also useful for your friends and contacts to locate you on tap. So make sure to input correct information.</p>
+			<h2>Keep your password safe.</h2>
+			<p>Weak passwords could easily be sniffed using special tools, so make sure you use stronger passwords. Mix letters and numbers, and add a few symbols from your keyboard.</p>
+			
+		</div>
+	</div>
+	
+	<div id="footer"></div>
+
+</body>
+</html>
