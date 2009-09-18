@@ -40,6 +40,7 @@ class join_functions{
                 $last_id = $last_id['last_id'];
 		if($last_id > 0)
 			return json_encode(array('good' => 1));
+		return json_encode(array('good' => 0));
 	}
 
 }

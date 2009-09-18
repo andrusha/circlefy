@@ -2,15 +2,29 @@
 /* CALLS:
 	group_add.js
 */
+
+/* PARAMS 
+
+group_check = init flag to initiate the script
+type = type of check you're doing ( name,symbol )
+gname = name of group ( only applicable if `type == name` )
+symbol = symbol of group ( only applicable if `type == symbol` )
+
+*/
 session_start();
 require('../config.php');
 
 $check = $_POST['group_check'];
+$type = $_POST['post'];
 $gname = $_POST['gname'];
+$symbol = $_POST['symbol'];
 
 if($check){
 	$instance = new group_functions();
-	$res = $instance->check_group($gname);
+		if($type == 'name')
+		$res = $instance->check_name($gname);
+		if($type == 'symbol')
+		$res = $instance->check_symbol($symbol);
 	echo $res;
 }
 
@@ -24,45 +38,58 @@ class group_functions{
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
-        function check_group($gname){
 
-  	        $uid = $_SESSION["uid"];
-                $uname = $_SESSION["uname"];
+	function check_symbol($symbol){
+                $symbol = $this->mysqli->real_escape_string($symbol);
+		$dupe_symbol_query = "SELECT gname,gid FROM groups WHERE symbol='{$symbol}' LIMIT 1";
+		$dupe_res = $this->mysqli->query($dupe_symbol_query);
+		if($dupe_res->num_rows > 0){
+			$array_result = array();
+			$dupe_res = $dupe_res->fetch_assoc();
+			$gid = $dupe_res['gid'];
+			$gname = $dupe_res['gname'];
+			$array_result[] = array(
+				'gid' => $gid,
+				'gname' => $gname
+			);
+			$results = json_encode(array("dupe" => True,"results" => $array_result));
+		} else { 
+			$results = json_encode(array("dupe" => False));
+		}
+		return $results;
+	}	
 
-                $uid = $this->mysqli->real_escape_string($uid);
-                $fid = $this->mysqli->real_escape_string($fid);
+        function check_name($gname){
+                $gname = $this->mysqli->real_escape_string($gname);
 
 		$group_query = "SELECT gid,gname FROM groups WHERE gname LIKE '%{$gname}%' LIMIT 2;";
                 $group_results = $this->mysqli->query($group_query);
 
+		//If group results loosely
 		if($group_results->num_rows > 0){
-			$dup_query = "SELECT gname FROM groups WHERE gname = '{$gname}' LIMIT 1;";
-			$dup_res = $this->mysqli->query($dup_query);
-			if($dup_res->num_rows > 0){
-				$results = '<li id="duplicate_group" class="rel_add_group">Sorry, there is already a group with this name</li>';
-				$results = json_encode(array('dup' => "$results","dup_init" => "true"));
-				return $results;
+			$dupe_query = "SELECT gname FROM groups WHERE gname = '{$gname}' LIMIT 1;";
+			$dupe_res = $this->mysqli->query($dupe_query);
+			//If the exact name matches, return the exact name
+			if($dupe_res->num_rows > 0){
+				$results = 'This group name has been taken';
+			$results = json_encode(array('dupe' => True, 'results' => $results));
+			return $results;
 			}
+			//else show similar groups
 	
 			$array_result = array();
 			while($res = $group_results->fetch_assoc()){
-				$html = '';
-				$ul = '';
-				$counter++;
-				if($counter == 1){
-				$ul = <<<EOF
-				<span class="group_explinations">We found some similar groups you might want to join:</span>
-EOF;
-				}
+				$gname = $res['gname'];
+				$gid = $res['gid'];
 
-				$html .= <<<EOF
-				{$ul}<li class="rel_add_group">The '{$res['gname']}' group <a href=/groups/{$res['gid']}>click here</a> to check it out</li>
-EOF;
-				$array_result[] = array($html);
+				$array_result[] = array(
+					'gid' => $gid,
+					'gname' => $gname
+				);
 			}
-				$results = json_encode($array_result);
+			$results = json_encode(array('dupe' => False, 'results' => $array_result));
 		} else {
-			$results = json_encode(array('no_results' => 'null'));
+			$results = json_encode(array('dupe' => False, 'results' => null));
 		}
 		return $results;
 	}
