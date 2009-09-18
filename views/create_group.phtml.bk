@@ -1,0 +1,621 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>TAP :: BETA</title>
+
+<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" ></link>
+<link rel="stylesheet" href="views/style_sheets/css_new_group.css" type="text/css" ></link>
+
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+<!--[if lt IE 7]>
+        <script type="text/javascript" src="js/unitpngfix.js"></script>
+<![endif]-->
+
+<script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
+<script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
+<script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+
+/* Main Tap Object */
+Tap = window.Tap || {};
+
+Validator.addType('name', new RegExp("^[A-Za-z0-9:,\.\\\/'\\s]+$"));
+
+Tap.CreateGroups = {
+
+	init: function(){
+		var self = this;
+		var main = $('center-col');
+		this.data = {
+			name: main.getElement('input[name="gr-name"]'),
+			symbol: main.getElement('input[name="gr-symbol"]'),
+			focus: main.getElement('input[name="gr-focus"]'),
+			desc: main.getElement('textarea[name="gr-desc"]')
+			// contacts: main.getElement('input[name="gr-contacts"]')
+		};
+
+		var locMore = $('loc-more').slide('hide');
+		$$('input[name="gr-loc"]').addEvent('click', function(){
+			if (!this.match('[checked]')) return null;
+			if (this.get('value') === 'yes') {
+				locMore.slide('in');
+				self.data = $extend(self.data, {
+					country: main.getElement('select[name="gr-country"]').store('passed', true),
+					city: main.getElement('input[name="gr-city"]')
+				});
+				self.data.city.addEvent('blur', self.checkCity.toHandler(self));
+			} else {
+				locMore.slide('out');
+				delete self.data.country;
+				self.data.city.removeEvents('blur');
+				delete self.data.city;
+			}
+		});
+
+		this.data.name.addEvent('blur', this.checkName.toHandler(this));
+		this.data.symbol.addEvent('blur', this.checkSymbol.toHandler(this));
+		this.data.focus.addEvent('blur', this.checkFocus.toHandler(this));
+		this.data.desc.addEvent('blur', this.checkDescription.toHandler(this));
+
+		$('gr-create').addEvent('click', this.onSubmit.toHandler(this));
+		$('gr-pic-uploader').addEvent('change', this.uploadPic.toHandler(this));
+		window.addEvent('uploaded', this.displayPic.bind(this));
+	},
+
+	uploadPic: function(el){
+		if (!el.get('value').test(/\.(gif|png|bmp|jpeg|jpg)$/i)) {
+			return this.showError(el, 'You can only upload GIFs, PNGs, BMPs or JPEGs.');
+		}
+		this.removeError(el);
+		el.getParent('form').submit();
+	},
+
+	displayPic: function(data){
+		var pic = $('gr-pic-uploader');
+		if (data.success) {
+			$('pic-preview').empty().adopt(new Element('img', {
+				'src': ['/group_pics/', data.path].join('')
+			}));
+			this.pic = data.path;
+			this.removeError(pic);
+		} else {
+			this.pic = null;
+			this.showError(pic, data.error);
+		}
+	},
+
+	checkName: function(el){
+		var self = this;
+		if (el.isEmpty() || !el.ofLength(2, 128)) {
+			return this.showError(el, 'Name must be 2 to 128 characters.');
+		} else if (!el.isName()) {
+			return this.showError(el, 'Name must only contain letters and numbers');
+		} else {
+			new Request({
+				url: '/AJAX/group_check.php',
+				data: {
+					group_check: true,
+					post: 'name',
+					gname: el.get('value')
+				},
+				onSuccess: function(){
+					var response = JSON.decode(this.response.text);
+					var more = el.getParent('h2').getNext('p.input-descr');
+					if (!more.retrieve('orig')) more.store('orig', more.get('text'));
+					if (response.dupe) {
+						self.showError(el, 'This name is already taken');
+						more.set('html', [
+							'Join the group for <a href="/groups?search=',
+							el.get('value'),
+							'">',
+							el.get('value'),
+							'</a>.'
+						].join(''));
+						return null;
+					} else {
+						self.removeError(el);
+					}
+					if ($type(response.results) == 'array') {
+						more.set('html',  [
+							'View groups that are related to <a href="/groups?search=',
+							el.get('value'),
+							'">',
+							el.get('value'),
+							'</a>.'
+						].join(''));
+					} else {
+						more.set('html', more.retrieve('orig'));
+					}
+				}
+			}).send();
+		}
+		return this.removeError(el);
+	},
+
+	checkSymbol: function(el){
+		var self = this;
+		if (el.isEmpty() || !el.ofLength(2, 64)) {
+			return this.showError(el, 'Symbol must be 2 to 64 characters.');
+		} else if (!el.isAlphaNumStrict()) {
+			return this.showError(el, 'Symbol must only contain letters and numbers.');
+		} else {
+			new Request({
+				url: '/AJAX/group_check.php',
+				data: {
+					group_check: true,
+					post: 'symbol',
+					symbol: el.get('value')
+				},
+				onSuccess: function(){
+					var response = JSON.decode(this.response.text);
+					var more = el.getParent('h2').getNext('p.input-descr');
+					if (!more.retrieve('orig')) more.store('orig', more.get('text'));
+					if (response.dupe) {
+						self.showError(el, 'This symbol is already taken');
+						more.set('html', [
+							'Join the group for <a href="/groups?search=',
+							response.results[0].gname,
+							'">',
+							response.results[0].gname,
+							'</a>.'
+						].join(''));
+						return null;
+					} else {
+						self.removeError(el);
+						more.set('html', more.retrieve('orig'));
+					}
+				}
+			}).send();
+		}
+		return this.removeError(el);
+	},
+
+	checkFocus: function(el){
+		var self = this;
+		var focuses = el.get('value').trim().rtrim(',').split(',');
+		if (focuses.length < 3 || focuses.map(function(f){ return f.isEmpty(); }).contains(true)) {
+			return this.showError(el, 'Please enter at least 3 focuses.');
+		}
+		return this.removeError(el);
+	},
+
+	checkDescription: function(el){
+		var self = this;
+		if (el.isEmpty() || !el.ofLength(20, 240)) {
+			return this.showError(el, 'Description must be from 20 to 240 characters.');
+		}
+		return this.removeError(el);
+	},
+
+	checkCity: function(el){
+		var self = this;
+		if (el.isEmpty()) {
+			return this.showError(el, 'Please enter a city.');
+		}
+		return this.removeError(el);
+	},
+
+	showError: function(el, msg){
+		var parent = el.getParent('h2');
+		el.addClass('input-err').store('passed', false);
+		parent.getElement('span.error-msg').set({
+			text: msg,
+			style: 'display: inline;'
+		});
+	},
+
+	removeError: function(el){
+		var parent = el.getParent('h2');
+		el.removeClass('input-err').store('passed', true);
+		parent.getElement('span.error-msg').set({
+			text: '',
+			style: 'display: none;'
+		});
+	},
+
+	noErrors: function(){
+		return !$H(this.data).getValues().map(function(item){
+			return !!item.retrieve('passed');
+		}).contains(false);
+	},
+
+	onSubmit: function(_, e){
+		var data = this.data;
+		if (this.noErrors() && !!this.pic) {
+			var req = new Request({
+				'url': '/AJAX/group_create.php',
+				'async': false,
+				'data': {
+					gname: data.name.get('value'),
+					symbol: data.symbol.get('value'),
+					focus: data.focus.get('value').trim().rtrim(','),
+					descr: data.desc.get('value'),
+					old_name: this.pic
+				},
+				onSuccess: function(){
+					var response = JSON.decode(this.response.text);
+					if (response.success) {
+						$('gr-create-success').set('text', 'Group successfully created!').highlight();
+						(function(){window.location = '/groups';}).delay(3000);
+					} else {
+						$('gr-create-success').set('text', 'There was an error with your request, please try again.').highlight();
+					}
+				}
+			});
+			if (data.city) $extend(req.options.data, {
+				country: data.country.get('value'),
+				city: data.city.get('value')
+			});
+			req.send();
+		} else {
+			$$($H(this.data).getValues().filter(function(item){
+				return !item.retrieve('passed');
+			})).fireEvent('blur', [e]);
+			if (!this.pic) this.showError($('gr-pic-uploader'), 'Please select a group picture');
+		}
+	}
+
+};
+
+window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
+
+</script>
+
+</head>
+
+<body>
+
+	<? include(NEW_HEADER); ?>
+
+	<div id="main">
+		<div id="left-col">
+
+			<div id="groups-tab">
+				<div class="tab-in">Group Suggestions</div>
+			</div>
+				<div class="tab-list">
+					<ul>
+						<li class="list-item"><a href="" class="item-name">John Wayne <span class="item-nr">(9)</span></a> <a href="" class="item-filters">filters</a> <a href="" class="item-add">add +</a></li>
+						<li class="list-item"><a href="" class="item-name">Marry Jane <span class="item-nr">(13)</span></a> <a href="" class="item-filters">filters</a> <a href="" class="item-add">add +</a></li>
+					</ul>
+					<p class="more-btn1"><a href="">show more &raquo;</a></p>
+					<div style="clear:both"></div>
+				</div>
+		</div>
+
+		<div id="center-col">
+			<div id="gr-new">
+				<div id="gr-header">
+					<h2 class="gr-title">Create A Group..</h2>
+					<span class="gr-filters" style="padding-top: 5px"><a href="/groups" id="gr-filter1">go back to all groups &raquo;</a></span>
+				</div>
+
+				<div class="main-frame">
+					<h2 class="in-title">
+						Name: <input type="text" name="gr-name" maxlength="128" />
+						<span class="error-msg"></span>
+					</h2>
+					<p class="input-descr">NAME is whatever you want the group to be called</p>
+					<h2 class="in-title">
+						Symbol: <input type="text" name="gr-symbol" maxlength="64" />
+						<span class="error-msg"></span>
+					</h2>
+					<p class="input-descr">SYMBOL will be used to identify your group</p>
+					<h2 class="in-title">
+						Focus: <input type="text" name="gr-focus" value="" />
+						<span class="error-msg"></span>
+					</h2>
+					<p class="input-descr">FOCUS should list the areas of interest of the group</p>
+					<h2 class="in-title">
+						Description: <textarea name="gr-desc" rows="3" cols="30" maxlength="240"></textarea>
+						<span class="error-msg"></span>
+					</h2>
+					<p class="input-descr"> </p>
+					<h2 class="in-title-left">Does the group have a specific location? <input class="radio-input" type="radio" name="gr-loc" value="yes"/> yes <input class="radio-input" type="radio" name="gr-loc" value="no" checked /> no</h2>
+					<div id="loc-more">
+						<h2 class="in-title-left">Country:
+							<select name="gr-country">
+								<option value="United States">United States</option>
+								<option value="United Kingdom">United Kingdom</option>
+								<option value="Afghanistan">Afghanistan</option>
+								<option value="Albania">Albania</option>
+								<option value="Algeria">Algeria</option>
+								<option value="American Samoa">American Samoa</option>
+								<option value="Andorra">Andorra</option>
+								<option value="Angola">Angola</option>
+								<option value="Anguilla">Anguilla</option>
+								<option value="Antarctica">Antarctica</option>
+								<option value="Antigua and Barbuda">Antigua and Barbuda</option>
+								<option value="Argentina">Argentina</option>
+								<option value="Armenia">Armenia</option>
+								<option value="Aruba">Aruba</option>
+								<option value="Australia">Australia</option>
+								<option value="Austria">Austria</option>
+								<option value="Azerbaijan">Azerbaijan</option>
+								<option value="Bahamas">Bahamas</option>
+								<option value="Bahrain">Bahrain</option>
+								<option value="Bangladesh">Bangladesh</option>
+								<option value="Barbados">Barbados</option>
+								<option value="Belarus">Belarus</option>
+								<option value="Belgium">Belgium</option>
+								<option value="Belize">Belize</option>
+								<option value="Benin">Benin</option>
+								<option value="Bermuda">Bermuda</option>
+								<option value="Bhutan">Bhutan</option>
+								<option value="Bolivia">Bolivia</option>
+								<option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+								<option value="Botswana">Botswana</option>
+								<option value="Bouvet Island">Bouvet Island</option>
+								<option value="Brazil">Brazil</option>
+								<option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+								<option value="Brunei Darussalam">Brunei Darussalam</option>
+								<option value="Bulgaria">Bulgaria</option>
+								<option value="Burkina Faso">Burkina Faso</option>
+								<option value="Burundi">Burundi</option>
+								<option value="Cambodia">Cambodia</option>
+								<option value="Cameroon">Cameroon</option>
+								<option value="Canada">Canada</option>
+								<option value="Cape Verde">Cape Verde</option>
+								<option value="Cayman Islands">Cayman Islands</option>
+								<option value="Central African Republic">Central African Republic</option>
+								<option value="Chad">Chad</option>
+								<option value="Chile">Chile</option>
+								<option value="China">China</option>
+								<option value="Christmas Island">Christmas Island</option>
+								<option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+								<option value="Colombia">Colombia</option>
+								<option value="Comoros">Comoros</option>
+								<option value="Congo">Congo</option>
+								<option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+								<option value="Cook Islands">Cook Islands</option>
+								<option value="Costa Rica">Costa Rica</option>
+								<option value="Cote D'ivoire">Cote D'ivoire</option>
+								<option value="Croatia">Croatia</option>
+								<option value="Cuba">Cuba</option>
+								<option value="Cyprus">Cyprus</option>
+								<option value="Czech Republic">Czech Republic</option>
+								<option value="Denmark">Denmark</option>
+								<option value="Djibouti">Djibouti</option>
+								<option value="Dominica">Dominica</option>
+								<option value="Dominican Republic">Dominican Republic</option>
+								<option value="Ecuador">Ecuador</option>
+								<option value="Egypt">Egypt</option>
+								<option value="El Salvador">El Salvador</option>
+								<option value="Equatorial Guinea">Equatorial Guinea</option>
+								<option value="Eritrea">Eritrea</option>
+								<option value="Estonia">Estonia</option>
+								<option value="Ethiopia">Ethiopia</option>
+								<option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+								<option value="Faroe Islands">Faroe Islands</option>
+								<option value="Fiji">Fiji</option>
+								<option value="Finland">Finland</option>
+								<option value="France">France</option>
+								<option value="French Guiana">French Guiana</option>
+								<option value="French Polynesia">French Polynesia</option>
+								<option value="French Southern Territories">French Southern Territories</option>
+								<option value="Gabon">Gabon</option>
+								<option value="Gambia">Gambia</option>
+								<option value="Georgia">Georgia</option>
+								<option value="Germany">Germany</option>
+								<option value="Ghana">Ghana</option>
+								<option value="Gibraltar">Gibraltar</option>
+								<option value="Greece">Greece</option>
+								<option value="Greenland">Greenland</option>
+								<option value="Grenada">Grenada</option>
+								<option value="Guadeloupe">Guadeloupe</option>
+								<option value="Guam">Guam</option>
+								<option value="Guatemala">Guatemala</option>
+								<option value="Guinea">Guinea</option>
+								<option value="Guinea-bissau">Guinea-bissau</option>
+								<option value="Guyana">Guyana</option>
+								<option value="Haiti">Haiti</option>
+								<option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+								<option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+								<option value="Honduras">Honduras</option>
+								<option value="Hong Kong">Hong Kong</option>
+								<option value="Hungary">Hungary</option>
+								<option value="Iceland">Iceland</option>
+								<option value="India">India</option>
+								<option value="Indonesia">Indonesia</option>
+								<option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+								<option value="Iraq">Iraq</option>
+								<option value="Ireland">Ireland</option>
+								<option value="Israel">Israel</option>
+								<option value="Italy">Italy</option>
+								<option value="Jamaica">Jamaica</option>
+								<option value="Japan">Japan</option>
+								<option value="Jordan">Jordan</option>
+								<option value="Kazakhstan">Kazakhstan</option>
+								<option value="Kenya">Kenya</option>
+								<option value="Kiribati">Kiribati</option>
+								<option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+								<option value="Korea, Republic of">Korea, Republic of</option>
+								<option value="Kuwait">Kuwait</option>
+								<option value="Kyrgyzstan">Kyrgyzstan</option>
+								<option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+								<option value="Latvia">Latvia</option>
+								<option value="Lebanon">Lebanon</option>
+								<option value="Lesotho">Lesotho</option>
+								<option value="Liberia">Liberia</option>
+								<option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+								<option value="Liechtenstein">Liechtenstein</option>
+								<option value="Lithuania">Lithuania</option>
+								<option value="Luxembourg">Luxembourg</option>
+								<option value="Macao">Macao</option>
+								<option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+								<option value="Madagascar">Madagascar</option>
+								<option value="Malawi">Malawi</option>
+								<option value="Malaysia">Malaysia</option>
+								<option value="Maldives">Maldives</option>
+								<option value="Mali">Mali</option>
+								<option value="Malta">Malta</option>
+								<option value="Marshall Islands">Marshall Islands</option>
+								<option value="Martinique">Martinique</option>
+								<option value="Mauritania">Mauritania</option>
+								<option value="Mauritius">Mauritius</option>
+								<option value="Mayotte">Mayotte</option>
+								<option value="Mexico">Mexico</option>
+								<option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+								<option value="Moldova, Republic of">Moldova, Republic of</option>
+								<option value="Monaco">Monaco</option>
+								<option value="Mongolia">Mongolia</option>
+								<option value="Montserrat">Montserrat</option>
+								<option value="Morocco">Morocco</option>
+								<option value="Mozambique">Mozambique</option>
+								<option value="Myanmar">Myanmar</option>
+								<option value="Namibia">Namibia</option>
+								<option value="Nauru">Nauru</option>
+								<option value="Nepal">Nepal</option>
+								<option value="Netherlands">Netherlands</option>
+								<option value="Netherlands Antilles">Netherlands Antilles</option>
+								<option value="New Caledonia">New Caledonia</option>
+								<option value="New Zealand">New Zealand</option>
+								<option value="Nicaragua">Nicaragua</option>
+								<option value="Niger">Niger</option>
+								<option value="Nigeria">Nigeria</option>
+								<option value="Niue">Niue</option>
+								<option value="Norfolk Island">Norfolk Island</option>
+								<option value="Northern Mariana Islands">Northern Mariana Islands</option>
+								<option value="Norway">Norway</option>
+								<option value="Oman">Oman</option>
+								<option value="Pakistan">Pakistan</option>
+								<option value="Palau">Palau</option>
+								<option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+								<option value="Panama">Panama</option>
+								<option value="Papua New Guinea">Papua New Guinea</option>
+								<option value="Paraguay">Paraguay</option>
+								<option value="Peru">Peru</option>
+								<option value="Philippines">Philippines</option>
+								<option value="Pitcairn">Pitcairn</option>
+								<option value="Poland">Poland</option>
+								<option value="Portugal">Portugal</option>
+								<option value="Puerto Rico">Puerto Rico</option>
+								<option value="Qatar">Qatar</option>
+								<option value="Reunion">Reunion</option>
+								<option value="Romania">Romania</option>
+								<option value="Russian Federation">Russian Federation</option>
+								<option value="Rwanda">Rwanda</option>
+								<option value="Saint Helena">Saint Helena</option>
+								<option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+								<option value="Saint Lucia">Saint Lucia</option>
+								<option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+								<option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+								<option value="Samoa">Samoa</option>
+								<option value="San Marino">San Marino</option>
+								<option value="Sao Tome and Principe">Sao Tome and Principe</option>
+								<option value="Saudi Arabia">Saudi Arabia</option>
+								<option value="Senegal">Senegal</option>
+								<option value="Serbia and Montenegro">Serbia and Montenegro</option>
+								<option value="Seychelles">Seychelles</option>
+								<option value="Sierra Leone">Sierra Leone</option>
+								<option value="Singapore">Singapore</option>
+								<option value="Slovakia">Slovakia</option>
+								<option value="Slovenia">Slovenia</option>
+								<option value="Solomon Islands">Solomon Islands</option>
+								<option value="Somalia">Somalia</option>
+								<option value="South Africa">South Africa</option>
+								<option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+								<option value="Spain">Spain</option>
+								<option value="Sri Lanka">Sri Lanka</option>
+								<option value="Sudan">Sudan</option>
+								<option value="Suriname">Suriname</option>
+								<option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+								<option value="Swaziland">Swaziland</option>
+								<option value="Sweden">Sweden</option>
+								<option value="Switzerland">Switzerland</option>
+								<option value="Syrian Arab Republic">Syrian Arab Republic</option>
+								<option value="Taiwan, Province of China">Taiwan, Province of China</option>
+								<option value="Tajikistan">Tajikistan</option>
+								<option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+								<option value="Thailand">Thailand</option>
+								<option value="Timor-leste">Timor-leste</option>
+								<option value="Togo">Togo</option>
+								<option value="Tokelau">Tokelau</option>
+								<option value="Tonga">Tonga</option>
+								<option value="Trinidad and Tobago">Trinidad and Tobago</option>
+								<option value="Tunisia">Tunisia</option>
+								<option value="Turkey">Turkey</option>
+								<option value="Turkmenistan">Turkmenistan</option>
+								<option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+								<option value="Tuvalu">Tuvalu</option>
+								<option value="Uganda">Uganda</option>
+								<option value="Ukraine">Ukraine</option>
+								<option value="United Arab Emirates">United Arab Emirates</option>
+								<option value="United Kingdom">United Kingdom</option>
+								<option value="United States">United States</option>
+								<option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+								<option value="Uruguay">Uruguay</option>
+								<option value="Uzbekistan">Uzbekistan</option>
+								<option value="Vanuatu">Vanuatu</option>
+								<option value="Venezuela">Venezuela</option>
+								<option value="Viet Nam">Viet Nam</option>
+								<option value="Virgin Islands, British">Virgin Islands, British</option>
+								<option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+								<option value="Wallis and Futuna">Wallis and Futuna</option>
+								<option value="Western Sahara">Western Sahara</option>
+								<option value="Yemen">Yemen</option>
+								<option value="Zambia">Zambia</option>
+								<option value="Zimbabwe">Zimbabwe</option>
+							</select>
+							<br>
+							City: <input class="input-short" type="text" name="gr-city" value="" />
+							<span class="error-msg"></span>
+						</h2>
+					</div>
+					<br />
+					<br />
+
+					<form enctype="multipart/form-data" action="/AJAX/group_picture_upload.php" method="post" target="picture">
+						<h2 class="in-title-left">
+							Group picture: <input class="file-input" type="file" id="gr-pic-uploader" name="gr-pic" value="" />
+							<span class="error-msg"></span>
+						</h2>
+						<div id="pic-preview">
+						</div>
+						<iframe
+							name="picture"
+							style="display:none;">
+						</iframe>
+					</form>
+					<div class="hr-shady"></div>
+					<h2 class="in-title-left">Invite people to your new group:</h2>
+					<h2 class="in-title"><input type="text" name="gr-contacts" value="" /></h2>
+					<p class="input-descr">use your contacts, groups or e-mail addresses<br />(confirm e-mails with Enter)</p><br />
+					<p id="gr-new-btns"><a href="" id="gr-create"></a><a href="/groups" id="gr-cancel" ></a></p><br />
+					<p id="gr-create-success" class="input-descr" style="clear: both; width: 400px; margin:auto; margin-top:30px; text-align: center;"></p>
+				</div>
+				<div class="main-frame-bottom"></div>
+			</div>
+		</div>
+
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Choose a meaningful name and symbol.</h2>
+			<p>It will be easier for new users to find your group if you choose a memorable name. Avoid using names that are complicated and hard to find. The same goes for symbols, which will be used to address taps to your group.</p>
+			<h2>Search before you create!</h2>
+			<p>Before creating new groups, do a quick search and see if there are already existing groups that are similar to the one you're gonna create and join them instead. It'll be easier for people to address taps if everyone is part of the same big group. If there are groups with similar names or symbols as the group you're creating, a link will be displayed so you can join them.</p>
+			<h2>Keep an eye on your bacon.</h2>
+			<p>If you plan on frying your bacon, make sure to keep a steady eye on your pan. Bacon could burn in an instant, and older bacon cooks faster than new bacon. So avoid multitasking when cooking bacon. Remember, the key to porcine deliciousness is proper cooking.</p>
+			<h2>Focuses help.</h2>
+			<p>Make sure you set proper focuses for your group. This helps in categorizing your group and enables new users to find your group among similarly named groups easily.</p>
+		</div>
+	</div>
+
+	<div id="footer"></div>
+
+</body>
+</html>
