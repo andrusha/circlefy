@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>TAP :: BETA</title>
+
+<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" >
+
+<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+
+<!--[if lt IE 7]>
+        <script type="text/javascript" src="js/unitpngfix.js"></script>
+<![endif]-->
+
+<script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
+<script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
+<script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init("05a951428ed5199e27d52356aae83a22");} catch(err) { alert(err) } </script>
+<script type="text/javascript" charset="utf-8">
+
+// Searching
+var searchkey = <?= (!empty($_GET['search'])) ? json_encode($_GET['search']) : 'null' ?>;
+
+/* Main Tap Object */
+Tap = window.Tap || {};
+
+Tap.Groups = {
+
+	init: function(){
+		var self = this;
+		var body = $(document.body);
+
+		/* Set delegated listeners... */
+		this.list = $('groups-list');
+		this.list.store('groups', this.list.get('html'));
+		this.list.getElements('.more-invite').slide('hide');
+		this.list.getElements('.description').slide('hide');
+		this.list.addEvents({
+			'click:relay(a.more-btn3)': this.onMore.toHandler(this),
+			'click:relay(a.gr-invite-btn)': this.onInvite.toHandler(this),
+			'click:relay(a.cancel-invite)': this.onInviteCancel.toHandler(this),
+			'click:relay(a.send-invite)': this.onInviteSend.toHandler(this),
+			'click:relay(a.send-join)': this.onJoinSend.toHandler(this),
+			'click:relay(a.gr-join-btn)': this.onJoin.toHandler(this)
+		});
+
+		body.addEvents({
+			'click:relay(a.remove-filter)': function(e){
+				var filter = body.getElement('input[name="keywords"]');
+				filter.set('value', '').fireEvent('blur', e);
+			},
+			'click:relay(a.remove-search)': function(e){
+				e.stop();
+				$('search-noresults').inject('listing-templates');
+				self.list.set('html', self.list.retrieve('groups'));
+				self.list.getElements('.more-invite').slide('hide');
+				self.list.getElements('.description').slide('hide');
+				$('gr-search').setStyle('display', 'none');
+				$('gr-header').setStyle('display', 'block');
+			},
+			'click:relay(a.set-filter)': function(e){
+				self.onFilter(body.getElement('input[name="keywords"]'));
+			}
+		});
+		body.getElement('input[name="keywords"]').addEvents({
+			// 'blur': this.onFilter.toHandler(this),
+			'keypress': function(e){
+				if (e.key == 'enter') {
+					self.onFilter(this);
+				}
+			}
+		});
+
+		new OverText('gr-filter', { positionOptions: { offset: {x: 6, y: 4}}}).show();
+
+		/* Search */
+		var searchmore = $('group-search-more').slide('hide');
+		var searchmorebtn = $('search-btn-more');
+		$('search-btn').addEvent('click', function(){
+			self.onSearch($('search-field').get('value'));
+		});
+		$$('#search-field, #search-location, #search-focus').addEvent('keypress', function(e){
+			if (e.key == 'enter') {
+				self.onSearch($('search-field').get('value'));
+			}
+		});
+		searchmorebtn.addEvent('click', function(e){
+			e.stop();
+			var text = this.get('text');
+			if (text.contains('more')) {
+				this.set('html', '&laquo; less');
+				searchmore.slide('in');
+			} else {
+				this.set('html', 'more &raquo;');
+				searchmore.slide('out');
+			}
+		});
+		
+		if (searchkey) {
+			$('search-field').set('value', searchkey);
+			this.onSearch(searchkey);
+		}
+
+	},
+
+	/*
+		Event Handlers
+	*/
+	onSearch: function(keyword, offset, req){
+		var top = this;
+		offset = offset || 0;
+		var body = $(document.body);
+		var listing = body.getElement('ul.gr-listing');
+		var template = $('search-template').innerHTML.cleanup();
+		var html = "";
+		var loading = $('search-loading').clone();
+		$('search-noresults').inject('listing-templates');
+		var request = new Request({
+			url: 'AJAX/group_search.php',
+			method: 'post',
+			data: {
+				gname: keyword,
+				offset: offset
+			},
+			onRequest: function(){
+				if (req && req.running) {
+					req.cancel();
+				}
+				listing.empty();
+				$('gr-header').setStyle('display', 'none');
+				$('gr-search').setStyle('display', 'block');
+				loading.inject(listing);
+			},
+			onComplete: function(){
+				loading.destroy();
+			},
+			onSuccess: function(){
+				var self = this;
+				var count = $('gr-search-count');
+				var next = $('gr-search-pages-next');
+				var back = $('gr-search-pages-back');
+				var sepcount = 0;
+				var response = $try(function(){ return JSON.decode(self.response.text); });
+				if (response && $type(response.group_results) == 'array') {
+					html = new Template().parse(template, response.group_results);
+					listing.fade('hide').set('html', html);
+					var descs = listing.getElements('.description');
+					descs.slide('hide');
+					var slidables = listing.getElements('.more-invite');
+					slidables.slide('hide');
+					count.set('text', [
+						response.row_count,
+						'matching',
+						((response.row_count * 1) > 1) ? 'groups' : 'group',
+						'found'
+					].join(' '));
+					listing.fade('in');
+					if (response.group_results.length < 10) {
+						next.setStyle('display', 'none');
+					} else {
+						sepcount++;
+						next.setStyle('display', 'inline');
+						next.removeEvents('click');
+						next.addEvent('click', function(){
+							top.onSearch(keyword, offset + 10, self);
+						});
+					}
+
+					if (offset == 0) {
+						back.setStyle('display', 'none');
+					} else {
+						sepcount++;
+						back.setStyle('display', 'inline');
+						back.removeEvents('click');
+						back.addEvent('click', function(){
+							top.onSearch(keyword, offset - 10, self);
+						});
+					}
+					mpmetrics.track('search', {'token' : '05a951428ed5199e27d52356aae83a22', 'success' : 'true'});
+					top.fireEvent('searchSuccess', [keyword]);
+					$('gr-search-sep').setStyle('display', (sepcount == 2) ? 'inline' : 'none');
+				} else {
+					listing.empty();
+					$('search-noresults').inject(listing);
+					count.set('text', 'No matching groups found.');
+					top.fireEvent('searchFail', [keyword]);
+				}
+			}
+		});
+		if ($('search-btn-more').get('text').contains('less')) $extend(request.options.data, {
+			location: $('search-location').get('value'),
+			focus: $('search-focus').get('value')
+		});
+		request.send();
+	},
+
+	onJoin: function(el){
+		var parent = el.getParent('li');
+		var id = parent.get('id').replace('gr-id_', '');
+		if (parent.getElement("img.gr-offic")) {
+			return this.onInvite(el);
+		}
+		new Request({
+			url: '/AJAX/join_group.php',
+			method: 'post',
+			data: {
+				gid: id
+			},
+			onRequest: function(){
+				var status = el.getNext('p.status').setStyle('display', 'block');
+				el.setStyle('display', 'none');
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				var status = el.getNext('p.status').setStyle('display', 'block');
+				if (response.good) {
+					status.set('html', '<img src="images/icons/accept.png" alt="Joined" />');
+				}
+			}
+		}).send();
+	},
+
+	onJoinSend: function(el){
+		var self = this;
+		var parent = el.getParent('li');
+		var invitees = parent.getElement('input.invitees');
+		var status = parent.getElement('p.status');
+		var previous = parent.getPrevious('li');
+		var btn = previous.getElement('.gr-join-btn');
+		var ok = previous.getElement('.join-ok');
+
+		// Inform user of state..
+		status.set('text', 'Sending Request...');
+		invitees.set('disabled', 'disabled');
+
+		new Request({
+			url: '/AJAX/connected_group_add.php',
+			method: 'post',
+			data: {
+				email: invitees.get('value') + parent.getElement('span.gr-domain').get('text')
+			},
+			onSuccess: function(){
+				var success = JSON.decode(this.response.text);
+				if (success.stat) {
+					btn.setStyle('display', 'none');
+					ok.setStyle('display', 'block');
+					status.set('text', 'Please check your inbox for a confirmation email.');
+				}
+			},
+			onFailure: function(){},
+			onComplete: function(){}
+		}).send();
+	},
+
+	onMore: function(el){
+		var top = el.getParent('li');
+		var top_height = (top.getStyle('height').replace('px', '') * 1);
+		if (!top.retrieve('before')) top.store('before', top_height);
+		var desc = top.getElement('.description');
+
+		if (el.retrieve('out') !== true) {
+			var focus = top.getElement('.focus');
+			var adjust = top.retrieve('adjust');
+			if (!adjust) {
+				var temp = new Element('div', {
+					styles: {
+						opacity: 0
+					}
+				}).adopt(desc.clone(), focus.clone()).inject(document.body);
+				adjust = (temp.getStyle('height').replace('px', '') * 1);
+				top.store('adjust', adjust);
+				temp.destroy();
+			}
+			desc.slide('in');
+			top.morph({
+				height: adjust + top_height
+			});
+			el.store('out', true);
+			el.set('html', '&laquo; less');
+		} else {
+			top.morph({
+				height: [top.retrieve('adjust') + top.retrieve('before'), top.retrieve('before')]
+			});
+			desc.slide('out');
+			el.set('html', 'more &raquo;');
+			el.store('out', false);
+		}
+
+	},
+
+	onInvite: function(el){
+		var top = el.getParent('li');
+		var parent = top.getNext('div > li').getElement('li');
+		parent.slide('in');
+		var status = parent.getElement('p.status');
+		if (!status.retrieve('msg')) status.store('msg', status.get('html'));
+		var invitees = parent.getElement('input.invitees');
+		invitees.set({
+			'value': '',
+			'disabled': null
+		}).store('grname', top.getElement('strong.gr-name').get('text'));
+		status.set('html', status.retrieve('msg'));
+	},
+
+	onInviteSend: function(el){
+		var self = this;
+		var parent = el.getParent('li');
+		var invitees = parent.getElement('input.invitees');
+		var status = parent.getElement('p.status');
+
+		// Inform user of state..
+		status.set('text', 'Sending Request...');
+		invitees.set('disabled', 'disabled');
+
+		new Request({
+			url: '/AJAX/ind_invite.php',
+			method: 'post',
+			data: {
+				gname: invitees.retrieve('grname'),
+				email: invitees.get('value'),
+				type: 2
+			},
+			onSuccess: function(){
+				var success = JSON.decode(this.response.text);
+				if (success.good) {
+					status.set('text', 'Done!');
+					parent.highlight();
+					self.onInviteCancel(status);
+				}
+			},
+			onFailure: function(){},
+			onComplete: function(){}
+		}).send();
+	},
+
+	onInviteCancel: function(el){
+		var parent = el.getParent('li');
+		parent.slide('out');
+	},
+
+	onFilter: function(el){
+		this.list.set('html', this.list.retrieve('groups'));
+		this.list.getElements('.more-invite').slide('hide');
+		this.list.getElements('.description').slide('hide');
+		var filter = el.get('value').toLowerCase();
+		var listings = $(document.body).getElements('li.listing');
+		var count = 0;
+		if (filter !== '') {
+			for (var x = listings.reverse().length; x--;){
+				var item = listings[x];
+				var name = item.getElement('strong.gr-name').get('text').toLowerCase();
+				var desc = item.getElement('p.description').get('text').toLowerCase();
+				var focus = item.getElement('p.focus').get('text').toLowerCase().replace(/more »|« less/g, '');
+
+				// $try(function(){ item.getNext('div > li').getElement('li').slide('hide'); });
+
+				if (!name.contains(filter) && !desc.contains(filter) && !focus.contains(filter)) {
+					item.setStyle('display', 'none');
+				} else {
+					count++;
+					item.setStyle('display', 'list-item');
+				};
+			}
+			if (count == 0) $('filter-noresults').clone().inject('groups-list');
+		} else {
+			listings.setStyle('display', 'list-item');
+		}
+	}
+
+};
+
+$extend(Tap.Groups, new Events);
+window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
+</script>
+<script type="text/javascript" charset="utf-8">
+	Tap.Groups.addEvents({
+		'searchSuccess': function(keyword){
+			
+		},
+		'searchFail': function(keyword){
+			mpmetrics.track('search', {'token' : '05a951428ed5199e27d52356aae83a22', 'success' : 'false'});
+		}
+	})
+</script>
+</head>
+
+<body>
+
+	<? include(NEW_HEADER); ?>
+
+	<div id="main">
+		<div id="left-col">
+			<div id="groups-tab">
+				<div class="tab-in"><a href="" class="name">Group Suggestions</a>  </div>
+			</div>
+				<div class="tab-list">
+					<ul>
+						<li class="list-item"><a href="" class="item-name">PHP <span class="item-nr">(9)</span></a> <a href="" class="item-add">add</a></li>
+						<li class="list-item"><a href="" class="item-name">MooTools 2<span class="item-nr">(13)</span></a> <a href="" class="item-add">add</a></li>
+					</ul>
+					<p class="more-btn1"><a href="">show more &raquo;</a></p>
+					<div style="clear:both"></div>
+				</div>
+		</div>
+	</div>
+
+		<div id="center-col">
+			<div id="group-search">
+				<p>Looking for new groups? <input id="search-field" type="text" name="group-search"/> <a id="search-btn-more" href="">more &raquo;</a> <input id="search-btn"  type="image" src="/images/cimages/group_srch_btn.gif"/> </p>
+			</div>
+			<div id="group-search-more">
+				<div>
+					<label>Location:</label>
+					<input id="search-location" type="text">
+					<label>Focus:</label>
+					<input id="search-focus" type="text">
+				</div>
+			</div>
+			<div id="gr-list">
+
+				<div id="gr-header">
+					<h2 class="gr-title">Groups</h2>
+					<span class="gr-filters">
+						<a id="gr-create-btn" href="/create_group"></a>
+						<input id="gr-filter" type="text" name="keywords" alt="Search your groups" />
+						<a href="#" id="gr-filter-btn" class="set-filter"></a>
+					</span>
+				</div>
+
+				<div id="gr-search">
+					<p class="gr-search-title">
+						Search Results (<span id="gr-search-count">No matching groups found</span>)
+						| <a href="#" class="remove-search">Show Your Groups</a>
+					</p>
+					<p class="gr-search-pages">
+						<a href="#" id="gr-search-pages-back">&laquo; Previous</a>
+						<span id="gr-search-sep" style="display:none"> | </span>
+						<a href="#" id="gr-search-pages-next">Next &raquo;</a>
+					</p>
+				</div>
+
+				<div class="gr-sort-bar">
+					<p>
+						<a href="" id="sort-logo">Logo</a>
+						<a href="" id="sort-name">Name</a>
+						<a href="" id="sort-loc">Location</a>
+						<a href="" id="sort-msgs">#Msgs</a>
+						<a href="" id="sort-mmbrs">Members</a>
+					</p>
+				</div>
+
+				<!-- Start of Group Listing -->
+				<div>
+					<ul id="groups-list" class="gr-listing">
+					<?php
+						foreach ($_t['group_results'] as $group):
+							$gid = $group['gid'];
+							$gname = $group['gname'];
+							$admin = $group['admin'];
+							$pic = $group['pic'];
+							$type = $group['type'];
+							$size = $group['size'];
+							$official = $group['official'];
+							$focus = $group['focus'];
+							$descr = $group['descr'];
+					?>
+						<li id="gr-id_<?= $gid ?>" class="listing">
+							<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
+							<div class="gr-info">
+								<p>
+									<?php if ($official == "*"): ?>
+									<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" />
+									<?php endif; ?>
+									<strong class="gr-name"><?= $gname ?></strong>&nbsp;&nbsp;</p>
+									<p class="gr-desc description"><?= $descr ?></p>
+									<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
+							</div>
+							<div class="gr-numbers">
+								<p><strong>23,643</strong>
+								</p><p>(61 daily)</p>
+							</div>
+							<div class="gr-numbers">
+								<p><strong><?= $size ?></strong></p>
+								<p>(17 daily)</p>
+							</div>
+							<div class="gr-btns">
+								<a href="" class="gr-invite-btn"></a><br />
+								<? if($admin): ?>
+								<a href="/group_edit?group=<?= $gid ?>" class="gr-admin-btn"></a>
+								<? endif; ?>
+							</div>
+						</li>
+						<li class="more-invite">
+							<div>
+								<p><input type="text" class="invitees"></p>
+								<p class="status"><a href="#" class="send-invite">Invite these people</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
+							</div>
+						</li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+
+				<!-- <div class="more-btn4"><a href="">show more &raquo;</a></div> -->
+			</div>
+		</div>
+		<div id="templates" style="display:none">
+			<ul id="search-template">
+				<# for (var x = this.reverse().length; x--;) { var data = this[x]; #>
+				<li id="gr-id_<#: data.gid #>" class="listing">
+					<img src="/group_pics/<#: data.pic #>" alt="group logo" class="gr-image" />
+					<div class="gr-info">
+						<p>
+							<# if (data.official == "*") { #>
+							<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" />
+							<# } #>
+							<strong class="gr-name"><#: data.gname #></strong>&nbsp;&nbsp;</p>
+							<p class="gr-desc description"><#: data.descr #></p>
+							<p class="gr-desc focus"><#: data.focus #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
+					</div>
+					<div class="gr-numbers">
+						<p><strong>23,643</strong>
+						</p><p>(61 daily)</p>
+					</div>
+					<div class="gr-numbers">
+						<p><strong><#: data.size #></strong></p>
+						<p>(17 daily)</p>
+					</div>
+					<div class="gr-btns">
+						<# if (data["in"] == 0) { #>
+						<a href="" class="gr-join-btn"></a><br />
+						<p class="status" style="display:none">Please wait..</p>
+						<img src="images/icons/accept.png" class="join-ok" alt="Joined" style="display:none" />
+						<# } else { #>
+						<img src="images/icons/accept.png" alt="Joined" />
+						<# } #>
+					</div>
+				</li>
+				<li class="more-invite">
+					<div>
+						<p>Please enter your official email address: <input type="text" class="invitees"> <span class="gr-domain">@<#: data.domain #></span></p>
+						<p class="status"><a href="#" class="send-join">Send confirmation</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
+					</div>
+				</li>
+				<# } #>
+			</ul>
+			<ul id="listing-templates">
+				<li id="filter-noresults" class="info">
+					<div>
+						<p>Sorry, there are no groups that match your filter. <a href="#" class="remove-filter">Show All</a></p>
+					</div>
+				</li>
+				<li id="search-noresults" class="info">
+					<div>
+						<p>Sorry, there are no groups that match your search keywords. <a href="#" class="remove-search">Show Your Groups</a></p>
+					</div>
+				</li>
+				<li id="search-loading" class="info">
+					<div>
+						<p>Loading search results.</p>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Find your groups faster.</h2>
+			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
+			<h2>Don't overuse your memes.</h2>
+			<p>It might have been funny the first time you heard it, but most memes are notorious for expiring quickly. Avoid the social awkwardness produced by using an expired meme by not using them when they near their expiry date. Common memes expire within 3 days. Celebrity memes expire with a week, and cat-related ones are good for at least a month. When in doubt, consult your local /b/.</p>
+			<h2>More options for search.</h2>
+			<p>When searching, you can optionally toggle the "more" link to give you the option of adding location and focus criteria to narrow down your search.</p>
+			<h2>Share your groups via invites.</h2>
+			<p>You can send invites to your friends who might be interested in a group you belong to. Simply click on the Invite button and write their email addresses or usernames and send.</p>
+		</div>
+
+	<div id="footer">
+
+	</div>
+
+</body>
+</html>
