@@ -132,9 +132,11 @@ body {
 			background: transparent url(/images/cimages/group_srch_field.gif) no-repeat scroll 0% 0%; }
 			
 		#search-btn {
-			height: 32px; width: 77px;
-			margin-top: -3px; margin-left: 6px;
-			vertical-align: -10px; }
+			height:32px;
+			position:absolute;
+			right:9px; top:9px;
+			vertical-align:-10px;
+			width:77px; }
 			
 		#group-search p #more-btn2 {
 			font-size: 10px;
