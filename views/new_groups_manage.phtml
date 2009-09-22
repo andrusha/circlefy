@@ -27,7 +27,7 @@
 <script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
 <script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
-<script type="text/javascript"> try { mpmetrics.init("05a951428ed5199e27d52356aae83a22");} catch(err) { alert(err) } </script>
+<script type="text/javascript"> try { mpmetrics.init('05a951428ed5199e27d52356aae83a22');} catch(err) { alert(err) } </script>
 <script type="text/javascript" charset="utf-8">
 
 // Searching
@@ -188,14 +188,13 @@ Tap.Groups = {
 							top.onSearch(keyword, offset - 10, self);
 						});
 					}
-					mpmetrics.track('search', {'token' : '05a951428ed5199e27d52356aae83a22', 'success' : 'true'});
-					top.fireEvent('searchSuccess', [keyword]);
+					top.fireEvent('searchSuccess', keyword);
 					$('gr-search-sep').setStyle('display', (sepcount == 2) ? 'inline' : 'none');
 				} else {
 					listing.empty();
 					$('search-noresults').inject(listing);
 					count.set('text', 'No matching groups found.');
-					top.fireEvent('searchFail', [keyword]);
+					top.fireEvent('searchFail', keyword);
 				}
 			}
 		});
@@ -387,10 +386,14 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 <script type="text/javascript" charset="utf-8">
 	Tap.Groups.addEvents({
 		'searchSuccess': function(keyword){
-			
+			// (function(){
+				mpmetrics.track('search', {'success' : 'true', 'keyword': keyword});
+			// }).delay(10000);
 		},
 		'searchFail': function(keyword){
-			mpmetrics.track('search', {'token' : '05a951428ed5199e27d52356aae83a22', 'success' : 'false'});
+			(function(){
+				mpmetrics.track('search', {'success' : 'false', 'keyword': keyword});
+			}).delay(1000);
 		}
 	})
 </script>

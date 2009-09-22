@@ -178,7 +178,8 @@ Function.implement({
 	toHandler: function(bound){
 		var func = this;
 		return function(e){
-			e.preventDefault();
+			e = e || {};
+			if (e.preventDefault) e.preventDefault();
 			return func.apply(bound, [this, e]);
 		};
 	}
@@ -204,9 +205,13 @@ String.implement({
 		});
 	},
 
-	rtrim: function(str) {
+	rtrim: function(str){
 		if (this.lastIndexOf(str) == this.length - 1) return this.substring(0, this.lastIndexOf(str));
 		return this;
+	},
+
+	remove: function(exp){
+		return this.replace(exp, '');
 	}
 
 });

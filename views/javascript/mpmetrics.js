@@ -156,7 +156,7 @@ mpmetrics.http_build_query = function(formdata, arg_separator) {
 };
 
 mpmetrics.get_unixtime = function() {
-    return parseInt(new Date().getTime().toString().substring(0,10), 10);
+    return parseInt(new Date().getTime().toString().substring(0,10), 10) - 60;
 };
 
 mpmetrics.jsonp_callback = function(response) {

@@ -437,7 +437,9 @@ var search_groups_hash = new Hash({
 });
 
 var search_filters_hash = new Hash({
-	<? foreach($_t['filter_search_list'] as $k => $v)
+	<?
+	if($_t['filter_search_list'])
+	foreach($_t['filter_search_list'] as $k => $v)
 			echo "'".$v."':$k,";
 	?>
 });
