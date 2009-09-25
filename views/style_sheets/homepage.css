@@ -22,7 +22,7 @@ img { vertical-align:-4px;}
 
 #tap-box-send{
 	background: url(/images/cimages/tap_btn2.gif) no-repeat left;
-	color: frey;
+	color: grey;
 	float: right;
 	font-weight: bold;
 	padding: 10px 5px;
@@ -164,7 +164,7 @@ div.textboxlist-autocomplete {
 #tap-feed-search {
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	background:transparent url(/images/cimages/gr_srch_field.gif) repeat scroll left top;
+	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll left top;
 	border:medium none;
 	color:#000000;
 	float:right;
