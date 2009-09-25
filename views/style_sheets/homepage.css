@@ -21,15 +21,14 @@
 img { vertical-align:-4px;}
 
 #tap-box-send{
-	background: url(/images/cimages/tap_btn.PNG) no-repeat left;
+	background: url(/images/cimages/tap_btn.PNG) no-repeat left top;
 	color: grey;
 	float: right;
 	font-weight: bold;
-	padding: 10px 5px;
-	margin-top: -5px;
+	padding: 5px 0;
 	margin-right: 2px;
 	text-align: center;
-	width: 60px;
+	width: 117px;
 }
 
 #tap-box-people {
