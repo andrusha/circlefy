@@ -21,14 +21,22 @@
 img { vertical-align:-4px;}
 
 #tap-box-send{
-	background: url(/images/cimages/tap_btn.PNG) no-repeat left top;
-	color: grey;
-	float: right;
-	font-weight: bold;
-	padding: 5px 0;
-	margin-right: 2px;
-	text-align: center;
-	width: 117px;
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent url(/images/cimages/tap_btn.PNG) no-repeat scroll left top;
+	color:grey;
+	float:right;
+	font-weight:bold;
+	margin-right:2px;
+	margin-top:1px;
+	padding:4px 0 5px;
+	text-align:center;
+	width:117px;
+}
+
+#tap-box-send:hover {
+	background: url(/images/cimages/tap_btn.PNG) no-repeat right top;
 }
 
 #tap-box-people {
