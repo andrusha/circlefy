@@ -37,6 +37,7 @@ img { vertical-align:-4px;}
 
 #tap-box-send:hover {
 	background: url(/images/cimages/tap_btn.PNG) no-repeat right top;
+	text-decoration: none;
 }
 
 #tap-box-people {
