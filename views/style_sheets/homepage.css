@@ -5,12 +5,12 @@
 }
 
 #tap-box {
-	padding: 5px;
+	padding: 5px 5px 10px 5px;
 	background: url(/images/cimages/main_text_field.gif) no-repeat;
 }
 
 #tap-box-msg {
-	width: 520px;
+	width: 533px;
 	padding: 3px;
 	margin: 5px;
 	border: 1px solid #999;
@@ -23,10 +23,12 @@ img { vertical-align:-12px;}
 
 #tap-box-send{
 	background: url(/images/cimages/tap_btn2.gif) no-repeat left;
+	color: frey;
 	float: right;
+	font-weight: bold;
 	padding: 10px 5px;
 	margin-top: -5px;
-	margin-right: 10px;
+	margin-right: 2px;
 	text-align: center;
 	width: 60px;
 }
@@ -41,27 +43,31 @@ img { vertical-align:-12px;}
 
 .section {
 	margin-bottom: 20px;
-	-moz-border-radius: 5px;
+	/*-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-moz-box-shadow: 0px 0px 4px #D8D8D8;
-	-webkit-box-shadow: 0px 0px 4px #D8D8D8;
+	-webkit-box-shadow: 0px 0px 4px #D8D8D8;*/
 }
 
 .section-head {
-	background: #EAEAEA url(/images/cimages/main_bar_green.gif) repeat-x scroll 0 0;
+	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) repeat-x scroll 0 0;
 	padding: 7px;
 }
 
 .section-head h1 {
-	font-size: 18px;
-	font-weight: bold;
+	color:white;
+	font-size:17px;
+	font-weight:bold;
+	padding:4px 0 0 6px;
 }
 
 ul.tap-stream li {
 	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
-	border-top: 1px solid #D8D8D8;
-	padding: 10px;
-	font-size: 12px;
+	border:1px solid #D8D8D8;
+	font-size:12px;
+	margin-bottom:-1px;
+	margin-left:2px;
+	padding:8px;
 }
 
 ul.tap-stream li.noresults {
@@ -121,7 +127,12 @@ ul.tap-stream .tap-info span {
 
 ul.tap-stream .tap-from {
 	font-weight: bold;
+	font-size: 12px;
 	margin-right: 5px;
+}
+
+ul.tap-stream .tap-time {
+	font-size: 12px;
 }
 
 ul.tap-stream .tap-actions {
@@ -153,8 +164,8 @@ div.textboxlist-autocomplete {
 
 #tap-feed-search {
 	padding: 3px 6px;
-	-moz-border-radius:8px;
-	-webkit-border-radius: 8px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 	font-size: 12px;
 	background: #fff;
 	color: #000; float: right;
