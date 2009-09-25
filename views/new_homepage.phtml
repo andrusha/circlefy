@@ -1,4 +1,10 @@
-<?php $last = $_t['last_tap'][0]; ?>
+<?php
+$last = $_t['last_tap'][0];
+$inits = array();
+foreach($_t['groups_bits'] as $bit) {
+	array_push($inits, $bit['cid']);
+}
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -15,467 +21,67 @@
 
 <title>TAP :: BETA</title>
 
-<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" />
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <style type="text/css" media="all">@import "views/style_sheets/TextboxList.css";</style>
 <style type="text/css" media="all">@import "views/style_sheets/TextboxList.Autocomplete.css";</style>
-<script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
-<script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
-<script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="views/javascript/TextboxList.js"></script>
-<script type="text/javascript" src="views/javascript/TextboxList.Autocomplete.js"></script>
-<script type="text/javascript" src="views/javascript/GrowingInput.js"></script>
-<style type="text/css" media="screen">
-
-#center-col {
-	margin:0 auto;
-	width: 550px;
-	margin-right: 20px;
-}
-
-#tap-box {
-	padding: 5px;
-	background: url(/images/cimages/main_text_field.gif) no-repeat;
-}
-
-#tap-box-msg {
-	width: 520px;
-	padding: 3px;
-	margin-bottom: 5px;
-	border: 1px solid #999;
-	font-size: 14px;
-	padding: 6px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 5px;
-}
-img { vertical-align:-12px;}
-
-#tap-box-send{
-background: url(/images/cimages/tap_btn2.gif) no-repeat;
-}
-
-#tap-box-people {
-	width: 70%;
-	padding: 2px;
-	border: 1px solid #999;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 5px;
-}
-
-.section {
-	margin-bottom: 20px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-box-shadow: 0px 0px 4px #D8D8D8;
-	-webkit-box-shadow: 0px 0px 4px #D8D8D8;
-}
-
-.section-head {
-	background: #EAEAEA url(/images/cimages/main_bar_green.gif) repeat-x scroll 0 0;
-	padding: 7px;
-}
-
-.section-head h1 {
-	font-size: 18px;
-	font-weight: bold;
-}
-
-ul.tap-stream li {
-	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
-	border-top: 1px solid #D8D8D8;
-	padding: 10px;
-	font-size: 12px;
-}
-
-ul.tap-stream li.noresults {
-	height: 80px;
-	background-image: none;
-	text-align:center;
-}
-
-ul.tap-stream li.noresults p {
-	margin-top: 30px;
-	font-size: 14px;
-	font-weight:bold;
-	color: #666;
-}
-
-ul.tap-stream img.avatar {
-	float: left;
-	margin-right: 10px;
-}
-
-ul.tap-stream .floater {
-	float: left;
-}
-
-ul.tap-stream .floaterdown {
-	clear: left;
-	float: left;
-}
-
-ul.tap-stream .clarity {
-	display: block;
-	clear: both;
-}
-
-ul.tap-stream .tap-info {
-	margin-bottom: 3px;
-}
-
-ul.tap-stream .tap-msg {
-	font-size: 13px;
-}
-
-ul.tap-stream .tap-info span {
-	color: #797979;
-}
-
-ul.tap-stream .tap-from {
-	font-weight: bold;
-	margin-right: 5px;
-}
-
-div.textboxlist {
-	background: #fff;
-	width: 70%;
-	padding: 2px;
-	border: 1px solid #999;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 5px;
-}
-
-ul.textboxlist-bits {
-	border: none;
-}
-
-div.textboxlist-autocomplete {
-	z-index: 1;
-}
-
-#tap-feed-search {
-	padding: 3px 6px;
-	-moz-border-radius:8px;
-	-webkit-border-radius: 8px;
-	font-size: 12px;
-	background: #fff;
-	color: #000; float: right;
-	border: none;
-}
-
-.section-head label {
-	font-size: 12px;
-}
-
-#tap-notify {
-	display: none;
-	background:#4F9CDF;
-	padding: 3px 6px;
-	-moz-border-radius:8px;
-	-webkit-border-radius: 8px;
-	font-size: 12px;
-	color: #fff; float: right;
-	cursor: pointer;
-}
-
-#tap-notify:hover {
-	background: #3E7AAE;
-}
-
-span.counter {
-	display: none;
-	float:right; background:#666; padding: 2px 5px; -moz-border-radius:6px; font-weight: bold; color:#fff;
-}
-
-</style>
-<script type="text/javascript" src="http://<?= DOMAIN ?>:8080/meteor.js"></script>
-<script type="text/javascript" charset="utf-8">
-
-TextboxList.implement({
-	empty: function(){
-		this.list.getChildren().map(function(el){
-			var bit = this.getBit(el);
-			if (bit.is('editable')) return null;
-			return bit.remove();
-		}, this).clean();
-		this.index.empty();
-		return this;
-	}
-});
-
+<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" />
+<link rel="stylesheet" href="views/style_sheets/homepage.css" type="text/css" />
+<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript" src="views/javascript/textboxlist-complete.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
+<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+<script type="text/javascript">
 Tap = window.Tap || {};
-
-Tap.Home = {
-
-	feedView: 'gid_all',
+Tap.Vars = {
+	pcid: ("<?= $_t['pcid'] ?>" * 1),
 	currentTap: ("<?= $last['cid'] ?>" * 1),
-
-	pushed: {},
-
-	tapper: {
-		msg: '',
-		people: []
-	},
-
-	init: function(){
-		var self = this;
-		var body = $(document.body);
-		this.mainStream = $('main-stream');
-
-		body.addEvents({
-			'click:relay(li.group a)': this.changeFeed.toHandler(this),
-			'click:relay(a.reset-feed)': this.clearSearch.toHandler(this)
-		});
-
-		var tapper = this.tapper = {
-			msg: $('tap-box-msg'),
-			people: new TextboxList('tap-box-people', {
-				unique: true,
-				plugins: {
-					autocomplete: {
-						minLength: 3, maxResults: 5, queryRemote: true,
-						remote: { url: 'AJAX/search_assoc.php' }
-					}
-				}
-			}),
-			more: $('tap-box-more').slide('hide')
-		};
-		var eve = {
-			'blur': this.hideTapMore.toHandler(this),
-			'focus': this.showTapMore.toHandler(this)
-		};
-		tapper.msg.addEvents(eve); tapper.people.addEvents(eve)
-		new OverText(tapper.msg, { positionOptions: { offset: {x: 6, y: 6}}}).show();
-		$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
-
-		$('tap-notify').addEvent('click', this.getPushed.toHandler(this));
-
-		this.tapSearch = $('tap-feed-search');
-		this.tapSearch.addEvent('keypress', function(e){
-			if (e.key == 'enter') self.searchFeed();
-		});
-		new OverText(this.tapSearch, { positionOptions: { offset: {x: 6, y: 4}}}).show();
-	},
-
-	showTapMore: function(){
-		var tapper = this.tapper;
-		tapper.tapping = true;
-		tapper.more.slide('in');
-	},
-
-	hideTapMore: function(){
-		var tapper = this.tapper;
-		(function(){
-			if (!tapper.tapping) {
-				tapper.more.slide(tapper.msg.get('value').isEmpty()
-					&& tapper.people.getValues().length == 0 ? 'out' : 'in');
-			}
-			tapper.tapping = false;
-		}).delay(500);
-	},
-
-	injectFeed: function(){
-
-	},
-
-	searchFeed: function(){
-		var self = this;
-		var keyword = this.tapSearch.get('value');
-		if (!keyword.isEmpty()) {
-			new Request({
-				url: 'AJAX/filter_creator.php',
-				data: (function(){
-					return $extend((self.feedView == 'gid_all')
-						? {type: 11}
-						: {type: 1, id: self.feedView.remove(/gid_/)}
-						, {search: keyword});
-				})(),
-				onRequest: function(){
-					$('loading-indicator').setStyle('display', 'inline');
-				},
-				onComplete: function(){
-					$('loading-indicator').setStyle('display', 'none');
-				},
-				onSuccess: function(){
-					var response = JSON.decode(this.response.text);
-					var items;
-					if (response.results) {
-						items = new Element('div', {
-							html: self.parseTemplate('taps', response.data)
-						});
-					} else {
-						items = new Element('div').adopt($('no-results').clone());
-					}
-					self.mainStream.empty();
-					items.inject(self.mainStream, 'top').slide('hide').set('slide', {
-						onComplete: function(){
-							items.getElements('li').reverse().inject('main-stream', 'top');
-							items.getParent('div').destroy();
-						}
-					}).slide('in');
-				}
-			}).send();
-		} else {
-			this.clearSearch();
-		}
-	},
-
-	clearSearch: function(){
-		this.tapSearch.set('value', '').fireEvent('blur');
-		this.changeFeed(this.feedView, true);
-		this.tapSearch.blur();
-	},
-
-	changeFeed: function(el, force){
-		force = (!force || force.stop) ? false : force;
-		var self = this;
-		var gid = $try(function(){ return el.get('id'); }) || el;
-		if (this.feedView === gid && !force) return;
-		var id = (gid !== 'gid_all') ? gid.remove(/gid_/) : null;
-		new Request({
-			url: 'AJAX/filter_creator.php',
-			data: (function(){
-				return (id === null) ? {type: 11} : {type:1, id: id};
-			})(),
-			onRequest: function(){
-				$('loading-indicator').setStyle('display', 'inline');
-			},
-			onComplete: function(){
-				$('loading-indicator').setStyle('display', 'none');
-			},
-			onSuccess: function(){
-				var response = JSON.decode(this.response.text);
-				if (response.results) {
-					self.feedView = gid;
-					var key = (gid === 'gid_all') ? 'groups' : gid.replace('gid', 'group');
-					if ($type(self.pushed[key]) == 'array') self.pushed[key].empty();
-					if (!force) $('tap-feed-name').set('text', el.getElement('a').get('title'));
-					var items = new Element('div', {
-						html: self.parseTemplate('taps', response.data)
-					});
-					self.mainStream.empty();
-					items.inject(self.mainStream, 'top').slide('hide').set('slide', {
-						onComplete: function(){
-							items.getElements('li').reverse().inject('main-stream', 'top');
-							items.getParent('div').destroy();
-						}
-					}).slide('in');
-					$('tap-notify').setStyle('display', 'none');
-				}
-			}
-		}).send();
-	},
-
-	sendTap: function(_, e){
-		var self = this;
-		var data = this.tapper;
-		var to_box = data.people.getValues().map(function(item){
-			return item[1];
-		});
-		new Request({
-			url: 'AJAX/new_message_handler.php',
-			data: {
-				msg: data.msg.get('value'),
-				to_box: JSON.encode(to_box.length !== 0 ? to_box : null)
-			},
-			onSuccess: function(){
-				var response = JSON.decode(this.response.text);
-				if (response.new_msg) {
-					self.currentTap = (response.new_msg[0].cid * 1);
-					var items = new Element('div', {
-						html: self.parseTemplate('taps', response.new_msg)
-					});
-					$('your-stream').empty();
-					items.inject('your-stream', 'top').slide('hide').set('slide', {
-						onComplete: function(){
-							items.getElements('li').reverse().inject('your-stream', 'top');
-							items.getParent('div').destroy();
-						}
-					}).slide('in');
-				}
-				data.people.empty();
-				data.msg.set('value', '');
-				data.msg.fireEvent('blur', e);
-			}
-		}).send();
-	},
-
-	processPushed: function(data){
-		var pushed = this.pushed;
-		data = JSON.decode(data);
-		if (!pushed[data.type]) pushed[data.type] = [];
-		var type = pushed[data.type];
-		type.include(data.cid);
-
-		var key = (this.feedView === 'gid_all') ? 'groups' : this.feedView.replace('gid', 'group');
-		if (key === data.type && type.length > 0 && data.cid !== this.currentTap) {
-			var length = type.length - (type.contains(this.currentTap) ? 1 : 0);
-			var notify = ['You have', length, 'new', length == 1 ? 'tap' : 'taps'].join(' ');
-			$('tap-notify').set({
-				text: notify,
-				styles: {display: 'inline'}
-			}).store('type', data.type).highlight('#5AB2FF');
-		} else if (data.type.contains('group') && this.feedView !== 'gid_all') {
-			$((data.type == 'groups')
-			  ? 'gid_all'
-			  : data.type.replace('group', 'gid')
-			).getElement('span.counter').set('text', type.length);
-		}
-	},
-
-	getPushed: function(el){
-		var self = this;
-		var type = el.retrieve('type');
-		var data = this.pushed[type];
-		var template = $('template-bit').innerHTML.cleanup();
-		new Request({
-			url: 'AJAX/loader.php',
-			data: {
-				id_list: data.join(',')
-			},
-			onSuccess: function(){
-				var response = JSON.decode(this.response.text);
-				if (response.results) {
-					data.empty();
-					var items = new Element('div', {
-						html: self.parseTemplate('taps', response.data)
-					});
-					items.inject('main-stream', 'top').slide('hide').set('slide', {
-						onComplete: function(){
-							items.getElements('li').reverse().inject('main-stream', 'top');
-							items.getParent('div').destroy();
-						}
-					}).slide('in');
-					el.set('styles', {display:'none'});
-				}
-			}
-		}).send();
-	},
-
-	parseTemplate: function(type, data){
-		var template = $(({
-			taps: 'template-bit'
-		})[type]).innerHTML.cleanup();
-		if (!this.templater) this.templater = new Template();
-		return this.templater.parse(template, data);
-	}
+	currentStream: JSON.decode('<?= json_encode($inits) ?>')
 };
-
-window.addEvent('domready', Tap.Home.init.bind(Tap.Home));
 </script>
+<script type="text/javascript" src="views/javascript/tap.push.js"></script>
+<script type="text/javascript" src="views/javascript/tap.home.js"></script>
 </head>
 
 <body>
 
 	<?php include(NEW_HEADER); ?>
+	
+	<div id="tap-feed-outside-more">
+		<p>
+			<input type="checkbox" name="outside-show" />
+			<label for="show-outside">Show Outside Taps</label>							
+		</p>
+		<p>
+			<label>From: </label><br />
+			<input type="text" name="outside-from" />				
+		</p>
+		<p>
+			<a href="#" id="tap-feed-outside-set">Save</a>
+		</p>
+	</div>
 
 	<div id="main">
+
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Find your groups faster.</h2>
+			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
+			<h2>Don't overuse your memes.</h2>
+			<p>It might have been funny the first time you heard it, but most memes are notorious for expiring quickly. Avoid the social awkwardness produced by using an expired meme by not using them when they near their expiry date. Common memes expire within 3 days. Celebrity memes expire with a week, and cat-related ones are good for at least a month. When in doubt, consult your local /b/.</p>
+			<h2>More options for search.</h2>
+			<p>When searching, you can optionally toggle the "more" link to give you the option of adding location and focus criteria to narrow down your search.</p>
+			<h2>Share your groups via invites.</h2>
+			<p>You can send invites to your friends who might be interested in a group you belong to. Simply click on the Invite button and write their email addresses or usernames and send.</p>
+		</div>
+
 		<div id="center-col">
 			<div id="tap-box" class="section">
 				<input type="text" id="tap-box-msg" alt="Tap here!" />
 				<div id="tap-box-more">
-					<input type="text" id="tap-box-people" /><a id="tap-box-send" href="#">Send</a>
+					<a id="tap-box-send" href="#">Send</a>
+					<input type="text" id="tap-box-people" />
 				</div>
 			</div>
 
@@ -508,6 +114,7 @@ window.addEvent('domready', Tap.Home.init.bind(Tap.Home));
 			<div id="tap-feed" class="section">
 				<div class="section-head">
 					<h1>
+						<span id="tap-feed-outside">Out</span>
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
 						<span id="tap-feed-name">Groups Feed</span>
 						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
@@ -516,16 +123,26 @@ window.addEvent('domready', Tap.Home.init.bind(Tap.Home));
 				<div class="section-body">
 					<ul id="main-stream" class="tap-stream">
 						<?php foreach($_t['groups_bits'] as $bit): ?>
-						<li>
+						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
-							<div>
+							<div class="tap-actions">
+								<a class="tap-respond" href="#">Respond</a>
+							</div>
+							<div class="tap-body">
 								<p class="tap-info">
 									<span class="tap-from"><?= $bit['fname'] . " " . $bit['lname'] ?></span>
 									<span class="tap-time"><?= $bit['chat_timestamp'] ?></span>
+									<span class="tap-typing"></span>
 								</p>
 								<p>
 									<span class="tap-msg"><?= $bit['chat_text'] ?></span>
 								</p>
+							</div>
+							<div class="tap-response-box clarity">
+								<ul class="tap-chat">
+								</ul>
+								<textarea class="tap-response" cols="50" rows="1"></textarea>
+								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
 						</li>
@@ -562,16 +179,26 @@ window.addEvent('domready', Tap.Home.init.bind(Tap.Home));
 	<div id="templates" style="display:none">
 		<ul id="template-bit">
 			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
-			<li>
+			<li id="tid_<#: bit.cid #>">
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" />
-				<div>
+				<div class="tap-actions">
+					<a class="tap-respond" href="#">Respond</a>
+				</div>
+				<div class="tap-body">
 					<p class="tap-info">
 						<span class="tap-from"><#: [bit.fname, bit.lname].join(" ") #></span>
 						<span class="tap-time"><#: bit.chat_timestamp #></span>
+						<span class="tap-typing"></span>
 					</p>
 					<p>
 						<span class="tap-msg"><#: bit.chat_text #></span>
 					</p>
+				</div>
+				<div class="tap-response-box clarity">
+					<ul class="tap-chat">
+					</ul>
+					<textarea class="tap-response" cols="50" rows="1"></textarea>
+					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 				</div>
 				<div class="clarity"></div>
 			</li>
@@ -594,43 +221,5 @@ window.addEvent('domready', Tap.Home.init.bind(Tap.Home));
 
 	</div>
 
-<script src="http://mark.tap.info:8000/static/Orbited.js"></script>
-<script type="text/javascript">
-function init_conn(){
-    c.send('{"uid":<?=$_t['pcid'];?>,"uname":"Taso"}\r\n');
-}
-
-   onload = function() {
-
-
-document.domain=document.domain
-
-
-c = new Orbited.TCPSocket();
-
-
-    c.onopen = function() { console.log('open'); }
-    c.onclose = function(code) { console.log('close', code); }
-    c.onread = function(data) { console.log(data); }
-    c.open('localhost', 2222)
-	setTimeout('init_conn()',3000);
-
-   }
-  </script>
-
-
-<!--
-document.domain = "<?= DOMAIN ?>";
-Meteor.hostid = '<?= $_SESSION["rand_id"] ?>';
-Meteor.port = '8080';
-// Meteor.debugmode = 1;
-
-Meteor.host = location.hostname;
-Meteor.registerEventCallback('process', function(data){ Tap.Home.processPushed(data); });
-
-Meteor.joinChannel("<?=$_t['pcid'];?>", 0);
-Meteor.mode = 'stream';
-Meteor.connect();
--->
 </body>
 </html>
