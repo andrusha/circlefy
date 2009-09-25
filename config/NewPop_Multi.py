@@ -69,21 +69,37 @@ class MessageConnection(object):
             self.receivedFrame(frame)
 
     def receivedFrame(self, frame):
+	if frame.has_key('response') and frame.has_key('cid'):
+		response_data = frame['response'].split('\n')
+		cid = frame['cid']
+		response = self.response_generator(cid)
+		try:
+			for uid in self.server.root.user_server.channels[cid]:
+				for uniq_conn in self.server.root.user_server.users[uid]:
+						uniq_conn.send_message(response)
+		except Exception:
+			print "No user subscribed to specific channel"
+			return False
+
 	if frame.has_key('msg'):
 	        msg_data = frame['msg'].split('\n')
 	else:
 		return False
 
 	matches_list = self.check_new_bits(self.server.root.user_server.users,msg_data)
+	print matches_list
 	if matches_list != []:
 		results = self.bit_generator(matches_list)
-		for item in results:pass
-
 		for uid in self.uids:
 		    if uid in self.server.root.user_server.users:
 			for uniq_conn in self.server.root.user_server.users[uid]:
 				uniq_conn.send_message(results)
 		self.uids = []
+
+    def response_generator(self,cid):
+		response = ['Taso','Some Response Text','Timestamp','Extra information']
+		return response
+		
 	
     def bit_generator(self,matches_list):
 		bits = []
@@ -132,6 +148,7 @@ class MessageConnection(object):
     def check_new_bits(self,uid_list,msg_data):
 		matches_list = []
 		for row in msg_data:
+				print row
 				#FIGURE OUT WHICH LINES MATCH
 				cols = row.split(' ')
 				if cols[0]:
@@ -203,6 +220,7 @@ class UserServer(object):
     def __init__(self, root):
         self.users = {}
 	self.usernames = {}
+	self.channels = {}
         self.root = root
 
     def __call__(self):
@@ -219,6 +237,7 @@ class UserConnection(object):
         self.buffer = ""
         self.state = "init"
         self.uid = None
+	self.channel_map = []
 
     def __call__(self):
 	"""
@@ -237,6 +256,11 @@ class UserConnection(object):
 		self.server.users[self.uid].remove(self)
 	    else:
 	        del self.server.users[self.uid]
+		for channel in self.channel_map:
+			self.server.channels[channel].remove(self.uid)
+			if not len(self.server.channels[channel]):
+				del self.server.channels[channel]
+			
             # TODO: on disconnect
             # ...
 	    #I should probably run some querieis here and whatnot
@@ -254,6 +278,7 @@ class UserConnection(object):
 
     def receivedFrame(self, frame):
         if self.state == "init":
+	    print frame
 	    if frame.has_key('uid'):
 	            self.uid = frame['uid']
 	    else:
@@ -266,6 +291,21 @@ class UserConnection(object):
             self.server.users[self.uid].append(self)
 	    print self.server.users
 
+	if self.state == "connected":
+	    if frame.has_key('cids'):
+		#NEEDS CHANGE - One catch here is that all User Interfaces might need different cids, this could waste bw
+		channel_list = frame['cids']
+		if self.channel_map != []:
+			for channel in channel_list:
+				self.server.channels.remove(self.uid)
+				
+		self.channel_map = [channel_list]
+		for channel in self.channel_map:
+			channel_exist = self.server.channels.setdefault(channel,set([self.uid]))
+			channel_exist.add(self.uid)
+			
+			
+				 
     def send_message(self, data):
         self.conn.send(json.dumps({'msgData': data }) + '\r\n')
 
@@ -323,7 +363,9 @@ class AdminConnection(object):
 	if msg_data:
 		try:
 			results = {
-			'online?' :  "%s users online" % ( len(self.server.root.user_server.users) ) 
+			'online?' :  "%s users online" % ( len(self.server.root.user_server.users) ),
+			'channels?' :  "%s users online" % ( self.server.root.user_server.channels ),
+			'channels_count?' :  "%s users online" % ( len(self.server.root.user_server.channels) )
 			}[msg_data]
 		except Exception:
 			results = """
