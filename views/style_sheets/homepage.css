@@ -10,16 +10,15 @@
 }
 
 #tap-box-msg {
-	width: 533px;
-	padding: 3px;
+	width: 520px;
 	margin: 5px;
 	border: 1px solid #999;
 	font-size: 14px;
-	padding: 6px;
+	padding: 5px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 5px;
 }
-img { vertical-align:-12px;}
+img { vertical-align:-4px;}
 
 #tap-box-send{
 	background: url(/images/cimages/tap_btn2.gif) no-repeat left;
@@ -132,7 +131,7 @@ ul.tap-stream .tap-from {
 }
 
 ul.tap-stream .tap-time {
-	font-size: 12px;
+	font-size: 10px;
 }
 
 ul.tap-stream .tap-actions {
@@ -163,17 +162,21 @@ div.textboxlist-autocomplete {
 }
 
 #tap-feed-search {
-	padding: 3px 6px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	font-size: 12px;
-	background: #fff;
-	color: #000; float: right;
-	border: none;
+	background:transparent url(/images/cimages/gr_srch_field.gif) repeat scroll left top;
+	border:medium none;
+	color:#000000;
+	float:right;
+	font-size:12px;
+	height:19px;
+	width:144px;
 }
 
 .section-head label {
-	font-size: 12px;
+	color:grey;
+	font-size:10px;
+	font-weight:normal;
 }
 
 #tap-notify {
