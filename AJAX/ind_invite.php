@@ -50,9 +50,9 @@ class invite_functions{
 		
 		$mail_val = $this->mail_it();	
 		if($mail_val == 1){
-			return json_encode(array('good' => 1));
+			return json_encode(array('success' => True));
 		} else {
-			return json_encode(array('good' => 0));
+			return json_encode(array('success' => False));
 		}
 	}
 

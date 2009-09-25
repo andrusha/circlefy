@@ -5,13 +5,16 @@
 session_start();
 require('../config.php');
 
-$to_list = json_decode(stripslashes($_POST['to_box']));
+$to_box = stripslashes($_POST['to_box']);
+$to_list = json_decode($to_box);
 
 
 $group_to = array();
 $friend_to = array();
 $keyword_to = array();
-foreach($to_list->group_to as $v){
+
+if($to_list)
+foreach($to_list as $v){
 	$to_string = explode(":",$v);
 	//symbol type
 	$type = $to_string[2];
@@ -19,7 +22,7 @@ foreach($to_list->group_to as $v){
 	$symbol = $to_string[1];
 	//meta data about symbol
 	$name = $to_string[0];
-	
+
 	if($type == 0 || $type == 1 || $type == 2)
 		$group_to[] = $symbol;
 	if($type == 99)
@@ -31,8 +34,6 @@ foreach($to_list->group_to as $v){
 $my_gids = $_SESSION['gid'];
 $my_zip = $_SESSION['zip'];
 $msg = $_POST['msg'];
-$time = $_POST['time'];
-$channel_id = $_POST['channel_id'];
 
 if($msg){
 	$chat_obj = new chat_functions($group_to,$friend_to,$keyword_to,$my_gids,$my_zip);
@@ -95,6 +96,8 @@ class chat_functions{
 
 		$create_channel_results = $this->mysqli->query($create_channel_query);
 		$last_id = $this->mysqli->query($this->last_id);
+		if(!$last_id)
+			exit();
 
 		$last_id = $last_id->fetch_assoc();
 		$last_id = $last_id['last_id'];
@@ -537,66 +540,58 @@ EOF;
 	//This generates the new bit HTML so that it can be displayed once you send your message
 	//$mid = the new channel id ( will change, because mid/cid is confusing and it really is a new channel.. not message ) 
 	private function bit_generator($mid){
-			$query = <<<EOF
-			SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-                        JOIN special_chat as t3
-                        ON t3.uid = t2.uid
-                        WHERE t3.mid = {$mid}
-                        LIMIT 1;
+		$query = <<<EOF
+		SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
+		JOIN special_chat as t3
+		ON t3.uid = t2.uid
+		WHERE t3.mid = {$mid}
+		LIMIT 1;
 EOF;
 
-			$type = "self";
-			$counter = 0;
-			$bit_gen_results = $this->mysqli->query($query);
+		$type = "self";
+		$counter = 0;
+		$m_results = $this->mysqli->query($query);
+		if($m_results->num_rows)
+		while($res = $m_results->fetch_assoc()){
+			//Setup
+			$mid = $res['mid'];
+			$special = $res['special'];
+			$chat_timestamp = $res['chat_timestamp'];
+			$cid = $res['cid'];
+			$chat_text = $res['chat_text'];
+			$uname = $res['uname'];
+			$fname = $res['fname'];
+			$lname  = $res['lname'];
+			$pic_100 = $res['pic_100'];
+			$pic_36 = $res['pic_36'];
+			$uid = $res['uid'];
 
-                        while($res = $bit_gen_results->fetch_assoc() ){
-                             /*   $chat_timestamp = $this->time_since($res['chat_timestamp']);
-                                $chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";*/
-				$chat_timestamp = "Now!";
-                                $pic_36 = $res['pic_36'];
-                                $uid = $res['uid'];
-                                $color_counter++;
-                                $chat_text = stripslashes($res['chat_text']);
-                                $cid = $res['cid'];
-                                $uname = $res['uname'];
-                                $fname = $res['fname'];
-                                $lname = $res['lname'];
-                                $pic_100 = $res['pic_100'];
-                                $special = $res['special'];
-				$resp_time = time();
+			//Process
+			$chat_timestamp = "Now!";
+			$chat_text = stripslashes($chat_text);
 
-				$color_class = 'self_bit';
+			//Additional
+			$rand = rand(1,999);
 
-				$pic_path = PROFILE_PIC_REL;
-                                $final_html = <<<EOF
-                                <div id="super_bit_{$cid}_{$type}_{$rand}" class="super_bit_self">
-<div class="bit {$color_class} {$cid}_bit" id="bit_{$cid}_{$type}_{$rand}">
-
-        <span class="bit_img_container"><img class="bit_img" src="{$pic_path}{$pic_100}" /></span>
-        <span class="bit_text">
-                <a href="profile">{$uname}</a> {$chat_text}
-        </span>
-        <span class="bit_timestamp"><i>{$chat_timestamp}</i></span>
-        <ul class="bits_lists_options">
-		<li><span class="{$cid}_resp_notify resp_notify"></span></li>
-                <li class="0" onclick="toggle_show_response('_{$cid}_{$type}_{$rand}',this,0);"><img src="images/icons/comment.png" /> <span class="bits_lists_options_text"></span></li>
-        </ul>
-
-</div>
-
-<div class="respond_text_area_div" id="respond_{$cid}_{$type}_{$rand}">
-<ul>
-        <li><textarea class="textarea_response gray_text" id="textarea_response_{$cid}" onfocus="if (this.className[this.className.length-1] != '1') vanish_text('textarea_response',this);">Response..</textarea></li>
-        <li><button>Send</button></li>
-</ul>
-
-</div>
-
-        <ul class="bit_responses {$cid}_resp" id="responses_{$cid}_{$type}_{$rand}">
-EOF;
-				}
-	return $final_html;
+			//Store
+			$messages[] = array(
+			'mid' =>           $mid,
+			'special'=>       $special,
+			'chat_timestamp'=>$chat_timestamp,
+			'cid'=>           $cid,
+			'chat_text'=>     $chat_text,
+			'uname'=>         $uname,
+			'fname'=>         $fname,
+			'lname'=>         $lname,
+			'pic_100'=>       $pic_100,
+			'pic_36'=>        $pic_36,
+			'uid'=>           $uid
+			);
+		}
+	return $messages;
 	}
+
+
 	//END of function
 }
 //END of class

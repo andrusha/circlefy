@@ -41,7 +41,7 @@ class assoc_functions{
 			//remove min() to set precedence back for businesses
 			$create_assoc_query = <<<EOF
 			(
-				SELECT min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
+				SELECT t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
 				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
@@ -49,7 +49,7 @@ class assoc_functions{
 				GROUP BY t2.gid
 			LIMIT 10
 			) UNION ALL (
-				SELECT 99 as connected,t2.uname AS symbol,CONCAT(t2.fname,' ',t2.lname) AS name,NULL as members,NULL as online FROM login as t2
+				SELECT uid as id,99 as connected,t2.uname AS symbol,CONCAT(t2.fname,' ',t2.lname) AS name,NULL as members,NULL as online FROM login as t2
                                 WHERE t2.uname LIKE '{$search}%'
 			LIMIT 5
 			) ORDER BY connected ASC;
@@ -108,6 +108,7 @@ EOF;
 			$create_assoc_results = $this->mysqli->query($create_assoc_query);
 			if($create_assoc_results->num_rows > 0){
 				while($res = $create_assoc_results->fetch_assoc() ) {
+					$id = $res['id'];
 					$name = $res['name'];
 					$symbol = $res['symbol'];
 					$type = $res['connected'];
@@ -141,7 +142,7 @@ EOF;
 						$bullet_display = "<img src='images/icons/book_open.png' /> $bullet_name $online_count"; 
 					}
 
-				 	$response[] = array($name,"$name:$symbol:$type",$bullet_display,"$name $type_display");
+				 	$response[] = array($name,"$name:$symbol:$type:$id",$bullet_display,"$name $type_display");
 				}
 			} elseif($search != '') { 
 				$string = trim("<span id='no_results'><b>$symbol$search</b> returned no results
