@@ -162,7 +162,7 @@ ul.tap-stream .tap-body {
 div.textboxlist {
 	background: #fff;
 	width: 70%;
-	padding: 2px;
+	padding: 1px;
 	margin-left:5px;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
@@ -170,7 +170,9 @@ div.textboxlist {
 }
 
 #tap-feed-outside-more div.textboxlist {
-	width: 100%; }
+	width: 100%;
+	margin: 0;
+	padding: 0; }
 
 ul.textboxlist-bits {
 	border: none;
@@ -269,7 +271,7 @@ ul.tap-stream .tap-response-box {
 
 #tap-feed-outside-set { 
 	position: absolute;
-	margin-top: 50px;
+	margin-top: 5px;
 	font-size: 11px; }
 
 #loading-indicator {
