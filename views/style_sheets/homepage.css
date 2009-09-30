@@ -258,3 +258,6 @@ ul.tap-stream .tap-response-box {
 
 #loading-indicator {
 	padding: 0 0 9px 5px; }
+
+.tap-respond {
+	font-size: 11px; }
