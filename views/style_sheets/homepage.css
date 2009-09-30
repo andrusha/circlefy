@@ -221,13 +221,13 @@ ul.tap-stream .tap-response-box {
 }
 
 #tap-feed-outside {
-	padding: 4px 6px;
 	font-size: 10px;
 	background: url(/images/cimages/out-msg-btn1.png) no-repeat;
 	color: #000; float: right;
 	border: none;
 	cursor: pointer;
-	height: 14px;
+	height: 22px;
+	padding: 4px 4px 0px 8px;
 }
 
 #tap-feed-outside-drop {
@@ -236,9 +236,10 @@ ul.tap-stream .tap-response-box {
 	color: #000;
 	cursor: pointer;
 	float: right;
-	height: 21px;
+	height: 22px;
 	margin-right: 5px;
 	width: 20px;
+	padding: 0 0 0 3px;
 }
 
 #tap-feed-outside-more {
