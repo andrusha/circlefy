@@ -77,6 +77,9 @@ ul.tap-stream li {
 	padding:8px;
 }
 
+ul.tap-stream .tap-chat li {
+	border-top:1px solid #D8D8D8; }
+
 ul.tap-stream li.noresults {
 	height: 80px;
 	background-image: none;
@@ -121,11 +124,17 @@ ul.tap-stream .clarity {
 }
 
 ul.tap-stream .tap-info {
-	margin-bottom: 3px;
+	left:70px;
+	margin-bottom:3px;
+	position:absolute;
+	top:-1px;
 }
 
 ul.tap-stream .tap-msg {
-	font-size: 13px;
+	position:absolute;
+	left:70px; top:15px;
+	width:410px;
+	font-size:12px;
 }
 
 ul.tap-stream .tap-info span {
@@ -142,10 +151,6 @@ ul.tap-stream .tap-time {
 	font-size: 10px;
 }
 
-ul.tap-stream .tap-msg {
-	width: 504px;
-}
-
 ul.tap-stream .tap-actions {
 	float: right;
 }
@@ -159,11 +164,13 @@ div.textboxlist {
 	width: 70%;
 	padding: 2px;
 	margin:-3px;
-	margin-left:5px;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 5px;
 }
+
+.tap-feed-outside-more div.textboxlist {
+	width: 100%; }
 
 ul.textboxlist-bits {
 	border: none;
@@ -260,8 +267,24 @@ ul.tap-stream .tap-response-box {
 	-webkit-border-radius: 5px;
 }
 
+#tap-feed-outside-set { 
+	margin-top: 50px;
+	font-size: 11px; }
+
 #loading-indicator {
 	padding: 0 0 9px 5px; }
 
 .tap-respond {
 	font-size: 11px; }
+	
+.tap-respond-cancel {
+	font-size: 11px; }
+	
+.tap-response {
+	font-family:arial;
+	font-size:12px;
+	margin-right:20px;
+	padding:3px;
+	width:455px; }
+	
+	
