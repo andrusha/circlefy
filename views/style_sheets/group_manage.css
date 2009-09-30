@@ -96,7 +96,10 @@ body {
 			margin-right: 3px;
 			background: #f2f2f2; }
 			
-			.tab-list a { color: black; }
+			.tab-list a {
+				color: black;
+				vertical-align: 6px;
+				padding-left: 2px; }
 			
 			.list-item { margin-bottom: 3px; }
 			
@@ -391,7 +394,5 @@ body {
 			font-size: 20px;
 		}
 
-
-
-
-
+.group {
+padding-bottom: 3px; }

@@ -142,6 +142,10 @@ ul.tap-stream .tap-time {
 	font-size: 10px;
 }
 
+ul.tap-stream .tap-msg {
+	width: 504px;
+}
+
 ul.tap-stream .tap-actions {
 	float: right;
 }
