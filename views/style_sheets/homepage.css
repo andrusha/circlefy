@@ -172,13 +172,14 @@ div.textboxlist-autocomplete {
 #tap-feed-search {
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll left top;
+	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll right top;
 	border:medium none;
 	color:#000000;
 	float:right;
 	font-size:12px;
 	height:19px;
 	width:124px;
+	text-indent: 5px;
 }
 
 .section-head label {
@@ -241,3 +242,6 @@ ul.tap-stream .tap-response-box {
 	z-index: 1;
 	font-size: 12px;
 }
+
+#loading-indicator {
+	padding: 0 0 9px 5px; }
