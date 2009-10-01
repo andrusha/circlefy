@@ -48,10 +48,14 @@ class search_functions{
 			$offset = 0;
 		}
 		$limit = 10;
+		
 
                 $uid = $_SESSION["uid"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
+		if(count($gname) > 4)
+			$gname = '%'.$gname;
+
                 $gname = $this->mysqli->real_escape_string($gname);
 
 		//This query gets the group information based off of params supplied
@@ -64,7 +68,8 @@ class search_functions{
 		GROUP BY gs.gid
 		) AS ugm
 		LEFT JOIN groups AS t2 ON t2.gid = ugm.gid
-        GROUP BY ugm.gid LIMIT {$limit} OFFSET {$offset};
+	WHERE t2.connected !=2
+        GROUP BY ugm.gid ORDER BY t2.connected LIMIT {$limit} OFFSET {$offset};
 EOF;
 
                 $group_results = $this->mysqli->query($group_query);

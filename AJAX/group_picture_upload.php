@@ -65,7 +65,7 @@ class group_functions{
                                 $crop->writeImage( $upload_dir.'/'.$pic_100 );
 
                                 $pic_36 = '36wh_'.$hash_filename.$ftype;
-                                $crop->cropThumbnailImage( 20, 20 );
+                                $crop->cropThumbnailImage( 30, 30 );
                                 $crop->writeImage( $upload_dir.'/'.$pic_36 );
 	
 				$result = 'OK';

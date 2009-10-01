@@ -79,15 +79,14 @@ class ajaz_sign_up{
 		$comb3 = $lname;
 
 		$this->populate_profile();
-		$this->create_filter('My Area','',94301,0);
+/*		$this->create_filter('My Area','',94301,0);
 		$this->create_filter('My Name',$comb1.','.$comb2.','.$comb3,0,0);
 		$this->create_filter('Random Area','',10002,0);
 		$this->create_filter('Random Interest','Party,Beer Pong,Partying',0,0);
 		$this->create_filter('Random Interests 2','emergency,fire',0,0);
 		$this->create_filter('Random Word','copyright',0,0);
-		$this->create_filter('Random Word 2','girls',0,0);
-		$this->join_group(1);
-		$this->join_group(2);
+		$this->create_filter('Random Word 2','girls',0,0);*/
+		$this->join_group(61022);
 		if($_POST['fid'])
 			$this->tap_friend($_POST['fid']);
 	}

@@ -76,13 +76,22 @@ EOF;
 		if($old_name){
 			$hash_filename =  md5($gid.'CjaCXo39c0..$@)(c'.$filename);
 			$pic_100 = '100h_'.$hash_filename.'.gif';
+			$pic_36 = '36wh_'.$hash_filename.'.gif';
+
+			$small_pic = explode('_',$old_name);
+			$small_pic  = '36wh_'.$small_pic[1];
+			$old_name2 =  D_GROUP_PIC_PATH.'/'.$small_pic;
+			$new_name2 = D_GROUP_PIC_PATH.'/'.$pic_36;
 
 			$old_name = D_GROUP_PIC_PATH.'/'.$old_name;
 			$new_name = D_GROUP_PIC_PATH.'/'.$pic_100;
 
 
+
+
 			rename($old_name,$new_name);
-			$gr_pic_query = "UPDATE groups SET pic_100 = '{$pic_100}' WHERE gid = {$gid}";
+			rename($old_name2,$new_name2);
+			$gr_pic_query = "UPDATE groups SET pic_36 = '{$pic_36}',pic_100 = '{$pic_100}' WHERE gid = {$gid}";
 			$this->mysqli->query($gr_pic_query);
 			return json_encode(array('success' => True,'pic' => True));
 		}

@@ -5,7 +5,7 @@
 session_start();
 require('../config.php');
 
-$response = $_POST['response'];
+$response = stripslashes($_POST['response']);
 $cid = $_POST['cid'];
 
 	$chat_obj = new chat_functions();
@@ -26,20 +26,20 @@ class chat_functions{
 	function send_response($msg,$cid){
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
-		$this->mysqli->real_escape_string($msg);
-		$this->mysqli->real_escape_string($cid);
 
 			$action = "response";
 			$response = $msg;
 
 			$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'"}'."\r\n";
+			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'"}'."\r\n";
 			fwrite($fp,$insert_string);
 			fclose($fp);
+		$this->mysqli->real_escape_string($msg);
+		$this->mysqli->real_escape_string($cid);
 		
                 $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$cid}','{$uid}','{$uname}','{$msg}')";
                 $this->mysqli->query($resp_message_query);
-		return 1;
+		return json_encode(array('success' => 1));
 	}
 }
 //END class

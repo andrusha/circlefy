@@ -86,43 +86,87 @@ class filter_functions{
 		return json_encode(array('results' => True,'data'=> $data ));
 	}
 
-	private function aggr_group_filter($outside,$search){
+	private function aggr_group_filter($outside,$search,$o_filter){
 		$gids = $_SESSION['gid'];
 		$gids = explode(',',$gids);
 		if($gids)
 		foreach($gids as $gid)
 			$gid_query_list .= $gid.',';
 		$gid_query_list = substr($gid_query_list,0,-1);
-	
-		$get_groups_bits_query = <<<EOF
-		SELECT scj.chat_text,scm.mid FROM special_chat_meta AS scm
-		JOIN special_chat AS scj
-		ON scj.mid = scm.mid 
-		WHERE  gid IN ( {$gid_query_list} ) AND connected IN ({$outside}) AND chat_text LIKE '%{$search}%'
-		GROUP BY mid ORDER BY mid DESC LIMIT 10
+
+		if($search)
+			$search_sql =  "AND chat_text LIKE '%{$search}%'";
+
+		if($o_filter){
+                        foreach($o_filter as $o_gid)
+                                $o_filter_list = $o_gid.',';
+
+                        $o_filter_list = substr($o_filter_list,0,-1);
+
+                        $get_groups_bits_query = <<<EOF
+                        SELECT
+                        scm.mid,scm.gid,scm.connected
+                        FROM special_chat_meta AS scm, special_chat_meta AS scm2
+                        JOIN special_chat AS scj
+                        ON scj.mid = scm2.mid
+                        WHERE scm.gid IN ({$gid_query_list}) AND scm.connected IN ({$outside}) AND scm2.mid = scm.mid
+                        AND scm2.gid IN ({$o_filter_list})
+			{$search_sql}
 EOF;
+		} else { 
+	
+			$get_groups_bits_query = <<<EOF
+			SELECT
+			scj.chat_text,scm.mid FROM special_chat_meta AS scm
+			JOIN special_chat AS scj
+			ON scj.mid = scm.mid 
+			WHERE  gid IN ( {$gid_query_list} ) AND connected IN ({$outside})
+			{$search_sql}
+			GROUP BY mid ORDER BY mid DESC LIMIT 10
+EOF;
+		}
+
         	$mysql_obj = $this->mysqli->query($get_groups_bits_query);
 		return $mysql_obj;
 	}
 
 	private function ind_group_filter($gid,$outside,$search,$o_filter) {
+		if($search)
+			$search_sql =  "AND chat_text LIKE '%{$search}%'";
+
 		if($o_filter){
 			foreach($o_filter as $o_gid)
 				$o_filter_list = $o_gid.',';
 
 			$o_filter_list = substr($o_filter_list,0,-1);
-			$o_filter_sql = " AND scm.gid IN({$o_filter_list})";
-		}
+	                //$o_filter_sql = " AND scm.gid IN({$o_filter_list})";
 
-		$get_group_bits_query = <<<EOF
-		SELECT scj.chat_text,scm.mid FROM special_chat_meta AS scm
-		JOIN special_chat AS scj
-		ON scj.mid = scm.mid 
-		WHERE scm.gid = {$gid} AND scm.connected IN ({$outside}) {$o_filter_sql} AND scj.chat_text LIKE '%{$search}%'
-		GROUP BY mid ORDER BY mid DESC LIMIT 10
+			$get_group_bits_query = <<<EOF
+			SELECT
+			scj.chat_text,scm.mid,scm.gid,scm.connected
+			FROM special_chat_meta AS scm, special_chat_meta AS scm2
+
+			JOIN special_chat AS scj
+			ON scj.mid = scm2.mid 
+
+			WHERE scm.gid = {$gid} AND scm.connected IN ({$outside}) AND scm2.mid = scm.mid
+			AND scm2.gid IN ({$o_filter_list})
+			{$search_sql}
 EOF;
 
-		echo $get_group_bits_query;
+		} else { 
+
+			$get_group_bits_query = <<<EOF
+			SELECT
+			scj.chat_text,scm.mid FROM special_chat_meta AS scm
+			JOIN special_chat AS scj
+			ON scj.mid = scm.mid 
+			WHERE scm.gid = {$gid} AND scm.connected IN ({$outside}) 
+		 	{$search_sql}	
+			GROUP BY mid ORDER BY mid DESC LIMIT 10
+EOF;
+		}
+		
 		$mysql_obj = $this->mysqli->query($get_group_bits_query);
 		return $mysql_obj;
 	}
@@ -135,17 +179,14 @@ EOF;
 		$mid_list = $return_list['mid_list'];
 
 		$group_query_bits_info = <<<EOF
-		(SELECT t4.mid,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
+		SELECT t4.mid,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 		JOIN special_chat as t3
 		ON t3.uid = t2.uid
 		LEFT JOIN (
 		SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$uid}
 		) AS t4
 		ON t4.mid = t3.cid
-		WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10)
-		UNION ALL
-		(SELECT null as mid,t3.special,UNIX_TIMESTAMP(t3.chat_time) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-		JOIN chat as t3 ON t3.uid = t2.uid WHERE t3.cid IN ( {$mid_list} ) ORDER BY t3.cid DESC) ;
+		WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
 EOF;
 
 		$m_results = $this->mysqli->query($group_query_bits_info);

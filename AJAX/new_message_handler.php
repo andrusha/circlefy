@@ -157,6 +157,7 @@ class chat_functions{
 		$rows = substr($rows,0,-1);
 
 		$init_meta_query = "INSERT INTO special_chat_meta(mid,gid,connected,uid) values $rows";
+		
                 $this->mysqli->query($init_meta_query);
 	}
 

@@ -23,20 +23,24 @@ class chat_functions{
 
 		
 	function load_response($msg,$cid){
-                $resp_message_query = "SELECT * FROM chat WHERE cid = {$cid}";
+                $resp_message_query = "SELECT c.uname,c.chat_text,c.chat_time FROM chat AS c WHERE c.cid = {$cid}";
                 $responses_data = $this->mysqli->query($resp_message_query);
+		if($responses_data->num_rows){
 		while($res = $responses_data->fetch_assoc()){
-			$uname = $res['uname'];:
+			$uname = $res['uname'];
 			$chat_text = $res['chat_text'];
-			$chat_timestamp = $res['chat_timestamp'];
+			$chat_timestamp = $res['chat_time'];
 
 			$responses[] = array(
 			'uname' =>		$uname,
 			'chat_text'=>		$chat_text,
-			'chat_timestamp'=>	$chat_timestamp
+			'chat_time'=>		$chat_timestamp
 			);
 		}
-		return json_encode(array('success' => 1,'responses' => $responses));
+			return json_encode(array('success' => 1,'responses' => $responses));
+		} else {
+			return json_encode(array('success' => 0,'responses' => null));
+		}
 	}
 }
 //END class
