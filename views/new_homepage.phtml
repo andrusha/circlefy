@@ -1,8 +1,10 @@
 <?php
-$last = $_t['last_tap'][0];
+$last = (!empty($_t['last_tap'])) ? $_t['last_tap'][0] : null;
 $inits = array();
-foreach($_t['groups_bits'] as $bit) {
-	array_push($inits, $bit['cid']);
+if (is_array($_t['groups_bits'])) {
+	foreach($_t['groups_bits'] as $bit) {
+		array_push($inits, $bit['cid']);
+	}	
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -36,6 +38,7 @@ foreach($_t['groups_bits'] as $bit) {
 Tap = window.Tap || {};
 Tap.Vars = {
 	pcid: ("<?= $_t['pcid'] ?>" * 1),
+	uname: "<?= $_SESSION['uname'] ?>",
 	currentTap: ("<?= $last['cid'] ?>" * 1),
 	currentStream: JSON.decode('<?= json_encode($inits) ?>')
 };
@@ -50,12 +53,7 @@ Tap.Vars = {
 	
 	<div id="tap-feed-outside-more">
 		<p>
-			<input type="checkbox" name="outside-show" />
-			<label for="show-outside">Show Outside Taps</label>							
-		</p>
-		<p>
-			<label>From: </label><br />
-			<input type="text" name="outside-from" />				
+			<input type="text" name="outside-from" alt="Choose sources.." />				
 		</p>
 		<p>
 			<a href="#" id="tap-feed-outside-set">Save</a>
@@ -68,12 +66,6 @@ Tap.Vars = {
 			<h1>Help and Tips</h1>
 			<h2>Find your groups faster.</h2>
 			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
-			<h2>Don't overuse your memes.</h2>
-			<p>It might have been funny the first time you heard it, but most memes are notorious for expiring quickly. Avoid the social awkwardness produced by using an expired meme by not using them when they near their expiry date. Common memes expire within 3 days. Celebrity memes expire with a week, and cat-related ones are good for at least a month. When in doubt, consult your local /b/.</p>
-			<h2>More options for search.</h2>
-			<p>When searching, you can optionally toggle the "more" link to give you the option of adding location and focus criteria to narrow down your search.</p>
-			<h2>Share your groups via invites.</h2>
-			<p>You can send invites to your friends who might be interested in a group you belong to. Simply click on the Invite button and write their email addresses or usernames and send.</p>
 		</div>
 
 		<div id="center-col">
@@ -94,19 +86,38 @@ Tap.Vars = {
 				</div>
 				<div class="section-body">
 					<ul id="your-stream" class="tap-stream">
-						<li>
+						<?php if ($last == null): ?>
+						<li class='welcome_tap'>
+							<h1 style="font-size:14px; font-weight:bold; margin-bottom: 5px; color: #4F9CDF;">Welcome To Tap!</h1>
+							<p style="margin-bottom: 10px;">Tap allows you to connect with people around you and stay informed about topics you're interested in.</p>
+							<p style="margin-bottom: 10px;">You can start by joining a <a href="/groups">group</a>, or you can send a tap right now using the TapBox above. If you get stuck, check out the <a href="/help">Help</a> section, or send a tap to <strong>Support</strong>.</p>
+							<p style="margin-bottom: 10px;"><strong>Keep on tapping!</strong></p>
+						</li>
+						<?php else: ?>
+						<li id="yid_<?= $last['cid'] ?>">
 							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" alt="<?= $last['uname'] ?>" />
-							<div>
+							<div class="tap-actions">
+								<a class="tap-respond" href="#">Respond</a>
+							</div>
+							<div class="tap-body">
 								<p class="tap-info">
 									<span class="tap-from"><?= $last['fname'] . " " . $last['lname'] ?></span>
 									<span class="tap-time"><?= $last['chat_timestamp'] ?></span>
+									<span class="tap-typing"></span>
 								</p>
-								<p class="tap-msg">
-									<span><?= $last['chat_text'] ?></span>
+								<p>
+									<span class="tap-msg"><?= $last['chat_text'] ?></span>
 								</p>
+							</div>
+							<div class="tap-response-box clarity">
+								<ul class="tap-chat">
+								</ul>
+								<input type="text" class="tap-response" style="width:450px" />
+								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
 						</li>
+						<?php endif; ?>
 					</ul>
 				</div>
 			</div>
@@ -114,8 +125,10 @@ Tap.Vars = {
 			<div id="tap-feed" class="section">
 				<div class="section-head">
 					<h1>
-						<span id="tap-feed-outside">Out</span>
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
+						<span id="tap-feed-outside-drop"></span>
+						<span id="tap-feed-outside">Outside: Off</span>
+						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" style="float:left; margin-right:10px; height: 20px; width: 20px" />
 						<span id="tap-feed-name">Groups Feed</span>
 						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
 					</h1>
@@ -134,14 +147,14 @@ Tap.Vars = {
 									<span class="tap-time"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
-								<p class="tap-msg">
-									<span><?= $bit['chat_text'] ?></span>
+								<p>
+									<span class="tap-msg"><?= $bit['chat_text'] ?></span>
 								</p>
 							</div>
-							<div class="tap-response-box">
+							<div class="tap-response-box clarity">
 								<ul class="tap-chat">
 								</ul>
-								<textarea class="tap-response" cols="50" rows="1"></textarea>
+								<input type="text" class="tap-response" style="width:450px" />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -160,7 +173,7 @@ Tap.Vars = {
 				<ul>
 					<li id="gid_all" class="group">
 						<span class="counter"></span>
-						<img src="/group_pics/36wh_default_group.jpg" />
+						<img src="/group_pics/36wh_default_group.gif" />
 						<a href="#" title="Groups Feed">All Your Groups</a>
 					</li>
 					<?php foreach ($_t['your_groups'] as $group): ?>
@@ -190,14 +203,14 @@ Tap.Vars = {
 						<span class="tap-time"><#: bit.chat_timestamp #></span>
 						<span class="tap-typing"></span>
 					</p>
-					<p class="tap-msg">
-						<span><#: bit.chat_text #></span>
+					<p>
+						<span class="tap-msg"><#: bit.chat_text #></span>
 					</p>
 				</div>
-				<div class="tap-response-box">
+				<div class="tap-response-box clarity">
 					<ul class="tap-chat">
 					</ul>
-					<textarea class="tap-response" cols="50" rows="1"></textarea>
+					<input type="text" class="tap-response" style="width:450px" />
 					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 				</div>
 				<div class="clarity"></div>

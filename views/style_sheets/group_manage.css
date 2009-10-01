@@ -204,6 +204,7 @@ body {
 				border-width:0px;
 				height:22px;
 				margin-top: 2px;
+				float: left;
 				width:115px;
 				padding:4px 0 0px 6px;}
 			
@@ -212,6 +213,7 @@ body {
 			}
 			
 			#gr-filter-btn {
+				float: left; height: 21px; margin-top: 3px;
 				background: url(/images/cimages/magn_green.gif) no-repeat left top;
 				padding-left: 22px; padding-top: 4px; padding-bottom: 3px; }
 

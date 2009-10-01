@@ -75,7 +75,7 @@ Tap.Groups = {
 			}
 		});
 		body.getElement('input[name="keywords"]').addEvents({
-			// 'blur': this.onFilter.toHandler(this),
+			'blur': this.onFilter.toHandler(this),
 			'keypress': function(e){
 				if (e.key == 'enter') {
 					self.onFilter(this);
@@ -492,11 +492,10 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							</div>
 							<div class="gr-numbers">
 								<p><strong>23,643</strong>
-								</p><p>(61 daily)</p>
+								</p>
 							</div>
 							<div class="gr-numbers">
 								<p><strong><?= $size ?></strong></p>
-								<p>(17 daily)</p>
 							</div>
 							<div class="gr-btns">
 								<a href="" class="gr-invite-btn"></a><br />
@@ -530,15 +529,13 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							<# } #>
 							<strong class="gr-name"><#: data.gname #></strong>&nbsp;&nbsp;</p>
 							<p class="gr-desc description"><#: data.descr #></p>
-							<p class="gr-desc focus"><#: data.focus #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
+							<p class="gr-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 					</div>
 					<div class="gr-numbers">
-						<p><strong>23,643</strong>
-						</p><p>(61 daily)</p>
+						<p><strong>23,643</strong></p>
 					</div>
 					<div class="gr-numbers">
 						<p><strong><#: data.size #></strong></p>
-						<p>(17 daily)</p>
 					</div>
 					<div class="gr-btns">
 						<# if (data["in"] == 0) { #>

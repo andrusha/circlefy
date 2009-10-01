@@ -71,7 +71,7 @@ window.addEvent('domready', function() {
 		</div>
 	-->
 		<ul id="info_list">
-			<li class="post" id="click_you_ask" onmouseout="mouse_out_inform(this);" onmouseover="mouse_over_inform(this);" onclick="window_swapper(this); return false;">Tap the Connected</li>
+			<li class="post" id="click_you_ask">Tap the Connected</li>
 		</ul>
 	
 	</div>
@@ -80,7 +80,7 @@ window.addEvent('domready', function() {
 
 						<div id="inform_container">
 						
-							<div id="you_ask">
+							<div id="you_ask" style="display:block;">
 								<span class="inform_header">Connect.</span>
 								
 								<p>
@@ -130,6 +130,7 @@ window.addEvent('domready', function() {
 
 
 		<div id="forms">
+			<!--
                 <form action="<?=ROOT?>" method="post" >
                                 <fieldset>
                                         <div id="core">
@@ -144,7 +145,7 @@ window.addEvent('domready', function() {
                                         </ul>
 
 					</div>
-				</fieldset>
+				</fieldset> -->
 
 		</div>	
 
@@ -152,7 +153,8 @@ window.addEvent('domready', function() {
 
 	<br/>
 
-	<a id="main_signup" class="style_bold" href="#" onclick="sign_up(); return false;">Sign Up</a></span>
+	<!-- <a id="main_signup" class="style_bold" href="#" onclick="sign_up(); return false;">Sign Up</a> -->
+	</span>
 
 	
 	<div id="footer">
