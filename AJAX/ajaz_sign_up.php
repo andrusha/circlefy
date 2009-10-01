@@ -92,7 +92,7 @@ class ajaz_sign_up{
 	}
 
 	function populate_profile(){
-                $profile_query = "INSERT INTO profile(uid,uname) values($this->uid,'$this->uname');";
+                $profile_query = "INSERT INTO profile(uid) values($this->uid);";
                 $this->mysqli->query($profile_query);
 	}
 
@@ -101,7 +101,6 @@ class ajaz_sign_up{
 		$uid = $this->uid;		
 
                 $friend_query = "INSERT INTO friends(fuid,uid) values('{$fid}','{$uid}');";
-		echo $friend_query;
                 $friend_results = $this->mysqli->query($friend_query);
         }
 
@@ -110,7 +109,6 @@ class ajaz_sign_up{
 		$uid = $this->uid;		
 
                 $create_rel_query = "INSERT INTO group_members(uid,gid) values('{$uid}',{$gid});";
-		echo $create_rel_query;
                 $create_rel_results = $this->mysqli->query($create_rel_query);
                 $last_id = $this->mysqli->query($this->last_id);
         }

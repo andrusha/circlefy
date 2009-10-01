@@ -2,7 +2,7 @@
 $res = $_t['edit_profile'];
 $fname = $res['fname'];
 $lname = $res['lname'];
-$uname = $_COOKIE['uname'];
+$uname = $_SESSION['uname'];
 $email = $res['email'];
 $pic = $res['pic_180'];
 $stat = $_t['stats'];
@@ -300,15 +300,15 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 						</h2>
 						<br /><br />
 						<h1>Location </h1><hr class="hr2"/>
-						<h2 class="in-title">State &amp; Zip: <input type="text" name="zip" value="" id="input-zip"/>
-							<select name="state" id="select-state">
-								<option value="0" selected>select state</option>
-								<option value="1">one</option>
-								<option value="2">two</option>
-								<option value="3">three</option>
-							</select></h2>
+						<!-- <h2 class="in-title">State &amp; Zip: <input type="text" name="zip" value="" id="input-zip"/>
+													<select name="state" id="select-state">
+														<option value="0" selected>select state</option>
+														<option value="1">one</option>
+														<option value="2">two</option>
+														<option value="3">three</option>
+													</select></h2> -->
 						<h2 class="in-title">Country:
-							<select name="country">
+							<select name="country" style="margin-right:140px">
 								<option value="1" selected>United States</option>
 								<option value="2">two</option>
 								<option value="3">three</option>
@@ -320,7 +320,7 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 								<div id="pic-preview" style="display:inline; float:left; margin-right:20px">
 									<img src="/user_pics/<?= $pic ?>" />
 								</div>
-								Change: <input id="pic-uploader" type="file" name="you-pic" value="" />
+								Change: <input id="pic-uploader" type="file" name="you-pic" value="" style="height: 22px" />
 								<div class="error-msg"></div>
 							</h2>
 							<iframe

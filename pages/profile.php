@@ -36,6 +36,7 @@ class profile extends Base{
 				ON t1.uid = t5.uid
 				WHERE t1.uid={$uid}
 EOF;
+
 				$this->db_class_mysql->set_query($get_profile_query,'get_edit_profile','This is getting the users profile contents');
 		
 				$edit_profile_results = $this->db_class_mysql->execute_query('get_edit_profile');

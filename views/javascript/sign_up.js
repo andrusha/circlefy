@@ -204,7 +204,11 @@ function sign_up(){
 	if (submitSignup.readyState == 4 || submitSignup.readyState == 0) {
 		submitSignup.open("POST", 'AJAX/ajaz_sign_up.php', true);
 		submitSignup.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-		submitSignup.onreadystatechange = function() {  show_next_step(current_step); };
+		submitSignup.onreadystatechange = function(){
+			if (submitSignup.readyState == 4) {
+				window.location.reload();
+			}
+		};
 	
 		var inputs = document.getElementsByTagName('input');
 		for (var i = 4; i < inputs.length; i++) { 
