@@ -62,7 +62,7 @@ body {
 		
 	#groups-tab {
 		height: 31px; width: 194px;
-		background: url(/images/cimages/tab_green.gif); }
+		background: url(/images/cimages/tab_blue.gif); }
 		
 	#filters-tab {
 		height: 31px; width: 194px;
@@ -164,6 +164,10 @@ body {
 		
 		#group-search-more input {
 		}
+		
+		#search-btn-more {
+			color: #707070;
+			font-size: 13px; }
 			
 	#gr-header {	
 		height: 41px; width: 553px;
@@ -187,9 +191,9 @@ body {
 				margin-right: 6px; }
 
 			#gr-create-btn {
-				width:130px;
+				width:129px;
 				height:25px; display:block; float:left;
-				background: url(/images/cimages/gr_new_btn.gif) no-repeat left;}
+				background: url(/images/cimages/gr_new_btn_blue.gif) no-repeat left;}
 				
 				#gr-create-btn:hover { 
 					background-position: right; }
@@ -208,8 +212,8 @@ body {
 			}
 			
 			#gr-filter-btn {
-				background: url(/images/cimages/magn_green.gif) no-repeat left top;
-				padding-left: 22px; padding-top: 3px; padding-bottom: 3px; }
+				background: url(/images/cimages/magn_blue.gif) no-repeat left top;
+				padding-left: 22px; padding-top: 4px; padding-bottom: 3px; }
 
 				#gr-filter-btn:hover { 
 					background-position: right top; }
