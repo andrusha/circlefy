@@ -92,7 +92,7 @@ class ajaz_sign_up{
 	}
 
 	function populate_profile(){
-                $profile_query = "INSERT INTO display_rel_profile(uid) values('$this->uid}');";
+                $profile_query = "INSERT INTO profile(uid,uname) values($this->uid,'$this->uname');";
                 $this->mysqli->query($profile_query);
 	}
 
