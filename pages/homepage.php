@@ -136,7 +136,27 @@ EOF;
 		//START get active conversations
 
 		$ac_query = <<<EOF
-		SELCT 
+                SELECT t1.mid,t1.uid,t2.uname,t2.chat_text FROM active_convo as t1
+                JOIN special_chat AS t2
+                ON t1.mid = t2.mid
+                WHERE t1.uid = {$uid} AND t1.active = 1 ORDER BY mid ASC;
+EOF;
+		$this->db_class_mysql->set_query($ac_query,'active_convos',"This is a SPECIAL QUERY that is part of a active of queries - This is for active convos: ALL ");
+	        $actives_bits_results = $this->db_class_mysql->execute_query('active_convos');
+
+		while($res = $actives_bits_results->fetch_assoc() ) {
+			$mid = $res['mid'];
+			$uid = $res['uid'];
+			$uname = $res['uname'];
+			$chat_text = $res['chat_text'];
+
+			$ac_output = array(
+			'mid'	=>	$mid,
+			'uid'	=>	$uid,
+			'uname'	=>	$uanme,
+			'chat_text' =>	$chat_text
+			);
+		}
 
 		//END get active conversations	
 	
@@ -248,17 +268,14 @@ if($groups_bits_results->num_rows > 0){
 	$mid_list = $return_list['mid_list'];
 
 	$groups_query_bits_info = <<<EOF
-(SELECT t4.mid as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
+SELECT t4.mid as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 JOIN special_chat as t3
 ON t3.uid = t2.uid
 LEFT JOIN (
 SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$_SESSION['uid']}
 ) AS t4
 ON t4.mid = t3.cid
-WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10)
-UNION ALL
-(SELECT null as good_id,t3.special,UNIX_TIMESTAMP(t3.chat_time) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-JOIN chat as t3 ON t3.uid = t2.uid WHERE t3.cid IN ( {$mid_list} ) ORDER BY t3.cid DESC) ;
+WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
 EOF;
 
 $data_all_groups_bits = $this->bit_generator($groups_query_bits_info,'groups_aggr');
