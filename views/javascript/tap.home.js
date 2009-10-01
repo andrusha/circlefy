@@ -7,7 +7,7 @@ Tap.Home = {
 	currentStream: Tap.Vars.currentStream,
 	currentSearch: null,
 
-	settings: new Hash.Cookie('tap-options'),
+	settings: {},
 
 	pushed: {},
 	typing: {},
@@ -20,15 +20,23 @@ Tap.Home = {
 		var self = this;
 		var body = $(document.body);
 		this.mainStream = $('main-stream');
-		this.settings.load();
-		this.settings.empty();
 
 		body.addEvents({
 			'click:relay(li.group a)': this.changeFeed.toHandler(this),
 			'click:relay(a.reset-feed)': this.clearSearch.toHandler(this),
-			'click:relay(a.tap-respond)': this.showResponseBox.toHandler(this),
+			'click:relay(a.tap-respond)': function(e){
+				e.preventDefault();
+				self.showResponseBox(this, e);
+				self.initResponse(this);
+			},
 			'click:relay(a.tap-respond-cancel)': this.hideResponseBox.toHandler(this),
-			'keypress:relay(textarea.tap-response)': this.typing.toListener(this)
+			'keypress:relay(input.tap-response)': function(e){
+				if (e.key == 'enter') {
+					self.sendResponse(this);
+				} else {
+					self.typing(this);
+				}
+			}
 		});
 
 		var tapper = this.tapper = {
@@ -57,7 +65,9 @@ Tap.Home = {
 
 		Tap.Push.addEvents({
 			'connect': this.setChannels.bind(this),
-			'typing': this.typingIndicator.bind(this)
+			'typing': this.typingIndicator.bind(this),
+			'response': this.parseResponse.bind(this),
+			'notification': this.processPushed.bind(this)
 		});
 
 		var button = this.initOutside();
@@ -65,12 +75,13 @@ Tap.Home = {
 		$('tap-feed-outside-more').addEvent('outerClick', function(e){
 			if ($(e.target) !== button) self.hideOutside();
 		});
+		$('tap-feed-outside').addEvent('click', this.toggleOutside.toHandler(this));
 	},
 
 	// GEN FUNCS
 
 	setChannels: function(){
-		Tap.Push.sendCIDs([].combine(this.currentStream).combine("" + this.currentTap));
+		Tap.Push.sendCIDs([].combine(this.currentStream).combine(["" + this.currentTap]));
 	},
 
 	parseTemplate: function(type, data){
@@ -95,22 +106,25 @@ Tap.Home = {
 
 	typing: function(el){
 		var parent = el.getParent('li');
-		var id = parent.get('id').remove(/tid_/);
+		if (parent.retrieve('typing')) return null;
+		parent.store('typing', true);
+		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
 		new Request({
 			url: 'AJAX/typing.php',
 			data: {
-				cid: id
+				cid: id,
+				response: 1
 			}
 		}).send();
 	},
 
 	typingIndicator: function(cid){
 		var typing = this.typing;
-		var el = $('tid_' + cid);
+		var el = $('yid_' + cid) || $('tid_' + cid);
 		if (el) {
 			var indic = el.getElement('span.tap-typing');
 			indic.set('text', '(Someone\'s typing)');
-			(function(){ indic.set('text', ''); }).delay(500);
+			(function(){ indic.set('text', ''); }).delay(5000);
 		}
 	},
 
@@ -136,6 +150,95 @@ Tap.Home = {
 
 	*/
 
+	// RESPONSES
+
+	initResponse: function(el){
+		if (el.retrieve('loaded')) return null;
+		var parent = el.getParent('li');
+		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
+		var box = parent.getElement('.tap-chat');
+		new Request({
+			url: 'AJAX/load_responses.php',
+			data: {
+				cid: id
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (response.responses) {
+					for (var x = response.responses.reverse().length; x--; ){
+						var item = response.responses[x];
+						new Element('li', {
+							html: '<strong>{uname}:</strong> {chat_text}'.substitute(item)
+						}).inject(box);
+					}
+					box.scrollTo(0, box.getScrollSize().y);
+				}
+				el.store('loaded', true);
+			}
+		}).send();
+	},
+
+	sendResponse: function(el){
+		var parent = el.getParent('li');
+		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
+		var msg = el.get('value');
+		if (msg.isEmpty()) return null;
+		new Request({
+			url: 'AJAX/respond.php',
+			data: {
+				cid: id,
+				response: msg
+			},
+			onSuccess: function(){
+				// var response = JSON.decode(this.response.text);
+				var response = this.response.text;
+				if (response){
+					el.set('value', '');
+					el.focus();
+				}
+			}
+		}).send();
+		new Request({
+			url: 'AJAX/typing.php',
+			data: {
+				cid: id,
+				response: 0
+			},
+			onComplete: function(){
+				parent.store('typing', false);
+			}
+		}).send();
+	},
+
+	handleResponse: function(cid, response){
+		var parent = $try(function(){ return $('tid_' + cid).getElement('.tap-chat'); });
+		if (parent) {
+			new Element('li', {
+				html: '<strong>{uname}:</strong> {chat_text}'.substitute(item)
+			}).inject(parent);
+			parent.scrollTo(0, parent.getScrollSize().y);
+		}
+	},
+
+	parseResponse: function(id, user, msg){
+		var item = new Element('li', {
+			html: '<strong>{uname}:</strong> {chat_text}'.substitute({
+				uname: user,
+				chat_text: msg
+			})
+		});
+		if ($('tid_' + id)) {
+			var box = $('tid_' + id).getElement('ul.tap-chat');
+			item.inject(box, 'bottom');
+			box.scrollTo(0, box.getScrollSize().y);
+		}
+		if ($('yid_' + id)) {
+			var newbox = $('yid_' + id).getElement('ul.tap-chat');
+			item.clone().inject(newbox, 'bottom');
+			newbox.scrollTo(0, newbox.getScrollSize().y);
+		}
+	},
+
 	// SEARCH
 
 	searchFeed: function(){
@@ -150,8 +253,8 @@ Tap.Home = {
 						? {type: 11}
 						: {type: 1, id: self.feedView.remove(/gid_/)}
 						, {search: keyword});
-					var outside = self.settings.get(self.feedView);
-					if (outside && outside.outside) {
+					var outside = self.getSettings();
+					if (outside.outside) {
 						data.outside = 1;
 						data.o_filter = JSON.encode(outside.people.length > 0 ? outside.people.map(function(item){
 							return item[1];
@@ -198,8 +301,8 @@ Tap.Home = {
 	// OUTSIDES
 
 	initOutside: function(){
-		var button = $('tap-feed-outside');
-		var coordinates = button.getCoordinates();
+		var button = $('tap-feed-outside-drop');
+		var coordinates = $('tap-feed-outside').getCoordinates();
 		var more = $('tap-feed-outside-more');
 		more.store('from', new TextboxList(more.getElement('[name="outside-from"]'), {
 			unique: true,
@@ -213,27 +316,37 @@ Tap.Home = {
 		}));
 		var save = $('tap-feed-outside-set');
 		more.set('styles', {
-			left: (coordinates.left - 100),
-			top: (coordinates.top + coordinates.height)
+			left: (coordinates.left),
+			top: (coordinates.top + coordinates.height + 1 + (Browser.Engine.webkit ? 24 : 0))
 		});
 
 		save.addEvent('click', this.saveOutside.toHandler(this));
 		return button;
 	},
 
+	getSettings: function(gid){
+		gid = gid || this.feedView;
+		if (!this.settings[gid]) {
+			this.settings[gid] = {
+				outside: false,
+				people: []
+			};
+		}
+		return this.settings[gid];
+	},
+
+	setSettings: function(gid){
+		var settings = this.getSettings(gid || this.feedView);
+		$('tap-feed-outside').set('text', 'Outside: ' + (settings.outside ? 'On' : 'Off'));
+	},
+
 	showOutside: function(){
-		console.log(this.settings);
-		var settings = this.settings.get(this.feedView);
+		var settings = this.getSettings();
 		var more = $('tap-feed-outside-more');
-		var out = more.getElement('[name="outside-show"]');
 		var people = more.retrieve('from');
-		out.set('checked', null);
 		people.empty();
-		if (settings) {
-			out.set('checked', (settings.outside) ? 'checked' : null);
-			if ($type(settings.people) == 'array' && settings.people.length > 0) {
-				people.setValues(settings.people);
-			}
+		if ($type(settings.people) == 'array' && settings.people.length > 0) {
+			people.setValues(settings.people);
 		}
 		more.set('styles', {display: 'block'});
 	},
@@ -243,16 +356,28 @@ Tap.Home = {
 		more.set('styles', {display: 'none'});
 	},
 
+	toggleOutside: function(el){
+		var settings = this.getSettings();
+		var value = el.get('text').remove(/Outside:\s/);
+		if (value == 'On') {
+			settings.outside = false;
+			el.set('text', 'Outside: Off');
+		} else {
+			settings.outside = true;
+			el.set('text', 'Outside: On');
+		}
+		if (this.currentSearch) return this.searchFeed();
+		this.changeFeed(this.feedView, true);
+	},
+
 	saveOutside: function(){
-		var settings = this.settings;
+		var settings = this.getSettings();
 		var more = $('tap-feed-outside-more');
-		var out = more.getElement('[name="outside-show"]');
 		var people = more.retrieve('from');
-		settings.set(this.feedView, {
-			outside: out.checked,
-			people: people.getValues()
-		});
+		settings.people = people.getValues();
 		this.hideOutside();
+		settings.outside = true;
+		this.setSettings();
 		if (this.currentSearch) return this.searchFeed();
 		this.changeFeed(this.feedView, true);
 	},
@@ -265,12 +390,12 @@ Tap.Home = {
 		var gid = $try(function(){ return el.get('id'); }) || el;
 		if (this.feedView === gid && !force) return;
 		var id = (gid !== 'gid_all') ? gid.remove(/gid_/) : null;
-		var settings = this.settings.get(gid);
+		var settings = this.getSettings(gid);
 		new Request({
 			url: 'AJAX/filter_creator.php',
 			data: (function(){
 				var data = (id === null) ? {type: 11} : {type:1, id: id};
-				if (settings && settings.outside && settings.people.length > 0) {
+				if (settings.outside) {
 					data.outside = 1;
 					data.o_filter = JSON.encode(settings.people.length > 0 ? settings.people.map(function(item){
 						return item[1];
@@ -286,8 +411,12 @@ Tap.Home = {
 			},
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
-				if (!force) $('tap-feed-name').set('text', el.getElement('a').get('title'));
+				if (!force) {
+					$('tap-feed-name').set('text', el.getElement('a').get('title'));
+					$('tap-feed-icon').set('src', el.getElement('img').get('src'));
+				}
 				self.feedView = gid;
+				self.setSettings();
 				var key = (gid === 'gid_all') ? 'groups' : gid.replace('gid', 'group');
 				if ($type(self.pushed[key]) == 'array') self.pushed[key].empty();
 				if (response.results) {
@@ -326,11 +455,13 @@ Tap.Home = {
 				var response = JSON.decode(this.response.text);
 				if (response.new_msg) {
 					self.currentTap = (response.new_msg[0].cid * 1);
+					self.setChannels();
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.new_msg)
 					});
-					Tap.Push.sendCIDs(response.new_msg[0].cid);
 					$('your-stream').empty();
+					var x = items.getElement('li');
+					x.set('id', x.get('id').replace('tid', 'yid'));
 					items.getElements('li').reverse().inject('your-stream', 'top');
 				}
 				data.people.empty();
@@ -340,32 +471,39 @@ Tap.Home = {
 		}).send();
 	},
 
-	/*
-
 	processPushed: function(data){
 		var pushed = this.pushed;
-		data = JSON.decode(data);
-		if (!pushed[data.type]) pushed[data.type] = [];
-		var type = pushed[data.type];
-		type.include(data.cid);
+		data = data.map(function(item){
+			return item.link({
+				x: Number.type,
+				type: String.type,
+				y: Boolean.type,
+				cid: Number.type,
+				z: String.type
+			});
+		});
+		for (var x = data.reverse().length; x--;) {
+			var item = data[x];
+			if (!pushed[item.type]) pushed[item.type] = [];
+			var type = pushed[item.type];
+			type.include(item.cid);
 
-		var key = (this.feedView === 'gid_all') ? 'groups' : this.feedView.replace('gid', 'group');
-		if (key === data.type && type.length > 0 && data.cid !== this.currentTap) {
-			var length = type.length - (type.contains(this.currentTap) ? 1 : 0);
-			var notify = ['You have', length, 'new', length == 1 ? 'tap' : 'taps'].join(' ');
-			$('tap-notify').set({
-				text: notify,
-				styles: {display: 'inline'}
-			}).store('type', data.type).highlight('#5AB2FF');
-		} else if (data.type.contains('group') && this.feedView !== 'gid_all') {
-			$((data.type == 'groups')
-			  ? 'gid_all'
-			  : data.type.replace('group', 'gid')
-			).getElement('span.counter').set('text', type.length);
+			var key = (this.feedView === 'gid_all') ? 'groups' : this.feedView.replace('gid', 'group');
+			if (key === item.type && type.length > 0 && item.cid !== this.currentTap) {
+				var length = type.length - (type.contains(this.currentTap) ? 1 : 0);
+				var notify = ['You have', length, 'new', length == 1 ? 'tap' : 'taps'].join(' ');
+				$('tap-notify').set({
+					text: notify,
+					styles: {display: 'inline'}
+				}).store('type', item.type).highlight('#5AB2FF');
+			} else if (item.type.contains('group') && this.feedView !== 'gid_all') {
+				$((item.type == 'groups')
+				  ? 'gid_all'
+				  : item.type.replace('group', 'gid')
+				).getElement('span.counter').set('text', type.length);
+			}
 		}
 	},
-
-	*/
 
 	getPushed: function(el){
 		var self = this;
@@ -380,15 +518,18 @@ Tap.Home = {
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
 				if (response.results) {
+					self.mainStream.getElements('div.noresults').destroy();
 					data.empty();
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.data)
 					});
-					Tap.Push.sendCIDs(response.data.map(function(item){
-						return item.cid;
+					console.log(self.currentStream);
+					self.currentStream = self.currentStream.combine(response.data.map(function(item){
+						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
 					}));
+					console.log(self.currentStream);
+					self.setChannels();
 					items.getElements('li').reverse().inject('main-stream', 'top');
-					items.getParent('div').destroy();
 					el.set('styles', {display:'none'});
 				}
 			}

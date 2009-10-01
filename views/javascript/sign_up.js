@@ -77,6 +77,7 @@ function sign_up(){
  }
  
  function show_next_step(step){
+	setTimeout('window.location.reload()',2000);
 	current_step = "step_"+step.id.substring(5);
  	current_step = document.getElementById(current_step);
  	current_step.style.display = "none";

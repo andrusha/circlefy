@@ -243,17 +243,19 @@ String.implement({
 
 });
 
-TextboxList.implement({
-	empty: function(){
-		this.list.getChildren().map(function(el){
-			var bit = this.getBit(el);
-			if (bit.is('editable')) return null;
-			return bit.remove();
-		}, this).clean();
-		this.index.empty();
-		return this;
-	}
-});
+if (window.TextboxList) {
+	TextboxList.implement({
+		empty: function(){
+			this.list.getChildren().map(function(el){
+				var bit = this.getBit(el);
+				if (bit.is('editable')) return null;
+				return bit.remove();
+			}, this).clean();
+			this.index.empty();
+			return this;
+		}
+	});
+}
 
 Hash.Cookie = new Class({
 

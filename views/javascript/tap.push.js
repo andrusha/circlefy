@@ -15,7 +15,7 @@ Tap.Push = {
 	connect: function(){
 		this.send({
 			uid: Tap.Vars.pcid,
-			uname: "Taso"
+			uname: Tap.Vars.uname
 		});
 		this.fireEvent('connect');
 	},
@@ -38,15 +38,36 @@ Tap.Push = {
 	onData: function(data){
 		data = JSON.decode(data);
 		this.fireEvent('data', data);
-		var parsed = {
-			cid: data.msgData[0],
-			xxx: data.msgData[1],
-			user: data.msgData[2],
-			type: data.msgData[3]
-		};
+		if (data.msgData == 'ping') return null;
+		var test = false;
+		try {
+			test = data.msgData.every(function(item){
+				return $type(item) === 'array';
+			});
+		} catch(e) {}
+		var parsed;
+		if (!test) {
+			parsed = {
+				cid: data.msgData[0],
+				msg: data.msgData[1],
+				user: data.msgData[2],
+				type: data.msgData[3]
+			};
+		} else {
+			parsed = {
+				data: data.msgData,
+				type: 'notification'
+			};
+		}
 		switch (parsed.type) {
 			case 'typing':
 				this.fireEvent('typing', [parsed.cid, parsed.user]);
+				break;
+			case 'response':
+				this.fireEvent('response', [parsed.cid, parsed.user, parsed.msg]);
+				break;
+			case 'notification':
+				this.fireEvent('notification', [parsed.data, 0]);
 				break;
 		}
 	}
