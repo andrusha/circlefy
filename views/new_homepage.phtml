@@ -135,7 +135,10 @@ Tap.Vars = {
 				</div>
 				<div class="section-body">
 					<ul id="main-stream" class="tap-stream">
-						<?php foreach($_t['groups_bits'] as $bit): ?>
+						<?php 
+							if (!empty($_t['groups_bits'])):
+								foreach($_t['groups_bits'] as $bit): 
+						?>
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
 							<div class="tap-actions">
@@ -159,7 +162,16 @@ Tap.Vars = {
 							</div>
 							<div class="clarity"></div>
 						</li>
-						<?php endforeach; ?>
+						<?php 
+								endforeach; 
+							else:
+						?>
+						<li class="noresults">
+							<p>This feed is too silent. Try sending a tap!</p>
+						</li>
+						<?php
+							endif;
+						?>
 					</ul>
 				</div>
 			</div>
