@@ -1,3 +1,9 @@
+#join-create-group{
+color:blue;
+font-weight:bold;
+/* edit by Taso */
+}
+
 #center-col {
 	margin:0 auto;
 	width: 550px;
@@ -57,7 +63,7 @@ img { vertical-align:-4px;}
 
 .section-head {
 	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) repeat-x scroll 0 0;
-	padding: 7px;
+	padding: 3px 4px 3px 4px;
 }
 
 .section-head h1 {

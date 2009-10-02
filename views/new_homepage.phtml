@@ -64,8 +64,8 @@ Tap.Vars = {
 
 		<div id="right-col">
 			<h1>Help and Tips</h1>
-			<h2>Find your groups faster.</h2>
-			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
+			<h2>Find groups to target</h2>
+			<p>You can find groups to send your message to in the tap box ( the second box ) by typing in keywords related to the group.  If you send your message to a group you're not apart of, it will show up in the users "Outside" tab.</p>
 		</div>
 
 		<div id="center-col">
@@ -195,6 +195,8 @@ Tap.Vars = {
 						<a href="#<?= $group['symbol'] ?>" title="<?= $group['gname'] ?>"><?= $group['symbol'] ?></a>
 					</li>
 					<?php endforeach; ?>
+					<br/>
+					<a id="join-create-group" href="groups" title="Join and Create Groups">Click here to join/create &nbsp;groups!</a>
 				</ul>
 			</div>
 		</div>
