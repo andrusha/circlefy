@@ -244,7 +244,7 @@ body {
 		background: #e5e5e5; }
 		
 		.gr-sort-bar p { margin-top: 3px; }
-		.gr-sort-bar a { color: #545454; }
+		.gr-sort-bar span { color: #545454; }
 		
 		#sort-logo {  margin-left: 28px; }
 		#sort-name { margin-left: 25px; }

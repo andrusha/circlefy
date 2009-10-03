@@ -1,5 +1,57 @@
 Tap = window.Tap || {};
 
+var EasyOver = new Class({
+
+	Implements: [Events, Options],
+
+	options: {
+		classname: 'easy-over-text'
+	},
+
+	initialize: function(el, options){
+		this.setOptions(options);
+		this.element = $(el);
+		this.overlay = new Element('div', {
+			'class': this.options.classname,
+			'text': this.element.get('alt') || 'Tap these people..',
+			'styles': {
+				'display': 'none',
+				'position': 'absolute',
+				'z-index': '1',
+				'padding': '4px 10px',
+				'color': '#ccc'
+			}
+		}).addEvent('click', this.onOverlayClick.bind(this));
+		this.overlay.inject(document.body);
+		this.setup();
+	},
+
+	setup: function(){
+		var position = this.element.getCoordinates();
+		this.overlay.set('styles', {
+			left: position.left,
+			top: position.top
+		});
+	},
+
+	hide: function(){
+		this.overlay.set('styles', { display: 'none' });
+		return this;
+	},
+
+	show: function(){
+		this.overlay.set('styles', { display: 'block' });
+		return this;
+	},
+
+	onOverlayClick: function(e){
+		e.stop();
+		this.element.fireEvent('focus');
+		this.hide();
+	}
+
+});
+
 Tap.Home = {
 
 	feedView: 'gid_all',
@@ -17,6 +69,8 @@ Tap.Home = {
 	},
 
 	init: function(){
+		this.changeDates();
+		this.changeDates.periodical(60000, this);
 		var self = this;
 		var body = $(document.body);
 		this.mainStream = $('main-stream');
@@ -39,6 +93,7 @@ Tap.Home = {
 			}
 		});
 
+		var easy = new EasyOver('tap-box-people').show();
 		var tapper = this.tapper = {
 			msg: $('tap-box-msg'),
 			more: $('tap-box-more'),
@@ -49,13 +104,33 @@ Tap.Home = {
 						minLength: 3, maxResults: 5, queryRemote: true,
 						remote: { url: 'AJAX/search_assoc.php' }
 					}
+				},
+				onFocus: function(){
+					easy.hide();
+				},
+				onBlur: function(){
+					if (this.getValues().length == 0
+						&& this.list.getElement('input.textboxlist-bit-editable-input').get('value').isEmpty()) easy.show();
 				}
 			})
 		};
 		new OverText(tapper.msg, { positionOptions: { offset: {x: 6, y: 6}}}).show();
 		$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
 
-		$('tap-notify').addEvent('click', this.getPushed.toHandler(this));
+		$('tap-notify').slide('hide').addEvent('click', this.getPushed.toHandler(this));
+		
+		/*
+			.set('slide', {
+				onStart: function(){
+					$('tap-notify').getParent('div').set('styles', { width: 548 });
+				},
+				onComplete: function(){
+					if (this.wrapper['offset' + this.layout.capitalize()] == 0) {
+						$('tap-notify').getParent('div').set('styles', { width: 0 });
+					}
+				}
+			})
+		*/
 
 		this.tapSearch = $('tap-feed-search');
 		new OverText(this.tapSearch, { positionOptions: { offset: {x: 6, y: 4}}}).show();
@@ -284,6 +359,7 @@ Tap.Home = {
 					}
 					self.mainStream.empty();
 					items.getElements('li').reverse().inject('main-stream', 'top');
+					self.changeDates();
 				}
 			}).send();
 		} else {
@@ -432,7 +508,8 @@ Tap.Home = {
 				}
 				self.mainStream.empty();
 				items.getElements('li').reverse().inject('main-stream', 'top');
-				$('tap-notify').setStyle('display', 'none');
+				self.changeDates();
+				$('tap-notify').slide('hide');
 			}
 		}).send();
 	},
@@ -463,6 +540,7 @@ Tap.Home = {
 					var x = items.getElement('li');
 					x.set('id', x.get('id').replace('tid', 'yid'));
 					items.getElements('li').reverse().inject('your-stream', 'top');
+					self.changeDates();
 				}
 				data.people.empty();
 				data.msg.set('value', '');
@@ -491,11 +569,10 @@ Tap.Home = {
 			var key = (this.feedView === 'gid_all') ? 'groups' : this.feedView.replace('gid', 'group');
 			if (key === item.type && type.length > 0 && item.cid !== this.currentTap) {
 				var length = type.length - (type.contains(this.currentTap) ? 1 : 0);
-				var notify = ['You have', length, 'new', length == 1 ? 'tap' : 'taps'].join(' ');
+				var notify = ['You have', length, 'new', length == 1 ? 'tap,' : 'taps,', 'click here to show them.'].join(' ');
 				$('tap-notify').set({
-					text: notify,
-					styles: {display: 'inline'}
-				}).store('type', item.type).highlight('#5AB2FF');
+					text: notify
+				}).store('type', item.type).slide('in');
 			} else if (item.type.contains('group') && this.feedView !== 'gid_all') {
 				$((item.type == 'groups')
 				  ? 'gid_all'
@@ -523,17 +600,36 @@ Tap.Home = {
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.data)
 					});
-					console.log(self.currentStream);
 					self.currentStream = self.currentStream.combine(response.data.map(function(item){
 						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
 					}));
-					console.log(self.currentStream);
 					self.setChannels();
 					items.getElements('li').reverse().inject('main-stream', 'top');
-					el.set('styles', {display:'none'});
+					el.slide('out');
+					self.changeDates();
 				}
 			}
 		}).send();
+	},
+	
+	changeDates: function(){
+		var now = new Date().getTime();
+		$$('.tap-time').each(function(el){
+			var timestamp = el.className.remove(/tap-time\s/);
+			var orig = new Date((timestamp * 1) * 1000);
+			var diff = ((now - orig) / 1000);
+			var day_diff = Math.floor(diff / 86400);
+			if ($type(diff) == false || day_diff < 0 || day_diff >= 31) return false;
+			el.set('text', day_diff == 0 && (
+					// diff < 60 && "Just Now" ||
+					diff < 120 && "Just Now" ||
+					diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+					diff < 7200 && "An hour ago" ||
+					diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+				day_diff == 1 && "Yesterday" ||
+				day_diff < 7 && day_diff + " days ago" ||
+				day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago");
+		});
 	}
 
 };

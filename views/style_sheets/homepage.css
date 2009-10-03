@@ -173,6 +173,7 @@ div.textboxlist {
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 5px;
+	float: left;
 }
 
 #tap-feed-outside-more div.textboxlist {
@@ -208,18 +209,19 @@ div.textboxlist-autocomplete {
 }
 
 #tap-notify {
-	display: none;
-	background:#F5EF9F;
-	padding: 3px 6px;
-	-moz-border-radius:8px;
-	-webkit-border-radius: 8px;
+/*	display: none;*/
+	background: #FFFFCC;
+	padding: 10px 5px;
+	margin-left: 2px;
 	font-size: 12px;
-	color: #fff; float: right;
+	color: #000;
 	cursor: pointer;
+	border-right: 1px solid #ccc;
+	border-left:  1px solid #ccc;
 }
 
 #tap-notify:hover {
-	background: #3E7AAE;
+
 }
 
 span.counter {
@@ -245,7 +247,7 @@ ul.tap-stream .tap-response-box {
 	color: #000; float: right;
 	border: none;
 	cursor: pointer;
-	height: 22px;
+	height: 19px;
 	padding: 4px 4px 0px 8px;
 }
 

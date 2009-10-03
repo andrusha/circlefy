@@ -207,6 +207,7 @@ EOF;
 				$uid = $res['uid'];
 
 				//Process
+				$chat_timestamp_raw = $chat_timestamp;
 				$chat_timestamp = $this->time_since($chat_timestamp);
 				$chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
 				$chat_text = stripslashes($chat_text);
@@ -220,6 +221,7 @@ EOF;
 				'mid' => 	  $mid,
 				'special'=>       $special,
 				'chat_timestamp'=>$chat_timestamp,
+				'chat_timestamp_raw'=>$chat_timestamp_raw,
 				'cid'=>           $cid,
 				'chat_text'=>     $chat_text,
 				'uname'=>         $uname,

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -53,7 +54,7 @@ Tap.Groups = {
 			'click:relay(a.cancel-invite)': this.onInviteCancel.toHandler(this),
 			'click:relay(a.send-invite)': this.onInviteSend.toHandler(this),
 			'click:relay(a.send-join)': this.onJoinSend.toHandler(this),
-			'click:relay(a.gr-join-btn)': this.onJoin.toHandler(this)
+			'click:relay(a.gr-join-btn)': this.onJoin.toHandler(this),
 		});
 
 		body.addEvents({
@@ -72,6 +73,12 @@ Tap.Groups = {
 			},
 			'click:relay(a.set-filter)': function(e){
 				self.onFilter(body.getElement('input[name="keywords"]'));
+			},
+			'click:relay(a.suggestion-item)': function(e){
+				e.stop();
+				var key = this.get('text');
+				$('search-field').set('value', key);
+				self.onSearch(key);
 			}
 		});
 		body.getElement('input[name="keywords"]').addEvents({
@@ -333,7 +340,7 @@ Tap.Groups = {
 			},
 			onSuccess: function(){
 				var success = JSON.decode(this.response.text);
-				if (success.good) {
+				if (success) {
 					status.set('text', 'Done!');
 					parent.highlight();
 					self.onInviteCancel(status);
@@ -400,7 +407,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 </head>
 
 <body>
-
+	
 	<? include(NEW_HEADER); ?>
 
 	<div id="main">
@@ -410,10 +417,14 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 			</div>
 				<div class="tab-list">
 					<ul>
-						<li class="list-item"><a href="" class="item-name">PHP <span class="item-nr">(9)</span></a> <a href="" class="item-add">add</a></li>
-						<li class="list-item"><a href="" class="item-name">MooTools 2<span class="item-nr">(13)</span></a> <a href="" class="item-add">add</a></li>
+						<?php foreach ($_t['random_group_results'] as $random): ?>
+						<li class="list-item">
+							<p style="height: 14px; font-weight: bold;"><a href="#" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?= $random['gname'] ?></a></p>
+							<p style="margin-bottom:20px; font-size: 10px"><?= $random['focus'] ?></p>
+						</li>
+						<?php endforeach; ?>
 					</ul>
-					<p class="more-btn1"><a href="">show more &raquo;</a></p>
+					<!-- <p class="more-btn1"><a href="">show more &raquo;</a></p> -->
 					<div style="clear:both"></div>
 				</div>
 		</div>
@@ -456,11 +467,11 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 
 				<div class="gr-sort-bar">
 					<p>
-						<a href="" id="sort-logo">Logo</a>
-						<a href="" id="sort-name">Name</a>
-						<a href="" id="sort-loc">Location</a>
-						<a href="" id="sort-msgs">#Msgs</a>
-						<a href="" id="sort-mmbrs">Members</a>
+						<span id="sort-logo">Logo</span>
+						<span id="sort-name">Name</span>
+						<span id="sort-loc">Location</span>
+						<span id="sort-msgs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span id="sort-mmbrs">Members</span>
 					</p>
 				</div>
 
@@ -491,7 +502,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 									<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 							</div>
 							<div class="gr-numbers">
-								<p><strong>23,643</strong>
+								<p><strong></strong>
 								</p>
 							</div>
 							<div class="gr-numbers">
@@ -532,7 +543,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							<p class="gr-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 					</div>
 					<div class="gr-numbers">
-						<p><strong>23,643</strong></p>
+						<p><strong></strong></p>
 					</div>
 					<div class="gr-numbers">
 						<p><strong><#: data.size #></strong></p>
@@ -563,7 +574,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 				</li>
 				<li id="search-noresults" class="info">
 					<div>
-						<p>Sorry, there are no groups that match your search keywords. <a href="#" class="remove-search">Show Your Groups</a></p>
+						<p>Sorry, there are no groups that match your keywords. Try searching for the abbreviations for a school, company or group. (Example: for New York University, try "NYU."<br/>If you're tired of searching, you can go back to viewing <a href="#" class="remove-search">Your Groups</a></br>"</p>
 					</div>
 				</li>
 				<li id="search-loading" class="info">

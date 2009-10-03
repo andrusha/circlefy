@@ -64,23 +64,23 @@ Tap.Vars = {
 
 		<div id="right-col">
 			<h1>Help and Tips</h1>
-			<h2>Find groups to target</h2>
-			<p>You can find groups to send your message to in the tap box ( the second box ) by typing in keywords related to the group.  If you send your message to a group you're not apart of, it will show up in the users "Outside" tab.</p>
+			<h2>Find your groups faster.</h2>
+			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
 		</div>
 
 		<div id="center-col">
 			<div id="tap-box" class="section">
 				<input type="text" id="tap-box-msg" alt="Tap here!" />
 				<div id="tap-box-more">
-					<a id="tap-box-send" href="#">Send</a>
 					<input type="text" id="tap-box-people" />
+					<a id="tap-box-send" href="#">Send</a>
+					<div style="clear:both"></div>
 				</div>
 			</div>
 
 			<div id="tap-yours" class="section">
 				<div class="section-head">
 					<h1>
-						<span id="tap-notify"></span>
 						Your Last Tap
 					</h1>
 				</div>
@@ -102,7 +102,7 @@ Tap.Vars = {
 							<div class="tap-body">
 								<p class="tap-info">
 									<span class="tap-from"><?= $last['fname'] . " " . $last['lname'] ?></span>
-									<span class="tap-time"><?= $last['chat_timestamp'] ?></span>
+									<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
 								<p>
@@ -128,12 +128,14 @@ Tap.Vars = {
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
 						<span id="tap-feed-outside-drop"></span>
 						<span id="tap-feed-outside">Outside: Off</span>
+						<span style="clear:right"></span>
 						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" style="float:left; margin-right:10px; height: 20px; width: 20px" />
 						<span id="tap-feed-name">Groups Feed</span>
 						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
 					</h1>
 				</div>
 				<div class="section-body">
+					<div id="tap-notify"></div>
 					<ul id="main-stream" class="tap-stream">
 						<?php 
 							if (!empty($_t['groups_bits'])):
@@ -147,7 +149,7 @@ Tap.Vars = {
 							<div class="tap-body">
 								<p class="tap-info">
 									<span class="tap-from"><?= $bit['fname'] . " " . $bit['lname'] ?></span>
-									<span class="tap-time"><?= $bit['chat_timestamp'] ?></span>
+									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
 								<p>
@@ -179,14 +181,14 @@ Tap.Vars = {
 
 		<div id="left-col">
 			<div id="groups-tab">
-				<div class="tab-in"><a href="" class="name">My Groups</a></div>
+				<div class="tab-in" style="color:#fff">My Groups</div>
 			</div>
 			<div class="tab-list">
 				<ul>
 					<li id="gid_all" class="group">
 						<span class="counter"></span>
-						<img src="/group_pics/36wh_default_group.gif" />
-						<a href="#" title="Groups Feed">All Your Groups</a>
+						<img src="/group_pics/36wh_default_group.gif" style="display:none;" />
+						<strong><a href="#" title="Groups Feed">All Your Groups</a></strong>
 					</li>
 					<?php foreach ($_t['your_groups'] as $group): ?>
 					<li id="gid_<?= $group['gid'] ?>" class="group">
@@ -195,8 +197,6 @@ Tap.Vars = {
 						<a href="#<?= $group['symbol'] ?>" title="<?= $group['gname'] ?>"><?= $group['symbol'] ?></a>
 					</li>
 					<?php endforeach; ?>
-					<br/>
-					<a id="join-create-group" href="groups" title="Join and Create Groups">Click here to join/create &nbsp;groups!</a>
 				</ul>
 			</div>
 		</div>
@@ -214,7 +214,7 @@ Tap.Vars = {
 				<div class="tap-body">
 					<p class="tap-info">
 						<span class="tap-from"><#: [bit.fname, bit.lname].join(" ") #></span>
-						<span class="tap-time"><#: bit.chat_timestamp #></span>
+						<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
 						<span class="tap-typing"></span>
 					</p>
 					<p>

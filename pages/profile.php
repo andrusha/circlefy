@@ -26,6 +26,25 @@ class profile extends Base{
 		//Takes awayfist settings flag
 		setcookie('profile_edit','',time()-360000);
 
+		$geo_list_query = <<<EOF
+                        SELECT cn.abbr2,cn.name AS Country FROM country_translate AS cn WHERE cn.abbr2 != '-' LIMIT 249;
+EOF;
+
+
+                        $this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
+                        $geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
+                        while($res = $geo_list_results->fetch_assoc()){
+                        $abbr2 = strtolower($res['abbr2']);
+                        $name = $res['Country'];
+
+                        $init_geo_data[] = array(
+                                'abbr2' =>      $abbr2,
+                                'name' =>       $name
+                        );
+
+                        }
+                        $this->set($init_geo_data,'init_geo_data');
+
 	
 			$get_profile_query = <<<EOF
 				SELECT 

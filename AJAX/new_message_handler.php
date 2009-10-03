@@ -566,6 +566,7 @@ EOF;
 			$uid = $res['uid'];
 
 			//Process
+			$chat_timestamp_raw = $chat_timestamp;
 			$chat_timestamp = "Now!";
 			$chat_text = stripslashes($chat_text);
 
@@ -577,6 +578,7 @@ EOF;
 			'mid' =>           $mid,
 			'special'=>       $special,
 			'chat_timestamp'=>$chat_timestamp,
+			'chat_timestamp_raw'=>$chat_timestamp_raw,
 			'cid'=>           $cid,
 			'chat_text'=>     $chat_text,
 			'uname'=>         $uname,

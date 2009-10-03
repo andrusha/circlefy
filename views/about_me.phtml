@@ -97,6 +97,10 @@ Tap.Profile = {
 		$('savepassword').addEvent('click', this.onPasswordSave.toHandler(this));
 		$('pic-uploader').addEvent('change', this.uploadPic.toHandler(this));
 		window.addEvent('uploaded', this.displayPic.bind(this));
+		
+		$(document.body).getElement('select[name="country"]').addEvent('change', function(){
+			$('flagger').set('src', 'images/geo_pics/gif/' + this.get('value') + '.gif');
+		});
 	},
 	
 	uploadPic: function(el){
@@ -291,11 +295,11 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 							<div class="error-msg"></div>
 						</h2>
 						<h2 class="in-title">
-							First Name: <input type="text" name="fname" value="<?= $fname ?>" />
+							Firstname: <input type="text" name="fname" value="<?= $fname ?>" />
 							<div class="error-msg"></div>
 						</h2>
 						<h2 class="in-title">
-							Last Name: <input type="text" name="lname" value="<?= $lname ?>" />
+							Lastname: <input type="text" name="lname" value="<?= $lname ?>" />
 							<div class="error-msg"></div>
 						</h2>
 						<br /><br />
@@ -309,10 +313,15 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 													</select></h2> -->
 						<h2 class="in-title">Country:
 							<select name="country" style="margin-right:140px">
-								<option value="1" selected>United States</option>
-								<option value="2">two</option>
-								<option value="3">three</option>
+								<? foreach ( $_t['init_geo_data'] as $item): ?>
+								<option 
+									value="<?= $item['abbr2'] ?>"
+									style="background: url(images/geo_pics/gif/<?= strtolower($item['abbr2']) ?>.gif) no-repeat 3% center; padding: 5px; padding-left: 30px;">
+									<?= $item['name'] ?>
+								</option>
+								<? endforeach; ?>
 							</select>
+							<img id="flagger" src="images/geo_pics/gif/af.gif" style="float:right; margin-top: 5px" />
 						</h2>
 						<h1>Picture </h1><hr class="hr2"/>
 						<form enctype="multipart/form-data" action="/AJAX/profile_picture_upload.php" method="post" target="picture">
