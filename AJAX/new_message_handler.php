@@ -35,6 +35,7 @@ $my_gids = $_SESSION['gid'];
 $my_zip = $_SESSION['zip'];
 $msg = $_POST['msg'];
 
+
 if($msg){
 	$chat_obj = new chat_functions($group_to,$friend_to,$keyword_to,$my_gids,$my_zip);
 	$chat_id = $chat_obj->create_channel($msg);
@@ -316,7 +317,7 @@ EOF;
 		while($res = $group_perm_matches->fetch_assoc()){
 			$gid = $res['gid'];
 	
-
+			
 			$sc =  strpos('x,'.$this->my_groups.',',','.$gid.',');
 			if($sc != false){
 					$this->meta_groups[$gid] = 2;
@@ -327,7 +328,9 @@ EOF;
 					$this->permissions[$gid] = "1,3";
 					$out_groups .= $gid.',';
 			}
-					unset($group_list[array_search($gid,$group_list)]);
+					$key = array_search($gid,$group_list);
+					if($key !== false)
+						unset($group_list[$key]);
 		}
 		$in_groups = substr($in_groups,0,-1);
 		$out_groups = substr($out_groups,0,-1);

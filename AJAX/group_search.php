@@ -53,10 +53,13 @@ class search_functions{
                 $uid = $_SESSION["uid"];
 
                 $uid = $this->mysqli->real_escape_string($uid);
-		if(count($gname) > 4)
-			$gname = '%'.$gname;
+		
+		if(strlen($gname) > 4)
+			$name_gname = '%'.$gname;
+		else 	$name_gname = $gname;
 
                 $gname = $this->mysqli->real_escape_string($gname);
+                $name_gname = $this->mysqli->real_escape_string($name_gname);
 
 		//This query gets the group information based off of params supplied
 		$group_query =  <<<EOF
@@ -64,7 +67,7 @@ class search_functions{
 		FROM (
 		SELECT DISTINCT gm.admin,gm.uid,gs.gid FROM groups AS gs
 		LEFT JOIN group_members AS gm ON gm.gid= gs.gid
-		WHERE gs.gname LIKE '{$gname}%' OR gs.symbol LIKE '{$gname}%' {$focus_list}
+		WHERE gs.gname LIKE '{$name_gname}%' OR gs.symbol LIKE '{$gname}%' {$focus_list}
 		GROUP BY gs.gid
 		) AS ugm
 		LEFT JOIN groups AS t2 ON t2.gid = ugm.gid
