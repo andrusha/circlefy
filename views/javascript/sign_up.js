@@ -110,9 +110,23 @@ function sign_up(){
  	if(text_box.value.length < 4){
  		uname_insert.innerHTML = 'Username must be atleast 4 characters';
  		errors.innerHTML = 1;
- 	} else {		
- 		uname_insert.innerHTML = 'Username OK!';
- 		errors.innerHTML = 0;
+ 	} else {
+		var checker = getXmlHttpRequestObject();
+		checker.open('POST', 'AJAX/check_signup.php', true);
+		checker.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		checker.onreadystatechange = function(){
+			if (checker.readyState == 4) {
+				if (checker.responseText == '{"available":false}') {
+					uname_insert.innerHTML = 'Username already taken!';
+			 		errors.innerHTML = 1;
+				} else {
+					uname_insert.innerHTML = 'Username OK!';
+			 		errors.innerHTML = 0;
+				}
+			}
+		};
+		checker.send('type=1&val='+encodeURIComponent(text_box.value));
+
  	}
  	check_all(0,0);
  }
@@ -130,8 +144,21 @@ function sign_up(){
  		email_insert.innerHTML = 'You\'ve type an invalid e-mail address!';
  		errors.innerHTML = 1;
  	} else {
- 		email_insert.innerHTML = 'Email address OK!';
- 		errors.innerHTML = 0;
+		var checker = getXmlHttpRequestObject();
+		checker.open('POST', 'AJAX/check_signup.php', true);
+		checker.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		checker.onreadystatechange = function(){
+			if (checker.readyState == 4) {
+				if (checker.responseText == '{"available":false}') {
+					email_insert.innerHTML = 'Email Address already taken!';
+			 		errors.innerHTML = 1;
+				} else {
+					email_insert.innerHTML = 'Email address OK!';
+			 		errors.innerHTML = 0;
+				}
+			}
+		};
+		checker.send('type=2&val='+encodeURIComponent(text_box.value));
  	}
  	check_all(0,0);
  }

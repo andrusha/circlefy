@@ -24,6 +24,50 @@ class create_group extends Base{
 
 		$uid = $_SESSION['uid'];
 
+		$group_random_pick = <<<EOF
+                        SELECT t1.gname,t1.gid,t1.focus,t1.descr,t1.pic_36 FROM groups AS t1 WHERE t1.connected = 0 ORDER BY gid DESC LIMIT 5;
+EOF;
+
+                        $this->db_class_mysql->set_query($group_random_pick,'get_random_groups',"Getting random 'relevanct' groups");
+                        $rand_group_results = $this->db_class_mysql->execute_query('get_random_groups');
+
+                        while($res = $rand_group_results->fetch_assoc()){
+                                $gid = $res['gid'];
+                                $descr = $res['descr'];
+                                $focus = $res['focus'];
+                                $pic = $res['pic_36'];
+                                $gname = $res['gname'];
+
+                                $random_groups[] = array(
+                                        'gid' => $gid,
+                                        'gname' => $gname,
+                                        'pic' => $pic,
+                                        'focus' => $focus,
+                                        'descr' => $descr,
+                                );
+                        }
+                        $this->set($random_groups,'random_group_results');
+
+		$geo_list_query = <<<EOF
+                        SELECT cn.abbr2,cn.name AS Country FROM country_translate AS cn WHERE cn.abbr2 != '-' LIMIT 249;
+EOF;
+
+
+		$this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
+		$geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
+		while($res = $geo_list_results->fetch_assoc()){
+			$abbr2 = strtolower($res['abbr2']);
+			$name = $res['Country'];
+
+			$init_geo_data[] = array(
+				'abbr2' =>      $abbr2,
+				'name' =>       $name
+			);
+		}
+		$this->set($init_geo_data,'init_geo_data');
+
+
+
 		//Match all user IDs with a specific ID, so you will have join the group_members table with the groups table
                 //matching the groups_members table with the groups table based off gid, you need to return the name
                         $this->db_class_mysql->set_query('SELECT t2.gname,t1.gid FROM group_members AS t1 

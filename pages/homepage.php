@@ -80,7 +80,7 @@ class homepage extends Base{
 			$this->page_name = "new_homepage";
 			$uid = $_SESSION['uid'];
 			} else {
-			$this->page_name = "homepage_loged_out";
+			$this->page_name = "new_logout";
 		}
 
 	
@@ -277,7 +277,6 @@ SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$
 ON t4.mid = t3.cid
 WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
 EOF;
-
 $data_all_groups_bits = $this->bit_generator($groups_query_bits_info,'groups_aggr');
 $this->set($data_all_groups_bits,'groups_bits');
 //END GROUP AGGR
@@ -382,7 +381,7 @@ private function bit_generator($query,$type){
 
 
                                 //Store
-                                $messages[] = array(
+                                $messages[$cid] = array(
                                 'mid' =>           $mid,
                                 'special'=>       $special,
                                 'chat_timestamp'=>$chat_timestamp,
@@ -394,13 +393,43 @@ private function bit_generator($query,$type){
                                 'lname'=>         $lname,
                                 'pic_100'=>       $pic_100,
                                 'pic_36'=>        $pic_36,
-                                'uid'=>           $uid
+                                'uid'=>           $uid,
+                                'last_resp'=>     null,
+                                'resp_uname'=>    null,
+				'count'=>	  0
                                 );
-
-
+				$mid_list .= $cid.',';
                         }
-                return $messages;
+			$mid_list = substr($mid_list,0,-1);
+	
+		// START + Getting response data
 
+                        $response_count = <<<EOF
+			SELECT COUNT(oc.cid) AS count,c.cid AS cid,oc.chat_text,c.uname FROM
+                        ( SELECT  MAX(mid) AS mmid,chat_text,cid FROM chat WHERE cid IN ( {$mid_list}  )
+                        GROUP BY mid ORDER BY mid DESC)
+                        AS oc
+                        JOIN chat AS c ON oc.cid = c.cid AND oc.mmid = c.mid
+                        GROUP BY oc.cid;
+EOF;
+
+			$this->db_class_mysql->set_query($response_count,'response_count',"Get's all the response count for each tap");
+			$resp_count_results = $this->db_class_mysql->execute_query('response_count');
+			if($resp_count_results->num_rows > 0);
+                        while($res = $resp_count_results->fetch_assoc()){
+                                $count = $res['count'];
+				$last_resp = $res['chat_text'];
+				$resp_uname = $res['uname'];
+                                $cid = $res['cid'];
+                                $messages[$cid]['count'] = $count;
+                                $messages[$cid]['last_resp'] = $last_resp;
+                                $messages[$cid]['resp_uname'] = $resp_uname;
+				
+                        }
+                        foreach($messages as $v)
+                                $pmessages[] = $v;
+                // END + Getting response data
+                return $pmessages;
 }
 
 private function time_since($original) {

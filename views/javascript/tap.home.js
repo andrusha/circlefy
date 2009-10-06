@@ -118,7 +118,7 @@ Tap.Home = {
 		$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
 
 		$('tap-notify').slide('hide').addEvent('click', this.getPushed.toHandler(this));
-		
+
 		/*
 			.set('slide', {
 				onStart: function(){
@@ -302,15 +302,26 @@ Tap.Home = {
 				chat_text: msg
 			})
 		});
-		if ($('tid_' + id)) {
-			var box = $('tid_' + id).getElement('ul.tap-chat');
+		var parent;
+		parent = $('tid_' + id);
+		if (parent) {
+			var box = parent.getElement('ul.tap-chat');
 			item.inject(box, 'bottom');
 			box.scrollTo(0, box.getScrollSize().y);
+			var counter = parent.getElement('span.tap-respond-count');
+			counter.set('text', (counter.get('text') * 1) + 1);
+			var last = parent.getElement('p.tap-respond-last');
+			last.set('html', ['<strong>', user, ':</strong> ', msg].join(''));
 		}
-		if ($('yid_' + id)) {
-			var newbox = $('yid_' + id).getElement('ul.tap-chat');
+		parent = $('yid_' + id);
+		if (parent) {
+			var newbox = parent.getElement('ul.tap-chat');
 			item.clone().inject(newbox, 'bottom');
 			newbox.scrollTo(0, newbox.getScrollSize().y);
+			var counter = parent.getElement('span.tap-respond-count');
+			counter.set('text', (counter.get('text') * 1) + 1);
+			var last = parent.getElement('p.tap-respond-last');
+			last.set('html', ['<strong>', user, ':</strong> ', msg].join(''))
 		}
 	},
 
@@ -567,8 +578,13 @@ Tap.Home = {
 			type.include(item.cid);
 
 			var key = (this.feedView === 'gid_all') ? 'groups' : this.feedView.replace('gid', 'group');
-			if (key === item.type && type.length > 0 && item.cid !== this.currentTap) {
-				var length = type.length - (type.contains(this.currentTap) ? 1 : 0);
+			/*if (key === item.type && type.length > 0 && item.cid !== this.currentTap) {*/
+			
+
+			if (key === item.type && type.length > 0 ) {
+			if( item.cid !== this.currentTap ) { } 
+				/*var length = type.length - (type.contains(this.currentTap) ? 1 : 0);*/
+				var length = type.length;
 				var notify = ['You have', length, 'new', length == 1 ? 'tap,' : 'taps,', 'click here to show them.'].join(' ');
 				$('tap-notify').set({
 					text: notify
@@ -611,7 +627,7 @@ Tap.Home = {
 			}
 		}).send();
 	},
-	
+
 	changeDates: function(){
 		var now = new Date().getTime();
 		$$('.tap-time').each(function(el){

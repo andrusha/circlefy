@@ -7,6 +7,7 @@ define("D_DATABASE","rewrite2");
 define("FOOTER","parts/footer.phtml");
 define("HEADER","parts/header.phtml");
 define("NEW_HEADER","parts/new_header_2.phtml");
+define("LOGOUT_HEADER","parts/logout_header.phtml");
 define("LEFT","parts/left.phtml");
 define("SIGNUP","parts/sign_up/sign_up.phtml");
 define("CATEGORY","parts/lists/category.phtml");

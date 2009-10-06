@@ -586,7 +586,10 @@ EOF;
 			'lname'=>         $lname,
 			'pic_100'=>       $pic_100,
 			'pic_36'=>        $pic_36,
-			'uid'=>           $uid
+			'uid'=>           $uid,
+			'last_resp'=>     null,
+                        'resp_uname'=>    null,
+                        'count'=>         0
 			);
 		}
 	return $messages;

@@ -30,11 +30,13 @@ class profile_functions{
 		$fname = $_POST['fname'];
 		$lname = $_POST['lname'];
 		$zip = $_POST['zip'];
-		$state = $_POST['state'];
 		$gender =  $_POST['gender'];
 		$email = $_POST['email'];
 		$lang = $_POST['lang'];
 		$country = $_POST['country'];
+		$state = $_POST['state'];
+		$region = $_POST['region'];
+		$town = $_POST['town'];
 		$old_name = $_POST['old_name'];
 
                 $uid = $this->mysqli->real_escape_string($uid);
@@ -43,6 +45,7 @@ class profile_functions{
                 $lname = $this->mysqli->real_escape_string($lname);
                 $email = $this->mysqli->real_escape_string($email);
                 $gender = $this->mysqli->real_escape_string($gender);
+                $country = $this->mysqli->real_escape_string($country);
                 $state = $this->mysqli->real_escape_string($state);
 
 		if(!$zip)
@@ -57,9 +60,11 @@ class profile_functions{
 				t2.lname="$lname",
 				t2.email="$email",
 				t1.zip=$zip,
-				t1.state="$state",
 				t1.language="$lang",
-				t1.country="$country"
+				t1.country="$country",
+				t1.state="$state",
+				t1.region="$region",
+				t1.town="$town"
                         WHERE t1.uid ={$uid}
 EOF;
 

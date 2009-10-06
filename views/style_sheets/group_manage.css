@@ -16,41 +16,50 @@ div { position: relative; }
 body {
 	font-family: arial, Helvetica, sans-serif; 
 	background: #FFF; }
-	
-.holder {
-	height: auto; width: 970px;
-	margin-left: auto; margin-right: auto; }
 
 #header {
-	height: 38px; width: auto;
-	font-size: 14px;
-	color: white;
-	background: #4796dc url(/images/cimages/menu_bar.gif) repeat-x; }
+	width: 990px;
+	margin: 15px auto 0px auto; }
 	
-	#header .holder { top: 9px; }
+/*	#header .holder { top: 9px; }*/
 	
 	#header a { color: white; }
 		
 	#logo {
 		float: left;
-		text-indent: -9999px;
-		height: 26px; width: 88px;
-		margin-top: -4px; 
-		background: url(/images/cimages/tap_logo_beta.gif); }
+		width: 159px;
+		height: 70px;
+		margin-left: 30px;
+		margin-top: -18px;
+		background: url(/images/cimages/mega_alpha_logo.gif) no-repeat center center; }
+	
+	#logo a { display: none; }
 		
 	#main-menu {
 		float: left;
-		margin-left: 18px; }
+		background: url(/images/cimages/new_menu_bar.png) no-repeat left top;
+		width: 555px;
+		height: 40px;
+		padding-top: 7px;
+		padding-left: 14px;
+		margin-left: 26px; }
 		
-		#main-menu a { margin-right: 8px; }
+		#main-menu a { 
+			color: #81873D;
+			margin-right: 8px; }
 			
-	#login-info { float: right; }
+	#login-info { 
+		text-align: right;
+		padding-right: 50px;
+		color: #3A85E2;
+		float: right; }
 	
-		#login-info a { margin-left: 8px; }
+		#login-info a { 
+			color: #3A85E2; }
 		
 #main {
 	height: auto; width: 990px;
-	margin: 20px auto; }
+	margin: 0 auto 20px auto; }
 	
 	#left-col {
 		height: auto; width: 194px;
@@ -261,6 +270,8 @@ body {
 			color: #545454;
 			border: 1px solid #b4b4b4;
 			background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
+		#gr-list li.more-invite{ background:#F0F0F0; } 	
+		.invitees { width: 470px; } 
 			
 		.gr-image {
 			float: left;
@@ -349,7 +360,7 @@ body {
 				vertical-align: 4px;
 				font-size: 11px;
 				color: #545454; }
-	
+
 		li.more-invite div, li.info div {
 			padding: 6px 10px;
 			font-size: 12px; 

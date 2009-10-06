@@ -217,7 +217,7 @@ EOF;
 
 	
 				//Store
-				$messages[] = array(
+				$messages[$cid] = array(
 				'mid' => 	  $mid,
 				'special'=>       $special,
 				'chat_timestamp'=>$chat_timestamp,
@@ -229,12 +229,37 @@ EOF;
 				'lname'=>         $lname,
 				'pic_100'=>       $pic_100,
 				'pic_36'=>        $pic_36,
-				'uid'=>           $uid
+				'uid'=>           $uid,
+				'last_resp'=>	  null,
+				'resp_uname'=>	  null,
+				'count'=>	  0
 				);
-		
-
 			}
-		return $messages;
+
+		// START + Getting response data
+
+			$response_count = <<<EOF
+			SELECT COUNT(oc.cid) AS count,c.cid AS cid,oc.chat_text,c.uname FROM
+			( SELECT  MAX(mid) AS mmid,chat_text,cid FROM chat WHERE cid IN ( {$mid_list}  ) 
+			GROUP BY mid ORDER BY mid DESC)
+			AS oc
+			JOIN chat AS c ON oc.cid = c.cid AND oc.mmid = c.mid
+			GROUP BY oc.cid;
+EOF;
+			$resp_count_results = $this->mysqli->query($response_count);
+			while($res = $resp_count_results->fetch_assoc()){
+				$count = $res['count'];
+                                $last_resp = $res['chat_text'];
+                                $cid = $res['cid'];
+				$resp_uname = $res['uname'];
+                                $messages[$cid]['count'] = $count;
+                                $messages[$cid]['last_resp'] = $last_resp;
+                                $messages[$cid]['resp_uname'] = $resp_uname;
+			}
+			foreach($messages as $v)
+				$pmessages[] = $v;
+		// END + Getting response data
+		return $pmessages;
 }
 	
 	private function get_unique_id_list($mysql_object){

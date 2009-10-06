@@ -12,11 +12,15 @@ $focus = addslashes($_POST['focus']);
 $email_suff = $_POST['email_suffix'];
 $private = $_POST['private'];
 $invite = $_POST['invite'];
-$old_name = $_POST['old_name'];
+$country = $_POST['country'];
+$state = $_POST['state'];
+$region = $_POST['region'];
+$town = $_POST['town'];
+
 
 if(isset($gname)){
    	$group_function = new group_functions();
-        $results = $group_function->create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name);
+        $results = $group_function->create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town);
         echo $results;
 }
 
@@ -31,7 +35,7 @@ class group_functions{
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
-        function create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name){
+        function create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town){
 
                 $uid = $_SESSION["uid"];
                 $uname = $_SESSION["uname"];
@@ -75,9 +79,10 @@ class group_functions{
 */
 
 		$create_group_query = <<<EOF
-		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix) 
-		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix)
+		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town) 
+		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town")
 EOF;
+
                 $create_group_results = $this->mysqli->query($create_group_query);
 		
 

@@ -34,27 +34,27 @@ EOF;
                         $this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
                         $geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
                         while($res = $geo_list_results->fetch_assoc()){
-                        $abbr2 = strtolower($res['abbr2']);
-                        $name = $res['Country'];
+				$abbr2 = strtolower($res['abbr2']);
+				$name = $res['Country'];
 
-                        $init_geo_data[] = array(
-                                'abbr2' =>      $abbr2,
-                                'name' =>       $name
-                        );
-
+				$init_geo_data[] = array(
+					'abbr2' =>      $abbr2,
+					'name' =>       $name
+				);
                         }
                         $this->set($init_geo_data,'init_geo_data');
 
 	
 			$get_profile_query = <<<EOF
 				SELECT 
-				t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
+				t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.region,t1.town,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
 				t5.email,t5.pic_100,t5.fname,t5.lname
 				FROM profile AS t1
 				JOIN login AS t5
 				ON t1.uid = t5.uid
 				WHERE t1.uid={$uid}
 EOF;
+
 
 				$this->db_class_mysql->set_query($get_profile_query,'get_edit_profile','This is getting the users profile contents');
 		
@@ -67,6 +67,8 @@ EOF;
 				$lname = $res['lname'];
 				$email = $res['email'];
 				$country = $res['country'];
+				$region = $res['region'];
+				$town = $res['town'];
 				$state = $res['state'];
 				$zip = $res['zip'];
 				
@@ -79,7 +81,9 @@ EOF;
 					'lname' => $lname,
 					'zip' => $zip,
 					'country' => $country,
-					'state' => $state
+					'region' => $region,
+					'state' => $state,
+					'town' => $town
 				);
 
 			$this->set($edit_profile_results,'edit_profile');

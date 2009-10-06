@@ -12,7 +12,7 @@ font-weight:bold;
 
 #tap-box {
 	padding: 5px 5px 10px 5px;
-	background: url(/images/cimages/main_text_field.gif) no-repeat;
+	background: url(/images/cimages/main_text_field2.gif) no-repeat;
 }
 
 #tap-box-msg {
@@ -27,9 +27,6 @@ font-weight:bold;
 img { vertical-align:-4px;}
 
 #tap-box-send{
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
 	background:transparent url(/images/cimages/tap_btn.PNG) no-repeat scroll left top;
 	color:grey;
 	float:right;
@@ -38,6 +35,7 @@ img { vertical-align:-4px;}
 	padding:4px 0 5px;
 	text-align:center;
 	width:117px;
+	height: 19px;
 }
 
 #tap-box-send:hover {
@@ -59,6 +57,14 @@ img { vertical-align:-4px;}
 	-webkit-border-radius: 5px;
 	-moz-box-shadow: 0px 0px 4px #D8D8D8;
 	-webkit-box-shadow: 0px 0px 4px #D8D8D8;*/
+}
+
+.section.error {
+	padding: 10px;
+	border-bottom: 1px solid #EECEBB;
+	border-top: 1px solid #EECEBB;
+	font-size: 12px;
+	background: #FBDCC9;
 }
 
 .section-head {
@@ -139,7 +145,7 @@ ul.tap-stream .tap-info {
 ul.tap-stream .tap-msg {
 	position:absolute;
 	left:70px; top:15px;
-	width:410px;
+	width: 300px;
 	font-size:12px;
 }
 
@@ -267,7 +273,7 @@ ul.tap-stream .tap-response-box {
 	display: none;
 	position: absolute;
 	width: 200px;
-	height: 100px;
+	height: 60px;
 	background: rgb(247, 247, 247);
 	border: 1px solid rgb(153, 153, 153);
 	padding: 10px;
@@ -279,6 +285,10 @@ ul.tap-stream .tap-response-box {
 
 #tap-feed-outside-set { 
 	position: absolute;
+	border: 1px solid #ccc; 
+	padding: 5px 10px; 
+	background: #ccc;
+	color: #000;
 	margin-top: 5px;
 	font-size: 11px; }
 
@@ -290,7 +300,17 @@ ul.tap-stream .tap-response-box {
 }
 
 .tap-respond {
+	float: right;
 	font-size: 11px; }
+
+.tap-respond-last {
+	border-left: 1px solid #ccc; 
+	width: 150px; 
+	font-size: 11px; 
+	clear: both; 
+	padding-left: 5px; 
+	padding-bottom: 3px; 
+	padding-top: 3px; }
 	
 .tap-respond-cancel {
 	font-size: 11px; }
@@ -301,5 +321,38 @@ ul.tap-stream .tap-response-box {
 	margin-right:20px;
 	padding:3px;
 	width:455px; }
+
+.tab-list label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.tab-list label.in-form {
+	display: inline;
+}
+
+.tab-list input.text {
+	padding: 4px;
+	height: 16px;
+	width: 153px;
+	border: 1px solid #cccccc;
+	background: #FBFBFB;
+	font-size: 11px;
+	margin-bottom: 5px;
+}
+
+.tab-list input.text:focus {
+	border: 1px solid #000000;
+	background: white; }
+	
+.tab-list input.text.input-err {
+	background: #fdebeb;
+}
+
+.tab-list .guide {
+	height: 20px;
+	display: none;
+}
 	
 	

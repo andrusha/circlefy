@@ -55,7 +55,7 @@ Tap.Vars = {
 		<p>
 			<input type="text" name="outside-from" alt="Choose sources.." />				
 		</p>
-		<p>
+		<p style="clear:both;">
 			<a href="#" id="tap-feed-outside-set">Save</a>
 		</p>
 	</div>
@@ -73,7 +73,7 @@ Tap.Vars = {
 				<input type="text" id="tap-box-msg" alt="Tap here!" />
 				<div id="tap-box-more">
 					<input type="text" id="tap-box-people" />
-					<a id="tap-box-send" href="#">Send</a>
+					<a id="tap-box-send" href="#">tap!</a>
 					<div style="clear:both"></div>
 				</div>
 			</div>
@@ -97,7 +97,15 @@ Tap.Vars = {
 						<li id="yid_<?= $last['cid'] ?>">
 							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" alt="<?= $last['uname'] ?>" />
 							<div class="tap-actions">
-								<a class="tap-respond" href="#">Respond</a>
+								<a class="tap-respond" href="#">
+									Respond (<span class="tap-respond-count"><?= $last['count'] ?></span>)
+								</a>
+								<p class="tap-respond-last">
+									<strong>
+										<?= (!empty($last['resp_uname'])) ? $last['resp_uname'] . ":" : "" ?>
+									</strong>
+									<?= $last['last_resp'] ?>
+								</p>
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
@@ -144,7 +152,15 @@ Tap.Vars = {
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
 							<div class="tap-actions">
-								<a class="tap-respond" href="#">Respond</a>
+								<a class="tap-respond" href="#">
+									Respond (<span class="tap-respond-count"><?= $bit['count'] ?></span>)
+								</a>
+								<p class="tap-respond-last">
+									<strong>
+										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
+									</strong>
+									<?= $bit['last_resp'] ?>
+								</p>
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
@@ -209,7 +225,15 @@ Tap.Vars = {
 			<li id="tid_<#: bit.cid #>">
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" />
 				<div class="tap-actions">
-					<a class="tap-respond" href="#">Respond</a>
+					<a class="tap-respond" href="#">
+						Respond (<span class="tap-respond-count"><#: bit.count #></span>)
+					</a>
+					<p class="tap-respond-last">
+						<strong>
+							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>							
+						</strong>
+						<#: bit.last_resp || "" #>
+					</p>
 				</div>
 				<div class="tap-body">
 					<p class="tap-info">

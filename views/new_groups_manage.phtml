@@ -232,7 +232,7 @@ Tap.Groups = {
 				var response = JSON.decode(this.response.text);
 				var status = el.getNext('p.status').setStyle('display', 'block');
 				if (response.good) {
-					status.set('html', '<img src="images/icons/accept.png" alt="Joined" />');
+					status.set('html', '<img src="images/icons/accept.png" alt="Joined" /><br/>Joined!');
 				}
 			}
 		}).send();
@@ -428,8 +428,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 					<div style="clear:both"></div>
 				</div>
 		</div>
-	</div>
-
+		
 		<div id="center-col">
 			<div id="group-search">
 				<p>Looking for new groups? <input id="search-field" type="text" name="group-search"/> <a id="search-btn-more" href="">more &raquo;</a> <input id="search-btn"  type="image" src="/images/cimages/group_srch_btn.gif"/> </p>
@@ -495,7 +494,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							<div class="gr-info">
 								<p>
 									<?php if ($official == "*"): ?>
-									<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" />
+									<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" title="This is an offical group"/>
 									<?php endif; ?>
 									<strong class="gr-name"><?= $gname ?></strong>&nbsp;&nbsp;</p>
 									<p class="gr-desc description"><?= $descr ?></p>
@@ -528,6 +527,21 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 				<!-- <div class="more-btn4"><a href="">show more &raquo;</a></div> -->
 			</div>
 		</div>
+		
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Find your groups faster.</h2>
+			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
+			<h2>Don't overuse your memes.</h2>
+			<p>It might have been funny the first time you heard it, but most memes are notorious for expiring quickly. Avoid the social awkwardness produced by using an expired meme by not using them when they near their expiry date. Common memes expire within 3 days. Celebrity memes expire with a week, and cat-related ones are good for at least a month. When in doubt, consult your local /b/.</p>
+			<h2>More options for search.</h2>
+			<p>When searching, you can optionally toggle the "more" link to give you the option of adding location and focus criteria to narrow down your search.</p>
+			<h2>Share your groups via invites.</h2>
+			<p>You can send invites to your friends who might be interested in a group you belong to. Simply click on the Invite button and write their email addresses or usernames and send.</p>
+		</div>
+	</div>
+
+		
 		<div id="templates" style="display:none">
 			<ul id="search-template">
 				<# for (var x = this.reverse().length; x--;) { var data = this[x]; #>
@@ -583,17 +597,6 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 					</div>
 				</li>
 			</ul>
-		</div>
-		<div id="right-col">
-			<h1>Help and Tips</h1>
-			<h2>Find your groups faster.</h2>
-			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
-			<h2>Don't overuse your memes.</h2>
-			<p>It might have been funny the first time you heard it, but most memes are notorious for expiring quickly. Avoid the social awkwardness produced by using an expired meme by not using them when they near their expiry date. Common memes expire within 3 days. Celebrity memes expire with a week, and cat-related ones are good for at least a month. When in doubt, consult your local /b/.</p>
-			<h2>More options for search.</h2>
-			<p>When searching, you can optionally toggle the "more" link to give you the option of adding location and focus criteria to narrow down your search.</p>
-			<h2>Share your groups via invites.</h2>
-			<p>You can send invites to your friends who might be interested in a group you belong to. Simply click on the Invite button and write their email addresses or usernames and send.</p>
 		</div>
 
 	<div id="footer">
