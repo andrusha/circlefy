@@ -136,17 +136,16 @@ ul.tap-stream .clarity {
 }
 
 ul.tap-stream .tap-info {
-	left:70px;
 	margin-bottom:3px;
-	position:absolute;
-	top:-1px;
+	margin-left:70px;
+	margin-top:-1px;
 }
 
 ul.tap-stream .tap-msg {
-	position:absolute;
-	left:70px; top:15px;
-	width: 300px;
 	font-size:12px;
+	margin-left:70px;
+	position:relative;
+	width:300px;
 }
 
 ul.tap-stream .tap-info span {
@@ -238,7 +237,7 @@ span.counter {
 ul.tap-stream .tap-response-box {
 	padding: 5px;
 	background: #DFDFDF;
-	margin-top:70px;
+	margin-top:10px;
 	display: none;
 }
 
@@ -310,7 +309,8 @@ ul.tap-stream .tap-response-box {
 	clear: both; 
 	padding-left: 5px; 
 	padding-bottom: 3px; 
-	padding-top: 3px; }
+	padding-top: 3px;
+	text-align:right }
 	
 .tap-respond-cancel {
 	font-size: 11px; }
