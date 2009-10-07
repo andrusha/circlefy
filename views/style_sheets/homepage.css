@@ -69,7 +69,7 @@ img { vertical-align:-4px;}
 
 .section-head {
 	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) repeat-x scroll 0 0;
-	padding: 3px 4px 3px 4px;
+	padding: 3px 4px 5px 4px;
 }
 
 .section-head h1 {
@@ -317,7 +317,7 @@ ul.tap-stream .tap-response-box {
 	padding-bottom: 3px; 
 	padding-top: 3px;
 	text-align:right;
-	color:#626262; }
+	color:#626262; }	
 	
 .tap-respond-cancel {
 	font-size: 11px;
