@@ -320,7 +320,8 @@ ul.tap-stream .tap-response-box {
 	color:#626262; }
 	
 .tap-respond-cancel {
-	font-size: 11px; }
+	font-size: 11px;
+	color: #207BC8; }
 	
 .tap-response {
 	font-family:arial;
