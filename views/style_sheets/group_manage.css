@@ -413,3 +413,7 @@ body {
 
 .group {
 padding-bottom: 3px; }
+
+.status {
+	display: block;
+	margin-top: -15px; }
