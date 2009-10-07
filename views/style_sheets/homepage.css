@@ -85,7 +85,7 @@ ul.tap-stream li {
 	font-size:12px;
 	margin-bottom:-1px;
 	margin-left:2px;
-	padding:8px;
+	padding:8px 8px 0;
 }
 	ul.tap-stream li:hover {
 		background: #f1f1f1; }
@@ -110,6 +110,7 @@ ul.tap-stream li.noresults p {
 ul.tap-stream img.avatar {
 	float: left;
 	margin-right: 10px;
+	margin-bottom: 8px;
 }
 
 ul.tap-stream .floater {
@@ -146,6 +147,7 @@ ul.tap-stream .tap-info {
 ul.tap-stream .tap-msg {
 	font-size:12px;
 	margin-left:70px;
+	margin-bottom:8px;
 	position:relative;
 	width:300px;
 }
@@ -239,7 +241,7 @@ span.counter {
 ul.tap-stream .tap-response-box {
 	padding: 5px;
 	background: #DFDFDF;
-	margin-top:10px;
+	margin-bottom:10px;
 	display: none;
 }
 
