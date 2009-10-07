@@ -88,7 +88,7 @@ ul.tap-stream li {
 	padding:8px;
 }
 	ul.tap-stream li:hover {
-		background: #f9f9f9; }
+		background: #f1f1f1; }
 
 ul.tap-stream .tap-chat li {
 	border: none;
@@ -151,7 +151,7 @@ ul.tap-stream .tap-msg {
 }
 
 ul.tap-stream .tap-info span {
-	color: #797979;
+	color: #464646;
 }
 
 ul.tap-stream .tap-from {
