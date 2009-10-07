@@ -87,6 +87,8 @@ ul.tap-stream li {
 	margin-left:2px;
 	padding:8px;
 }
+	ul.tap-stream li:hover {
+		background: #f9f9f9; }
 
 ul.tap-stream .tap-chat li {
 	border: none;
@@ -299,8 +301,10 @@ ul.tap-stream .tap-response-box {
 }
 
 .tap-respond {
-	float: right;
-	font-size: 11px; }
+	color:#207BC8;
+	float:right;
+	font-size:11px;
+	font-weight:bold; }
 
 .tap-respond-last {
 	border-left: 1px solid #ccc; 
@@ -310,7 +314,8 @@ ul.tap-stream .tap-response-box {
 	padding-left: 5px; 
 	padding-bottom: 3px; 
 	padding-top: 3px;
-	text-align:right }
+	text-align:right;
+	color:#626262; }
 	
 .tap-respond-cancel {
 	font-size: 11px; }
