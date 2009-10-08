@@ -99,6 +99,8 @@ body {
 			background: white; }
 			
 		.tab-list {
+			border: 1px solid #E5E5E5;
+			border-top: none;
 			height: auto; width: 175px;
 			font-size: 12px;
 			padding: 8px 3px 13px 12px;

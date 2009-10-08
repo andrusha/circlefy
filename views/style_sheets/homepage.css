@@ -346,7 +346,7 @@ ul.tap-stream .tap-response-box {
 	width: 153px;
 	border: 1px solid #cccccc;
 	background: #FBFBFB;
-	font-size: 11px;
+	font-size: 12px;
 	margin-bottom: 5px;
 }
 
@@ -376,14 +376,6 @@ ul.tap-stream .tap-response-box {
 
 #signup-form {
 	background:#F2F2F2 none repeat scroll 0 0;
-	font-size:12px;
-	height:auto;
-	margin-right:3px;
-	padding:8px 3px 13px 12px;
-	width:175px; }
-	
-#signup-form label {
-	background:#F2F2F2 none repeat scroll 0 0;
 	border: 1px solid #E5E5E5;
 	border-top: none;
 	font-size:12px;
@@ -391,6 +383,11 @@ ul.tap-stream .tap-response-box {
 	margin-right:3px;
 	padding:8px 3px 13px 12px;
 	width:175px; }
+	
+#signup-form label {
+	display:block;
+	font-weight:bold;
+	margin-bottom:5px; }
 
 #signup-form input.text {
 	background:#FBFBFB none repeat scroll 0 0;
