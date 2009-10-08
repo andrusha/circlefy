@@ -369,14 +369,18 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 		<div id="left-col">
 
 			<div id="groups-tab">
-				<div class="tab-in">Group Suggestions</div>
+				<div class="tab-in"><a href="" class="name">Group Suggestions</a>  </div>
 			</div>
 				<div class="tab-list">
 					<ul>
-						<li class="list-item"><a href="" class="item-name">John Wayne <span class="item-nr">(9)</span></a> <a href="" class="item-filters">filters</a> <a href="" class="item-add">add +</a></li>
-						<li class="list-item"><a href="" class="item-name">Marry Jane <span class="item-nr">(13)</span></a> <a href="" class="item-filters">filters</a> <a href="" class="item-add">add +</a></li>
+						<?php foreach ($_t['random_group_results'] as $random): ?>
+						<li class="list-item">
+							<p style="height: 14px; font-weight: bold;"><a href="#" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?= $random['gname'] ?></a></p>
+							<p style="margin-bottom:20px; font-size: 10px"><?= $random['focus'] ?></p>
+						</li>
+						<?php endforeach; ?>
 					</ul>
-					<p class="more-btn1"><a href="">show more &raquo;</a></p>
+					<!-- <p class="more-btn1"><a href="">show more &raquo;</a></p> -->
 					<div style="clear:both"></div>
 				</div>
 		</div>

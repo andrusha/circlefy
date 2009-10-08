@@ -113,7 +113,8 @@ Tap.Vars = {
 									<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
-								<p class="tap-msg"><?= $last['chat_text'] ?>
+								<p>
+									<span class="tap-msg"><?= $last['chat_text'] ?></span>
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
@@ -167,7 +168,8 @@ Tap.Vars = {
 									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
-								<p class="tap-msg"><?= $bit['chat_text'] ?>
+								<p>
+									<span class="tap-msg"><?= $bit['chat_text'] ?></span>
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
@@ -230,7 +232,7 @@ Tap.Vars = {
 						<strong>
 							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>							
 						</strong>
-						<#: bit.last_resp || "" #>
+						<#: (bit.last_resp || "").linkify() #>
 					</p>
 				</div>
 				<div class="tap-body">
@@ -239,7 +241,8 @@ Tap.Vars = {
 						<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
 						<span class="tap-typing"></span>
 					</p>
-					<p class="tap-msg"><#: bit.chat_text #>
+					<p>
+						<span class="tap-msg"><#: bit.chat_text.linkify() #></span>
 					</p>
 				</div>
 				<div class="tap-response-box clarity">

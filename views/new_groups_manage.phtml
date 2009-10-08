@@ -114,7 +114,7 @@ Tap.Groups = {
 				searchmore.slide('out');
 			}
 		});
-		
+
 		if (searchkey) {
 			$('search-field').set('value', searchkey);
 			this.onSearch(searchkey);
@@ -160,6 +160,13 @@ Tap.Groups = {
 				var back = $('gr-search-pages-back');
 				var sepcount = 0;
 				var response = $try(function(){ return JSON.decode(self.response.text); });
+				if (response && $type(response.group_results) == 'object') {
+					response.group_results = (function(){
+						var result = [];
+						for (var i in response.group_results) result.push(response.group_results[i]);
+						return result;
+					})();
+				}
 				if (response && $type(response.group_results) == 'array') {
 					html = new Template().parse(template, response.group_results);
 					listing.fade('hide').set('html', html);
@@ -407,7 +414,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 </head>
 
 <body>
-	
+
 	<? include(NEW_HEADER); ?>
 
 	<div id="main">
@@ -428,7 +435,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 					<div style="clear:both"></div>
 				</div>
 		</div>
-		
+
 		<div id="center-col">
 			<div id="group-search">
 				<p>Looking for new groups? <input id="search-field" type="text" name="group-search"/> <a id="search-btn-more" href="">more &raquo;</a> <input id="search-btn"  type="image" src="/images/cimages/group_srch_btn.gif"/> </p>
@@ -469,7 +476,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 						<span id="sort-logo">Logo</span>
 						<span id="sort-name">Name</span>
 						<span id="sort-loc">Location</span>
-						<span id="sort-msgs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span id="sort-msgs"># Msg</span>
 						<span id="sort-mmbrs">Members</span>
 					</p>
 				</div>
@@ -488,6 +495,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							$official = $group['official'];
 							$focus = $group['focus'];
 							$descr = $group['descr'];
+							$count = $group['count'];
 					?>
 						<li id="gr-id_<?= $gid ?>" class="listing">
 							<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
@@ -501,8 +509,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 									<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 							</div>
 							<div class="gr-numbers">
-								<p><strong></strong>
-								</p>
+								<p><strong><?= $count ?></strong></p>
 							</div>
 							<div class="gr-numbers">
 								<p><strong><?= $size ?></strong></p>
@@ -527,7 +534,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 				<!-- <div class="more-btn4"><a href="">show more &raquo;</a></div> -->
 			</div>
 		</div>
-		
+
 		<div id="right-col">
 			<h1>Help and Tips</h1>
 			<h2>Find your groups faster.</h2>
@@ -541,7 +548,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 		</div>
 	</div>
 
-		
+
 		<div id="templates" style="display:none">
 			<ul id="search-template">
 				<# for (var x = this.reverse().length; x--;) { var data = this[x]; #>
@@ -557,7 +564,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							<p class="gr-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 					</div>
 					<div class="gr-numbers">
-						<p><strong></strong></p>
+						<p><strong><#: data.count #></strong></p>
 					</div>
 					<div class="gr-numbers">
 						<p><strong><#: data.size #></strong></p>

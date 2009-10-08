@@ -46,8 +46,8 @@ var EasyOver = new Class({
 
 	onOverlayClick: function(e){
 		e.stop();
-		this.element.fireEvent('focus');
 		this.hide();
+		this.element.fireEvent('focus');
 	}
 
 });
@@ -75,6 +75,9 @@ Tap.Home = {
 		var body = $(document.body);
 		this.mainStream = $('main-stream');
 
+		$('main').getElements('.tap-msg, .tap-respond-last').each(function(item){ 
+			item.set('html', item.get('html').linkify()); 
+		});
 		body.addEvents({
 			'click:relay(li.group a)': this.changeFeed.toHandler(this),
 			'click:relay(a.reset-feed)': this.clearSearch.toHandler(this),
@@ -179,8 +182,12 @@ Tap.Home = {
 
 	// TYPING
 
+	typing_timeout : '',
+	indic: '',
 	typing: function(el){
 		var parent = el.getParent('li');
+		$clear(self.typing_timeout);
+		self.typing_timeout = (function(){ parent.store('typing',false); self.indic.set('text', ''); }).delay(3000);
 		if (parent.retrieve('typing')) return null;
 		parent.store('typing', true);
 		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
@@ -197,9 +204,8 @@ Tap.Home = {
 		var typing = this.typing;
 		var el = $('yid_' + cid) || $('tid_' + cid);
 		if (el) {
-			var indic = el.getElement('span.tap-typing');
-			indic.set('text', '(Someone\'s typing)');
-			(function(){ indic.set('text', ''); }).delay(5000);
+			self.indic = el.getElement('span.tap-typing');
+			self.indic.set('text', '(Someone\'s typing)');
 		}
 	},
 
@@ -243,7 +249,7 @@ Tap.Home = {
 					for (var x = response.responses.reverse().length; x--; ){
 						var item = response.responses[x];
 						new Element('li', {
-							html: '<strong>{uname}:</strong> {chat_text}'.substitute(item)
+							html: '<strong>{uname}:</strong> {chat_text}'.substitute(item).linkify()
 						}).inject(box);
 					}
 					box.scrollTo(0, box.getScrollSize().y);
@@ -300,7 +306,7 @@ Tap.Home = {
 			html: '<strong>{uname}:</strong> {chat_text}'.substitute({
 				uname: user,
 				chat_text: msg
-			})
+			}).linkify()
 		});
 		var parent;
 		parent = $('tid_' + id);
@@ -311,7 +317,7 @@ Tap.Home = {
 			var counter = parent.getElement('span.tap-respond-count');
 			counter.set('text', (counter.get('text') * 1) + 1);
 			var last = parent.getElement('p.tap-respond-last');
-			last.set('html', ['<strong>', user, ':</strong> ', msg].join(''));
+			last.set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
 		}
 		parent = $('yid_' + id);
 		if (parent) {
@@ -321,7 +327,7 @@ Tap.Home = {
 			var counter = parent.getElement('span.tap-respond-count');
 			counter.set('text', (counter.get('text') * 1) + 1);
 			var last = parent.getElement('p.tap-respond-last');
-			last.set('html', ['<strong>', user, ':</strong> ', msg].join(''))
+			last.set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
 		}
 	},
 

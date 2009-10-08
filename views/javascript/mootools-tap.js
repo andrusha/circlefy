@@ -502,6 +502,21 @@ String.implement({
 
 	remove: function(exp){
 		return this.replace(exp, '');
+	},
+
+	linkify: function(){
+		var regexp = new RegExp("\
+			(?:(?:ht|f)tp(?:s?)\\:\\/\\/|~\\/|\\/)?\
+			(?:\\w+:\\w+@)?\
+			(?:(?:[-\\w]+\\.)+\
+			(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))\
+			(?::[\\d]{1,5})?(?:(?:(?:\\/(?:[-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?\
+			(?:(?:\\?(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)\
+			(?:&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*\
+			(?:#(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?".replace(/\(\?x\)|\s+#.*$|\s+/gim, ''), 'g');
+		return this.replace(regexp, function(match){
+			return ['<a href="', match,'" target="_blank">', match,'</a>'].join('');
+		});
 	}
 
 });

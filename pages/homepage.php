@@ -157,6 +157,7 @@ EOF;
 			'chat_text' =>	$chat_text
 			);
 		}
+		$this->set($ac_output,'active_convos');
 
 		//END get active conversations	
 	
@@ -179,7 +180,7 @@ EOF;
 		WHERE sc.uid = {$uid};
 			
 EOF;
-		$data_last_tap = $this->bit_generator($last_tap_query,null);
+		$data_last_tap = $this->bit_generator($last_tap_query,'last_tap');
 		$this->set($data_last_tap,'last_tap');
 		//END get last tap
 
@@ -400,8 +401,8 @@ private function bit_generator($query,$type){
                                 );
 				$mid_list .= $cid.',';
                         }
+			//Don't do further processing for last tap
 			$mid_list = substr($mid_list,0,-1);
-	
 		// START + Getting response data
 
                         $response_count = <<<EOF
@@ -415,7 +416,7 @@ EOF;
 
 			$this->db_class_mysql->set_query($response_count,'response_count',"Get's all the response count for each tap");
 			$resp_count_results = $this->db_class_mysql->execute_query('response_count');
-			if($resp_count_results->num_rows > 0);
+			if($resp_count_results->num_rows > 0){
                         while($res = $resp_count_results->fetch_assoc()){
                                 $count = $res['count'];
 				$last_resp = $res['chat_text'];
@@ -424,12 +425,17 @@ EOF;
                                 $messages[$cid]['count'] = $count;
                                 $messages[$cid]['last_resp'] = $last_resp;
                                 $messages[$cid]['resp_uname'] = $resp_uname;
-				
                         }
+
                         foreach($messages as $v)
                                 $pmessages[] = $v;
                 // END + Getting response data
-                return $pmessages;
+	                return $pmessages;
+			} else { 
+                        foreach($messages as $v)
+                                $pmessages[] = $v;
+			
+			return $pmessages; }
 }
 
 private function time_since($original) {

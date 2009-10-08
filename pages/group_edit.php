@@ -23,7 +23,6 @@ class group_edit extends Base{
 		parent::__construct();
 
 		$uid = $_SESSION['uid'];
-		$gid = $_GET['group'];
 		
 		$this->set($gid,'gid');
 		
@@ -70,6 +69,7 @@ EOF;
                 $this->set($init_geo_data,'init_geo_data');
 
 	
+		$gid = $_GET['group'];
 		$query_admins = <<<EOF
 		SELECT t2.admin,t1.pic_36,t1.uname FROM login as t1
 		JOIN group_members as t2 ON t1.uid = t2.uid
@@ -80,7 +80,6 @@ EOF;
                 $get_group_info = <<<EOF
                 SELECT picture_path, private, invite_priv, invite_only, descr, focus, gname, symbol, pic_100 FROM groups WHERE gid = {$gid}
 EOF;
-
 
 		$this->db_class_mysql->set_query($get_group_info,'get_group_info','This gets all of the basic information about the group ( picture, descr, focus, name, private / invite status )');
 		$this->db_class_mysql->set_query($query_admins,'get_admins','This query gets a list of people who last chatted who are in the group ( however this might wnat to be modified tow/ some filters');

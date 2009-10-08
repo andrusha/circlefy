@@ -15,17 +15,17 @@ $fname = $_POST['fname'];
 $email = $_POST['email'];
 $password = $_POST['pass'];
 
-if($flag == "signup_function();"){
+if($flag){
 	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$email,$password);
 	echo $sign_up_results;
 }
 
-
+/* Obsolete
 if($flag == "check_im_status();"){
 	$get_im_hash_results = $sign_up_object->check_im_status($_SESSION['wasp_attack']);
 	echo $get_im_hash_results;
 }
-
+*/
 class ajaz_sign_up{
 	
 		private $mysqli;

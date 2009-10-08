@@ -63,7 +63,7 @@ class search_functions{
 
 		//This query gets the group information based off of params supplied
 		$group_query =  <<<EOF
-   SELECT SQL_CALC_FOUND_ROWS ugm.admin,ugm.gid,t2.symbol,t2.gid,t2.gname,t2.connected,t2.descr,t2.focus,t2.pic_100,count(ugm.uid) AS size
+   SELECT SQL_CALC_FOUND_ROWS ugm.admin,ugm.gid,t2.symbol,t2.gname,t2.connected,t2.descr,t2.focus,t2.pic_100,count(ugm.uid) AS size
 		FROM (
 		SELECT DISTINCT gm.admin,gm.uid,gs.gid FROM groups AS gs
 		LEFT JOIN group_members AS gm ON gm.gid= gs.gid
@@ -71,9 +71,9 @@ class search_functions{
 		GROUP BY gs.gid
 		) AS ugm
 		LEFT JOIN groups AS t2 ON t2.gid = ugm.gid
-	WHERE t2.connected !=2
         GROUP BY ugm.gid ORDER BY t2.connected LIMIT {$limit} OFFSET {$offset};
 EOF;
+	//Add this to remove companies from showing up WHERE t2.connected !=2
 
                 $group_results = $this->mysqli->query($group_query);
 		
@@ -97,7 +97,7 @@ EOF;
 				$official = "*";
 			else    $official = "";
 
-			$groups[] = array(
+			$groups[$gid] = array(
 				'in' => $in,
 				'gid' => $gid,
 				'gname' => $gname,
@@ -107,12 +107,31 @@ EOF;
 				'focus' => $focus,
                                 'descr' => $descr,
 				'domain' => $domain,
-				'official' => $official
+				'official' => $official,
+				'count'=> 0
 			);
+			$gid_list .= $gid.',';
 		}
-	
-		//If groups were found send them back, else send back no results
+			$gid_list = substr($gid_list,0,-1);
 
+                        $group_message_count = <<<EOF
+                        SELECT COUNT(oscm.gid) AS count,scm.gid FROM
+                        ( SELECT mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} ) )
+                        AS oscm
+                        JOIN special_chat_meta AS scm ON oscm.mid = scm.mid AND oscm.gid = scm.gid
+                        GROUP BY oscm.gid
+EOF;
+
+                        $message_count_results = $this->mysqli->query($group_message_count);
+			if($message_count_results->num_rows)
+                        while($res = $message_count_results->fetch_assoc() ) {
+                                $count = $res['count'];
+                                $gid = $res['gid'];
+
+                                $groups[$gid]['count'] = $count;
+                        }	
+
+		//If groups were found send them back, else send back no results
 		$count_results = $this->mysqli->query('SELECT found_rows() as count');
                 $row_count = $count_results->fetch_assoc();
                 $row_count = $row_count['count'];

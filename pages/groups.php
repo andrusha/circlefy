@@ -115,7 +115,7 @@ EOF;
                                         $official = "*";
                                 else    $official = "";
 
-                                $groups[] = array(
+                                $groups[$gid] = array(
 					'gid' => $gid,
 					'gname' => $gname,
 					'admin' => $admin,
@@ -125,10 +125,31 @@ EOF;
 					'size' => $size,
 					'focus' => $focus,
 					'descr' => $descr,
-					'official' => $official
+					'official' => $official,
+					'count'	=> 0
 				);
-			}
+			
+			$gid_list .= $gid.',';
+                }
+                        $gid_list = substr($gid_list,0,-1);
 
+                        $group_message_count = <<<EOF
+                        SELECT COUNT(oscm.gid) AS count,scm.gid FROM
+                        ( SELECT mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} ) )
+                        AS oscm
+                        JOIN special_chat_meta AS scm ON oscm.mid = scm.mid AND oscm.gid = scm.gid
+                        GROUP BY oscm.gid
+EOF;
+			$this->db_class_mysql->set_query($group_message_count,'group_count',"Get's message count for groups");
+			$message_count_results = $this->db_class_mysql->execute_query('group_count');
+			
+                        if($message_count_results->num_rows)
+                        while($res = $message_count_results->fetch_assoc() ) {
+                                $count = $res['count'];
+                                $gid = $res['gid'];
+
+                                $groups[$gid]['count'] = $count;
+                        }
 			$this->set($groups,'group_results');
 				
 

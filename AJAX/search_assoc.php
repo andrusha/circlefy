@@ -39,8 +39,7 @@ class assoc_functions{
 
 		if($search != '' && $symbol == '#'){
 			//remove min() to set precedence back for businesses
-			$create_assoc_query = <<<EOF
-			(
+			/*(
 				SELECT t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
@@ -52,9 +51,16 @@ class assoc_functions{
 				SELECT uid as id,99 as connected,t2.uname AS symbol,CONCAT(t2.fname,' ',t2.lname) AS name,NULL as members,NULL as online FROM login as t2
                                 WHERE t2.uname LIKE '{$search}%'
 			LIMIT 5
-			) ORDER BY connected ASC;
+			) ORDER BY connected ASC;*/
+			$create_assoc_query = <<<EOF
+				SELECT t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
+				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
+				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
+				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
+				LEFT JOIN GROUP_ONLINE AS t4 ON t4.gid=t2.gid
+				GROUP BY t2.gid
+			LIMIT 10
 EOF;
-
 		} 
 
 		if($search != '' && $symbol == '@'){
@@ -104,6 +110,7 @@ EOF;
 
                 }
 
+			$my_groups = $_SESSION['gid'];
 			if($create_assoc_query)	
 			$create_assoc_results = $this->mysqli->query($create_assoc_query);
 			if($create_assoc_results->num_rows > 0){
@@ -123,6 +130,12 @@ EOF;
 						$online = "online ($online)";
 					} 
 
+					$sc = strpos('x,'.$my_groups.',',','.$id.',');	
+					if($sc)
+						$my_group = 1;
+					else
+						$my_group = 0;
+
 					$bullet_name = $symbol;
 
 					if($type == 99){
@@ -139,11 +152,12 @@ EOF;
 						}
 					if($type == 1){
 						$type_display = "<img src='images/icons/book_open.png' /><span class='online $online_class'>".$online."</span>";
-						$bullet_display = "<img src='images/icons/book_open.png' /> $bullet_name $online_count"; 
+						$bullet_display = "<img src='images/icons/book_open.png' /> $bullet_name $online_count $my_group"; 
 					}
 
-				 	$response[] = array($name,"$name:$symbol:$type:$id",$bullet_display,"$name $type_display");
+				 	$response[] = array($name,"$name:$symbol:$type:$id",$bullet_display,"$name $type_display",$my_group);
 				}
+
 			} elseif($search != '') { 
 				$string = trim("<span id='no_results'><b>$symbol$search</b> returned no results
 				You must specificy wither you're searching for a Group,Person or Popular Tag.
