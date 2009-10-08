@@ -183,11 +183,13 @@ Tap.Home = {
 	// TYPING
 
 	typing_timeout : '',
+	indic_timeout : '',
 	indic: '',
 	typing: function(el){
 		var parent = el.getParent('li');
 		$clear(self.typing_timeout);
-		self.typing_timeout = (function(){ parent.store('typing',false); self.indic.set('text', ''); }).delay(3000);
+		//This is the timer when the will reset
+		self.typing_timeout = (function(){ parent.store('typing',false); }).delay(1000);
 		if (parent.retrieve('typing')) return null;
 		parent.store('typing', true);
 		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
@@ -201,10 +203,15 @@ Tap.Home = {
 	},
 
 	typingIndicator: function(cid){
+		console.log('typingIndicator');
 		var typing = this.typing;
 		var el = $('yid_' + cid) || $('tid_' + cid);
 		if (el) {
 			self.indic = el.getElement('span.tap-typing');
+			$clear(self.indic_timeout);
+
+			//This is the timer when the indicator will reset
+			self.indic_timeout = (function(){ self.indic.set('text', ''); }).delay(5000);
 			self.indic.set('text', '(Someone\'s typing)');
 		}
 	},
