@@ -364,13 +364,15 @@ ul.tap-stream .tap-response-box {
 }
 
 #signup-tab {
-	background: url(/images/cimages/tab_blue.gif);
-	height:31px;
-	width:194px; }
+	background:transparent url(/images/cimages/signup_blue.gif) repeat scroll 0 0;
+	height:126px;
+	margin-top:30px;
+	width:194px;
+	text-indent: -9999px; }
 
 #signup-title {
 	font-size:14px;
-	padding:6px 12px 0; }
+	padding:54px 12px 0; }
 
 #signup-form {
 	background:#F2F2F2 none repeat scroll 0 0;
@@ -378,12 +380,17 @@ ul.tap-stream .tap-response-box {
 	height:auto;
 	margin-right:3px;
 	padding:8px 3px 13px 12px;
-	width:176px; }
+	width:175px; }
 	
 #signup-form label {
-	display:block;
-	font-weight:bold;
-	margin-bottom:5px; }
+	background:#F2F2F2 none repeat scroll 0 0;
+	border: 1px solid #E5E5E5;
+	border-top: none;
+	font-size:12px;
+	height:auto;
+	margin-right:3px;
+	padding:8px 3px 13px 12px;
+	width:175px; }
 
 #signup-form input.text {
 	background:#FBFBFB none repeat scroll 0 0;
@@ -391,7 +398,7 @@ ul.tap-stream .tap-response-box {
 	font-size:11px;
 	height:16px;
 	margin-bottom:5px;
-	padding:4px;
+	padding:2px;
 	width:153px; }
 
 #signup-form input.text:focus {
@@ -399,8 +406,18 @@ ul.tap-stream .tap-response-box {
 	background: white; }
 
 #signup-form .guide { 
-    font-size:11px;
-    margin-top: -5px;
-    margin-bottom: 15px;
-    color: #898989; }
+	color:#898989;
+	font-size:11px;
+	margin-bottom:10px;
+	margin-right:16px;
+	margin-top:-5px;
+	text-align:right; }
+	
+#signup-submit {
+	text-align: center;
+	font-size: 13px; }
+	
+#signin-submit {
+	text-align: center;
+	font-size: 13px; }
 	
