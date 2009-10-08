@@ -339,6 +339,7 @@ ul.tap-stream .tap-response-box {
 
 .tab-list label.in-form {
 	display: inline;
+	vertical-align: 3px;
 }
 
 .tab-list input.text {
@@ -372,8 +373,8 @@ ul.tap-stream .tap-response-box {
 	text-indent: -9999px; }
 
 #signup-title {
-	font-size:14px;
-	padding:54px 12px 0; 
+	font-size:13px;
+	padding:36px 12px 0; 
 	color: white;
 	text-indent: 0px; }
 
@@ -391,7 +392,7 @@ ul.tap-stream .tap-response-box {
 	display:block;
 	font-weight:bold;
 	margin-bottom: 2px;
-	margin-top: 5px; }
+	margin-top: 7px; }
 
 #signup-form input.text {
 	background:#FBFBFB none repeat scroll 0 0;
@@ -413,12 +414,11 @@ ul.tap-stream .tap-response-box {
 	margin-top:-5px;
 	text-align:right; }
 	
-#signup-submit {
-	margin-top: 10px; 
-	font-size: 14px; }
-	
 #signin-submit {
 	font-size: 14px; 
 	margin-top: 10px;
 	padding: 0px 4px; }
 	
+#signup-submit {
+	margin: 14px auto 10px 28px;
+	font-size: 14px; }
