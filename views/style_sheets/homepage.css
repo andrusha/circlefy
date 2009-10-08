@@ -362,5 +362,16 @@ ul.tap-stream .tap-response-box {
 	display: none;
 	margin-bottom: 10px;
 }
-	
+
+#signup-tab {
+	background: url(/images/cimages/tab_blue.gif);
+	height:31px;
+	width:194px; }
+
+#signup-title {
+	font-size:14px;
+	padding:6px 12px 0; }
+
+#signup-form {
+	background-color: #BBD0EE; }
 	
