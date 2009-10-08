@@ -333,7 +333,7 @@ ul.tap-stream .tap-response-box {
 .tab-list label {
 	display: block;
 	font-weight: bold;
-	margin-bottom: 5px;
+	margin-bottom: 2px;
 }
 
 .tab-list label.in-form {
@@ -372,7 +372,8 @@ ul.tap-stream .tap-response-box {
 
 #signup-title {
 	font-size:14px;
-	padding:54px 12px 0; }
+	padding:54px 12px 0; 
+	color: white; }
 
 #signup-form {
 	background:#F2F2F2 none repeat scroll 0 0;
@@ -387,7 +388,8 @@ ul.tap-stream .tap-response-box {
 #signup-form label {
 	display:block;
 	font-weight:bold;
-	margin-bottom:5px; }
+	margin-bottom: 2px;
+	margin-top: 5px; }
 
 #signup-form input.text {
 	background:#FBFBFB none repeat scroll 0 0;
@@ -405,7 +407,6 @@ ul.tap-stream .tap-response-box {
 #signup-form .guide { 
 	color:#898989;
 	font-size:11px;
-	margin-bottom:10px;
 	margin-right:16px;
 	margin-top:-5px;
 	text-align:right; }
