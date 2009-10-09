@@ -79,7 +79,7 @@ body {
 		
 		.tab-in {
 			font-size: 14px;
-			padding: 6px 12px 0 12px; }
+			padding: 4px 12px 0 12px; }
 		
 			.tab-in a { color: white; }
 		
@@ -382,7 +382,7 @@ body {
 		#right-col h1 {
 			color: #fff;
 			font-size: 14px;
-			padding: 2px 5px;
+			padding: 0px 5px;
 			margin-bottom: 15px; }
 		
 		#right-col h2, #right-col p {
