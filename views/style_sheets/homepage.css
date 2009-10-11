@@ -124,6 +124,10 @@ ul.tap-stream ul.tap-chat {
 	background: #fff;
 }
 
+ul.tap-stream ul.tap-chat.noresp {
+	background: #fff url(/images/silent_responses.png) no-repeat center center;
+}
+
 ul.tap-stream ul.tap-chat li {
 	padding: 5px;
 }
@@ -308,6 +312,12 @@ ul.tap-stream .tap-response-box {
 	font-size:11px;
 	font-weight:bold; }
 
+.tap-respond.noresp {
+	font-weight:normal; }
+
+.tap-respond.noresp .tap-respond-count {
+	display: none; }
+
 .tap-respond-last {
 	border-left: 1px solid #ccc; 
 	width: 150px; 
@@ -422,3 +432,7 @@ ul.tap-stream .tap-response-box {
 #signup-submit {
 	margin: 14px auto 2px 28px;
 	font-size: 14px; }
+
+	li.group.trending {
+		height: 20px;
+	}

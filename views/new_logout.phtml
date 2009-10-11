@@ -22,175 +22,9 @@
 <script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
 <script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
-<script type="text/javascript">
-Tap = window.Tap || {};
-
-Tap.Main = {
-
-	init: function(){
-		var self = this;
-
-		$('login').addEvent('submit', this.onLogin.toHandler(this));
-
-		var signUp = $('signup-form');
-		var data = this.data = {
-			user: signUp.getElement('input[name="user"]'),
-			name: signUp.getElement('input[name="name"]'),
-			email: signUp.getElement('input[name="email"]'),
-			pass: signUp.getElement('input[name="pass"]'),
-			passrepeat: signUp.getElement('input[name="passrepeat"]')
-		};
-		data.user.addEvent('blur', this.checkUser.toHandler(this));
-		data.name.addEvent('blur', this.checkName.toHandler(this));
-		data.email.addEvent('blur', this.checkEmail.toHandler(this));
-		data.pass.addEvent('blur', this.checkPass.toHandler(this));
-		data.passrepeat.addEvent('blur', this.checkPassRepeat.toHandler(this));
-		$('signup-submit').addEvent('click', this.onSignup.toHandler(this));
-	},
-
-	onLogin: function(el, e){
-		e.stop();
-		var errors = false;
-		var user = $('uname');
-		var pass = $('pass');
-		if (user.isEmpty()) {
-			user.addClass('input-err');
-			errors = true;
-		} else {
-			user.removeClass('input-err');
-		}
-		if (pass.isEmpty()) {
-			pass.addClass('input-err');
-			errors = true;
-		} else {
-			pass.removeClass('input-err');
-		}
-		if (errors) return;
-		el.submit();
-	},
-
-	checkUser: function(el){
-		var self = this;
-		if (el.isEmpty() || !el.ofLength(4, 20)) {
-			return this.showError(el, 'Username must be at least 4 characters');
-		} else {
-			new Request({
-				url: 'AJAX/check_signup.php',
-				data: {
-					type: 1,
-					val: el.get('value')
-				},
-				onSuccess: function(){
-					var response = JSON.decode(this.response.text);
-					if (!response.available) {
-						self.showError(el, 'This username is already taken.');
-					} else {
-						self.removeError(el);
-					}
-				}
-			}).send();
-		}
-		return this.removeError(el);
-	},
-
-	checkName: function(el){
-		if (el.isEmpty()) {
-			return this.showError(el, 'Please enter a name.');
-		}
-		return this.removeError(el);
-	},
-
-	checkEmail: function(el){
-		var self = this;
-		if (el.isEmpty() || !el.isEmail()) {
-			return this.showError(el, 'Please enter a valid email.');
-		} else {
-			new Request({
-				url: 'AJAX/check_signup.php',
-				data: {
-					type: 2,
-					val: el.get('value')
-				},
-				onSuccess: function(){
-					var response = JSON.decode(this.response.text);
-					if (!response.available) {
-						self.showError(el, 'This email is already used.');
-					} else {
-						self.removeError(el);
-					}
-				}
-			}).send();
-		}
-		return this.removeError(el);
-	},
-
-	checkPass: function(el){
-		if (el.isEmpty() || !el.ofLength(6, 20)) {
-			return this.showError(el, 'Password must be at least 6 characters.');
-		}
-		return this.removeError(el);
-	},
-
-	checkPassRepeat: function(el){
-		var data = this.data;
-		if (el.isEmpty()) {
-			return this.showError(el, 'Repeat your password.');
-		} else if (el.get('value') !== data.pass.get('value')) {
-			return this.showError(el, 'Your passwords don\'t match.');
-		}
-		return this.removeError(el);
-	},
-
-	showError: function(el, error){
-		var msg = el.getNext('div.guide');
-		msg.set('text', error);
-		msg.setStyle('display', 'block');
-		el.addClass('input-err');
-		el.store('passed', false);
-		return this;
-	},
-
-	removeError: function(el){
-		var msg = el.getNext('div.guide');
-		msg.setStyle('display', 'none');
-		el.removeClass('input-err');
-		el.store('passed', true);
-		return this;
-	},
-
-	noErrors: function(){
-		return !$H(this.data).getValues().map(function(item){
-			return !!item.retrieve('passed');
-		}).contains(false);
-	},
-
-	onSignup: function(el, e){
-		var data = this.data;
-		if (this.noErrors()) {
-			new Request({
-				url: 'AJAX/ajaz_sign_up.php',
-				data: {
-					uname: data.user.get('value'),
-					fname: data.name.get('value'),
-					email: data.email.get('value'),
-					pass: data.pass.get('value'),
-					fid: 0,
-					signup_flag: 'signup_function();'
-				},
-				onSuccess: function(){
-					window.location.reload();
-				}
-			}).send();
-		} else {
-			$$($H(data).getValues().filter(function(item){
-				return !item.retrieve('passed');
-			})).fireEvent('blur', [e]);
-		}
-	}
-};
-
-window.addEvent('domready', Tap.Main.init.bind(Tap.Main));
-</script>
+<script type="text/javascript" src="views/javascript/tap.main.js"></script>
+<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 </head>
 
 <body>
@@ -199,9 +33,25 @@ window.addEvent('domready', Tap.Main.init.bind(Tap.Main));
 
 	<div id="main">
 
-		<div id="right-col">
-			<h1>What's This?</h1>
-			<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.  Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today!</p>
+		<div class="left-col" style="margin-right: 20px">
+			<div id="groups-tab" style="background-image:url(/images/cimages/tab_grey.gif);">
+				<div class="tab-in" style="color:#fff;">What's This?</div>
+			</div>
+			<div class="tab-list">
+				<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.  Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today!</p>
+			</div>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Trending Groups</div>
+			</div>
+			<div class="tab-list">
+				<ul>
+					<?php foreach($_t['trending_groups'] as $trending): ?>
+						<li class="list-item" style="height:30px">
+							<p style="height: 14px;"><span class="suggestion-item"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" /><strong><?= $trending['gname'] ?></strong> (<?= $trending['count'] ?>)</span></p>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
 		</div>
 
 		<div id="center-col">
@@ -222,13 +72,19 @@ window.addEvent('domready', Tap.Main.init.bind(Tap.Main));
 				<div class="section-body">
 					<ul id="main-stream" class="tap-stream">
 						<?php
-							if (!empty($_t['groups_bits'])):
-								foreach($_t['groups_bits'] as $bit):
+							if (!empty($_t['logout_bits'])):
+								foreach($_t['logout_bits'] as $bit):
 						?>
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
 							<div class="tap-actions">
-								<a class="tap-respond" href="#">Respond</a>
+								<span class="tap-respond" style="color:#000">Responses <span class="tap-respond-count">(<?= $bit['count'] ?>)</span></span>
+								<p class="tap-respond-last">
+									<strong>
+										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
+									</strong>
+									<?= $bit['last_resp'] ?>
+								</p>
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">

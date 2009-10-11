@@ -45,6 +45,40 @@ Tap.Vars = {
 </script>
 <script type="text/javascript" src="views/javascript/tap.push.js"></script>
 <script type="text/javascript" src="views/javascript/tap.home.js"></script>
+<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script type="text/javascript">
+// Metrics
+try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) }
+window.addEvent('domready', function(){
+	$(document.body).addEvents({
+		'click:relay(a.suggestion-item)': function(e){
+			e.stop();
+			var self = this;
+			mpmetrics.track('trending-click', {'group': this.getElement('strong').get('text')}, function(){
+				window.location = self.get('href');
+			});
+		}
+	});
+	
+	Tap.Home.addEvents({
+		'sendTap': function(number){
+			mpmetrics.track('send-tap', {
+				'type': number !== 0 ? 'private' : 'public',
+				'groups': number
+			});
+		},
+		'loadResponses': function(){
+			mpmetrics.track('view-responses', {});
+		},
+		'sendResponse': function(){
+			mpmetrics.track('send-responses', {});
+		},
+		'searchFeed': function(keyword){
+			mpmetrics.track('search-feed', {'keyword': keyword});
+		}
+	});
+});
+</script>
 </head>
 
 <body>
@@ -62,17 +96,39 @@ Tap.Vars = {
 
 	<div id="main">
 
-		<div id="right-col">
-			<h1>Help and Tips</h1>
-			<h2>Find your groups faster.</h2>
-			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
+		<div class="left-col" style="margin-right: 20px">
+			<div id="groups-tab" style="background-image:url(/images/cimages/tab_grey.gif);">
+				<div class="tab-in" style="color:#fff;">What's This?</div>
+			</div>
+			<div class="tab-list">
+				<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.  Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today!</p>
+			</div>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Trending Groups</div>
+			</div>
+			<div class="tab-list">
+				<ul>
+					<?php foreach($_t['trending_groups'] as $trending): ?>
+						<li class="list-item" style="height:30px">
+							<p style="height: 14px;"><a href="/groups?search=<?= $trending['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" /><strong><?= $trending['gname'] ?></strong> (<?= $trending['count'] ?>)</a></p>
+						</li>
+						<!--
+						<li id="gid_<?= $trending['gid'] ?>" class="group trending">
+							<?= $trending['gname'] ?> (<?= $trending['count'] ?>)
+							
+						</li>
+						-->
+					<?php endforeach; ?>
+				</ul>
+				<div style="clear:both"></div>
+			</div>
 		</div>
 
 		<div id="center-col">
 			<div id="tap-box" class="section">
-				<input type="text" id="tap-box-msg" alt="Tap here!" />
+				<input type="text" id="tap-box-msg" alt="Start tapping by writing a message here." />
 				<div id="tap-box-more">
-					<input type="text" id="tap-box-people" />
+					<input type="text" id="tap-box-people" alt="Add some people who'll get your tap!" />
 					<a id="tap-box-send" href="#">tap!</a>
 					<div style="clear:both"></div>
 				</div>
@@ -97,8 +153,8 @@ Tap.Vars = {
 						<li id="yid_<?= $last['cid'] ?>">
 							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" alt="<?= $last['uname'] ?>" />
 							<div class="tap-actions">
-								<a class="tap-respond" href="#">
-									Respond (<span class="tap-respond-count"><?= $last['count'] ?></span>)
+								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
+									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
 								</a>
 								<p class="tap-respond-last">
 									<strong>
@@ -118,9 +174,9 @@ Tap.Vars = {
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
-								<ul class="tap-chat">
+								<ul class="tap-chat <?= empty($last['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:450px" />
+								<input type="text" class="tap-response" style="width:450px" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -152,8 +208,8 @@ Tap.Vars = {
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
 							<div class="tap-actions">
-								<a class="tap-respond" href="#">
-									Respond (<span class="tap-respond-count"><?= $bit['count'] ?></span>)
+								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="#">
+									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
 								</a>
 								<p class="tap-respond-last">
 									<strong>
@@ -173,9 +229,9 @@ Tap.Vars = {
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
-								<ul class="tap-chat">
+								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:450px" />
+								<input type="text" class="tap-response" style="width:450px" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -225,8 +281,12 @@ Tap.Vars = {
 			<li id="tid_<#: bit.cid #>">
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" />
 				<div class="tap-actions">
+					<# if (bit.count) { #>
 					<a class="tap-respond" href="#">
-						Respond (<span class="tap-respond-count"><#: bit.count #></span>)
+					<# } else { #>
+					<a class="tap-respond noresp" href="#">
+					<# } #>
+						Respond <span class="tap-respond-count">(<#: bit.count #>)</span>
 					</a>
 					<p class="tap-respond-last">
 						<strong>
@@ -246,9 +306,13 @@ Tap.Vars = {
 					</p>
 				</div>
 				<div class="tap-response-box clarity">
+					<# if (bit.count) { #>
 					<ul class="tap-chat">
+					<# } else { #>
+					<ul class="tap-chat noresp">
+					<# } #>
 					</ul>
-					<input type="text" class="tap-response" style="width:450px" />
+					<input type="text" class="tap-response" style="width:450px" alt="Respond to this tap." />
 					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 				</div>
 				<div class="clarity"></div>

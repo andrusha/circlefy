@@ -61,7 +61,7 @@ body {
 	height: auto; width: 990px;
 	margin: 0 auto 20px auto; }
 	
-	#left-col {
+	#left-col, #main div.left-col {
 		height: auto; width: 194px;
 		float: left; }
 	
@@ -272,7 +272,9 @@ body {
 			color: #545454;
 			border: 1px solid #b4b4b4;
 			background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
-		#gr-list li.more-invite{ background:#F0F0F0; } 	
+		#gr-list li.more-invite { 
+			height: 100px;
+			background:#F0F0F0; } 	
 		.invitees { width: 470px; } 
 			
 		.gr-image {
@@ -419,3 +421,13 @@ padding-bottom: 3px; }
 .status {
 	display: block;
 	margin-top: -15px; }
+	
+.loader {
+	display: none;
+	border-top:1px solid #EEEEBB;
+	border-bottom:1px solid #EEEEBB;
+	font-size: 12px; 
+	padding: 5px 5px;
+	padding-left:170px; 
+	background: #FBFBC9; 
+	margin-right: 70px }

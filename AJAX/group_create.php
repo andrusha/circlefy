@@ -94,7 +94,7 @@ EOF;
 		$gid = $last_id;
 		
 		$create_my_group_query = <<<EOF
-		INSERT INTO group_members(uid,gid,admin) values({$uid},{$gid},1)
+		INSERT INTO group_members(uid,gid,admin,created) values({$uid},{$gid},1,NOW())
 EOF;
                 $this->mysqli->query($create_my_group_query);
 /*	

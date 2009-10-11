@@ -28,7 +28,7 @@
 <script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
 <script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
-<script type="text/javascript"> try { mpmetrics.init('05a951428ed5199e27d52356aae83a22');} catch(err) { alert(err) } </script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <script type="text/javascript" charset="utf-8">
 
 // Searching
@@ -79,6 +79,7 @@ Tap.Groups = {
 				var key = this.get('text');
 				$('search-field').set('value', key);
 				self.onSearch(key);
+				mpmetrics.track('group-suggestion', {'group': key});
 			}
 		});
 		body.getElement('input[name="keywords"]').addEvents({
@@ -243,6 +244,7 @@ Tap.Groups = {
 				}
 			}
 		}).send();
+		mpmetrics.track('group-join', {'type': 'user-created'});
 	},
 
 	onJoinSend: function(el){
@@ -275,6 +277,7 @@ Tap.Groups = {
 			onFailure: function(){},
 			onComplete: function(){}
 		}).send();
+		mpmetrics.track('group-join', {'type': 'official'});
 	},
 
 	onMore: function(el){
@@ -356,6 +359,7 @@ Tap.Groups = {
 			onFailure: function(){},
 			onComplete: function(){}
 		}).send();
+		mpmetrics.track('send-invites', {});
 	},
 
 	onInviteCancel: function(el){
@@ -390,6 +394,7 @@ Tap.Groups = {
 		} else {
 			listings.setStyle('display', 'list-item');
 		}
+		mpmetrics.track('filter-groups', {keyword: filter});
 	}
 
 };
@@ -400,14 +405,10 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 <script type="text/javascript" charset="utf-8">
 	Tap.Groups.addEvents({
 		'searchSuccess': function(keyword){
-			// (function(){
-				mpmetrics.track('search', {'success' : 'true', 'keyword': keyword});
-			// }).delay(10000);
+			mpmetrics.track('group-search', {'success' : 'true', 'keyword': keyword});
 		},
 		'searchFail': function(keyword){
-			(function(){
-				mpmetrics.track('search', {'success' : 'false', 'keyword': keyword});
-			}).delay(1000);
+			mpmetrics.track('group-search', {'success' : 'false', 'keyword': keyword});
 		}
 	})
 </script>

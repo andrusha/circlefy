@@ -173,11 +173,24 @@ Tap.Home = {
 	// RESPONSES
 
 	showResponseBox: function(el){
-		el.getParent('li').getElement('.tap-response-box').setStyle('display', 'block');
+		var box = el.getParent('li').getElement('.tap-response-box');
+		var input = box.getElement('input.tap-response');
+		input.set('value', '');
+		var overtext = input.retrieve('overtext') || new OverText(input, {
+			positionOptions: {
+				offset: {x: 6, y: 6}
+			}
+		});
+		input.store('overtext', overtext);
+		box.setStyle('display', 'block');
+		overtext.show();
 	},
 
 	hideResponseBox: function(el){
-		el.getParent('li').getElement('.tap-response-box').setStyle('display', 'none');
+		var box = el.getParent('li').getElement('.tap-response-box');
+		var input = box.getElement('input.tap-response');
+		if (input.retrieve('overtext')) input.retrieve('overtext').hide();
+		box.setStyle('display', 'none');
 	},
 
 	// TYPING
@@ -186,11 +199,11 @@ Tap.Home = {
 	indic_timeout : '',
 	indic: '',
 	typing: function(el){
+		//EDIT BY taso
 		var parent = el.getParent('li');
-		$clear(self.typing_timeout);
-		//This is the timer when the will reset
-		self.typing_timeout = (function(){ parent.store('typing',false); }).delay(1000);
 		if (parent.retrieve('typing')) return null;
+		//This is the timer when the send will reset
+		self.typing_timeout = (function(){ parent.store('typing',false); }).delay(1500);
 		parent.store('typing', true);
 		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
 		new Request({
@@ -203,7 +216,6 @@ Tap.Home = {
 	},
 
 	typingIndicator: function(cid){
-		console.log('typingIndicator');
 		var typing = this.typing;
 		var el = $('yid_' + cid) || $('tid_' + cid);
 		if (el) {
@@ -211,7 +223,7 @@ Tap.Home = {
 			$clear(self.indic_timeout);
 
 			//This is the timer when the indicator will reset
-			self.indic_timeout = (function(){ self.indic.set('text', ''); }).delay(5000);
+			self.indic_timeout = (function(){ self.indic.set('text', ''); }).delay(2500);
 			self.indic.set('text', '(Someone\'s typing)');
 		}
 	},
@@ -253,6 +265,7 @@ Tap.Home = {
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
 				if (response.responses) {
+					box.removeClass('noresp').empty();
 					for (var x = response.responses.reverse().length; x--; ){
 						var item = response.responses[x];
 						new Element('li', {
@@ -264,6 +277,7 @@ Tap.Home = {
 				el.store('loaded', true);
 			}
 		}).send();
+		this.fireEvent('loadResponses');
 	},
 
 	sendResponse: function(el){
@@ -286,6 +300,9 @@ Tap.Home = {
 				}
 			}
 		}).send();
+		this.fireEvent('sendResponse');
+
+/* EDIT BY taso
 		new Request({
 			url: 'AJAX/typing.php',
 			data: {
@@ -296,6 +313,7 @@ Tap.Home = {
 				parent.store('typing', false);
 			}
 		}).send();
+*/
 	},
 
 	handleResponse: function(cid, response){
@@ -319,20 +337,32 @@ Tap.Home = {
 		parent = $('tid_' + id);
 		if (parent) {
 			var box = parent.getElement('ul.tap-chat');
-			item.inject(box, 'bottom');
+			item.inject(box, 'bottom').set('tween', {duration:800}).highlight('#d5fbc9');
+			box.removeClass('noresp');
 			box.scrollTo(0, box.getScrollSize().y);
+			parent.getElement('.tap-respond').removeClass('noresp');
 			var counter = parent.getElement('span.tap-respond-count');
-			counter.set('text', (counter.get('text') * 1) + 1);
+			var count = (function(){
+				var c = counter.get('text').match(/\(([\d]+)\)/);
+				return ($type(c) == 'array') ? (c[1] * 1) : 0;
+			})();
+			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
 			last.set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
 		}
 		parent = $('yid_' + id);
 		if (parent) {
 			var newbox = parent.getElement('ul.tap-chat');
-			item.clone().inject(newbox, 'bottom');
+			item.clone().inject(newbox, 'bottom').set('tween', {duration:800}).highlight('#d5fbc9');
 			newbox.scrollTo(0, newbox.getScrollSize().y);
+			newbox.removeClass('noresp');
+			parent.getElement('.tap-respond').removeClass('noresp');
 			var counter = parent.getElement('span.tap-respond-count');
-			counter.set('text', (counter.get('text') * 1) + 1);
+			var count = (function(){
+				var c = counter.get('text').match(/\(([\d]+)\)/);
+				return ($type(c) == 'array') ? (c[1] * 1) : 0;
+			})();
+			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
 			last.set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
 		}
@@ -386,6 +416,7 @@ Tap.Home = {
 					self.changeDates();
 				}
 			}).send();
+			this.fireEvent('searchFeed', keyword);
 		} else {
 			this.clearSearch();
 		}
@@ -541,6 +572,8 @@ Tap.Home = {
 	// TAP SENDING
 
 	sendTap: function(_, e){
+		if (this.sending) return;
+		this.sending = true;
 		var self = this;
 		var data = this.tapper;
 		var to_box = data.people.getValues().map(function(item){
@@ -566,11 +599,13 @@ Tap.Home = {
 					items.getElements('li').reverse().inject('your-stream', 'top');
 					self.changeDates();
 				}
+				self.sending = false;
 				data.people.empty();
 				data.msg.set('value', '');
 				data.msg.fireEvent('blur', e);
 			}
 		}).send();
+		this.fireEvent('sendTap', to_box.length);
 	},
 
 	processPushed: function(data){
@@ -663,4 +698,5 @@ Tap.Home = {
 
 };
 
+$extend(Tap.Home, new Events);
 window.addEvent('domready', Tap.Home.init.bind(Tap.Home));

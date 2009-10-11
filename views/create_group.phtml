@@ -28,6 +28,8 @@
 <script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
 <script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
 <script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <script type="text/javascript" charset="utf-8">
 
 /* Main Tap Object */
@@ -122,6 +124,7 @@ Tap.CreateGroups = {
 	
 	geo: function(options){
 		var self = this;
+		var loader = $('geo-loader');
 		var type_code = ({
 			'state': 1,
 			'region': 2,
@@ -135,7 +138,11 @@ Tap.CreateGroups = {
 					code: options.key
 				}, options.state ? { state: options.state } : {});
 			})(),
+			onRequest: function(){
+				$('geo-loader').set('text', 'Loading ' + options.type.capitalize() + 's').setStyle('display', 'block');
+			},
 			onSuccess: function(){
+				$('geo-loader').setStyle('display', 'none');
 				var response = JSON.decode(this.response.text);
 				var select = $(document.body).getElement('select[name="' + options.type + '"]');
 				select.empty();
@@ -150,6 +157,8 @@ Tap.CreateGroups = {
 						}).inject(select);
 					}
 					if ($type(options.callback) == 'function') options.callback.apply(self, [select]);
+				} else {
+					$('geo-loader').set('text', 'Location Complete!').setStyle('display', 'block');
 				}
 			}
 		}).send();
@@ -345,6 +354,7 @@ Tap.CreateGroups = {
 				}
 			}
 			req.send();
+			mpmetrics.track('create-group', {'focus': data.focus.get('value').trim().rtrim(',')});
 		} else {
 			$$($H(this.data).getValues().filter(function(item){
 				return !item.retrieve('passed');
@@ -441,6 +451,7 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 							</select>
 						</h2>
 					</div>
+					<h2 id="geo-loader" class="loader" style="margin-left:50px">Loading Next</h2>
 					<br />
 					<br />
 

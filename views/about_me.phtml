@@ -46,6 +46,8 @@ $group_count = $stat['group_count'];
 <script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
 <script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
 <script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script type="text/javascript">try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) }</script>
 <script type="text/javascript">
 Tap = window.Tap || {};
 Tap.Vars = {
@@ -166,6 +168,7 @@ Tap.Profile = {
 	
 	geo: function(options){
 		var self = this;
+		var loader = $('geo-loader');
 		var type_code = ({
 			'state': 1,
 			'region': 2,
@@ -179,7 +182,11 @@ Tap.Profile = {
 					code: options.key
 				}, options.state ? { state: options.state } : {});
 			})(),
+			onRequest: function(){
+				$('geo-loader').set('text', 'Loading ' + options.type.capitalize() + 's').setStyle('display', 'block');
+			},
 			onSuccess: function(){
+				$('geo-loader').setStyle('display', 'none');
 				var response = JSON.decode(this.response.text);
 				var select = $(document.body).getElement('select[name="' + options.type + '"]');
 				select.empty();
@@ -193,6 +200,8 @@ Tap.Profile = {
 						}).inject(select);
 					}
 					if ($type(options.callback) == 'function') options.callback.apply(self, [select]);
+				} else {
+					$('geo-loader').set('text', 'Location Complete!').setStyle('display', 'block');
 				}
 			}
 		}).send();
@@ -205,6 +214,7 @@ Tap.Profile = {
 		this.removeError(el);
 		this.uploading = true;
 		el.getParent('form').submit();
+		mpmetrics.track('update-pic', {});
 	},
 
 	displayPic: function(data){
@@ -314,6 +324,7 @@ Tap.Profile = {
 		if (!data.region.get('value').isEmpty()) send.region = data.region.get('value');
 		if (!data.town.get('value').isEmpty()) send.town = data.town.get('value');
 		this.onSave(send, 'edit_profile', e);
+		mpmetrics.track('update-profile', {});
 	},
 
 	onPasswordSave: function(_, e){
@@ -325,6 +336,7 @@ Tap.Profile = {
 		this.onSave(send, 'password_profile', e, function(){
 			$$(data.current, data.newpass, data.newpass_repeat).set('value', '');
 		});
+		mpmetrics.track('update-password', {});
 	},
 
 	onSave: function(send, url, e, callback){
@@ -427,6 +439,8 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 							<select name="town" style="margin-right:140px">
 							</select>
 						</h2>
+						<h2 id="geo-loader" class="loader">Loading Next</h2>
+						
 						<h1>Picture </h1><hr class="hr2"/>
 						<form enctype="multipart/form-data" action="/AJAX/profile_picture_upload.php" method="post" target="picture">
 							<h2 class="in-title">

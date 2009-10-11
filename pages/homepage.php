@@ -348,7 +348,45 @@ EOF;
 
 			$this->set($init_notifications,'init_notifications');
 //END misc tasks - Including, getting max file id, spnning off process, etc
-		}
+		} else { 
+$logout_feed = <<<EOF
+	SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
+	JOIN special_chat as t3
+	ON t3.uid = t2.uid
+	ORDER BY t3.cid DESC LIMIT 10
+EOF;
+$data_all_logout_bits = $this->bit_generator($logout_feed,'logout_aggr');
+$this->set($data_all_logout_bits,'logout_bits');
+
+
+
+}
+	$trending_groups_query = <<<EOF
+	SELECT ugm.gid,t2.gname,t2.pic_36,count(t1.uid) AS count FROM  
+	( SELECT DISTINCT gid FROM group_members ORDER BY gid )
+	AS ugm 
+	JOIN group_members AS t1 ON t1.gid=ugm.gid
+	JOIN groups AS t2 ON t2.gid = ugm.gid
+	GROUP BY ugm.gid ORDER BY gid DESC, count DESC LIMIT 5;
+EOF;
+	$this->db_class_mysql->set_query($trending_groups_query,'trending_groups',"This query tells you the groups that are trending");
+	$trending_groups_results = $this->db_class_mysql->execute_query('trending_groups');
+	
+	while($res = $trending_groups_results->fetch_assoc()){
+		$gid = $res['gid'];
+		$gname = $res['gname'];
+		$pic_36 = $res['pic_36'];
+		$count = $res['count'];
+		
+		$trending_group_data[] = array(
+			'gid' => $gid,
+			'gname' => $gname,
+			'pic_36' => $pic_36,
+			'count' => $count
+		);
+	
+	}
+	$this->set($trending_group_data,'trending_groups');
 
 	}
 
@@ -431,7 +469,8 @@ EOF;
                                 $pmessages[] = $v;
                 // END + Getting response data
 	                return $pmessages;
-			} else { 
+			} else {
+			if($messages)
                         foreach($messages as $v)
                                 $pmessages[] = $v;
 			

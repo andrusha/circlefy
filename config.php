@@ -1,4 +1,6 @@
 <?php
+define("METRIC_KEY","05a951428ed5199e27d52356aae83a22");
+
 define("D_ADDR","127.0.0.1");
 define("D_PASS","root");
 define("D_USER","root");
