@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>TAP :: BETA</title>
+
+<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" />
+<link rel="stylesheet" href="views/style_sheets/homepage.css" type="text/css" />
+<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
+<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+<script type="text/javascript" src="views/javascript/tap.main.js"></script>
+<style type="text/css">
+div.section-body div.info {
+	margin-left: 2px;
+	margin-bottom: -1px;
+	padding: 20px;
+	font-size: 12px;
+	border: 1px solid #D8D8D8;
+}
+
+div.info h1, div.info h2, div.info p, div.info ul {
+	font-size: 12px;
+	margin-bottom: 10px; }
+
+div.info p.callout {
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+div.info ul { 
+	margin-bottom: 20px; }
+	
+div.info h1 { 
+	color: #4F9CDF;
+	font-size: 16px;
+	font-weight: bold; }
+
+div.info h2 { 
+	font-size: 14px;
+	margin-top: 20px;
+	font-weight: bold; }
+</style>
+
+
+</head>
+
+<body>
+
+	<?php include(LOGOUT_HEADER); ?>
+
+	<div id="main">
+
+		<div id="right-col">
+			<h1>What's This?</h1>
+			<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.  Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today!</p>
+		</div>
+
+		<div id="center-col">
+			<div class="section">
+				<div class="section-head">
+					<h1>
+						<span id="tap-feed-name">What's Tap?</span>
+					</h1>
+				</div>
+				<div class="section-body">
+					<div class="info">
+						<p class="callout">Tap is a new social-communication tool that gives you real-time connection to individuals, groups and even geographical areas, without the burden of memorizing any special usernames or address. With Tap, you can send messages to anyone in the world, even if you don&#8217;t know where they are or how to address you messages.</p>
+
+						<p>Everything in Tap works in real-time: send a tap and it instantly appears on other people&#8217;s feeds. Conversations are also instantaneous: you&#8217;ll be able to respond to taps and see the responses from other people in real time.</p>
+						
+						<h2>How Does it Work?</h2>
+
+						<p>It&#8217;s simple: all you have to do is compose your message, called a &#8220;tap,&#8221; and select the individuals or groups you&#8217;re sending to. You can add as many individuals or groups you want to get the tap. Hit send and your tap is automatically sent to their feeds.</p>
+
+						<p>You can also respond directly to any taps in your feed, turning it into an active conversation.</p>
+						
+						<h2>Why Does it Work?</h2>
+						<p>Because Tap connects you to people that matter.</p>
+						<p>Unlike other available social communication tools, Tap lets you focus your message to the people who you know want to receive it. Gone are the days of sending out messages in the hope of getting someone to actually reply.</p>
+						<p>With Tap, you send messages to your groups. Whether it's a group of friends, a group of people you share the same interest with or even a geographical area you're in, Tap lets you communicate with people who'll be happy to read your messages.</p>
+						
+						<h2>How Do I Join?</h2>
+						<p>Simple! Just fill up the signup form on your right and hit submit! Signing up is a one time process and it's totally free.</p>
+						<p>After signing up, you'll automatically be logged in. Join groups, create new ones, and then tap 'em!</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="left-col">
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Log in</div>
+			</div>
+			<div class="tab-list">
+				<form id="login" action="<?=ROOT?>" method="POST">
+					<label>Username</label>
+						<input type="text" id="uname" name="uname" class="text" />
+					<label>Password</label>
+						<input type="password" id="pass" name="pass" class="text" />
+					<br/>
+					<input type="checkbox" checked="true" id="auto_login" name="auto_login" />
+					<label class="in-form">Keep Me Logged In</label>
+					<input type="submit" id="signin-submit" value="Sign In" />
+				</form>
+			</div>
+
+			<div id="signup-tab">Sign-up
+				<div id="signup-title">Its very easy<br />and it wont take you<br />more than 45 seconds.</div>
+			</div>
+			<div id="signup-form">
+				<label>Username</label>
+					<input type="text" name="user" class="text"/>
+					<div class="guide"></div>
+				<label>Full Name</label>
+					<input type="text" name="name" class="text"/>
+					<div class="guide"></div>
+				<label>E-mail</label>
+					<input type="text" name="email" class="text"/>
+					<div class="guide"></div>
+				<label>Password</label>
+					<input type="password" name="pass" class="text"/>
+					<div class="guide"></div>
+				<label>Retype Password</label>
+					<input type="password" name="passrepeat" class="text"/>
+					<div class="guide"></div>
+				<input type="submit" id="signup-submit" value="Sign me up!" />
+			</div>
+		</div>
+
+	</div>
+
+	<div id="footer">
+
+	</div>
+
+</body>
+</html>
