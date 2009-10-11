@@ -119,7 +119,6 @@ EOF;
 
                         move_uploaded_file($_FILES['picture_path']['tmp_name'],$new_path);
                         $new_path = addslashes($new_path);
-			echo $new_path;
 			} else {
 			$picture_path = D_GROUP_PIC_PATH;
 			}

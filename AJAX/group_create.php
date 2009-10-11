@@ -11,6 +11,7 @@ $descr = addslashes($_POST['descr']);
 $focus = addslashes($_POST['focus']);
 $email_suff = $_POST['email_suffix'];
 $private = $_POST['private'];
+$old_name = $_POST['old_name'];
 $invite = $_POST['invite'];
 $country = $_POST['country'];
 $state = $_POST['state'];
@@ -79,8 +80,8 @@ class group_functions{
 */
 
 		$create_group_query = <<<EOF
-		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town) 
-		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town")
+		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town,created) 
+		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town",NOW())
 EOF;
 
                 $create_group_results = $this->mysqli->query($create_group_query);
@@ -94,7 +95,7 @@ EOF;
 		$gid = $last_id;
 		
 		$create_my_group_query = <<<EOF
-		INSERT INTO group_members(uid,gid,admin,created) values({$uid},{$gid},1,NOW())
+		INSERT INTO group_members(uid,gid,admin) values({$uid},{$gid},1)
 EOF;
                 $this->mysqli->query($create_my_group_query);
 /*	
