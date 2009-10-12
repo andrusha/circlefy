@@ -59,7 +59,7 @@ class filter_functions{
 
 	function filter($type,$search,$outside,$o_filter,$id){
 		if(!$outside)
-			$outside=2;
+			$outside="0,2";
 
                 $uid = $_SESSION['uid'];
                 $uname = $_SESSION['uname'];
@@ -117,9 +117,7 @@ EOF;
 	
 			$get_groups_bits_query = <<<EOF
 			SELECT
-			scj.chat_text,scm.mid FROM special_chat_meta AS scm
-			JOIN special_chat AS scj
-			ON scj.mid = scm.mid 
+			scm.mid FROM special_chat_meta AS scm
 			WHERE  gid IN ( {$gid_query_list} ) AND connected IN ({$outside})
 			{$search_sql}
 			GROUP BY mid ORDER BY mid DESC LIMIT 10

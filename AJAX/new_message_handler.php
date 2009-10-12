@@ -347,10 +347,10 @@ EOF;
 
 		$groups_left = implode(',',$group_list);
 		if($group_list != '' && $groups_left){
-			$groups_left_query = "( t1.gid IN ( $groups_left ) AND t2.group_outside_state IN (0,3) )";
+			$groups_left_query = "( t1.gid IN ( $groups_left ) AND t2.group_outside_state IN (0,2,3) )";
 			$dynamic_query_list[] .= $groups_left_query;
 
-			$filter_left_query = "( gid IN ( $groups_left ) AND group_outside_state IN (0,3) )";
+			$filter_left_query = "( gid IN ( $groups_left ) AND group_outside_state IN (0,2,3) )";
 			$filter_query_list[] .= $filter_left_query;
 		}
 
@@ -389,7 +389,6 @@ EOF;
 		WHERE 
 		$all_group_queries
 EOF;
-
 		$group_matches = $this->mysqli->query($groups_query);
 
 		if($group_matches->num_rows > 0){

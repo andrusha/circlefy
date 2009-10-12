@@ -251,11 +251,12 @@ $gid_query_list = substr($gid_query_list,0,-1);
 
 $counting=0;
 
+	$outside = "2,0";
         $slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
         $get_groups_bits_query = <<<EOF
-                SELECT mid FROM special_chat_meta
-		WHERE gid IN ( {$gid_query_list} )
-		AND connected IN (2)
+		SELECT
+		scm.mid FROM special_chat_meta AS scm
+		WHERE gid IN ( {$gid_query_list} ) AND connected IN ( {$outside} )
 		GROUP BY mid ORDER BY mid DESC LIMIT 10;
 EOF;
 
@@ -278,6 +279,7 @@ SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$
 ON t4.mid = t3.cid
 WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
 EOF;
+
 $data_all_groups_bits = $this->bit_generator($groups_query_bits_info,'groups_aggr');
 $this->set($data_all_groups_bits,'groups_bits');
 //END GROUP AGGR
@@ -352,7 +354,7 @@ EOF;
 $logout_feed = <<<EOF
 	SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 	JOIN special_chat as t3
-	ON t3.uid = t2.uid
+	ON t3.uid = t2.uid AND t2.uid NOT IN ( 63 )
 	ORDER BY t3.cid DESC LIMIT 10
 EOF;
 $data_all_logout_bits = $this->bit_generator($logout_feed,'logout_aggr');
