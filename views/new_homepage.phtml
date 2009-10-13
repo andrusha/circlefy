@@ -21,7 +21,7 @@ if (is_array($_t['groups_bits'])) {
 <meta name="description" content="TAP communication platform" />
 <meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
 
-<title>TAP :: BETA</title>
+<title>tap - alpha</title>
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
@@ -119,6 +119,9 @@ window.addEvent('domready', function(){
 						</li>
 						-->
 					<?php endforeach; ?>
+					<li class="list-item" style="height:30px; margin-top:20px">
+						<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
+					</li>
 				</ul>
 				<div style="clear:both"></div>
 			</div>
@@ -128,7 +131,7 @@ window.addEvent('domready', function(){
 			<div id="tap-box" class="section">
 				<input type="text" id="tap-box-msg" alt="Start tapping by writing a message here." />
 				<div id="tap-box-more">
-					<input type="text" id="tap-box-people" alt="Add some people who'll get your tap!" />
+					<input type="text" id="tap-box-people" alt="Add some groups who'll receive your tap!" />
 					<a id="tap-box-send" href="#">tap!</a>
 					<div style="clear:both"></div>
 				</div>
@@ -156,7 +159,7 @@ window.addEvent('domready', function(){
 								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
 								</a>
-								<p class="tap-respond-last">
+								<p class="tap-respond-last <?= empty($last['count']) ? 'noresp' : '' ?>">
 									<strong>
 										<?= (!empty($last['resp_uname'])) ? $last['resp_uname'] . ":" : "" ?>
 									</strong>
@@ -211,7 +214,7 @@ window.addEvent('domready', function(){
 								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
 								</a>
-								<p class="tap-respond-last">
+								<p class="tap-respond-last <?= empty($bit['count']) ? 'noresp' : '' ?>">
 									<strong>
 										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
 									</strong>
@@ -266,9 +269,14 @@ window.addEvent('domready', function(){
 					<li id="gid_<?= $group['gid'] ?>" class="group">
 						<span class="counter"></span>
 						<img src="/group_pics/<?= $group['pic_36']?>" />
-						<a href="#<?= $group['symbol'] ?>" title="<?= $group['gname'] ?>"><?= $group['symbol'] ?></a>
+						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?>"><?= $group['display_symbol'] ?></a> 
+						<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
 					</li>
 					<?php endforeach; ?>
+					<li class="group" style="margin-top:20px">
+						<span class="counter"></span>
+						<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -288,7 +296,11 @@ window.addEvent('domready', function(){
 					<# } #>
 						Respond <span class="tap-respond-count">(<#: bit.count #>)</span>
 					</a>
+					<# if (bit.count) { #>
 					<p class="tap-respond-last">
+					<# } else { #>
+					<p class="tap-respond-last noresp">
+					<# } #>
 						<strong>
 							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>							
 						</strong>

@@ -66,6 +66,7 @@ EOF;
 				$fname = $res['fname'];
 				$lname = $res['lname'];
 				$email = $res['email'];
+				$lang = $res['language'];
 				$country = $res['country'];
 				$region = $res['region'];
 				$town = $res['town'];
@@ -80,6 +81,7 @@ EOF;
 					'fname' => $fname,
 					'lname' => $lname,
 					'zip' => $zip,
+					'lang' => $lang,
 					'country' => $country,
 					'region' => $region,
 					'state' => $state,

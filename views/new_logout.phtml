@@ -12,7 +12,7 @@
 <meta name="description" content="TAP communication platform" />
 <meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
 
-<title>TAP :: BETA</title>
+<title>tap - alpha</title>
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
@@ -25,6 +25,20 @@
 <script type="text/javascript" src="views/javascript/tap.main.js"></script>
 <script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
+<style type="text/css" media="screen">
+#signup-guide {
+	display: none;
+	text-align: center;
+	margin-top: 15px;
+	margin-right: 10px;
+	padding: 5px;
+	background: #FBFBC9;
+	border-top: 1px solid #EEEEBB;
+	border-bottom: 1px solid #EEEEBB;
+}
+</style>
+
+
 </head>
 
 <body>
@@ -155,7 +169,105 @@
 				<label>Retype Password</label>
 					<input type="password" name="passrepeat" class="text"/>
 					<div class="guide"></div>
+				<label>Primary Language</label>
+					<select name="language" class="text">
+						<option value="English">English</option>
+						<option value="Afrikaans">Afrikaans</option>
+						<option value="Albanian">Albanian</option>
+						<option value="Aragonese">Aragonese</option>
+						<option value="Asturian">Asturian</option>
+						<option value="Azeri">Azeri</option>
+						<option value="Basque">Basque</option>
+						<option value="Belarusian">Belarusian</option>
+						<option value="Breton">Breton</option>
+						<option value="Catalan">Catalan</option>
+						<option value="Cebuano">Cebuano</option>
+						<option value="Cornish">Cornish</option>
+						<option value="Corsican">Corsican</option>
+						<option value="Croatian">Croatian</option>
+						<option value="Czech">Czech</option>
+						<option value="Danish">Danish</option>
+						<option value="Dutch">Dutch</option>
+						<option value="English">English</option>
+						<option value="Esperanto">Esperanto</option>
+						<option value="Estonian">Estonian</option>
+						<option value="Faroese">Faroese</option>
+						<option value="Finnish">Finnish</option>
+						<option value="French">French</option>
+						<option value="Frisian">Frisian</option>
+						<option value="Friulian">Friulian</option>
+						<option value="Fula (Pulaar)">Fula (Pulaar)</option>
+						<option value="Gaelic (Scottish)">Gaelic (Scottish)</option>
+						<option value="Galician">Galician</option>
+						<option value="German">German</option>
+						<option value="Gikuyu">Gikuyu</option>
+						<option value="Guaraní">Guaraní</option>
+						<option value="Hausa">Hausa</option>
+						<option value="Hawai'ian">Hawai'ian</option>
+						<option value="Hungarian">Hungarian</option>
+						<option value="Icelandic">Icelandic</option>
+						<option value="Ido">Ido</option>
+						<option value="Igbo">Igbo</option>
+						<option value="Indonesian">Indonesian</option>
+						<option value="Insubric">Insubric</option>
+						<option value="Interlingua">Interlingua</option>
+						<option value="Irish">Irish</option>
+						<option value="Italian">Italian</option>
+						<option value="Javanese">Javanese</option>
+						<option value="Kikongo">Kikongo</option>
+						<option value="Kinyarwanda">Kinyarwanda</option>
+						<option value="Kirundi">Kirundi</option>
+						<option value="Latin">Latin</option>
+						<option value="Latvian">Latvian</option>
+						<option value="Lingala">Lingala</option>
+						<option value="Lithuanian">Lithuanian</option>
+						<option value="Luganda">Luganda</option>
+						<option value="Luxembourgish">Luxembourgish</option>
+						<option value="Maori">Maori</option>
+						<option value="Malay">Malay</option>
+						<option value="Maltese">Maltese</option>
+						<option value="Manx">Manx</option>
+						<option value="Moldovan">Moldovan</option>
+						<option value="Nahuatl (post Spanish Conquest)">Nahuatl (post Spanish Conquest)</option>
+						<option value="Navaho or Navajo">Navaho or Navajo</option>
+						<option value="Ndebele">Ndebele</option>
+						<option value="Norwegian">Norwegian</option>
+						<option value="Occitan">Occitan</option>
+						<option value="Orobic">Orobic</option>
+						<option value="Oromo">Oromo</option>
+						<option value="Polish">Polish</option>
+						<option value="Portuguese">Portuguese</option>
+						<option value="Quechua">Quechua</option>
+						<option value="Romanian">Romanian</option>
+						<option value="Samoan">Samoan</option>
+						<option value="Scots">Scots</option>
+						<option value="Serbian">Serbian</option>
+						<option value="Shona">Shona</option>
+						<option value="Slovak">Slovak</option>
+						<option value="Slovenian">Slovenian</option>
+						<option value="Somali">Somali</option>
+						<option value="Spanish">Spanish</option>
+						<option value="Swahili">Swahili</option>
+						<option value="Swedish">Swedish</option>
+						<option value="Tagalog/Filipino">Tagalog/Filipino</option>
+						<option value="Tahitian">Tahitian</option>
+						<option value="Tatar">Tatar</option>
+						<option value="Tongan">Tongan</option>
+						<option value="Tswana">Tswana</option>
+						<option value="Turkish">Turkish</option>
+						<option value="Turoyo">Turoyo</option>
+						<option value="Vietnamese">Vietnamese</option>
+						<option value="Võro">Võro</option>
+						<option value="Walloon">Walloon</option>
+						<option value="Welsh">Welsh</option>
+						<option value="Wolof">Wolof</option>
+						<option value="Xhosa">Xhosa</option>
+						<option value="Yoruba">Yoruba</option>
+						<option value="Zulu">Zulu</option>
+					</select>
+					<div class="guide"></div>
 				<input type="submit" id="signup-submit" value="Sign me up!" />
+				<div id="signup-guide">Signing you up..</div>
 			</div>
 		</div>
 

@@ -207,7 +207,7 @@ EOF;
 			//Process
 			$symbol = explode('.',$symbol);
 			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
-			$symbol = ucwords($symbol[0].$add);
+			$display_symbol = ucwords($symbol[0].$add);
 			$add = null;
 			
 			
@@ -216,7 +216,8 @@ EOF;
 				'gname' => $gname,
 				'pic_36' => $pic_36,
 				'symbol' => $symbol,
-				'connect' => $connected,
+				'display_symbol' => $display_symbol,
+				'type' => $connected,
 				'tapd' => $tapd
 			);
 		}

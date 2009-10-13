@@ -75,8 +75,8 @@ Tap.Home = {
 		var body = $(document.body);
 		this.mainStream = $('main-stream');
 
-		$('main').getElements('.tap-msg, .tap-respond-last').each(function(item){ 
-			item.set('html', item.get('html').linkify()); 
+		$('main').getElements('.tap-msg, .tap-respond-last').each(function(item){
+			item.set('html', item.get('html').linkify());
 		});
 		body.addEvents({
 			'click:relay(li.group a)': this.changeFeed.toHandler(this),
@@ -93,6 +93,12 @@ Tap.Home = {
 				} else {
 					self.typing(this);
 				}
+			},
+			'click:relay(a.add-tap-to)': function(){
+				var id = this.getParent('li').get('id').remove(/gid_/);
+				var link = this.getPrevious('a');
+				var type = this.get('grtype');
+				self.changeTapper(link.get('title'), link.get('grsymbol').toLowerCase(), id, type);
 			}
 		});
 
@@ -223,8 +229,8 @@ Tap.Home = {
 			$clear(self.indic_timeout);
 
 			//This is the timer when the indicator will reset
-			self.indic_timeout = (function(){ self.indic.set('text', ''); }).delay(2500);
-			self.indic.set('text', '(Someone\'s typing)');
+			self.indic_timeout = (function(){ self.indic.set('html', ''); }).delay(2500);
+			self.indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
 		}
 	},
 
@@ -348,7 +354,7 @@ Tap.Home = {
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
-			last.set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
+			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
 		}
 		parent = $('yid_' + id);
 		if (parent) {
@@ -364,7 +370,7 @@ Tap.Home = {
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
-			last.set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
+			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
 		}
 	},
 
@@ -569,6 +575,23 @@ Tap.Home = {
 		}).send();
 	},
 
+	changeTapper: function(name, symbol, id, type){
+		type = (type === '0') ? 'group' : (type === '2') ? 'building' : 'book_open';
+		var val = [[name, [name, symbol, '0', id].join(':'), "<img src='images\/icons\/"+type+".png' \/> " + symbol, name + " <img src='images\/icons\/"+type+".png' \/><span class='online online'>online (218)<\/span>"]];
+		var values = this.tapper.people.getValues().combine(val);
+		this.tapper.people.empty();
+		this.tapper.people.setValues(values);
+		$('tap-box-people').fireEvent('focus');
+		/*
+		if (this.tapper.msg.get('value').isEmpty()) {
+			this.tapper.people.empty();
+			if (id == null) return;
+			Tap.Home.tapper.people.setValues([]);
+			$('tap-box-people').fireEvent('focus');
+		}
+		*/
+	},
+
 	// TAP SENDING
 
 	sendTap: function(_, e){
@@ -627,10 +650,10 @@ Tap.Home = {
 
 			var key = (this.feedView === 'gid_all') ? 'groups' : this.feedView.replace('gid', 'group');
 			/*if (key === item.type && type.length > 0 && item.cid !== this.currentTap) {*/
-			
+
 
 			if (key === item.type && type.length > 0 ) {
-			if( item.cid !== this.currentTap ) { } 
+			if( item.cid !== this.currentTap ) { }
 				/*var length = type.length - (type.contains(this.currentTap) ? 1 : 0);*/
 				var length = type.length;
 				var notify = ['You have', length, 'new', length == 1 ? 'tap,' : 'taps,', 'click here to show them.'].join(' ');
@@ -657,6 +680,7 @@ Tap.Home = {
 				id_list: data.join(',')
 			},
 			onSuccess: function(){
+				el.slide('out');
 				var response = JSON.decode(this.response.text);
 				if (response.results) {
 					self.mainStream.getElements('div.noresults').destroy();
@@ -669,7 +693,6 @@ Tap.Home = {
 					}));
 					self.setChannels();
 					items.getElements('li').reverse().inject('main-stream', 'top');
-					el.slide('out');
 					self.changeDates();
 				}
 			}

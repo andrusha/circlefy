@@ -4,6 +4,7 @@ Tap.Main = {
 
 	init: function(){
 		var self = this;
+		this.changeDates();
 
 		$('login').addEvent('submit', this.onLogin.toHandler(this));
 
@@ -13,7 +14,8 @@ Tap.Main = {
 			name: signUp.getElement('input[name="name"]'),
 			email: signUp.getElement('input[name="email"]'),
 			pass: signUp.getElement('input[name="pass"]'),
-			passrepeat: signUp.getElement('input[name="passrepeat"]')
+			passrepeat: signUp.getElement('input[name="passrepeat"]'),
+			lang: signUp.getElement('select[name="language"]').store('passed', true)
 		};
 		data.user.addEvent('blur', this.checkUser.toHandler(this));
 		data.name.addEvent('blur', this.checkName.toHandler(this));
@@ -151,12 +153,18 @@ Tap.Main = {
 					fname: data.name.get('value'),
 					email: data.email.get('value'),
 					pass: data.pass.get('value'),
+					lang: data.lang.get('value'),
 					fid: 0,
 					signup_flag: 'signup_function();'
 				},
+				onRequest: function(){
+					$('signup-submit').setStyle('display', 'none');
+					$('signup-guide').set('text', 'Signing you up..').setStyle('display', 'block');
+				},
 				onSuccess: function(){
+					$('signup-guide').set('text', 'Logging you in...').setStyle('display', 'block');
 					mpmetrics.track('signup', {'success' : 'true'}, function(){
-						window.location.reload();
+						window.location = window.location.toString().replace('?logout=true', '');
 					});
 				}
 			}).send();
@@ -165,7 +173,99 @@ Tap.Main = {
 				return !item.retrieve('passed');
 			})).fireEvent('blur', [e]);
 		}
+	},
+	
+	changeDates: function(){
+		var now = new Date().getTime();
+		$$('.tap-time').each(function(el){
+			var timestamp = el.className.remove(/tap-time\s/);
+			var orig = new Date((timestamp * 1) * 1000);
+			var diff = ((now - orig) / 1000);
+			var day_diff = Math.floor(diff / 86400);
+			if ($type(diff) == false || day_diff < 0 || day_diff >= 31) return false;
+			el.set('text', day_diff == 0 && (
+					// diff < 60 && "Just Now" ||
+					diff < 120 && "Just Now" ||
+					diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+					diff < 7200 && "An hour ago" ||
+					diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+				day_diff == 1 && "Yesterday" ||
+				day_diff < 7 && day_diff + " days ago" ||
+				day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago");
+		});
 	}
 };
 
+Tap.ResponseBot = {
+	
+	resps: [
+		"Yea this tap thing really is amazing, responses in real-time!",
+		"How did you get in touch with me?  Oh, by targeting a tap group!",
+		"This is so cool.",
+		"Hey did you know tap has 3,000 Univeristies that you can join? I'm in college and just joined a new tap group, the communicaiton is amazing!",
+		"Oh really?  Are you using tap as the main way to manage your community?",
+		"Hey did you just ask a question?  tap is the perfect place to get answers!",
+		"Hey is your University on tap?",
+		"Really?  Did that just happen at NYU?  Let me message the tap NYU group and we'll see", 
+		"So I just message the tap group tapsupport if I need help?",
+		"tap is better then the swine flu!  no, it really is!",
+		"hey I heard ETN.FM is on tap, sweet, glad they finally formed a real-time community :)",
+		"I didn't know .info was even a TLD, well I guess I know now!",
+		"Wow this is like a more simplistic Google Wave!  Awesome!",
+		"Oh hey I know the answer to that question",
+		"Oh really?  You heard the news on tap?",
+		"That's pretty cool, I guess Harvard, Yale, and all those other schools are using tap now too",
+		"tap that ass!",
+		"nice, tap it",
+		"Wait, could you rephrase that...",
+		"Pretty interesting!  I never knew a website could be so real-time and yet so simple!",
+		"Oh no kidding?  tap has offices on University Ave in Palo Alto?  that's pretty wild, I thought it was just a side project, cool!",
+		"Taso grew up next to Mark Zuckerberg?  wtf?",
+		"No way?  tap is made up of world class developers who love beautiful women? that's wild!",
+		"OMG IT'S .INFO, IT'S NOT .COM . OMG. OM NOM NOM",
+		"Wait......waaiiiiit......waiiiiit for it......... TAP!",
+		"Oh I tapped it.  Are you tapping?  Did you check your taps?  tap!",
+		"Did you know that most people in LA and NYC are on tap?",
+		"Where are you from?",
+		"What time is there?",
+		"You told me you're already sleeping! You're addicted! :P",
+		"I'm gonna delete my Twitter account!",
+		"Hah! Easier than wave, right?",
+		"That's nice man!",
+		"So cool! You need to post more stuff!",
+		"You're here too? Wow, tap's really cool!",
+		"Wait until your girlfriend sees this--she'll go nuts!",
+		"I'd tap that! x)",
+		"I get you.. That's how I feel at times too...",
+		"Hey, what's your new number? I lost my phone yesterday. :/",
+		"Are we still on for tonight?",
+		"Send me a message will yah? I'm testing something out.",
+		"Damn, this is gonna be BIG!!!"
+	],
+	
+	init: function(){
+		this.taps = $('main-stream').getElements('li');
+		this.cycle.periodical(3000, this);
+		this.cycle.periodical(5000, this);
+		this.cycle();
+	},
+	
+	cycle: function(){
+		var el = this.taps[Math.floor(Math.random()*this.taps.length)];
+		var resp = this.resps[Math.floor(Math.random()*this.resps.length)];
+		el.getElement('.tap-typing').set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
+		(function(){
+			el.getElement('.tap-typing').set('html', '');
+			var counter = el.getElement('span.tap-respond-count');
+			var count = (function(){
+				var c = counter.get('text').match(/\(([\d]+)\)/);
+				return ($type(c) == 'array') ? (c[1] * 1) : 0;
+			})();
+			counter.set('text', ['(', count + 1, ')'].join(''));
+			el.getElement('.tap-respond-last').set('text', resp);
+		}).delay(2000);
+	}
+	
+};
+window.addEvent('domready', Tap.ResponseBot.init.bind(Tap.ResponseBot));
 window.addEvent('domready', Tap.Main.init.bind(Tap.Main));

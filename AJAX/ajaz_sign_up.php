@@ -14,9 +14,10 @@ $uname = $_POST['uname'];
 $fname = $_POST['fname'];
 $email = $_POST['email'];
 $password = $_POST['pass'];
+$lang = $_POST['lang'];
 
 if($flag){
-	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$email,$password);
+	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$email,$password,$lang);
 	echo $sign_up_results;
 }
 
@@ -33,6 +34,7 @@ class ajaz_sign_up{
 		private $results;
 		private $uname;
 		private $uid;
+		private $lang;
 	
 	function __construct(){
 				$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
@@ -42,12 +44,13 @@ class ajaz_sign_up{
 /* This is the start of the exeuction of 3 signup functions */
 	
 	/* Signup Function 1 (strips/check input, inserts user info into db, calls create_im_hash() */
-	function process_sign_up($uname,$fname,$email,$password){
+	function process_sign_up($uname,$fname,$email,$password,$lang){
 			
 		$uname = $this->mysqli->real_escape_string($uname);
 		$fname = $this->mysqli->real_escape_string($fname);
 		$email = $this->mysqli->real_escape_string($email);
 		$password = $this->mysqli->real_escape_string($password);
+		$lang = $this->mysqli->real_escape_string($lang);
 
 		list($finame,$lname) = explode(' ',$fname);
 		
@@ -62,6 +65,7 @@ class ajaz_sign_up{
 		$this->fname = $fname;
 		$this->uid = $last_id;
 		$this->uname = $uname;
+		$this->lang = $lang;
 
 		$_SESSION['uname'] = $this->uname;	
 		$_SESSION['uid'] = $this->uid;
@@ -92,7 +96,7 @@ class ajaz_sign_up{
 	}
 
 	function populate_profile(){
-                $profile_query = "INSERT INTO profile(uid) values($this->uid);";
+                $profile_query = "INSERT INTO profile(uid,lang) values($this->uid,'{$this->lang}');";
                 $this->mysqli->query($profile_query);
 	}
 
