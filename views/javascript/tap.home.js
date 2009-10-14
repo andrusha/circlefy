@@ -297,13 +297,13 @@ Tap.Home = {
 				cid: id,
 				response: msg
 			},
+			onRequest: function(){
+				el.set('value', '');
+				el.focus();
+			},
 			onSuccess: function(){
 				// var response = JSON.decode(this.response.text);
 				var response = this.response.text;
-				if (response){
-					el.set('value', '');
-					el.focus();
-				}
 			}
 		}).send();
 		this.fireEvent('sendResponse');
