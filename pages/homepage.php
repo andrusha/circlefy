@@ -355,7 +355,7 @@ EOF;
 $logout_feed = <<<EOF
 	SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 	JOIN special_chat as t3
-	ON t3.uid = t2.uid AND t2.uid NOT IN ( 63 )
+	ON t3.uid = t2.uid AND t2.uid NOT IN ( 63,75 )
 	ORDER BY t3.cid DESC LIMIT 10
 EOF;
 $data_all_logout_bits = $this->bit_generator($logout_feed,'logout_aggr');
@@ -385,7 +385,7 @@ EOF;
 			'gid' => $gid,
 			'gname' => $gname,
 			'pic_36' => $pic_36,
-			'count' => $count
+			'count' => $count+199
 		);
 	
 	}

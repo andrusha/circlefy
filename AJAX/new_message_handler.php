@@ -139,7 +139,8 @@ class chat_functions{
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
 	
 		//Return information to user in JSON
-		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg, 'counter_data' => $this->counter_data);
+//		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg, 'counter_data' => $this->counter_data);
+		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg);
 		$msg_and_channel_id = json_encode($msg_and_channel_id);
 		return $msg_and_channel_id;
 	}

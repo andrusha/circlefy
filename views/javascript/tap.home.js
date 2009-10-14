@@ -354,7 +354,7 @@ Tap.Home = {
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
-			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
+			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', (msg || '').linkify()].join(''));
 		}
 		parent = $('yid_' + id);
 		if (parent) {
@@ -370,7 +370,7 @@ Tap.Home = {
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
-			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', msg.linkify()].join(''));
+			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', (msg || '').linkify()].join(''));
 		}
 	},
 
@@ -685,6 +685,9 @@ Tap.Home = {
 				if (response.results) {
 					self.mainStream.getElements('div.noresults').destroy();
 					data.empty();
+					response.data = response.data.filter(function(item){
+						return !!item.cid;
+					});
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.data)
 					});
