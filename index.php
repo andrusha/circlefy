@@ -11,14 +11,35 @@ function __autoload($className){
 	require_once($file.'/modules/'.$className.'.php');
 }
 
-$page = $_GET['page'];
-if(!$page){
-$page = 'homepage';
+$allowedPages = array(
+		'profile'=>true,
+		'groups'=>true,
+		'help'=>true,
+		'create_group'=>true,
+		'group_edit'=>true,
+		'what'=>true,
+		'about'=>true,
+		'devs'=>true,
+		'contact'=>true,
+	);
+
+if (isset($allowedPages[$_GET['page']]) && $allowedPages[$_GET['page']]) {
+
+	// Valid page so allow it to be set
+	$page = $_GET['page'];
+
+} else {
+
+	// Invalid page so default to homepage
+	$page = 'homepage';
+
 }
 
 $event = $_GET['event'];
 if(!$event){
-$event = '__default';
+
+	$event = '__default';
+
 }
 	
 $file = __FILE__;
