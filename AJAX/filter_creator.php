@@ -71,6 +71,10 @@ class filter_functions{
 
 		if($type == 11)
 			$mysql_obj = $this->aggr_group_filter($outside,$search,$o_filter);
+		if($type == 100)
+			$mysql_obj = $this->public_filter($search);
+		if($type == 99)
+			$mysql_obj = $this->personal_filter($search);
 		if($type == 1)
 			$mysql_obj = $this->ind_group_filter($id,$outside,$search,$o_filter);
 		if($type == 2)
@@ -84,6 +88,37 @@ class filter_functions{
 			return json_encode(array('results' => False,'data' => False));
 	
 		return json_encode(array('results' => True,'data'=> $data ));
+	}
+
+	private function personal_filter($search){
+		$uid = $_SESSION['uid'];
+		if($search)
+			$search_sql =  "AND chat_text LIKE '%{$search}%'";
+
+		$public_bits_query = <<<EOF
+		SELECT mid FROM special_chat
+		WHERE uid = {$uid}
+		ORDER BY cid DESC
+		{$search_sql}
+		LIMIT 20
+EOF;
+		$mysql_obj = $this->mysqli->query($public_bits_query);
+		return $mysql_obj;
+	}
+
+	private function public_filter($search){
+		if($search)
+			$search_sql =  "AND chat_text LIKE '%{$search}%'";
+
+		$public_bits_query = <<<EOF
+		SELECT mid FROM special_chat
+		WHERE uid NOT IN ( 63,75,175 )
+		{$search_sql}
+		ORDER BY cid DESC
+		LIMIT 20
+EOF;
+		$mysql_obj = $this->mysqli->query($public_bits_query);
+		return $mysql_obj;
 	}
 
 	private function aggr_group_filter($outside,$search,$o_filter){
@@ -118,12 +153,13 @@ EOF;
 			$get_groups_bits_query = <<<EOF
 			SELECT
 			scm.mid FROM special_chat_meta AS scm
+			JOIN special_chat AS scj
+			ON scj.mid = scm.mid 
 			WHERE  gid IN ( {$gid_query_list} ) AND connected IN ({$outside})
 			{$search_sql}
 			GROUP BY mid ORDER BY mid DESC LIMIT 10
 EOF;
 		}
-
         	$mysql_obj = $this->mysqli->query($get_groups_bits_query);
 		return $mysql_obj;
 	}
@@ -245,6 +281,7 @@ EOF;
 			GROUP BY oc.cid;
 EOF;
 			$resp_count_results = $this->mysqli->query($response_count);
+			if($resp_count_results){
 			while($res = $resp_count_results->fetch_assoc()){
 				$count = $res['count'];
                                 $last_resp = $res['chat_text'];
@@ -256,6 +293,9 @@ EOF;
 			}
 			foreach($messages as $v)
 				$pmessages[] = $v;
+			} else {
+				$pmessages = $messages;
+			}
 		// END + Getting response data
 		return $pmessages;
 }

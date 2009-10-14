@@ -80,7 +80,7 @@ EOF;
 		$this->to =  $this->email;
 		$this->subject = $fname.' '.$lname.' ( '.$uname.' ) invited you to join the real-time group '.$gname.'  Get on tap to get experience true real-time connectivity, it\'s amazing. new.';
 		$this->body = <<<EOF
-		\t {$fname} invited you to tap.info to join the group {$gname} so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.  F*ck Web 2.0
+		\t {$fname} invited you to tap.info to join the group {$gname} so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.
 EOF;
 	}
 

@@ -4,7 +4,13 @@ $inits = array();
 if (is_array($_t['groups_bits'])) {
 	foreach($_t['groups_bits'] as $bit) {
 		array_push($inits, $bit['cid']);
-	}	
+	}
+}
+$convos = array();
+if (is_array($_t['active_convos'])) {
+	foreach($_t['active_convos'] as $bit) {
+		array_push($convos, $bit['mid']);
+	}
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -40,7 +46,8 @@ Tap.Vars = {
 	pcid: ("<?= $_t['pcid'] ?>" * 1),
 	uname: "<?= $_SESSION['uname'] ?>",
 	currentTap: ("<?= $last['cid'] ?>" * 1),
-	currentStream: JSON.decode('<?= json_encode($inits) ?>')
+	currentStream: JSON.decode('<?= json_encode($inits) ?>'),
+	activeConvos: JSON.decode('<?= json_encode($convos) ?>')
 };
 </script>
 <script type="text/javascript" src="views/javascript/tap.push.js"></script>
@@ -57,9 +64,20 @@ window.addEvent('domready', function(){
 			mpmetrics.track('trending-click', {'group': this.getElement('strong').get('text')}, function(){
 				window.location = self.get('href');
 			});
+		},
+		'click:relay(li.group a)': function(){
+			var self = this;
+			var id = this.get('id');
+			if (!id) return;
+			mpmetrics.track('feed-change', {
+				'group': (function(){
+					if (id === 'gid_all') return 'All Groups';
+					return self.getElement('a').get('title');
+				})()
+			});
 		}
 	});
-	
+
 	Tap.Home.addEvents({
 		'sendTap': function(number){
 			mpmetrics.track('send-tap', {
@@ -84,11 +102,11 @@ window.addEvent('domready', function(){
 <body>
 
 	<?php include(NEW_HEADER); ?>
-	
+
 	<div id="tap-feed-outside-more">
 		<p style="margin-bottom:5px">Allow messages from this groups:</p>
 		<p>
-			<input type="text" name="outside-from" alt="Choose sources.." />				
+			<input type="text" name="outside-from" alt="Choose sources.." />
 		</p>
 		<p style="clear:both;">
 			<a href="#" id="tap-feed-outside-set">Save</a>
@@ -116,7 +134,7 @@ window.addEvent('domready', function(){
 						<!--
 						<li id="gid_<?= $trending['gid'] ?>" class="group trending">
 							<?= $trending['gname'] ?> (<?= $trending['count'] ?>)
-							
+
 						</li>
 						-->
 					<?php endforeach; ?>
@@ -155,7 +173,7 @@ window.addEvent('domready', function(){
 						</li>
 						<?php else: ?>
 						<li id="yid_<?= $last['cid'] ?>">
-							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" alt="<?= $last['uname'] ?>" />
+							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" title="<?= $last['uname'] ?>" alt="<?= $last['uname'] ?>" />
 							<div class="tap-actions">
 								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
@@ -205,9 +223,9 @@ window.addEvent('domready', function(){
 				<div class="section-body">
 					<div id="tap-notify"></div>
 					<ul id="main-stream" class="tap-stream">
-						<?php 
+						<?php
 							if (!empty($_t['groups_bits'])):
-								foreach($_t['groups_bits'] as $bit): 
+								foreach($_t['groups_bits'] as $bit):
 						?>
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
@@ -240,8 +258,8 @@ window.addEvent('domready', function(){
 							</div>
 							<div class="clarity"></div>
 						</li>
-						<?php 
-								endforeach; 
+						<?php
+								endforeach;
 							else:
 						?>
 						<li class="noresults">
@@ -261,16 +279,21 @@ window.addEvent('domready', function(){
 			</div>
 			<div class="tab-list">
 				<ul>
+					<li id="gid_public" class="group">
+						<span class="counter"></span>
+						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
+						<strong><a href="#" title="Public Feed">Public Taps</a></strong>
+					</li>
 					<li id="gid_all" class="group">
 						<span class="counter"></span>
-						<img src="/group_pics/36wh_default_group.gif" style="display:none;" />
+						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
 						<strong><a href="#" title="Groups Feed">All Your Groups</a></strong>
 					</li>
 					<?php foreach ($_t['your_groups'] as $group): ?>
 					<li id="gid_<?= $group['gid'] ?>" class="group">
 						<span class="counter"></span>
 						<img src="/group_pics/<?= $group['pic_36']?>" />
-						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?>"><?= $group['display_symbol'] ?></a> 
+						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?>"><?= $group['display_symbol'] ?></a>
 						<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
 					</li>
 					<?php endforeach; ?>
@@ -278,6 +301,25 @@ window.addEvent('domready', function(){
 						<span class="counter"></span>
 						<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
 					</li>
+				</ul>
+			</div>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Active Conversations</div>
+			</div>
+			<div class="tab-list">
+				<ul id="active-convos-list">
+					<?php if (!empty($_t['active_convos'])): ?>
+					<?php foreach ($_t['active_convos'] as $convo): ?>
+					<li id="aid_<?= $convo['mid'] ?>" class="convo">
+						<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
+						<span style="font-size:10px"><?= stripslashes($convo['chat_text']) ?></span>
+					</li>
+					<?php endforeach; ?>
+					<?php else: ?>
+					<li>
+						<strong>No Active Conversations</strong>
+					</li>
+					<?php endif; ?>
 				</ul>
 			</div>
 		</div>
@@ -303,7 +345,7 @@ window.addEvent('domready', function(){
 					<p class="tap-respond-last noresp">
 					<# } #>
 						<strong>
-							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>							
+							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>
 						</strong>
 						<#: (bit.last_resp || "").linkify() #>
 					</p>

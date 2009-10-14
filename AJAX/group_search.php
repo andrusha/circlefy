@@ -63,15 +63,21 @@ class search_functions{
 
 		//This query gets the group information based off of params supplied
 		$group_query =  <<<EOF
-   SELECT SQL_CALC_FOUND_ROWS ugm.admin,ugm.gid,t2.symbol,t2.gname,t2.connected,t2.descr,t2.focus,t2.pic_100,count(ugm.uid) AS size
-		FROM (
-		SELECT DISTINCT gm.admin,gm.uid,gs.gid FROM groups AS gs
-		LEFT JOIN group_members AS gm ON gm.gid= gs.gid
-		WHERE gs.gname LIKE '{$name_gname}%' OR gs.symbol LIKE '{$gname}%' {$focus_list}
-		GROUP BY gs.gid
-		) AS ugm
-		LEFT JOIN groups AS t2 ON t2.gid = ugm.gid
-        GROUP BY ugm.gid ORDER BY t2.connected LIMIT {$limit} OFFSET {$offset};
+SELECT SQL_CALC_FOUND_ROWS
+
+ugm.gid,
+gm.admin,count(gm.uid) AS size,
+t2.symbol,t2.gname,t2.connected,t2.descr,t2.focus,t2.pic_100
+
+FROM (
+SELECT DISTINCT gs.gid FROM groups AS gs
+WHERE gs.gname LIKE '{$name_gname}%' OR gs.symbol LIKE '{$gname}%' {$focus_list}
+GROUP BY gs.gid
+) AS ugm
+
+LEFT JOIN group_members AS gm ON gm.gid= ugm.gid
+LEFT JOIN groups AS t2 ON t2.gid = ugm.gid
+GROUP BY ugm.gid ORDER BY t2.connected LIMIT {$limit} OFFSET {$offset};
 EOF;
 	//Add this to remove companies from showing up WHERE t2.connected !=2
 
@@ -108,6 +114,7 @@ EOF;
                                 'descr' => $descr,
 				'domain' => $domain,
 				'official' => $official,
+				'last_chat'=> null,
 				'count'=> 0
 			);
 			$gid_list .= $gid.',';
@@ -115,11 +122,16 @@ EOF;
 			$gid_list = substr($gid_list,0,-1);
 
                         $group_message_count = <<<EOF
-                        SELECT COUNT(oscm.gid) AS count,scm.gid FROM
-                        ( SELECT mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} ) )
-                        AS oscm
-                        JOIN special_chat_meta AS scm ON oscm.mid = scm.mid AND oscm.gid = scm.gid
-                        GROUP BY oscm.gid
+			SELECT COUNT(scm.gid) AS count,scm.gid,sc.chat_text AS last_chat FROM
+			( 
+				SELECT MAX(mid) as mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} )
+				GROUP BY gid
+				ORDER BY mid DESC
+			)
+			AS oscm	
+			JOIN special_chat AS sc ON oscm.mid = sc.mid
+			JOIN special_chat_meta AS scm ON oscm.gid = scm.gid
+			GROUP BY scm.gid
 EOF;
 
                         $message_count_results = $this->mysqli->query($group_message_count);
@@ -127,8 +139,10 @@ EOF;
                         while($res = $message_count_results->fetch_assoc() ) {
                                 $count = $res['count'];
                                 $gid = $res['gid'];
+				$last_chat = $res['last_chat'];
 
                                 $groups[$gid]['count'] = $count;
+				$groups[$gid]['last_chat'] = $last_chat;
                         }	
 
 		//If groups were found send them back, else send back no results

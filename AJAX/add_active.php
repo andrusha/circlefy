@@ -7,10 +7,11 @@
 session_start();
 require('../config.php');
 $uid = $_SESSION['uid'];
-$mid = $_POST['add_active'];
+$mid = $_POST['cid'];
 if($mid){
 	$add_obj = new add_functions();
 	$add_obj->add_active($mid,$uid);
+	echo 1;
 }
 
 class add_functions{

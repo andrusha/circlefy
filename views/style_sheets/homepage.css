@@ -448,3 +448,13 @@ ul.tap-stream .tap-response-box {
 span.tap-typing {
 	color: #8BF46A;
 }
+
+a.change-convo {
+	vertical-align: 0;
+	margin-right: 5px;
+}
+
+li.convo {
+	cursor: pointer;
+	margin-bottom: 10px;
+}

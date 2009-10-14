@@ -126,6 +126,7 @@ EOF;
 					'focus' => $focus,
 					'descr' => $descr,
 					'official' => $official,
+					'last_chat'=> null,
 					'count'	=> 0
 				);
 			
@@ -134,11 +135,16 @@ EOF;
                         $gid_list = substr($gid_list,0,-1);
 
                         $group_message_count = <<<EOF
-                        SELECT COUNT(oscm.gid) AS count,scm.gid FROM
-                        ( SELECT mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} ) )
+			SELECT COUNT(scm.gid) AS count,scm.gid,sc.chat_text AS last_chat FROM
+                        (
+                                SELECT MAX(mid) as mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} )
+                                GROUP BY gid
+                                ORDER BY mid DESC
+                        )
                         AS oscm
-                        JOIN special_chat_meta AS scm ON oscm.mid = scm.mid AND oscm.gid = scm.gid
-                        GROUP BY oscm.gid
+                        JOIN special_chat AS sc ON oscm.mid = sc.mid
+                        JOIN special_chat_meta AS scm ON oscm.gid = scm.gid
+                        GROUP BY scm.gid
 EOF;
 			$this->db_class_mysql->set_query($group_message_count,'group_count',"Get's message count for groups");
 			$message_count_results = $this->db_class_mysql->execute_query('group_count');
@@ -147,8 +153,10 @@ EOF;
                         while($res = $message_count_results->fetch_assoc() ) {
                                 $count = $res['count'];
                                 $gid = $res['gid'];
-
+				$last_chat = $res['last_chat'];
+				
                                 $groups[$gid]['count'] = $count;
+				$groups[$gid]['last_chat'] = $last_chat;
                         }
 			$this->set($groups,'group_results');
 				

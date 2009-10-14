@@ -1,5 +1,24 @@
 Tap = window.Tap || {};
 
+(function(){
+	function onBlur() {
+		document.body.className = 'blurred';
+	};
+	function onFocus(){
+		$clear(document.msgs);
+		document.title = 'tap - alpha';
+		document.body.className = 'focused';
+	};
+
+	if (/*@cc_on!@*/false) { // check for Internet Explorer
+		document.onfocusin = onFocus;
+		document.onfocusout = onBlur;
+	} else {
+		window.onfocus = onFocus;
+		window.onblur = onBlur;
+	}
+})();
+
 var EasyOver = new Class({
 
 	Implements: [Events, Options],
@@ -57,6 +76,7 @@ Tap.Home = {
 	feedView: 'gid_all',
 	currentTap: Tap.Vars.currentTap,
 	currentStream: Tap.Vars.currentStream,
+	activeConvos: Tap.Vars.activeConvos,
 	currentSearch: null,
 
 	settings: {},
@@ -79,7 +99,14 @@ Tap.Home = {
 			item.set('html', item.get('html').linkify());
 		});
 		body.addEvents({
-			'click:relay(li.group a)': this.changeFeed.toHandler(this),
+			'click:relay(li.group a)': function(e){
+				this.setStyle('background-color', '#F2F2F2');
+				self.changeFeed(this, e);
+			},
+			'click:relay(li.convo)': function(e){
+				this.setStyle('background-color', '#F2F2F2');
+				self.changeConvo(this, e);
+			},
 			'click:relay(a.reset-feed)': this.clearSearch.toHandler(this),
 			'click:relay(a.tap-respond)': function(e){
 				e.preventDefault();
@@ -120,6 +147,9 @@ Tap.Home = {
 				onBlur: function(){
 					if (this.getValues().length == 0
 						&& this.list.getElement('input.textboxlist-bit-editable-input').get('value').isEmpty()) easy.show();
+				},
+				onBitBoxAdd: function(a){
+					mpmetrics.track('tap-box-add', {'group': a.value[0] || a.value[1] });
 				}
 			})
 		};
@@ -165,7 +195,7 @@ Tap.Home = {
 	// GEN FUNCS
 
 	setChannels: function(){
-		Tap.Push.sendCIDs([].combine(this.currentStream).combine(["" + this.currentTap]));
+		Tap.Push.sendCIDs([].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap]));
 	},
 
 	parseTemplate: function(type, data){
@@ -287,6 +317,7 @@ Tap.Home = {
 	},
 
 	sendResponse: function(el){
+		var self = this;
 		var parent = el.getParent('li');
 		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
 		var msg = el.get('value');
@@ -304,6 +335,7 @@ Tap.Home = {
 			onSuccess: function(){
 				// var response = JSON.decode(this.response.text);
 				var response = this.response.text;
+				self.addConvo(id, parent);
 			}
 		}).send();
 		this.fireEvent('sendResponse');
@@ -372,6 +404,110 @@ Tap.Home = {
 			var last = parent.getElement('p.tap-respond-last');
 			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', (msg || '').linkify()].join(''));
 		}
+
+		// For Active Convos
+
+		var indic = $('aid_' + id);
+		if (indic) {
+			if (this.feedView !== 'aid_' + id) {
+				indic.setStyle('background-color', '#FBC9CB');
+			}
+			if ($(document.body).hasClass('blurred')) {
+				document.msgs = (function(){
+					document.title = 'You have a new response!';
+					(function(){ document.title = 'tap — alpha'; }).delay(1000);
+				}).periodical(2000);
+			}
+		}
+	},
+
+	// ACTIVE CONVERSATIONS
+
+	addConvo: function(cid, el){
+		var self = this;
+		var list = $('active-convos-list');
+		var item = list.getElement('#aid_' + cid);
+		if (item) {
+			item.inject(list, 'top');
+			item.set('tween', {duration:1000}).highlight('#FBC9CB', '#F2F2F2');
+		} else {
+			new Request({
+				url: 'AJAX/add_active.php',
+				data: {
+					cid: cid
+				},
+				onSuccess: function(){
+					var response = this.response.text;
+					if (response) {
+						self.activeConvos.include("" + cid);
+						self.setChannels();
+						var data = {
+							uname: el.getElement('img').get('alt'),
+							msg: el.getElement('.tap-msg').get('text')
+						};
+						item = new Element('li', {
+							'class': 'convo',
+							'id': 'aid_' + cid,
+							'html': '<strong><a href="#" class="change-convo">{uname}</a></strong> \
+							<span style="font-size:10px">{msg}</span>'.substitute(data)
+						}).inject(list, 'top');
+						item.set('tween', {duration:1000}).highlight('#FBC9CB', '#F2F2F2');
+					}
+				}
+			}).send();
+		}
+	},
+
+	removeConvo: function(){
+
+	},
+
+	changeConvo: function(el, e){
+		var self = this;
+		var parent = el;
+		var gid = parent.get('id');
+		if (this.feedView == gid) return null;
+		var id = gid.remove(/aid_/);
+		var template = $('template-bit').innerHTML.cleanup();
+		this.feedView = gid;
+		new Request({
+			url: 'AJAX/loader.php',
+			data: {
+				id_list: id
+			},
+			onRequest: function(){
+				$('loading-indicator').setStyle('display', 'inline');
+			},
+			onComplete: function(){
+				$('loading-indicator').setStyle('display', 'none');
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (response.results) {
+					self.mainStream.empty();
+					response.data = response.data.filter(function(item){
+						return !!item.cid;
+					});
+					var items = new Element('div', {
+						html: self.parseTemplate('taps', response.data)
+					});
+					self.currentStream = self.currentStream.combine(response.data.map(function(item){
+						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
+					}));
+					self.setChannels();
+					items.getElements('li').reverse().inject('main-stream', 'top');
+					$(document.body).fireEvent('click', {
+						target: $(document.body).getElements('.tap-respond')[1],
+						stop: $empty,
+						preventDefault: $empty,
+						stopPropagation: $empty
+					});
+					self.changeDates();
+				}
+				$('tap-feed-name').set('text', 'Convo: ' + parent.getElement('strong').get('text'));
+				$('tap-feed-icon').set('src', '/group_pics/36wh_default_group.gif');
+			}
+		}).send();
 	},
 
 	// SEARCH
@@ -386,6 +522,7 @@ Tap.Home = {
 				data: (function(){
 					var data = $extend((self.feedView == 'gid_all')
 						? {type: 11}
+						: (self.feedView == 'gid_public') ? {type: 100}
 						: {type: 1, id: self.feedView.remove(/gid_/)}
 						, {search: keyword});
 					var outside = self.getSettings();
@@ -407,6 +544,9 @@ Tap.Home = {
 					var response = JSON.decode(this.response.text);
 					var items;
 					if (response.results) {
+						response.data = response.data.filter(function(item){
+							return !!item.cid;
+						});
 						items = new Element('div', {
 							html: self.parseTemplate('taps', response.data)
 						});
@@ -526,12 +666,12 @@ Tap.Home = {
 		var self = this;
 		var gid = $try(function(){ return el.get('id'); }) || el;
 		if (this.feedView === gid && !force) return;
-		var id = (gid !== 'gid_all') ? gid.remove(/gid_/) : null;
+		var id = (gid === 'gid_all') ? null : (gid === 'gid_public') ? false : gid.remove(/gid_/);
 		var settings = this.getSettings(gid);
 		new Request({
 			url: 'AJAX/filter_creator.php',
 			data: (function(){
-				var data = (id === null) ? {type: 11} : {type:1, id: id};
+				var data = (id === null) ? {type: 11} : (id === false) ? {type: 100} : {type:1, id: id};
 				if (settings.outside) {
 					data.outside = 1;
 					data.o_filter = JSON.encode(settings.people.length > 0 ? settings.people.map(function(item){
@@ -554,9 +694,12 @@ Tap.Home = {
 				}
 				self.feedView = gid;
 				self.setSettings();
-				var key = (gid === 'gid_all') ? 'groups' : gid.replace('gid', 'group');
+				var key = (gid === 'gid_all') ? 'groups' : (gid === 'gid_public') ? 'public' : gid.replace('gid', 'group');
 				if ($type(self.pushed[key]) == 'array') self.pushed[key].empty();
-				if (response.results) {
+				if (response.results && response.data) {
+					response.data = response.data.filter(function(item){
+						return !!item.cid;
+					});
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.data)
 					});
@@ -565,7 +708,7 @@ Tap.Home = {
 					});
 					self.setChannels();
 				} else {
-					items = new Element('div').adopt($('no-taps').clone());
+					var items = new Element('div').adopt($('no-taps').clone());
 				}
 				self.mainStream.empty();
 				items.getElements('li').reverse().inject('main-stream', 'top');
@@ -661,10 +804,12 @@ Tap.Home = {
 					text: notify
 				}).store('type', item.type).slide('in');
 			} else if (item.type.contains('group') && this.feedView !== 'gid_all') {
-				$((item.type == 'groups')
+				var element = $((item.type == 'groups')
 				  ? 'gid_all'
 				  : item.type.replace('group', 'gid')
-				).getElement('span.counter').set('text', type.length);
+				);
+				if (element) element.setStyle('background-color', '#FBC9CB');
+				//element.getElement('span.counter').set('text', type.length);
 			}
 		}
 	},

@@ -136,24 +136,27 @@ EOF;
 		//START get active conversations
 
 		$ac_query = <<<EOF
-                SELECT t1.mid,t1.uid,t2.uname,t2.chat_text FROM active_convo as t1
+                SELECT t1.mid,t3.uname,t1.uid,t2.uname,t2.chat_text FROM active_convo as t1
                 JOIN special_chat AS t2
                 ON t1.mid = t2.mid
+		JOIN login AS t3
+		ON t3.uid = t1.uid
                 WHERE t1.uid = {$uid} AND t1.active = 1 ORDER BY mid ASC;
 EOF;
 		$this->db_class_mysql->set_query($ac_query,'active_convos',"This is a SPECIAL QUERY that is part of a active of queries - This is for active convos: ALL ");
 	        $actives_bits_results = $this->db_class_mysql->execute_query('active_convos');
 
+		if($actives_bits_results->num_rows)
 		while($res = $actives_bits_results->fetch_assoc() ) {
 			$mid = $res['mid'];
 			$uid = $res['uid'];
 			$uname = $res['uname'];
 			$chat_text = $res['chat_text'];
 
-			$ac_output = array(
+			$ac_output[] = array(
 			'mid'	=>	$mid,
 			'uid'	=>	$uid,
-			'uname'	=>	$uanme,
+			'uname'	=>	$uname,
 			'chat_text' =>	$chat_text
 			);
 		}
