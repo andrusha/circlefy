@@ -62,7 +62,6 @@ class filter_functions{
 			$outside="0,2";
 
                 $uid = $_SESSION['uid'];
-                $uname = $_SESSION['uname'];
 
 		$type = $this->mysqli->real_escape_string($type);
 		$id = $this->mysqli->real_escape_string($id);
@@ -111,12 +110,13 @@ EOF;
 			$search_sql =  "AND chat_text LIKE '%{$search}%'";
 
 		$public_bits_query = <<<EOF
-		SELECT mid FROM special_chat
+		SELECT mid,cid FROM special_chat
 		WHERE uid NOT IN ( 63,75,175 )
 		{$search_sql}
 		ORDER BY cid DESC
 		LIMIT 20
 EOF;
+
 		$mysql_obj = $this->mysqli->query($public_bits_query);
 		return $mysql_obj;
 	}
@@ -208,6 +208,9 @@ EOF;
 
 	function create_filter($mysql_obj){
 		$uid = $_SESSION['uid'];
+		if(!$uid)
+			$uid=0;
+		
 
 		$return_list = $this->get_unique_id_list($mysql_obj);
 		$mid_list = $return_list['mid_list'];

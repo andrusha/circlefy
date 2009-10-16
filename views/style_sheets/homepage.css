@@ -67,6 +67,14 @@ img { vertical-align:-4px;}
 	background: #FBDCC9;
 }
 
+.section.info {
+	padding: 10px;
+	border-bottom: 1px solid #EEEEBB;
+	border-top: 1px solid #EEEEBB;
+	font-size: 12px;
+	background: #FBFBC9;
+}
+
 .section-head {
 	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) repeat-x scroll 0 0;
 	padding: 3px 4px 5px 4px;
@@ -126,6 +134,10 @@ ul.tap-stream ul.tap-chat {
 
 ul.tap-stream ul.tap-chat.noresp {
 	background: #fff url(/images/silent_responses.png) no-repeat center center;
+}
+
+ul.tap-stream ul.tap-chat.out {
+	background: #fff url(/images/out_responses.png) no-repeat center center;
 }
 
 ul.tap-stream ul.tap-chat li {
@@ -416,6 +428,10 @@ ul.tap-stream .tap-response-box {
 	padding:2px;
 	width:153px; }
 
+#signup-form input.text.input-err, #signup-form select.text.input-err {
+	background: #fdebeb;
+}
+
 #signup-form select.text {
 	height: 22px;
 	width: 160px;
@@ -423,10 +439,11 @@ ul.tap-stream .tap-response-box {
 
 #signup-form input.text:focus {
 	border: 1px solid #000000;
-	background: white; }
+	background: #EAFBE5; }
 
 #signup-form .guide { 
-	color:#898989;
+/*	color:#898989;*/
+	color: red;
 	font-size:11px;
 	margin-right:16px;
 	margin-top:-5px;
@@ -508,4 +525,40 @@ a.add-tap-to:hover {
 
 .group:hover a.add-tap-to {
 	display: inline;
+}
+
+#search-public {
+	background: url(/images/cimages/group_srch_back.gif) no-repeat;
+	height: 40px;
+	padding: 12px;
+	padding-left: 25px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #707070;
+	margin-bottom: 0;
+}
+
+span.spiel {
+	margin-right: 5px;
+}
+
+#search-public-keyword {
+	font-size: 12px;
+	margin: 0;
+	height: 20px; width: 180px;
+	padding-top: 5px; padding-left: 5px; padding-right: 30px;
+	border: none;
+	background: transparent url(/images/cimages/group_srch_field.gif) no-repeat scroll 0% 0%; }
+
+/*
+#search-public-submit {
+	height: 32px; width: 77px;
+	padding: 7px 7px 7px 77px;
+	cursor: pointer;
+	background: url(/images/cimages/group_srch_btn.gif) no-repeat;
+}
+*/
+
+#search-public-submit {
+	font-size: 14px;
 }

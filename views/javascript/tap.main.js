@@ -22,7 +22,93 @@ Tap.Main = {
 		data.email.addEvent('blur', this.checkEmail.toHandler(this));
 		data.pass.addEvent('blur', this.checkPass.toHandler(this));
 		data.passrepeat.addEvent('blur', this.checkPassRepeat.toHandler(this));
-		$('signup-submit').addEvent('click', this.onSignup.toHandler(this));
+		// $('signup-submit').addEvent('click', this.onSignup.toHandler(this));
+		signUp.addEvent('submit', this.onSignup.toHandler(this));
+
+		$('search-public-submit').addEvent('click', this.searchFeed.toHandler(this));
+		$(document.body).addEvents({
+			'click:relay(a.reset-feed)': this.clearSearch.bind(this),
+			'click:relay(a.tap-respond)': this.showResponseBox.toHandler(this),
+			'click:relay(a.tap-respond-cancel)': this.hideResponseBox.toHandler(this)
+		});
+		$('search-public-keyword').addEvent('keypress', function(e){
+			if (e.key == 'enter') self.searchFeed(this, e);
+		});
+		$('signup-title').setStyle('cursor', 'pointer').addEvent('click', function(){
+			if (!this.retrieve('ss')) {
+				mpmetrics.track('signup-image-click', {});
+				this.store('ss', true);
+			}
+			data.user.focus();
+		});
+	},
+	
+	showResponseBox: function(el){
+		var box = el.getParent('li').getElement('.tap-response-box');
+		var input = box.getElement('input.tap-response');
+		input.set('value', 'Sign in to join the conversation!');
+		box.setStyle('display', 'block');
+	},
+
+	hideResponseBox: function(el){
+		var box = el.getParent('li').getElement('.tap-response-box');
+		var input = box.getElement('input.tap-response');
+		if (input.retrieve('overtext')) input.retrieve('overtext').hide();
+		box.setStyle('display', 'none');
+	},
+
+	searchFeed: function(el, e){
+		var self = this;
+		var keyword = $('search-public-keyword').get('value');
+		new Request({
+			url: 'AJAX/filter_creator.php',
+			data: {
+				type: 100,
+				search: keyword
+			},
+			onRequest: function(){
+				$('loading-indicator').setStyle('display', 'inline');
+			},
+			onComplete: function(){
+				$('loading-indicator').setStyle('display', 'none');
+			},
+			onSuccess: function(){
+				Tap.ResponseBot.stop();
+				var response = JSON.decode(this.response.text);
+				var items;
+				if (response.results) {
+					response.data = response.data.filter(function(item){
+						return !!item.cid;
+					});
+					if (response.data.length > 0) {
+						items = new Element('div', {
+							html: self.parseTemplate('taps', response.data)
+						});
+					} else {
+						items = new Element('div').adopt($('no-results').clone());
+					}
+				} else {
+					items = new Element('div').adopt($('no-results').clone());
+				}
+				$('main-stream').empty();
+				items.getElements('li').reverse().inject('main-stream', 'top');
+				Tap.ResponseBot.init();
+				self.changeDates();
+			}
+		}).send();
+	},
+
+	parseTemplate: function(type, data){
+		var template = $(({
+			taps: 'template-bit'
+		})[type]).innerHTML.cleanup();
+		if (!this.templater) this.templater = new Template();
+		return this.templater.parse(template, data);
+	},
+
+	clearSearch: function(){
+		$('search-public-keyword').set('value', '');
+		this.searchFeed();
 	},
 
 	onLogin: function(el, e){
@@ -118,6 +204,7 @@ Tap.Main = {
 		} else if (el.get('value') !== data.pass.get('value')) {
 			return this.showError(el, 'Your passwords don\'t match.');
 		}
+		mpmetrics.track('password-complete', {});
 		return this.removeError(el);
 	},
 
@@ -175,7 +262,7 @@ Tap.Main = {
 			})).fireEvent('blur', [e]);
 		}
 	},
-	
+
 	changeDates: function(){
 		var now = new Date().getTime();
 		$$('.tap-time').each(function(el){
@@ -198,7 +285,7 @@ Tap.Main = {
 };
 
 Tap.ResponseBot = {
-	
+
 	resps: [
 		"Yea this tap thing really is amazing, responses in real-time!",
 		"How did you get in touch with me?  Oh, by targeting a tap group!",
@@ -207,7 +294,7 @@ Tap.ResponseBot = {
 		"Oh really?  Are you using tap as the main way to manage your community?",
 		"Hey did you just ask a question?  tap is the perfect place to get answers!",
 		"Hey is your University on tap?",
-		"Really?  Did that just happen at NYU?  Let me message the tap NYU group and we'll see", 
+		"Really?  Did that just happen at NYU?  Let me message the tap NYU group and we'll see",
 		"So I just message the tap group tapsupport if I need help?",
 		"tap is better then the swine flu!  no, it really is!",
 		"hey I heard ETN.FM is on tap, sweet, glad they finally formed a real-time community :)",
@@ -243,30 +330,39 @@ Tap.ResponseBot = {
 		"Send me a message will yah? I'm testing something out.",
 		"Damn, this is gonna be BIG!!!"
 	],
-	
+
 	init: function(){
 		this.taps = $('main-stream').getElements('li');
-		this.cycle.periodical(3000, this);
-		this.cycle.periodical(5000, this);
+		this.periodA = this.cycle.periodical(3000, this);
+		this.periodB = this.cycle.periodical(5000, this);
 		this.cycle();
 	},
-	
+
 	cycle: function(){
-		var el = this.taps[Math.floor(Math.random()*this.taps.length)];
-		var resp = this.resps[Math.floor(Math.random()*this.resps.length)];
-		el.getElement('.tap-typing').set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
-		(function(){
-			el.getElement('.tap-typing').set('html', '');
-			var counter = el.getElement('span.tap-respond-count');
-			var count = (function(){
-				var c = counter.get('text').match(/\(([\d]+)\)/);
-				return ($type(c) == 'array') ? (c[1] * 1) : 0;
-			})();
-			counter.set('text', ['(', count + 1, ')'].join(''));
-			el.getElement('.tap-respond-last').set('text', resp);
-		}).delay(2000);
+		try {
+			var el = this.taps[Math.floor(Math.random()*this.taps.length)];
+			var resp = this.resps[Math.floor(Math.random()*this.resps.length)];
+			el.getElement('.tap-typing').set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
+			(function(){
+				try {
+					el.getElement('.tap-typing').set('html', '');
+					var counter = el.getElement('span.tap-respond-count');
+					var count = (function(){
+						var c = counter.get('text').match(/\(([\d]+)\)/);
+						return ($type(c) == 'array') ? (c[1] * 1) : 0;
+					})();
+					counter.set('text', ['(', count + 1, ')'].join(''));
+					el.getElement('.tap-respond-last').set('text', resp);
+				} catch(e) {}
+			}).delay(2000);
+		} catch(e) {}
+	},
+
+	stop: function(){
+		$clear(this.periodA);
+		$clear(this.periodB);
 	}
-	
+
 };
 window.addEvent('domready', Tap.ResponseBot.init.bind(Tap.ResponseBot));
 window.addEvent('domready', Tap.Main.init.bind(Tap.Main));
