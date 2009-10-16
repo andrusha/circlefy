@@ -174,7 +174,7 @@ ul.tap-stream .tap-info span {
 
 ul.tap-stream .tap-from {
 	font-weight: bold;
-	font-size: 12px;
+	font-size: 13px;
 	margin-right: 5px;
 }
 
@@ -503,10 +503,14 @@ li.convo:hover a.remove-convo {
 #archived-taps {
 	float: right;
 	cursor: pointer;
-	background: #ccc;
-	padding: 5px;
+	background: #F5F5F5;
+	padding: 3px 5px;
+	margin-top: 1px;
+	border: 1px solid #666;
 	font-size: 10px;
 	color: #000;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 
 a.add-tap-to {
@@ -561,4 +565,12 @@ span.spiel {
 
 #search-public-submit {
 	font-size: 14px;
+}
+
+li.group .unread-counter {
+	display: none;
+}
+
+li.group.unread .unread-counter {
+	display: inline;
 }

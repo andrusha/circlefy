@@ -36,6 +36,7 @@ Tap.Push = {
 	},
 
 	onData: function(raw){
+		console.log(raw);
 		raw = raw.split('\n');
 		for (var x = raw.reverse().length; x--;){
 			data = raw[x];
@@ -55,7 +56,7 @@ Tap.Push = {
 					cid: data.msgData[0],
 					msg: data.msgData[1],
 					user: data.msgData[2],
-					type: data.msgData[3] || data.msgData[1]
+					type: data.msgData[3] || data.msgData[1] || ''
 				};
 			} else {
 				parsed = {

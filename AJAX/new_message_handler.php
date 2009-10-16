@@ -195,7 +195,7 @@ class chat_functions{
 		if($groups != '')
 			foreach($groups as $gid => $uids){
 				foreach($uids as $uid){
-					$insert_string .= "$uid $cid {$gid} 0 0 0".$nl;
+					$insert_string .= "$uid $cid {$gid} 0 0 0 {$this->meta_groups[$gid]}".$nl;
 				}
 			}
 

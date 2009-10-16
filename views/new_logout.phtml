@@ -52,12 +52,28 @@ window.addEvent('load', function(){
 	<div id="main">
 
 		<div class="left-col" style="margin-right: 20px">
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Log in</div>
+			</div>
+			<div class="tab-list">
+				<form id="login" action="<?=ROOT?>" method="POST">
+					<label>Username</label>
+						<input type="text" id="uname" name="uname" class="text" />
+					<label>Password</label>
+						<input type="password" id="pass" name="pass" class="text" />
+					<br/>
+					<input type="checkbox" checked="true" id="auto_login" name="auto_login" />
+					<label class="in-form">Keep Me Logged In</label>
+					<input type="submit" id="signin-submit" value="Sign In" />
+				</form>
+			</div>
 			<div id="groups-tab" style="background-image:url(/images/cimages/tab_grey.gif);">
 				<div class="tab-in" style="color:#fff;">What's This?</div>
 			</div>
 			<div class="tab-list">
 				<p style="font-size:16px"><strong>Tap allows you to connect with people around you and stay informed about topics you're interested in.</strong>  <!-- Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today! --></p>
 			</div>
+			<!--
 			<div id="groups-tab">
 				<div class="tab-in" style="color:#fff">Trending Groups</div>
 			</div>
@@ -70,6 +86,7 @@ window.addEvent('load', function(){
 					<?php endforeach; ?>
 				</ul>
 			</div>
+			-->
 		</div>
 
 		<div id="center-col">
@@ -152,23 +169,7 @@ window.addEvent('load', function(){
 		</div>
 
 		<div id="left-col">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">Log in</div>
-			</div>
-			<div class="tab-list">
-				<form id="login" action="<?=ROOT?>" method="POST">
-					<label>Username</label>
-						<input type="text" id="uname" name="uname" class="text" />
-					<label>Password</label>
-						<input type="password" id="pass" name="pass" class="text" />
-					<br/>
-					<input type="checkbox" checked="true" id="auto_login" name="auto_login" />
-					<label class="in-form">Keep Me Logged In</label>
-					<input type="submit" id="signin-submit" value="Sign In" />
-				</form>
-			</div>
-
-			<div id="signup-tab">Sign-up
+			<div id="signup-tab" style="margin-top:0">Sign-up
 				<div id="signup-title">Its very easy<br />and it wont take you<br />more than 45 seconds.</div>
 			</div>
 			<div>

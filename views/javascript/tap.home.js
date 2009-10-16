@@ -101,6 +101,26 @@ Tap.Home = {
 		body.addEvents({
 			'click:relay(li.group a)': function(e){
 				this.setStyle('background-color', '#F2F2F2');
+				this.removeClass('unread');
+				if (this.get('id') == 'gid_all') {
+					$$('li.group').removeClass('unread').getElement('.unread-counter').each(function(el){ 
+						if (el.set) el.set('text', '(0)'); 
+					});
+				} else {
+					var counter = $('gid_all').getElement('.unread-counter');
+					var count = (function(){
+						var c = counter.get('text').match(/\(([\d]+)\)/);
+						return ($type(c) == 'array') ? (c[1] * 1) : 0;
+					})();
+					var newcounter = this.getElement('.unread-counter');
+					var newcount = (function(){
+						var c = newcounter.get('text').match(/\(([\d]+)\)/);
+						return ($type(c) == 'array') ? (c[1] * 1) : 0;
+					})();
+					counter.set('text', ['(', count - newcount, ')'].join(''));
+					if ((count - newcount) <= 0) $('gid_all').removeClass('unread').setStyle('background-color', '#F2F2F2');
+				}
+				this.getElement('.unread-counter').set('text', '(0)');
 				self.changeFeed(this, e);
 			},
 			'click:relay(a.remove-convo)': this.removeConvo.toHandler(this),
@@ -912,7 +932,7 @@ Tap.Home = {
 				type: String.type,
 				y: Boolean.type,
 				cid: Number.type,
-				z: String.type
+				perm: Number.type
 			});
 		});
 		for (var x = data.reverse().length; x--;) {
@@ -926,19 +946,27 @@ Tap.Home = {
 
 
 			if (key === item.type && type.length > 0 ) {
-			if( item.cid !== this.currentTap ) { }
-				/*var length = type.length - (type.contains(this.currentTap) ? 1 : 0);*/
+				/*
+				if( item.cid !== this.currentTap ) { }
+				var length = type.length - (type.contains(this.currentTap) ? 1 : 0);
+				*/
 				var length = type.length;
 				var notify = ['You have', length, 'new', length == 1 ? 'tap,' : 'taps,', 'click here to show them.'].join(' ');
 				$('tap-notify').set({
 					text: notify
 				}).store('type', item.type).slide('in');
-			} else if (item.type.contains('group') && this.feedView !== 'gid_all') {
-				var element = $((item.type == 'groups')
-				  ? 'gid_all'
-				  : item.type.replace('group', 'gid')
-				);
-				if (element) element.setStyle('background-color', '#FBC9CB');
+			} else if (item.type && item.type.contains('group') && this.feedView !== 'gid_all') {
+				var element = $((item.type == 'groups') ? 'gid_all' : item.type.replace('group', 'gid'));
+				if (element && item.perm) {
+					element.setStyle('background-color', '#FBC9CB');
+					element.addClass('unread');
+					var counter = element.getElement('.unread-counter');
+					var count = (function(){
+						var c = counter.get('text').match(/\(([\d]+)\)/);
+						return ($type(c) == 'array') ? (c[1] * 1) : 0;
+					})();
+					counter.set('text', ['(', (count + 1), ')'].join(''));
+				}
 				//element.getElement('span.counter').set('text', type.length);
 			}
 		}

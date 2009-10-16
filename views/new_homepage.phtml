@@ -116,12 +116,14 @@ window.addEvent('domready', function(){
 	<div id="main">
 
 		<div class="left-col" style="margin-right: 20px">
+			<!--
 			<div id="groups-tab" style="background-image:url(/images/cimages/tab_grey.gif);">
 				<div class="tab-in" style="color:#fff;">What's This?</div>
 			</div>
 			<div class="tab-list">
 				<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.  Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today!</p>
 			</div>
+			-->
 			<div id="groups-tab">
 				<div class="tab-in" style="color:#fff">Trending Groups</div>
 			</div>
@@ -288,13 +290,12 @@ window.addEvent('domready', function(){
 					<li id="gid_all" class="group">
 						<span class="counter"></span>
 						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
-						<strong><a href="#" title="Groups Feed">All Your Groups</a></strong>
+						<strong><a href="#" title="Groups Feed">All Your Groups <span class="unread-counter">(0)</span></a></strong>
 					</li>
 					<?php foreach ($_t['your_groups'] as $group): ?>
 					<li id="gid_<?= $group['gid'] ?>" class="group">
-						<span class="counter"></span>
 						<img src="/group_pics/<?= $group['pic_36']?>" />
-						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?>"><?= $group['display_symbol'] ?></a>
+						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?>"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
 						<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
 					</li>
 					<?php endforeach; ?>
