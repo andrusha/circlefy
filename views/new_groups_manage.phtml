@@ -282,7 +282,7 @@ Tap.Groups = {
 
 	onMore: function(el){
 		var top = el.getParent('li');
-		var top_height = (top.getStyle('height').replace('px', '') * 1);
+		var top_height = (top.getComputedStyle('height').replace('px', '') * 1);
 		if (!top.retrieve('before')) top.store('before', top_height);
 		var desc = top.getElement('.description');
 
@@ -295,11 +295,13 @@ Tap.Groups = {
 						opacity: 0
 					}
 				}).adopt(desc.clone(), focus.clone()).inject(document.body);
-				adjust = (temp.getStyle('height').replace('px', '') * 1);
+				adjust = (temp.getComputedStyle('height').replace('px', '') * 1);
+				adjust = (adjust > 300) ? 200 : adjust;
 				top.store('adjust', adjust);
 				temp.destroy();
 			}
 			desc.slide('in');
+			// console.log(adjust + top_height);
 			top.morph({
 				height: adjust + top_height
 			});
@@ -497,6 +499,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							$focus = $group['focus'];
 							$descr = $group['descr'];
 							$count = $group['count'];
+							$last_chat = $group['last_chat'];
 					?>
 						<li id="gr-id_<?= $gid ?>" class="listing">
 							<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
@@ -505,9 +508,13 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 									<?php if ($official == "*"): ?>
 									<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" title="This is an offical group"/>
 									<?php endif; ?>
-									<strong class="gr-name"><?= $gname ?></strong>&nbsp;&nbsp;</p>
-									<p class="gr-desc description"><?= $descr ?></p>
-									<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
+									<strong class="gr-name"><?= $gname ?></strong>&nbsp;&nbsp;
+								</p>
+								<p class="gr-desc description">
+									<?= $descr ?><br /><br />
+									<strong>Latest Tap: </strong><?= stripslashes($last_chat) ?>
+								</p>
+								<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 							</div>
 							<div class="gr-numbers">
 								<p><strong><?= $count ?></strong></p>
@@ -561,7 +568,10 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" />
 							<# } #>
 							<strong class="gr-name"><#: data.gname #></strong>&nbsp;&nbsp;</p>
-							<p class="gr-desc description"><#: data.descr #></p>
+							<p class="gr-desc description">
+								<#: data.descr #><br /><br />
+								<strong>Latest Tap: </strong><#: data.last_chat #>
+							</p>
 							<p class="gr-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 					</div>
 					<div class="gr-numbers">

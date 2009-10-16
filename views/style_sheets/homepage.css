@@ -454,7 +454,58 @@ a.change-convo {
 	margin-right: 5px;
 }
 
+a.change-convo:hover {
+	text-decoration: none;
+}
+
+a.remove-convo {
+	display: none;
+	vertical-align: 0;
+	margin-right: 3px;
+	font-size: 14px;
+	font-weight: bold;
+	float: right;
+}
+
+a.remove-convo:hover {
+	color: red;
+	text-decoration: none;
+}
+
 li.convo {
 	cursor: pointer;
-	margin-bottom: 10px;
+	padding: 10px 5px;
+	border-top: 1px solid #ccc;
+	margin-left: -10px;
+}
+
+li.convo:hover a.remove-convo {
+	display: inline;
+}
+
+#archived-taps {
+	float: right;
+	cursor: pointer;
+	background: #ccc;
+	padding: 5px;
+	font-size: 10px;
+	color: #000;
+}
+
+a.add-tap-to {
+	display: none;
+	float: right;
+	margin-top: 8px;
+	margin-right: 5px;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+a.add-tap-to:hover {
+	color: green;
+	text-decoration: none;
+}
+
+.group:hover a.add-tap-to {
+	display: inline;
 }

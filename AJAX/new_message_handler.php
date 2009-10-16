@@ -111,7 +111,7 @@ class chat_functions{
 		$time = time();
 
 		//Dispatch Active Conversation
-		$init_active_convo = "INSERT INTO active_convo(mid,uid,active) values({$last_id},{$uid},1)";
+		$init_active_convo = "INSERT INTO active_convo(mid,uid,active) values({$last_id},{$uid},0)";
 		$this->mysqli->query($init_active_convo);
 
 

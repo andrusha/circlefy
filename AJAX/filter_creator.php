@@ -98,8 +98,8 @@ class filter_functions{
 		$public_bits_query = <<<EOF
 		SELECT mid FROM special_chat
 		WHERE uid = {$uid}
-		ORDER BY cid DESC
 		{$search_sql}
+		ORDER BY cid DESC
 		LIMIT 20
 EOF;
 		$mysql_obj = $this->mysqli->query($public_bits_query);

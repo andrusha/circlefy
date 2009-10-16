@@ -136,12 +136,13 @@ EOF;
 		//START get active conversations
 
 		$ac_query = <<<EOF
-                SELECT t1.mid,t3.uname,t1.uid,t2.uname,t2.chat_text FROM active_convo as t1
-                JOIN special_chat AS t2
-                ON t1.mid = t2.mid
+		SELECT t1.mid,t3.uname,t1.uid,t2.uname,t2.chat_text,count(chat.cid) AS resp_count FROM active_convo as t1
+		JOIN chat ON t1.mid = chat.cid
+		JOIN special_chat AS t2
+		ON t1.mid = t2.mid
 		JOIN login AS t3
 		ON t3.uid = t1.uid
-                WHERE t1.uid = {$uid} AND t1.active = 1 ORDER BY mid ASC;
+		WHERE t1.uid = {$uid} AND t1.active = 1 GROUP BY chat.cid ORDER BY mid ASC;		
 EOF;
 		$this->db_class_mysql->set_query($ac_query,'active_convos',"This is a SPECIAL QUERY that is part of a active of queries - This is for active convos: ALL ");
 	        $actives_bits_results = $this->db_class_mysql->execute_query('active_convos');
@@ -152,12 +153,14 @@ EOF;
 			$uid = $res['uid'];
 			$uname = $res['uname'];
 			$chat_text = $res['chat_text'];
+			$resp_count = $res['resp_count'];
 
 			$ac_output[] = array(
 			'mid'	=>	$mid,
 			'uid'	=>	$uid,
 			'uname'	=>	$uname,
-			'chat_text' =>	$chat_text
+			'chat_text' =>	$chat_text,
+			'resp_count' =>	$resp_count
 			);
 		}
 		$this->set($ac_output,'active_convos');
@@ -355,10 +358,16 @@ EOF;
 			$this->set($init_notifications,'init_notifications');
 //END misc tasks - Including, getting max file id, spnning off process, etc
 		} else { 
+
+$search = $_GET['q'];
+if($search)
+	$search_sql =  "AND chat_text LIKE '%{$search}%'";
+
 $logout_feed = <<<EOF
 	SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 	JOIN special_chat as t3
 	ON t3.uid = t2.uid AND t2.uid NOT IN ( 63,75,175 )
+	{$search_sql}
 	ORDER BY t3.cid DESC LIMIT 10
 EOF;
 $data_all_logout_bits = $this->bit_generator($logout_feed,'logout_aggr');

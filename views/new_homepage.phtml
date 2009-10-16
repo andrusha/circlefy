@@ -159,6 +159,7 @@ window.addEvent('domready', function(){
 			<div id="tap-yours" class="section">
 				<div class="section-head">
 					<h1>
+						<span id="archived-taps">Archived Taps</span>
 						Your Last Tap
 					</h1>
 				</div>
@@ -173,7 +174,7 @@ window.addEvent('domready', function(){
 						</li>
 						<?php else: ?>
 						<li id="yid_<?= $last['cid'] ?>">
-							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" title="<?= $last['uname'] ?>" alt="<?= $last['uname'] ?>" />
+							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" title="<?= $last['uname'] ?>" alt="<?= $last['uname'] ?>" rel="<?= $last['uid'] ?>" />
 							<div class="tap-actions">
 								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
@@ -228,7 +229,7 @@ window.addEvent('domready', function(){
 								foreach($_t['groups_bits'] as $bit):
 						?>
 						<li id="tid_<?= $bit['cid'] ?>">
-							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
+							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
 							<div class="tap-actions">
 								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
@@ -308,18 +309,32 @@ window.addEvent('domready', function(){
 			</div>
 			<div class="tab-list">
 				<ul id="active-convos-list">
-					<?php if (!empty($_t['active_convos'])): ?>
-					<?php foreach ($_t['active_convos'] as $convo): ?>
+					<?php 
+						if (!empty($_t['active_convos'])):
+							$active_convos = array_reverse($_t['active_convos']);
+							foreach ($active_convos as $convo): 
+					?>
 					<li id="aid_<?= $convo['mid'] ?>" class="convo">
 						<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
-						<span style="font-size:10px"><?= stripslashes($convo['chat_text']) ?></span>
+						<span style="font-size:10px">
+						<?php
+							$chat_text = $convo['chat_text'];
+							echo stripslashes((strlen($chat_text) < 20) ? $chat_text : substr($chat_text, 0, 20) . '...');
+						?> 
+						(<span class="convo-count"><?= $convo['resp_count'] ?></span>)
+						</span>
+						<a href="#" class="remove-convo" title="Remove Conversation">&ndash;</a>
 					</li>
-					<?php endforeach; ?>
-					<?php else: ?>
-					<li>
+					<?php 
+							endforeach;
+						else: 
+					?>
+					<li class="no-convos">
 						<strong>No Active Conversations</strong>
 					</li>
-					<?php endif; ?>
+					<?php 
+						endif; 
+					?>
 				</ul>
 			</div>
 		</div>
@@ -330,7 +345,7 @@ window.addEvent('domready', function(){
 		<ul id="template-bit">
 			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
 			<li id="tid_<#: bit.cid #>">
-				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" />
+				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" rel="<#: bit.uid #>"  />
 				<div class="tap-actions">
 					<# if (bit.count) { #>
 					<a class="tap-respond" href="#">

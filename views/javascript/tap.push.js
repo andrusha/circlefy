@@ -35,40 +35,48 @@ Tap.Push = {
 		this.fireEvent('open');
 	},
 
-	onData: function(data){
-		data = JSON.decode(data);
-		this.fireEvent('data', data);
-		if (data.msgData == 'ping') return null;
-		var test = false;
-		try {
-			test = data.msgData.every(function(item){
-				return $type(item) === 'array';
-			});
-		} catch(e) {}
-		var parsed;
-		if (!test) {
-			parsed = {
-				cid: data.msgData[0],
-				msg: data.msgData[1],
-				user: data.msgData[2],
-				type: data.msgData[3]
-			};
-		} else {
-			parsed = {
-				data: data.msgData,
-				type: 'notification'
-			};
-		}
-		switch (parsed.type) {
-			case 'typing':
-				this.fireEvent('typing', [parsed.cid, parsed.user]);
-				break;
-			case 'response':
-				this.fireEvent('response', [parsed.cid, parsed.user, parsed.msg]);
-				break;
-			case 'notification':
-				this.fireEvent('notification', [parsed.data, 0]);
-				break;
+	onData: function(raw){
+		raw = raw.split('\n');
+		for (var x = raw.reverse().length; x--;){
+			data = raw[x];
+			data = JSON.decode(data);
+			if (!data) continue;
+			this.fireEvent('data', data);
+			if (data.msgData == 'ping') return null;
+			var test = false;
+			try {
+				test = data.msgData.every(function(item){
+					return $type(item) === 'array';
+				});
+			} catch(e) {}
+			var parsed;
+			if (!test) {
+				parsed = {
+					cid: data.msgData[0],
+					msg: data.msgData[1],
+					user: data.msgData[2],
+					type: data.msgData[3] || data.msgData[1]
+				};
+			} else {
+				parsed = {
+					data: data.msgData,
+					type: 'notification'
+				};
+			}
+			switch (parsed.type) {
+				case 'typing':
+					this.fireEvent('typing', [parsed.cid, parsed.user]);
+					break;
+				case 'response':
+					this.fireEvent('response', [parsed.cid, parsed.user, parsed.msg]);
+					break;
+				case 'convo':
+					this.fireEvent('convo', [parsed.cid, '']);
+					break;
+				case 'notification':
+					this.fireEvent('notification', [parsed.data, 0]);
+					break;
+			}
 		}
 	}
 

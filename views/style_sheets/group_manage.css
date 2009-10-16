@@ -268,13 +268,14 @@ body {
 		
 		#gr-list li {
 			margin-bottom: -1px;
-			height: 77px; width: 545px;
+			height: 80px; 
+			width: 545px;
 			color: #545454;
 			border: 1px solid #b4b4b4;
 			background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
 		#gr-list li.more-invite { 
 			height: 100px;
-			background:#F0F0F0; } 	
+			background:#F0F0F0; }
 		.invitees { width: 470px; } 
 			
 		.gr-image {

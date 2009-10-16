@@ -5,7 +5,7 @@
 session_start();
 require('../config.php');
 
-$mid = $_POST['remove_active'];
+$mid = $_POST['cid'];
 $uid = $_SESSION['uid'];
 
 if($mid){

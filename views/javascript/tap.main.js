@@ -69,6 +69,7 @@ Tap.Main = {
 				}
 			}).send();
 		}
+		mpmetrics.track('username-complete', {});
 		return this.removeError(el);
 	},
 

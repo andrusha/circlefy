@@ -7,9 +7,11 @@ require('../config.php');
 
 $response = stripslashes($_POST['response']);
 $cid = $_POST['cid'];
+$first = $_POST['first'];
+$init_tapper = $_POST['init_tapper'];
 
 	$chat_obj = new chat_functions();
-		$results = $chat_obj->send_response($response,$cid);
+		$results = $chat_obj->send_response($response,$cid,$init_tapper,$first);
 		echo $results;
 
 class chat_functions{
@@ -23,7 +25,7 @@ class chat_functions{
         }
 
 		
-	function send_response($msg,$cid){
+	function send_response($msg,$cid,$init_tapper,$first){
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
 
@@ -32,7 +34,7 @@ class chat_functions{
 			$response = str_replace('"','\"',$response);
 
 			$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'"}'."\r\n";
+			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'","init_tapper":"'.$init_tapper.'"}'."\r\n";
 			fwrite($fp,$insert_string);
 			fclose($fp);
 
@@ -42,6 +44,10 @@ class chat_functions{
 		
                 $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$cid}','{$uid}','{$uname}','{$msg}')";
                 $this->mysqli->query($resp_message_query);
+
+			$update_active = "UPDATE active_convo SET active = 1 WHERE mid ={$cid} AND uid={$init_tapper}";
+			$this->mysqli->query($update_active);
+
 		return json_encode(array('success' => 1));
 	}
 }
