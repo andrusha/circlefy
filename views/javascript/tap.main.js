@@ -35,9 +35,9 @@ Tap.Main = {
 			if (e.key == 'enter') self.searchFeed(this, e);
 		});
 		$('signup-title').setStyle('cursor', 'pointer').addEvent('click', function(){
-			if (!this.retrieve('ss')) {
+			if (!this.retrieve('metric')) {
 				mpmetrics.track('signup-image-click', {});
-				this.store('ss', true);
+				this.store('metric', true);
 			}
 			data.user.focus();
 		});
@@ -48,6 +48,10 @@ Tap.Main = {
 		var input = box.getElement('input.tap-response');
 		input.set('value', 'Sign in to join the conversation!');
 		box.setStyle('display', 'block');
+		if (!el.retrieve('metric')) {
+			mpmetrics.track('outside-response-box', {});
+			el.store('metric', true);
+		}
 	},
 
 	hideResponseBox: function(el){
@@ -94,6 +98,7 @@ Tap.Main = {
 				items.getElements('li').reverse().inject('main-stream', 'top');
 				Tap.ResponseBot.init();
 				self.changeDates();
+				if (keyword) mpmetrics.track('outside-search', {'keyword': keyword});
 			}
 		}).send();
 	},
