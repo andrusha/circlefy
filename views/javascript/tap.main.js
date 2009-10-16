@@ -29,7 +29,8 @@ Tap.Main = {
 		$(document.body).addEvents({
 			'click:relay(a.reset-feed)': this.clearSearch.bind(this),
 			'click:relay(a.tap-respond)': this.showResponseBox.toHandler(this),
-			'click:relay(a.tap-respond-cancel)': this.hideResponseBox.toHandler(this)
+			'click:relay(a.tap-respond-cancel)': this.hideResponseBox.toHandler(this),
+			'click:relay(li.trending)': function(){data.user.focus();}
 		});
 		$('search-public-keyword').addEvent('keypress', function(e){
 			if (e.key == 'enter') self.searchFeed(this, e);
