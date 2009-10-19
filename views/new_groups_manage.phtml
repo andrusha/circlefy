@@ -65,6 +65,7 @@ Tap.Groups = {
 			'click:relay(a.send-invite)': this.onInviteSend.toHandler(this),
 			'click:relay(a.send-join)': this.onJoinSend.toHandler(this),
 			'click:relay(a.gr-join-btn)': this.onJoin.toHandler(this),
+			'click:relay(a.leave-group)': this.onLeave.toHandler(this)
 		});
 
 		body.addEvents({
@@ -292,7 +293,7 @@ Tap.Groups = {
 
 	onMore: function(el){
 		var top = el.getParent('li');
-		var top_height = (top.getComputedStyle('height').replace('px', '') * 1);
+		var top_height = (top.getStyle('height').replace('px', '') * 1);
 		if (!top.retrieve('before')) top.store('before', top_height);
 		var desc = top.getElement('.description');
 
@@ -302,30 +303,50 @@ Tap.Groups = {
 			if (!adjust) {
 				var temp = new Element('div', {
 					styles: {
-						opacity: 0
+						opacity: 0,
+						overflow: 'auto',
+						fontSize: 30
 					}
-				}).adopt(desc.clone(), focus.clone()).inject(document.body);
-				adjust = (temp.getComputedStyle('height').replace('px', '') * 1);
-				adjust = (adjust > 300) ? 200 : adjust;
+				}).inject(document.body).adopt(desc.clone()).adopt(focus.clone());
+				temp.getElements('p').setStyles({'width': '260px', 'font-size': '16px'})
+				console.log(temp.getCoordinates().height);
+				adjust = (temp.getCoordinates().height * 1);
+				// adjust = (adjust > 100) ? 220 : adjust;
+				console.log(adjust);
 				top.store('adjust', adjust);
 				temp.destroy();
 			}
 			desc.slide('in');
-			// console.log(adjust + top_height);
 			top.morph({
-				height: adjust + top_height
+				height: top_height + adjust
 			});
 			el.store('out', true);
 			el.set('html', '&laquo; less');
 		} else {
 			top.morph({
-				height: [top.retrieve('adjust') + top.retrieve('before'), top.retrieve('before')]
+				height: [(top.retrieve('adjust') + top.retrieve('before')), top.retrieve('before')]
 			});
 			desc.slide('out');
 			el.set('html', 'more &raquo;');
 			el.store('out', false);
 		}
 
+	},
+	
+	onLeave: function(el){
+		var remove = confirm('Are you sure you want to leave this group?');
+		if (remove) {
+			var parent = el.getParent('li');
+			new Request({
+				url: 'AJAX/leave_group.php',
+				data: {
+					gid: parent.get('id').remove(/gr-id_/)
+				},
+				onSuccess: function(){
+					parent.destroy();
+				}
+			}).send();
+		}
 	},
 
 	onInvite: function(el){
@@ -510,6 +531,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							$descr = $group['descr'];
 							$count = $group['count'];
 							$last_chat = $group['last_chat'];
+							$last_user = $group['last_uname'];
 					?>
 						<li id="gr-id_<?= $gid ?>" class="listing">
 							<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
@@ -521,8 +543,9 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 									<strong class="gr-name"><?= $gname ?></strong>&nbsp;&nbsp;
 								</p>
 								<p class="gr-desc description">
+									<strong><a href="#" class="leave-group">Leave this Group</a></strong><br /><br />
 									<?= $descr ?><br /><br />
-									<strong>Latest Tap: </strong><?= stripslashes($last_chat) ?>
+									<strong>Latest Tap: <?= $last_user ?></strong>&mdash;<?= stripslashes($last_chat) ?>
 								</p>
 								<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 							</div>
@@ -596,7 +619,8 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 						<p class="status" style="display:none">Please wait..</p>
 						<img src="images/icons/accept.png" class="join-ok" alt="Joined" style="display:none" />
 						<# } else { #>
-						<img src="images/icons/accept.png" alt="Joined" />
+						<img src="images/icons/accept.png" alt="Joined" /><br/>Joined!
+						<!-- <img src="images/icons/accept.png" alt="Joined" /> -->
 						<# } #>
 					</div>
 				</li>

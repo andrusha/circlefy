@@ -300,7 +300,11 @@ body {
 			
 			.gr-desc {
 				margin-top: 5px;
-				font-size: 10px; }
+				font-size: 11px; }
+			
+				.gr-desc.focus {
+					margin-top: 5px;
+					font-size: 12px; }
 			
 			a.more-btn3 {
 				color: #545454;

@@ -23,7 +23,7 @@ class chat_functions{
 
 		
 	function load_response($msg,$cid){
-                $resp_message_query = "SELECT c.uname,c.chat_text,c.chat_time FROM chat AS c WHERE c.cid = {$cid}";
+                $resp_message_query = "SELECT c.uname,c.chat_text,UNIX_TIMESTAMP(c.chat_time) AS chat_time FROM chat AS c WHERE c.cid = {$cid}";
                 $responses_data = $this->mysqli->query($resp_message_query);
 		if($responses_data->num_rows){
 		while($res = $responses_data->fetch_assoc()){

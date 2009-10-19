@@ -211,7 +211,7 @@ window.addEvent('domready', function(){
 							<div class="tap-response-box clarity">
 								<ul class="tap-chat <?= empty($last['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:450px" alt="Respond to this tap." />
+								<input type="text" class="tap-response" style="width:360px" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -227,6 +227,7 @@ window.addEvent('domready', function(){
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
 						<span id="tap-feed-outside-drop"></span>
 						<span id="tap-feed-outside">Outside: Off</span>
+						<span id="taps-responded">Taps You've Responded To</span>
 						<span style="clear:right"></span>
 						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" style="float:left; margin-right:10px; height: 20px; width: 20px" />
 						<span id="tap-feed-name">Groups Feed</span>
@@ -266,7 +267,7 @@ window.addEvent('domready', function(){
 							<div class="tap-response-box clarity">
 								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:450px" alt="Respond to this tap." />
+								<input type="text" class="tap-response" style="width:360px" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -305,7 +306,7 @@ window.addEvent('domready', function(){
 					<?php foreach ($_t['your_groups'] as $group): ?>
 					<li id="gid_<?= $group['gid'] ?>" class="group">
 						<img src="/group_pics/<?= $group['pic_36']?>" />
-						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?>"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
+						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
 						<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
 					</li>
 					<?php endforeach; ?>
@@ -393,7 +394,7 @@ window.addEvent('domready', function(){
 					<ul class="tap-chat noresp">
 					<# } #>
 					</ul>
-					<input type="text" class="tap-response" style="width:450px" alt="Respond to this tap." />
+					<input type="text" class="tap-response" style="width:360px" alt="Respond to this tap." />
 					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 				</div>
 				<div class="clarity"></div>

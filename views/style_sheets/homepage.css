@@ -99,8 +99,16 @@ ul.tap-stream li {
 		background: #f1f1f1; }
 
 ul.tap-stream .tap-chat li {
-	border: none;
-	border-top:1px solid #D8D8D8; }
+/*	border: none;*/
+/*	border-top:1px solid #D8D8D8; }*/
+	border:  1px solid #65ABE9;
+	margin-right: 5px;
+	margin-bottom: 3px;
+}
+
+ul.tap-stream .tap-chat li span.time {
+	float: right;
+}
 
 ul.tap-stream li.noresults {
 	height: 80px;
@@ -174,7 +182,7 @@ ul.tap-stream .tap-info span {
 
 ul.tap-stream .tap-from {
 	font-weight: bold;
-	font-size: 13px;
+	font-size: 14px;
 	margin-right: 5px;
 }
 
@@ -256,9 +264,12 @@ span.counter {
 
 ul.tap-stream .tap-response-box {
 	padding: 5px;
-	background: #DFDFDF;
+/*	background: #DFDFDF;*/
 	margin-bottom:10px;
 	display: none;
+	background: #fff;
+	margin-left: 60px;
+	width: 450px;
 }
 
 #right-col {
@@ -500,7 +511,7 @@ li.convo:hover a.remove-convo {
 	display: inline;
 }
 
-#archived-taps {
+#archived-taps, #taps-responded {
 	float: right;
 	cursor: pointer;
 	background: #F5F5F5;
@@ -511,6 +522,14 @@ li.convo:hover a.remove-convo {
 	color: #000;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+}
+
+#taps-responded {
+	display: none;
+}
+
+#taps-responded.selected {
+	background: #B6D7F3;
 }
 
 a.add-tap-to {
@@ -525,6 +544,10 @@ a.add-tap-to {
 a.add-tap-to:hover {
 	color: green;
 	text-decoration: none;
+}
+
+.group {
+	cursor: pointer;
 }
 
 .group:hover a.add-tap-to {

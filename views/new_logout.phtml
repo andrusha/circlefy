@@ -46,10 +46,70 @@ pageTracker._trackPageview();
 	border-top: 1px solid #BBD0EE;
 	border-bottom: 1px solid #BBD0EE;
 }
+
+ul.pitch {
+	margin-bottom: 10px;
+	font-size: 16px;
+	list-style: square;
+	font-weight: bold;
+}
+
+ul.pitch li {
+	margin-bottom: 10px;
+	color: #007AE5;
+	margin-left: -3px;
+}
+
+#rotator {
+	border: 2px solid #7DB60B;
+	height: 215px;
+	background: url(/images/cimages/demo/1.PNG) no-repeat center center;
+}
+
+#rotator-text {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 5px;
+	background: #ccc;
+	opacity: .8;
+}
+
+#rotator-icon {
+	background: url(/images/cimages/demo/4.PNG) no-repeat;
+	height: 74px;
+	width: 55px;
+	position: absolute;
+	right: 2px;
+	top: 2px;
+}
 </style>
 <script type="text/javascript">
 window.addEvent('load', function(){
 	mpmetrics.track('main-view', {});
+});
+
+window.addEvent('domready', function(){
+var rotates = $H({
+	'#1 — Join groups, schools and companies related to your life.': '/images/cimages/demo/1.PNG',
+	'#2 — Send messages to those groups, and search for others to target too!': '/images/cimages/demo/2.PNG',
+	'#3 — Discuss whatever you\'ve said with the group in real-time, like chat!': '/images/cimages/demo/3.PNG'
+});
+var current = 1;
+function rotate(){
+	var text = rotates.getKeys();
+	var images = rotates.getValues();
+	$('rotator').set('tween', {
+		onComplete: function(){
+			
+		}
+	}).setStyle('background-image', 'url(' + images[current] + ')');
+	$('rotator-text').set('text', text[current]);
+	current = (current == 2) ? 0 : current + 1;
+	arguments.callee.delay(7000);
+};
+rotate.delay(7000);
 });
 </script>
 
@@ -77,13 +137,19 @@ window.addEvent('load', function(){
 					<input type="submit" id="signin-submit" value="Sign In" />
 				</form>
 			</div>
-			<div id="groups-tab" style="background-image:url(/images/cimages/tab_grey.gif);">
-				<div class="tab-in" style="color:#fff;">What's This?</div>
+			<!--
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff;">What's Tap?</div>
 			</div>
 			<div class="tab-list">
-				<p style="font-size:16px"><strong>Tap allows you to connect with people around you and stay informed about topics you're interested in.</strong>  <!-- Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today! --></p>
+				<ul class="pitch">
+					<li>&bull; Real-time discussions.</li>
+					<li>&bull; Join groups you're interested in.</li>
+					<li>&bull; Keep informed about the latest happenings.</li>
+					<li>&bull; Stay connected about anything and everything</li>
+				</ul>
+				<p style="font-size:12px"><strong>Tap allows you to connect with people around you and stay informed about topics you're interested in.</strong></p>
 			</div>
-			<!--
 			<div id="groups-tab">
 				<div class="tab-in" style="color:#fff">Trending Groups</div>
 			</div>
@@ -100,7 +166,7 @@ window.addEvent('load', function(){
 		</div>
 
 		<div id="center-col">
-
+			
 			<?php if (!empty($_t['errors'])): ?>
 			<div class="section error">
 				<?= $_t['errors'] ?>
@@ -113,6 +179,11 @@ window.addEvent('load', function(){
 			</div>
 			<?php endif; ?>
 			
+			<div id="rotator" class="section">
+				<div id="rotator-icon"></div>
+				<div id="rotator-text">#1 — Join groups, schools and companies related to your life.</div>
+			</div>
+
 			<div id="search-public" class="section">
 				<span class="spiel">Go on, search for something!</span>
 				<input type="text" id="search-public-keyword" />

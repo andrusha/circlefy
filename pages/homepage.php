@@ -193,10 +193,12 @@ EOF;
 	
 		//START group setting creation
 		$group_list_query = <<<EOF
-                        SELECT t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.gname,t1.gid
+			SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.gname,t1.gid
 			FROM group_members AS t1
-                        JOIN groups AS t2 ON t2.gid=t1.gid
-                        WHERE t1.uid={$uid};
+			JOIN groups AS t2 ON t2.gid=t1.gid
+			JOIN special_chat_meta AS scm ON scm.gid=t1.gid
+			WHERE t1.uid={$uid}
+			GROUP BY scm.gid
 EOF;
 
                 $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
@@ -209,6 +211,7 @@ EOF;
 			$symbol = $res['symbol'];
 			$connected = $res['connected'];
 			$tapd = $res['tapd'];
+			$message_count = $res['message_count'];
 
 			//Process
 			$symbol = explode('.',$symbol);
@@ -224,7 +227,8 @@ EOF;
 				'symbol' => $symbol,
 				'display_symbol' => $display_symbol,
 				'type' => $connected,
-				'tapd' => $tapd
+				'tapd' => $tapd,
+				'message_count' => $message_count
 			);
 		}
                 $this->set($my_groups_array,'your_groups');	

@@ -38,11 +38,12 @@ Types:
 $type = $_POST['type'];
 $search = $_POST['search'];
 $outside = $_POST['outside'];
+$flag = $_POST['flag'];
 $id = $_POST['id'];
 
 if(isset($type)){
    	$filter_function = new filter_functions();
-        $json = $filter_function->filter($type,$search,$outside,$o_filter,$id);
+        $json = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag);
         echo $json;
 }
 
@@ -57,7 +58,7 @@ class filter_functions{
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
-	function filter($type,$search,$outside,$o_filter,$id){
+	function filter($type,$search,$outside,$o_filter,$id,$flag){
 		if(!$outside)
 			$outside="0,2";
 
@@ -73,7 +74,7 @@ class filter_functions{
 		if($type == 100)
 			$mysql_obj = $this->public_filter($search);
 		if($type == 99)
-			$mysql_obj = $this->personal_filter($search);
+			$mysql_obj = $this->personal_filter($search,$flag);
 		if($type == 1)
 			$mysql_obj = $this->ind_group_filter($id,$outside,$search,$o_filter);
 		if($type == 2)
@@ -89,19 +90,31 @@ class filter_functions{
 		return json_encode(array('results' => True,'data'=> $data ));
 	}
 
-	private function personal_filter($search){
+	private function personal_filter($search,$responses){
 		$uid = $_SESSION['uid'];
 		if($search)
 			$search_sql =  "AND chat_text LIKE '%{$search}%'";
 
-		$public_bits_query = <<<EOF
+		$personal_bits_query = <<<EOF
 		SELECT mid FROM special_chat
 		WHERE uid = {$uid}
 		{$search_sql}
 		ORDER BY cid DESC
 		LIMIT 20
 EOF;
-		$mysql_obj = $this->mysqli->query($public_bits_query);
+
+		if($responses)
+		$personal_bits_query = <<<EOF
+		SELECT sc.mid FROM 
+			( SELECT cid FROM chat WHERE uid = {$uid} ) AS oc
+		JOIN special_chat AS sc ON  sc.cid = oc.cid OR uid = {$uid}
+		{$search_sql}
+		GROUP BY sc.mid
+		ORDER BY sc.mid DESC
+		LIMIT 10;
+EOF;
+
+		$mysql_obj = $this->mysqli->query($personal_bits_query);
 		return $mysql_obj;
 	}
 

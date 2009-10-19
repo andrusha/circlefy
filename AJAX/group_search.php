@@ -114,6 +114,7 @@ EOF;
                                 'descr' => $descr,
 				'domain' => $domain,
 				'official' => $official,
+				'last_chat' => null,
 				'last_chat'=> null,
 				'count'=> 0
 			);
@@ -122,7 +123,7 @@ EOF;
 			$gid_list = substr($gid_list,0,-1);
 
                         $group_message_count = <<<EOF
-			SELECT COUNT(scm.gid) AS count,scm.gid,sc.chat_text AS last_chat FROM
+			SELECT COUNT(scm.gid) AS count,scm.gid,sc.chat_text AS last_chat,"Taso" AS last_uname FROM
 			( 
 				SELECT MAX(mid) as mid,gid FROM special_chat_meta AS iscm WHERE gid IN ( {$gid_list} )
 				GROUP BY gid
@@ -140,9 +141,11 @@ EOF;
                                 $count = $res['count'];
                                 $gid = $res['gid'];
 				$last_chat = $res['last_chat'];
+				$last_uname = $res['last_uname'];
 
                                 $groups[$gid]['count'] = $count;
 				$groups[$gid]['last_chat'] = $last_chat;
+				$groups[$gid]['last_uname'] = $last_uname;
                         }	
 
 		//If groups were found send them back, else send back no results
