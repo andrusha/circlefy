@@ -67,6 +67,7 @@ ul.pitch li {
 }
 
 #rotator-text {
+	font-size: 14px;
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -74,6 +75,11 @@ ul.pitch li {
 	padding: 5px;
 	background: #ccc;
 	opacity: .8;
+}
+
+#rotator-text strong {
+/*	font-weight: normal;*/
+	color: #537907;
 }
 
 #rotator-icon {
@@ -92,20 +98,28 @@ window.addEvent('load', function(){
 
 window.addEvent('domready', function(){
 var rotates = $H({
-	'#1 — Join groups, schools and companies related to your life.': '/images/cimages/demo/1.PNG',
-	'#2 — Send messages to those groups, and search for others to target too!': '/images/cimages/demo/2.PNG',
-	'#3 — Discuss whatever you\'ve said with the group in real-time, like chat!': '/images/cimages/demo/3.PNG'
+	'/images/cimages/demo/1.PNG': '<strong>#1 — Join groups, schools and companies related to your life.</strong><br/> \
+	#2 — Send messages to those groups, and search for others to target too!<br/> \
+	#3 — Discuss whatever you\'ve said with the group in real-time, like chat!',
+
+	'/images/cimages/demo/2.PNG': '#1 — Join groups, schools and companies related to your life.<br/> \
+	<strong>#2 — Send messages to those groups, and search for others to target too!</strong><br/> \
+	#3 — Discuss whatever you\'ve said with the group in real-time, like chat!',
+
+	'/images/cimages/demo/3.PNG': '#1 — Join groups, schools and companies related to your life.<br/> \
+	#2 — Send messages to those groups, and search for others to target too!<br/> \
+	<strong>#3 — Discuss whatever you\'ve said with the group in real-time, like chat!</strong>'
 });
 var current = 1;
 function rotate(){
-	var text = rotates.getKeys();
-	var images = rotates.getValues();
+	var images = rotates.getKeys();
+	var text = rotates.getValues();
 	$('rotator').set('tween', {
 		onComplete: function(){
-			
+
 		}
 	}).setStyle('background-image', 'url(' + images[current] + ')');
-	$('rotator-text').set('text', text[current]);
+	$('rotator-text').set('html', text[current]);
 	current = (current == 2) ? 0 : current + 1;
 	arguments.callee.delay(7000);
 };
@@ -166,22 +180,26 @@ rotate.delay(7000);
 		</div>
 
 		<div id="center-col">
-			
+
 			<?php if (!empty($_t['errors'])): ?>
 			<div class="section error">
 				<?= $_t['errors'] ?>
 			</div>
 			<?php endif; ?>
-			
+
 			<?php if ($_GET['q'] == 'swineflu'): ?>
 			<div class="section info" style="text-align:center; font-size: 14px">
 				Join the SwineFlu Conversation!
 			</div>
 			<?php endif; ?>
-			
+
 			<div id="rotator" class="section">
 				<div id="rotator-icon"></div>
-				<div id="rotator-text">#1 — Join groups, schools and companies related to your life.</div>
+				<div id="rotator-text">
+					<strong>#1 — Join groups, schools and companies related to your life.</strong><br/>
+					#2 — Send messages to those groups, and search for others to target too!<br/>
+					#3 — Discuss whatever you've said with the group in real-time, like chat!
+				</div>
 			</div>
 
 			<div id="search-public" class="section">
@@ -378,7 +396,7 @@ rotate.delay(7000);
 	<div id="footer">
 
 	</div>
-	
+
 	<div id="templates" style="display:none">
 		<ul id="template-bit">
 			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
