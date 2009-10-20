@@ -43,7 +43,7 @@ class homepage extends Base{
 					break;
 					
 				case 'fraud':
-					$this->set("<font color='red'>Warning! You are trying to use a expired account session!</font>",'errors');
+				//	$this->set("<font color='red'>Warning! You are trying to use a expired account session!</font>",'errors');
 					break;
 			}
 		}
