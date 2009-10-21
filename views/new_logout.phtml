@@ -61,9 +61,8 @@ ul.pitch li {
 }
 
 #rotator {
-	border: 2px solid #7DB60B;
-	height: 215px;
-	background: url(/images/cimages/demo/1.PNG) no-repeat center center;
+	height: 257px;
+	background: url(/images/cimages/demo/tap123-1.gif) no-repeat center center;
 }
 
 #rotator-text {
@@ -98,15 +97,15 @@ window.addEvent('load', function(){
 
 window.addEvent('domready', function(){
 var rotates = $H({
-	'/images/cimages/demo/1.PNG': '<strong>#1 — Join groups, schools and companies related to your life.</strong><br/> \
+	'/images/cimages/demo/tap123-1.gif': '<strong>#1 — Join groups, schools and companies related to your life.</strong><br/> \
 	#2 — Send messages to those groups, and search for others to target too!<br/> \
 	#3 — Discuss whatever you\'ve said with the group in real-time, like chat!',
 
-	'/images/cimages/demo/2.PNG': '#1 — Join groups, schools and companies related to your life.<br/> \
+	'/images/cimages/demo/tap123-2.gif': '#1 — Join groups, schools and companies related to your life.<br/> \
 	<strong>#2 — Send messages to those groups, and search for others to target too!</strong><br/> \
 	#3 — Discuss whatever you\'ve said with the group in real-time, like chat!',
 
-	'/images/cimages/demo/3.PNG': '#1 — Join groups, schools and companies related to your life.<br/> \
+	'/images/cimages/demo/tap123-3.gif': '#1 — Join groups, schools and companies related to your life.<br/> \
 	#2 — Send messages to those groups, and search for others to target too!<br/> \
 	<strong>#3 — Discuss whatever you\'ve said with the group in real-time, like chat!</strong>'
 });
@@ -114,12 +113,8 @@ var current = 1;
 function rotate(){
 	var images = rotates.getKeys();
 	var text = rotates.getValues();
-	$('rotator').set('tween', {
-		onComplete: function(){
-
-		}
-	}).setStyle('background-image', 'url(' + images[current] + ')');
-	$('rotator-text').set('html', text[current]);
+	$('rotator').setStyle('background-image', 'url(' + images[current] + ')');
+	// $('rotator-text').set('html', text[current]);
 	current = (current == 2) ? 0 : current + 1;
 	arguments.callee.delay(7000);
 };
@@ -194,24 +189,26 @@ rotate.delay(7000);
 			<?php endif; ?>
 
 			<div id="rotator" class="section">
-				<!--<div id="rotator-icon"></div>-->
-				<div id="rotator-text">
-					<strong>#1 — Join groups, schools and companies related to your life.</strong><br/>
-					#2 — Send messages to those groups, and search for others to target too!<br/>
-					#3 — Discuss whatever you've said with the group in real-time, like chat!
-				</div>
+				
 			</div>
-
+			
+			<!-- 			<div id="rotator-icon"></div>
+						<div id="rotator-text">
+							<strong>#1 — Join groups, schools and companies related to your life.</strong><br/>
+							#2 — Send messages to those groups, and search for others to target too!<br/>
+							#3 — Discuss whatever you've said with the group in real-time, like chat!
+						</div>
 			<div id="search-public" class="section">
 				<span class="spiel">Go on, search for something!</span>
 				<input type="text" id="search-public-keyword" />
-				<!-- <span id="search-public-submit"></span> -->
 				<input id="search-public-submit" type="submit" value="Search" />
 			</div>
+						 -->
 
 			<div id="tap-feed" class="section">
 				<div class="section-head">
 					<h1>
+						<input type="text" id="tap-feed-search" alt="Search through feed." />
 						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" style="float:left; margin-right:10px; height: 20px; width: 20px" />
 						<span id="tap-feed-name">Look Who's Tapping!</span>
 						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
