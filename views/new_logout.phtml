@@ -289,11 +289,13 @@ rotate.delay(7000);
 					<label>Password</label>
 						<input type="password" name="pass" class="text"/>
 						<div class="guide"></div>
+					<!--
 					<label>Retype Password</label>
 						<input type="password" name="passrepeat" class="text"/>
 						<div class="guide"></div>
-					<label>Primary Language</label>
-						<select name="language" class="text">
+					-->
+					<label style="display:none">Primary Language</label>
+						<select name="language" class="text" style="display:none">
 							<option value="English">English</option>
 							<option value="Afrikaans">Afrikaans</option>
 							<option value="Albanian">Albanian</option>
@@ -388,7 +390,7 @@ rotate.delay(7000);
 							<option value="Yoruba">Yoruba</option>
 							<option value="Zulu">Zulu</option>
 						</select>
-						<div class="guide"></div>
+						<div class="guide" style="display:none"></div>
 					<input type="submit" id="signup-submit" value="Sign me up!" />
 					<div id="signup-guide">Signing you up..</div>
 				</form>

@@ -14,14 +14,14 @@ Tap.Main = {
 			name: signUp.getElement('input[name="name"]'),
 			email: signUp.getElement('input[name="email"]'),
 			pass: signUp.getElement('input[name="pass"]'),
-			passrepeat: signUp.getElement('input[name="passrepeat"]'),
+			// passrepeat: signUp.getElement('input[name="passrepeat"]'),
 			lang: signUp.getElement('select[name="language"]').store('passed', true)
 		};
 		data.user.addEvent('blur', this.checkUser.toHandler(this));
 		data.name.addEvent('blur', this.checkName.toHandler(this));
 		data.email.addEvent('blur', this.checkEmail.toHandler(this));
 		data.pass.addEvent('blur', this.checkPass.toHandler(this));
-		data.passrepeat.addEvent('blur', this.checkPassRepeat.toHandler(this));
+		// data.passrepeat.addEvent('blur', this.checkPassRepeat.toHandler(this));
 		// $('signup-submit').addEvent('click', this.onSignup.toHandler(this));
 		signUp.addEvent('submit', this.onSignup.toHandler(this));
 
@@ -206,6 +206,7 @@ Tap.Main = {
 		if (el.isEmpty() || !el.ofLength(6, 20)) {
 			return this.showError(el, 'Password must be at least 6 characters.');
 		}
+		mpmetrics.track('password-complete', {});
 		return this.removeError(el);
 	},
 
@@ -216,7 +217,6 @@ Tap.Main = {
 		} else if (el.get('value') !== data.pass.get('value')) {
 			return this.showError(el, 'Your passwords don\'t match.');
 		}
-		mpmetrics.track('password-complete', {});
 		return this.removeError(el);
 	},
 

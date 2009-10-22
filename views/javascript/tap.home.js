@@ -104,6 +104,7 @@ Tap.Home = {
 		body.addEvents({
 			'click:relay(li.group a)': function(e){
 				e.preventDefault();
+				if (e.loadNot) return false;
 				this.removeClass('unread');
 				groupList.each(function(item){
 					if (!item.hasClass('unread')) item.setStyle('background-color', '#F2F2F2');
@@ -1116,7 +1117,8 @@ Tap.Home = {
 						})(),
 						stop: $empty,
 						preventDefault: $empty,
-						stopPropagation: $empty
+						stopPropagation: $empty,
+						loadNot: true
 					});
 				}
 			}
