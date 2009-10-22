@@ -135,13 +135,19 @@ window.addEvent('domready', function(){
 			</div>
 			-->
 			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">Trending Groups</div>
+				<div class="tab-in" style="color:#fff">Popular Groups</div>
 			</div>
 			<div class="tab-list">
 				<ul>
 					<?php foreach($_t['trending_groups'] as $trending): ?>
 						<li class="list-item" style="height:30px">
-							<p style="height: 14px;"><a href="/groups?search=<?= $trending['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" /><strong><?= $trending['gname'] ?></strong> (<?= $trending['count'] ?>)</a></p>
+							<p style="height: 14px;"><a href="/groups?search=<?= $trending['gname'] ?>" class="suggestion-item" title="<?= $trending['gname'] ?>"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" />
+								<strong>
+									<?php
+										$gname = $trending['gname'];
+										echo stripslashes((strlen($gname) < 10) ? $gname : substr($gname, 0, 10) . '...');
+									?>
+								</strong> (<?= $trending['count'] ?>)</a></p>
 						</li>
 						<!--
 						<li id="gid_<?= $trending['gid'] ?>" class="group trending">
@@ -188,6 +194,11 @@ window.addEvent('domready', function(){
 						<li id="yid_<?= $last['cid'] ?>">
 							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" title="<?= $last['uname'] ?>" alt="<?= $last['uname'] ?>" rel="<?= $last['uid'] ?>" />
 							<div class="tap-actions">
+								<span class="tap-views">Viewers: 
+									<strong>
+									<?= (!empty($last['viewer_count'])) ? $last['viewer_count'] : '0' ?>
+									</strong>
+								</span>
 								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
 								</a>
@@ -225,7 +236,7 @@ window.addEvent('domready', function(){
 				<div class="section-head">
 					<h1>
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
-						<span id="tap-feed-outside-drop"></span>
+						<!-- <span id="tap-feed-outside-drop"></span> -->
 						<span id="tap-feed-outside">Outside: Off</span>
 						<span id="taps-responded">Taps You've Responded To</span>
 						<span style="clear:right"></span>
@@ -244,6 +255,11 @@ window.addEvent('domready', function(){
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
 							<div class="tap-actions">
+								<span class="tap-views">Viewers: 
+									<strong>
+									<?= (!empty($bit['viewer_count'])) ? $bit['viewer_count'] : '0' ?>
+									</strong>
+								</span>
 								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
 								</a>
@@ -359,6 +375,9 @@ window.addEvent('domready', function(){
 			<li id="tid_<#: bit.cid #>">
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" rel="<#: bit.uid #>"  />
 				<div class="tap-actions">
+					<span class="tap-views">Viewers: 
+						<strong><#: bit.viewer_count || 0 #></strong>
+					</span>
 					<# if (bit.count) { #>
 					<a class="tap-respond" href="#">
 					<# } else { #>

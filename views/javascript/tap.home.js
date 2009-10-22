@@ -103,6 +103,7 @@ Tap.Home = {
 		var convoList = body.getElements('li.convo');
 		body.addEvents({
 			'click:relay(li.group a)': function(e){
+				e.preventDefault();
 				this.removeClass('unread');
 				groupList.each(function(item){
 					if (!item.hasClass('unread')) item.setStyle('background-color', '#F2F2F2');
@@ -218,7 +219,9 @@ Tap.Home = {
 			'typing': this.typingIndicator.bind(this),
 			'response': this.parseResponse.bind(this),
 			'notification': this.processPushed.bind(this),
-			'convo': this.handleConvo.bind(this)
+			'convo': this.handleConvo.bind(this),
+			'viewAdd': this.addViews.bind(this),
+			'viewRemove': this.removeViews.bind(this)
 		});
 
 		/*
@@ -250,6 +253,29 @@ Tap.Home = {
 		})[type]).innerHTML.cleanup();
 		if (!this.templater) this.templater = new Template();
 		return this.templater.parse(template, data);
+	},
+	
+	// VIEWS
+	
+	addViews: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
+			els.each(function(item){
+				item.set('text', (item.get('text') * 1) + 1);
+			});
+		}
+	},
+	
+	removeViews: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
+			els.each(function(item){
+				var count = (item.get('text') * 1);
+				if (count > 0) item.set('text', count - 1);
+			});
+		}
 	},
 
 	// RESPONSES
@@ -658,7 +684,7 @@ Tap.Home = {
 				$('tap-feed-name').set('text', 'Convo: ' + parent.getElement('strong').get('text'));
 				$('tap-feed-icon').set('src', '/group_pics/36wh_default_group.gif');
 				$('tap-notify').slide('hide');
-				$$('#tap-feed-search, #tap-feed-outside-drop, \
+				$$('#tap-feed-search, \
 					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'none');
 				$('taps-responded').setStyle('display', 'none');
 			}
@@ -706,7 +732,7 @@ Tap.Home = {
 				$('tap-feed-name').set('text', 'Your Archived Taps');
 				$('tap-feed-icon').set('src', '/group_pics/36wh_default_group.gif');
 				$('tap-notify').slide('hide');
-				$$('#tap-feed-search, #tap-feed-outside-drop, \
+				$$('#tap-feed-search, \
 					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'none');
 				$('taps-responded').setStyle('display', 'block');
 			}
@@ -923,7 +949,7 @@ Tap.Home = {
 				items.getElements('li').reverse().inject('main-stream', 'top');
 				self.changeDates();
 				$('tap-notify').slide('hide');
-				$$('#tap-feed-search, #tap-feed-outside-drop, \
+				$$('#tap-feed-search, \
 					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'block');
 				$('taps-responded').setStyle('display', 'none');
 

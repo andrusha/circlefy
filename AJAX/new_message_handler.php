@@ -101,6 +101,9 @@ class chat_functions{
 		$last_id = $last_id->fetch_assoc();
 		$last_id = $last_id['last_id'];
 
+		$create_tap_online_query = "INSERT INTO TAP_ONLINE(cid) values('{$last_id}');";
+		$this->mysqli->query($create_tap_online_query);
+
 		$init_message_query = "INSERT INTO special_chat(cid,uid,uname,chat_text,ip) values('{$last_id}','{$uid}','{$uname}','{$msg}',INET_ATON('{$addr}'))";
 		$this->mysqli->query($init_message_query);
 		$last_id2 = $this->mysqli->query($this->last_id);

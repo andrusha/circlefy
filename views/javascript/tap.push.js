@@ -7,12 +7,16 @@ Tap.Push = {
 		var socket = this.socket = new Orbited.TCPSocket();
 		socket.onopen = this.onOpen.bind(this);
 		socket.onread = this.onData.bind(this);
-		socket.open('localhost', 2222);
-		this.connect.delay(3000, this);
-
+		socket.onclose = this.connect.bind(this);
+		this.connect();
+	},
+	
+	connect: function(){
+		this.socket.open('localhost', 2222);
+		this.onConnect.delay(3000, this);
 	},
 
-	connect: function(){
+	onConnect: function(){
 		this.send({
 			uid: Tap.Vars.pcid,
 			uname: Tap.Vars.uname
@@ -36,12 +40,12 @@ Tap.Push = {
 	},
 
 	onData: function(raw){
-		console.log(raw);
 		raw = raw.split('\n');
 		for (var x = raw.reverse().length; x--;){
 			data = raw[x];
 			data = JSON.decode(data);
 			if (!data) continue;
+			var parsed;
 			this.fireEvent('data', data);
 			if (data.msgData == 'ping') return null;
 			var test = false;
@@ -50,14 +54,20 @@ Tap.Push = {
 					return $type(item) === 'array';
 				});
 			} catch(e) {}
-			var parsed;
 			if (!test) {
-				parsed = {
-					cid: data.msgData[0],
-					msg: data.msgData[1],
-					user: data.msgData[2],
-					type: data.msgData[3] || data.msgData[1] || ''
-				};
+				if (data.msgData.add_cound || data.msgData.minus_count) {
+					parsed = {
+						type: (data.msgData.add_cound) ? 'view_add' : 'view_minus',
+						data: (data.msgData.add_cound || data.msgData.minus_count).split(',')
+					};
+				} else {
+					parsed = {
+						cid: data.msgData[0],
+						msg: data.msgData[1],
+						user: data.msgData[2],
+						type: data.msgData[3] || data.msgData[1] || ''
+					};
+				}
 			} else {
 				parsed = {
 					data: data.msgData,
@@ -73,6 +83,12 @@ Tap.Push = {
 					break;
 				case 'convo':
 					this.fireEvent('convo', [parsed.cid, '']);
+					break;
+				case 'view_add':
+					this.fireEvent('viewAdd', [parsed.data, 0]);
+					break;
+				case 'view_minus':
+					this.fireEvent('viewRemove', [parsed.data, 0]);
 					break;
 				case 'notification':
 					this.fireEvent('notification', [parsed.data, 0]);

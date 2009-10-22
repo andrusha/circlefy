@@ -4,6 +4,7 @@ import time
 import sys
 import random
 import fcntl
+import MySQLdb
 import memcache
 import simplejson as json
 #
@@ -243,8 +244,21 @@ class UserServer(object):
     def __init__(self, root):
         self.users = {}
 	self.usernames = {}
+	self.instance_cids = {}
 	self.channels = {}
+	self.g_channel_map = {}
         self.root = root
+
+	self.mysql_conn = False
+	self.mysql_cursor = False
+
+	try:
+		self.mysql_conn = MySQLdb.connect (host = "localhost",user = "root",passwd = "root",db = "rewrite2")
+	except MySQLdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit (1)
+	self.mysql_cursor = self.mysql_conn.cursor (MySQLdb.cursors.DictCursor)
+
 
     def __call__(self):
         server = api.tcp_listener(('0.0.0.0', 2222))
@@ -278,11 +292,11 @@ class UserConnection(object):
 	    if  len(self.server.users[self.uid]) is not 1:
 		self.server.users[self.uid].remove(self)
 	    else:
+	    	print "DISCONNECTING...."
+	    	self.remove_cids([])
 	        del self.server.users[self.uid]
-                for channel in self.channel_map:
-                        self.server.channels[channel].remove(self.uid)
-                        if not len(self.server.channels[channel]):
-                                del self.server.channels[channel]
+		del self.server.g_channel_map[self.uid]
+	        print "DONE."
 
             # TODO: on disconnect
             # ...
@@ -298,6 +312,25 @@ class UserConnection(object):
 		continue
 
             self.receivedFrame(frame)
+
+    def minusCount(self,cid_list):
+	if not cid_list:
+		print "FAIL"
+		return None
+	minus_query = "UPDATE TAP_ONLINE SET count = case when count - 1 < 0 then 0 else count - 1 end  WHERE cid IN ( %s )" % (cid_list)
+	print minus_query
+	self.server.mysql_cursor.execute( minus_query )
+	self.server.mysql_conn.commit()
+
+    def addCount(self,cid_list):
+	if not cid_list:
+		print "FAIL"
+		return None
+	add_query = "UPDATE TAP_ONLINE SET count = count + 1 WHERE cid IN ( %s )" % (cid_list)
+	print add_query
+	self.server.mysql_cursor.execute( add_query )
+	self.server.mysql_conn.commit()
+
 
     def receivedFrame(self, frame):
         if self.state == "init":
@@ -316,34 +349,108 @@ class UserConnection(object):
 	if self.state == "connected":
             if frame.has_key('cids'):
                 #NEEDS CHANGE - One catch here is that all User Interfaces might need different cids, this could waste bw
+		
+		channel_list = frame['cids'].split(',')
+		
+                channel_list = self.make_unique(channel_list)
+		channel_list_cmp = channel_list.keys()
 
-		print "Befre list: %s" % ( self.server.channels ) 
-                if self.channel_map != [] and type(self.channel_map) == list:
-                        for channel in self.channel_map:
-				try:
-					self.server.channels[channel].remove(self.uid)
-					if not self.server.channels[channel]:
-						del self.server.channels[channel]
-				except KeyError:
-					print "Key %s ERROR" % (channel)
-					print "Original Map: %s" % (self.channel_map)
-					print "New Map Map: %s" % (frame['cids'])
-					continue
+                if self.server.g_channel_map.has_key(self.uid):
+			self.remove_cids(channel_list_cmp)
+		else:
+			self.server.g_channel_map.setdefault(self.uid,channel_list.keys())
+			channel_diff_map = channel_list_cmp
 
-                channel_list = frame['cids']
-                seq = channel_list.split(',')
+
+		#Add per instance relationship of cids
+#		uid_exists = self.server.instance_cids.setdefault(self.uid,{self:channel_list.keys()})
+#		uid_exists.add({self:channel_list.keys()})
+
+		channel_map_new = []
+		uid_list_add = set()
+		if channel_list_cmp:
+			for channel in channel_list_cmp:
+				update=0
+				if self.server.channels.has_key(channel):
+					if not self.server.channels[channel].__contains__(self.uid):
+						self.server.channels[channel].add(self.uid)
+						update = 1
+				else:
+					self.server.channels.setdefault(channel,set([self.uid]))
+					update = 1
+				
+				#if there was an update, make list of users who +1 update
+				if update:
+					channel_map_new.append(channel)
+					for uid in self.server.channels[channel]:
+						for uniq_conn in self.server.root.user_server.users[uid]:
+								uid_list_add.add(uniq_conn)
+					#channel_map_new is the SQL compliant list
+		else:
+			channel_map_new = []
+
+
+
+		if channel_map_new != []:
+			channel_map_string = self.join_string(channel_map_new)
+			for uniq_conn in uid_list_add:
+				uniq_conn.send_message({"add_cound":channel_map_string})
+			self.addCount(channel_map_string)
+
+    def remove_cids(self,channel_list_cmp):
+		uid_list_minus = set()
+		update = 0
+		channel_diff_map = set(self.server.g_channel_map[self.uid]) - set(channel_list_cmp)
+		print 1
+		for channel in channel_diff_map:
+			#Create a list of connection sessions to notify a tap is -1
+			print 1
+			for uid in self.server.root.user_server.channels[channel]:
+				for uniq_conn in self.server.users[uid]:
+						uid_list_minus.add(uniq_conn)
+			print 1
+			try:
+				#For each channel, remove the current user
+				print "TRYING"
+				self.server.channels[channel].remove(self.uid)
+				if not self.server.channels[channel]:
+					del self.server.channels[channel]
+			except KeyError:
+				print "Key %s ERROR" % (channel)
+				print "Original Map: %s" % (self.server.g_channel_map)
+				print "New Map Map: %s" % (frame['cids'])
+				continue
+			update = 1
+		print 1
+		if update:
+			#Create SQL compliant string to -1 the tap in the database
+			channel_map_string = self.join_string(channel_diff_map)
+			#For each connection, notify
+			for uniq_conn in uid_list_minus:
+				uniq_conn.send_message({"minus_count":channel_map_string})
+			#Execute -1 SQL
+			self.minusCount(channel_map_string)
+			self.server.g_channel_map[self.uid] = channel_list_cmp
+
+    def make_unique(self,seq):
 		#Make Unique list
 		k={}
 		for e in seq:
 			k[e] = 1
-                self.channel_map = k.keys()
-                for channel in self.channel_map:
-                        channel_exist = self.server.channels.setdefault(channel,set([self.uid]))
-                        channel_exist.add(self.uid)
-		print "After list: %s" % ( self.server.channels ) 
+		return k
+
+    def join_string(self,list):
+	channel_map_string=''
+	for channel in list:
+		channel_map_string += "%s," % channel
+	channel_map_string = channel_map_string[0:-1]
+	return channel_map_string
 
     def send_message(self, data):
-        self.conn.send(json.dumps({'msgData': data }) + '\r\n')
+	try:
+	        self.conn.send(json.dumps({'msgData': data }) + '\r\n')
+	except:
+		pass
 
 
 #START of Admin Server
@@ -399,7 +506,8 @@ class AdminConnection(object):
 	if msg_data:
 		try:
 			results = {
-			'online?' :  "%s users online" % ( len(self.server.root.user_server.users) ) 
+			'online?' :  "%s users online" % ( len(self.server.root.user_server.users) ),
+			'online_taso?' :  "%s tasos online" % ( len(self.server.root.user_server.users[63]) )
 			}[msg_data]
 		except Exception:
 			results = """

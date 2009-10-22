@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 
 <script type="text/javascript">
@@ -33,6 +33,7 @@ pageTracker._trackPageview();
 <script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
 <script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
 <script type="text/javascript" src="views/javascript/tap.main.js"></script>
+<script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
 <script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <style type="text/css" media="screen">
@@ -88,6 +89,11 @@ ul.pitch li {
 	position: absolute;
 	right: 2px;
 	top: 2px;
+}
+
+#fblogin img {
+	margin-top: 20px;
+	margin-left: 20px;
 }
 </style>
 <script type="text/javascript">
@@ -145,6 +151,7 @@ rotate.delay(7000);
 					<label class="in-form">Keep Me Logged In</label>
 					<input type="submit" id="signin-submit" value="Sign In" />
 				</form>
+				<fb:login-button id="fblogin"></fb:login-button>
 			</div>
 			<!--
 			<div id="groups-tab">
@@ -437,6 +444,8 @@ rotate.delay(7000);
 			</li>
 		</ul>
 	</div>
-
+<script type="text/javascript"> 
+	FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm"); 
+</script>
 </body>
 </html>

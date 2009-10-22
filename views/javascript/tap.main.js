@@ -25,15 +25,21 @@ Tap.Main = {
 		// $('signup-submit').addEvent('click', this.onSignup.toHandler(this));
 		signUp.addEvent('submit', this.onSignup.toHandler(this));
 
-		$('search-public-submit').addEvent('click', this.searchFeed.toHandler(this));
+		// $('search-public-submit').addEvent('click', this.searchFeed.toHandler(this));
 		$(document.body).addEvents({
 			'click:relay(a.reset-feed)': this.clearSearch.bind(this),
 			'click:relay(a.tap-respond)': this.showResponseBox.toHandler(this),
 			'click:relay(a.tap-respond-cancel)': this.hideResponseBox.toHandler(this),
 			'click:relay(li.trending)': function(){data.user.focus();}
 		});
-		$('search-public-keyword').addEvent('keypress', function(e){
-			if (e.key == 'enter') self.searchFeed(this, e);
+		new OverText('tap-feed-search', { positionOptions: { offset: {x: 6, y: 4}}}).show();
+		$('tap-feed-search').addEvents({
+			'keypress': function(e){
+				if (e.key == 'enter') self.searchFeed(this, e);
+			},
+			'blur': function(e){
+				if (!this.isEmpty()) self.searchFeed(this, e);
+			}
 		});
 		$('signup-title').setStyle('cursor', 'pointer').addEvent('click', function(){
 			if (!this.retrieve('metric')) {
@@ -64,7 +70,7 @@ Tap.Main = {
 
 	searchFeed: function(el, e){
 		var self = this;
-		var keyword = $('search-public-keyword').get('value');
+		var keyword = $('tap-feed-search').get('value');
 		new Request({
 			url: 'AJAX/filter_creator.php',
 			data: {
@@ -113,7 +119,7 @@ Tap.Main = {
 	},
 
 	clearSearch: function(){
-		$('search-public-keyword').set('value', '');
+		$('tap-feed-search').set('value', '');
 		this.searchFeed();
 	},
 
