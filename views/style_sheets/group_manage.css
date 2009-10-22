@@ -276,7 +276,8 @@ body {
 		#gr-list li.more-invite { 
 			height: 100px;
 			background:#F0F0F0; }
-		.invitees { width: 470px; } 
+		.invitees { background-color: #fff; width: 470px; padding: 5px; } 
+		.overTxtLabel { color: #999; }
 			
 		.gr-image {
 			float: left;

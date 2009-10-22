@@ -356,6 +356,11 @@ Tap.Groups = {
 		var status = parent.getElement('p.status');
 		if (!status.retrieve('msg')) status.store('msg', status.get('html'));
 		var invitees = parent.getElement('input.invitees');
+		new OverText(invitees, {
+			positionOptions: {
+				offset: {x: 6, y: 6}
+			}
+		});
 		invitees.set({
 			'value': '',
 			'disabled': null
@@ -369,30 +374,38 @@ Tap.Groups = {
 		var invitees = parent.getElement('input.invitees');
 		var status = parent.getElement('p.status');
 
-		// Inform user of state..
-		status.set('text', 'Sending Request...');
-		invitees.set('disabled', 'disabled');
-
-		new Request({
-			url: '/AJAX/ind_invite.php',
-			method: 'post',
-			data: {
-				gname: invitees.retrieve('grname'),
-				email: invitees.get('value'),
-				type: 2
-			},
-			onSuccess: function(){
-				var success = JSON.decode(this.response.text);
-				if (success) {
-					status.set('text', 'Done!');
-					parent.highlight();
-					self.onInviteCancel(status);
-				}
-			},
-			onFailure: function(){},
-			onComplete: function(){}
-		}).send();
-		mpmetrics.track('send-invites', {});
+		var invited = invitees.get('value').split(',').filter(function(item){
+			return item.isEmail();
+		});
+		
+		if (invited.length > 0) {
+			// Inform user of state..
+			status.set('text', 'Sending Request...');
+			invitees.set('disabled', 'disabled');
+			invitees.setStyle('background-color', '#fff');
+			new Request({
+				url: '/AJAX/ind_invite.php',
+				method: 'post',
+				data: {
+					gname: invitees.retrieve('grname'),
+					email:  invited.join(','), //invitees.get('value'),
+					type: 2
+				},
+				onSuccess: function(){
+					var success = JSON.decode(this.response.text);
+					if (success) {
+						status.set('text', 'Done!');
+						parent.highlight();
+						self.onInviteCancel(status);
+					}
+				},
+				onFailure: function(){},
+				onComplete: function(){}
+			}).send();
+			mpmetrics.track('send-invites', {});
+		} else {
+			invitees.setStyle('background-color', '#FBC9CB');
+		}
 	},
 
 	onInviteCancel: function(el){
@@ -567,7 +580,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 						</li>
 						<li class="more-invite">
 							<div>
-								<p><input type="text" class="invitees"></p>
+								<p><input type="text" class="invitees" alt="Type-in the email addresses of people you'd like to invite, separated by commas."></p>
 								<p class="status"><a href="#" class="send-invite">Invite these people</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
 							</div>
 						</li>

@@ -38,7 +38,7 @@ var EasyOver = new Class({
 				'position': 'absolute',
 				'z-index': '1',
 				'padding': '4px 10px',
-				'color': '#ccc'
+				'color': '#999'
 			}
 		}).addEvent('click', this.onOverlayClick.bind(this));
 		this.overlay.inject(document.body);

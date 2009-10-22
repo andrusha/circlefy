@@ -418,7 +418,6 @@ class UserConnection(object):
 			except KeyError:
 				print "Key %s ERROR" % (channel)
 				print "Original Map: %s" % (self.server.g_channel_map)
-				print "New Map Map: %s" % (frame['cids'])
 				continue
 			update = 1
 		print 1
@@ -436,6 +435,11 @@ class UserConnection(object):
 		#Make Unique list
 		k={}
 		for e in seq:
+			try:
+				int(e)
+			except:
+				print "FUCK"
+				continue
 			k[e] = 1
 		return k
 
@@ -524,6 +528,19 @@ class AdminConnection(object):
 #JSON   self.conn.send(json.dumps({'adminData': data }) + '\r\n')
         
 
+def clearViewers():
+	#This is used to clear the viewers count in TAP_ONLINE so that when the server is
+	#reset it will be in the proper state
+	try:
+                mysql_conn = MySQLdb.connect (host = "localhost",user = "root",passwd = "root",db = "rewrite2")
+        except MySQLdb.Error, e:
+                print "Error %d: %s" % (e.args[0], e.args[1])
+                sys.exit (1)
+        mysql_cursor = mysql_conn.cursor (MySQLdb.cursors.DictCursor)
+	clear_query = "UPDATE TAP_ONLINE SET count = 0"
+	mysql_cursor.execute( clear_query )
+	mysql_conn.commit()
+	
 if __name__ == "__main__":
     root = ServerRoot()
     root.start()
@@ -533,4 +550,5 @@ if __name__ == "__main__":
 	    while True:
 		time.sleep(1)
     except KeyboardInterrupt:
+	    clearViewers()
 	    print "Exiting Multi-User/Connection TCP server..."

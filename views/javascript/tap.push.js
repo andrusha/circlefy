@@ -52,6 +52,7 @@ Tap.Push = {
 			var parsed;
 			this.fireEvent('data', data);
 			if (data.msgData == 'ping') return null;
+			if (data.msgData == 'refresh') window.location = window.location + '?' + new Date().getTime();
 			var test = false;
 			try {
 				test = data.msgData.every(function(item){
