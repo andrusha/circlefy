@@ -189,7 +189,7 @@ Tap.Groups = {
 					count.set('text', [
 						response.row_count,
 						'matching',
-						((response.row_count * 1) > 1) ? 'groups' : 'group',
+						(response.row_count.toInt() > 1) ? 'groups' : 'group',
 						'found'
 					].join(' '));
 					listing.fade('in');
@@ -293,7 +293,7 @@ Tap.Groups = {
 
 	onMore: function(el){
 		var top = el.getParent('li');
-		var top_height = (top.getStyle('height').replace('px', '') * 1);
+		var top_height = top.getStyle('height').toInt();
 		if (!top.retrieve('before')) top.store('before', top_height);
 		var desc = top.getElement('.description');
 

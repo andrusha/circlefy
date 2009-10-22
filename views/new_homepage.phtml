@@ -53,9 +53,9 @@ pageTracker._trackPageview();
 <script type="text/javascript">
 Tap = window.Tap || {};
 Tap.Vars = {
-	pcid: ("<?= $_t['pcid'] ?>" * 1),
+	pcid: "<?= $_t['pcid'] ?>".toInt(),
 	uname: "<?= $_SESSION['uname'] ?>",
-	currentTap: ("<?= $last['cid'] ?>" * 1),
+	currentTap: "<?= $last['cid'] ?>".toInt(),
 	currentStream: JSON.decode('<?= json_encode($inits) ?>'),
 	activeConvos: JSON.decode('<?= json_encode($convos) ?>')
 };

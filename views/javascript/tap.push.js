@@ -4,16 +4,19 @@ Tap.Push = {
 
 	init: function(){
 		document.domain = document.domain;
+		this.prepare();
+	},
+	
+	prepare: function(){
 		var socket = this.socket = new Orbited.TCPSocket();
 		socket.onopen = this.onOpen.bind(this);
 		socket.onread = this.onData.bind(this);
-		socket.onclose = this.connect.bind(this);
+		socket.onclose = this.prepare.bind(this);
 		this.connect();
 	},
 	
 	connect: function(){
 		this.socket.open('localhost', 2222);
-		this.onConnect.delay(3000, this);
 	},
 
 	onConnect: function(){
@@ -36,6 +39,7 @@ Tap.Push = {
 	},
 
 	onOpen: function(){
+		this.onConnect();
 		this.fireEvent('open');
 	},
 

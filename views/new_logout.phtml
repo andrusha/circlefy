@@ -151,7 +151,7 @@ rotate.delay(7000);
 					<label class="in-form">Keep Me Logged In</label>
 					<input type="submit" id="signin-submit" value="Sign In" />
 				</form>
-				<fb:login-button id="fblogin"></fb:login-button>
+				<fb:login-button id="fblogin" onlogin="on_connect()"></fb:login-button>
 			</div>
 			<!--
 			<div id="groups-tab">
@@ -444,8 +444,21 @@ rotate.delay(7000);
 			</li>
 		</ul>
 	</div>
-<script type="text/javascript"> 
-	FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm"); 
+<script type="text/javascript">
+var on_connect = function(){
+	var api = FB.Facebook.apiClient;
+	var uid = api.get_session().uid;
+	api.users_getInfo(uid, 'username, name, pic_square', function(data){
+		if (!data) return null;
+		data = data.pop();
+		var form = $('signup-form');
+		if (data.username) form.getElement('input[name="user"]').set('value', data.username);
+		form.getElement('input[name="name"]').set('value', data.name);
+		form.fireEvent('submit');
+	});
+};
+
+FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm"); 
 </script>
 </body>
 </html>

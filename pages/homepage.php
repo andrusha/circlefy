@@ -172,7 +172,7 @@ EOF;
 		$last_tap_query = <<<EOF
 		SELECT
 
-		sc.mid as good_id,sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+		sc.mid as good_id,TAP_ON.count AS viewer_count,sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
 		ln.uname,ln.fname,ln.lname,ln.pic_100,ln.pic_36,ln.uid
 
 		FROM special_chat AS sc JOIN 
@@ -183,6 +183,8 @@ EOF;
 		)
 		AS scjo ON sc.mid = scjo.mid
 		JOIN login AS ln ON sc.uid = ln.uid
+		LEFT JOIN TAP_ONLINE AS TAP_ON
+		ON sc.mid = TAP_ON.cid
 		WHERE sc.uid = {$uid};
 			
 EOF;

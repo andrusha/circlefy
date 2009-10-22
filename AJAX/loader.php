@@ -37,13 +37,15 @@ class loader_functions{
 	function create_loader($mid_list){
 		$uid = $_SESSION['uid'];
 		$group_query_bits_info = <<<EOF
-		 SELECT t4.mid,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
+		 SELECT t4.mid,TAP_ON.count AS viewer_count,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
                 JOIN special_chat as t3
                 ON t3.uid = t2.uid
                 LEFT JOIN (
                 SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$uid}
                 ) AS t4
                 ON t4.mid = t3.cid
+		LEFT JOIN TAP_ONLINE AS TAP_ON
+		ON t3.mid = TAP_ON.cid	
                 WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
 EOF;
 
@@ -62,12 +64,16 @@ EOF;
 				$lname  = $res['lname'];
 				$pic_100 = $res['pic_100'];
 				$pic_36 = $res['pic_36'];
+				$viewer_count = $res['viewer_count'];
 				$uid = $res['uid'];
 
 				//Process
 				$chat_timestamp = $this->time_since($chat_timestamp);
 				$chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
 				$chat_text = stripslashes($chat_text);
+				if($viewer_count)
+                                        $viewer_count = $viewer_count-1;
+
 			
 				//Additional
 				$rand = rand(1,999);
@@ -86,6 +92,7 @@ EOF;
 				'pic_100'=>       $pic_100,
 				'pic_36'=>        $pic_36,
 				'uid'=>           $uid,
+				'viewer_count'=>  $viewer_count,
 				'last_resp'=>     null,
                                 'resp_uname'=>    null,
                                 'count'=>         0

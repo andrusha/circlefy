@@ -279,7 +279,7 @@ Tap.Main = {
 		var now = new Date().getTime();
 		$$('.tap-time').each(function(el){
 			var timestamp = el.className.remove(/tap-time\s/);
-			var orig = new Date((timestamp * 1) * 1000);
+			var orig = new Date(timestamp.toInt() * 1000);
 			var diff = ((now - orig) / 1000);
 			var day_diff = Math.floor(diff / 86400);
 			if ($type(diff) == false || day_diff < 0 || day_diff >= 31) return false;
@@ -361,7 +361,7 @@ Tap.ResponseBot = {
 					var counter = el.getElement('span.tap-respond-count');
 					var count = (function(){
 						var c = counter.get('text').match(/\(([\d]+)\)/);
-						return ($type(c) == 'array') ? (c[1] * 1) : 0;
+						return ($type(c) == 'array') ? c[1].toInt() : 0;
 					})();
 					counter.set('text', ['(', count + 1, ')'].join(''));
 					el.getElement('.tap-respond-last').set('text', resp);

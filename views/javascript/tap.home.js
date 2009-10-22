@@ -122,13 +122,13 @@ Tap.Home = {
 					var counter = $('gid_all').getElement('.unread-counter');
 					var count = (function(){
 						var c = counter.get('text').match(/\(([\d]+)\)/);
-						return ($type(c) == 'array') ? (c[1] * 1) : 0;
+						return ($type(c) == 'array') ? c[1].toInt() : 0;
 					})();
 					var newcounter = this.getElement('.unread-counter');
 					if (newcounter) {
 						var newcount = (function(){
 							var c = newcounter.get('text').match(/\(([\d]+)\)/);
-							return ($type(c) == 'array') ? (c[1] * 1) : 0;
+							return ($type(c) == 'array') ? c[1].toInt() : 0;
 						})();
 						counter.set('text', ['(', count - newcount, ')'].join(''));
 						if ((count - newcount) <= 0) $('gid_all').removeClass('unread').setStyle('background-color', '#F2F2F2');
@@ -262,7 +262,7 @@ Tap.Home = {
 			var id = ids[x];
 			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
-				item.set('text', (item.get('text') * 1) + 1);
+				item.set('text', item.get('text').toInt() + 1);
 			});
 		}
 	},
@@ -272,7 +272,7 @@ Tap.Home = {
 			var id = ids[x];
 			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
-				var count = (item.get('text') * 1);
+				var count = item.get('text').toInt();
 				if (count > 0) item.set('text', count - 1);
 			});
 		}
@@ -379,7 +379,7 @@ Tap.Home = {
 					for (var x = response.responses.reverse().length; x--; ){
 						var item = response.responses[x];
 						item.time = (function(){
-							var date = new Date((item.chat_time * 1) * 1000);
+							var date = new Date(item.chat_time.toInt() * 1000);
 							var hours = date.getHours();
 							var minutes = "" + date.getMinutes();
 							if (minutes.length == 1) minutes = "0" + minutes;
@@ -446,7 +446,7 @@ Tap.Home = {
 		var parent = $try(function(){ return $('tid_' + cid).getElement('.tap-chat'); });
 		if (parent) {
 			item.time = (function(){
-				var date = new Date((item.chat_time * 1) * 1000);
+				var date = new Date(item.chat_time.toInt() * 1000);
 				var hours = date.getHours();
 				var minutes = "" + date.getMinutes();
 				if (minutes.length == 1) minutes = "0" + minutes;
@@ -494,7 +494,7 @@ Tap.Home = {
 			var counter = parent.getElement('span.tap-respond-count');
 			var count = (function(){
 				var c = counter.get('text').match(/\(([\d]+)\)/);
-				return ($type(c) == 'array') ? (c[1] * 1) : 0;
+				return ($type(c) == 'array') ? c[1].toInt() : 0;
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
@@ -511,7 +511,7 @@ Tap.Home = {
 			var counter = parent.getElement('span.tap-respond-count');
 			var count = (function(){
 				var c = counter.get('text').match(/\(([\d]+)\)/);
-				return ($type(c) == 'array') ? (c[1] * 1) : 0;
+				return ($type(c) == 'array') ? c[1].toInt() : 0;
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
@@ -523,7 +523,7 @@ Tap.Home = {
 		var indic = $('aid_' + id);
 		if (indic) {
 			var count = indic.getElement('.convo-count');
-			count.set('text', (count.get('text') * 1) + 1);
+			count.set('text', count.get('text').toInt() + 1);
 			if (tid_shown || yid_shown) {
 				indic.set('tween', {duration:1000}).highlight('#FBC9CB', '#F2F2F2');
 			} else if (this.feedView !== 'aid_' + id) {
@@ -565,7 +565,7 @@ Tap.Home = {
 							msg: (msg.length < 20) ? msg : msg.substring(0, 20) + '...',
 							count: (function(){
 								var c = el.getElement('span.tap-respond-count').get('text').match(/\(([\d]+)\)/);
-								return ($type(c) == 'array') ? (c[1] * 1) : 0;
+								return ($type(c) == 'array') ? c[1].toInt() : 0;
 							})()
 						};
 						item = list.getElement('#aid_' + cid) || new Element('li', {
@@ -1011,7 +1011,7 @@ Tap.Home = {
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
 				if (response.new_msg) {
-					self.currentTap = (response.new_msg[0].cid * 1);
+					self.currentTap = response.new_msg[0].cid.toInt();
 					self.setChannels();
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.new_msg)
@@ -1072,7 +1072,7 @@ Tap.Home = {
 				var counter = element.getElement('.unread-counter');
 				var count = (function(){
 					var c = counter.get('text').match(/\(([\d]+)\)/);
-					return ($type(c) == 'array') ? (c[1] * 1) : 0;
+					return ($type(c) == 'array') ? c[1].toInt() : 0;
 				})();
 				counter.set('text', ['(', (count + 1), ')'].join(''));
 			}
@@ -1127,7 +1127,7 @@ Tap.Home = {
 		var now = new Date().getTime();
 		$$('.tap-time').each(function(el){
 			var timestamp = el.className.remove(/tap-time\s/);
-			var orig = new Date((timestamp * 1) * 1000);
+			var orig = new Date(timestamp.toInt() * 1000);
 			var diff = ((now - orig) / 1000);
 			var day_diff = Math.floor(diff / 86400);
 			if ($type(diff) == false || day_diff < 0 || day_diff >= 31) return false;
