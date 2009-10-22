@@ -115,7 +115,7 @@ class ajaz_sign_up{
 	}
 
 	function populate_profile(){
-                $profile_query = "INSERT INTO profile(uid,lang) values($this->uid,'{$this->lang}');";
+                $profile_query = "INSERT INTO profile(uid,language) values($this->uid,'{$this->lang}');";
                 $this->mysqli->query($profile_query);
 	}
 

@@ -138,7 +138,7 @@ Tap.Profile = {
 			region.empty().getParent('h2').hide();
 			town.empty().getParent('h2').hide();
 			self.geo({
-				type: 'state', 
+				type: 'state',
 				key: this.get('value'),
 				callback: (!e) ? null : function(select){
 					if (Tap.Vars.state) {
@@ -164,9 +164,9 @@ Tap.Profile = {
 		});
 		region.addEvent('change', function(a, e){
 			town.empty().getParent('h2').hide();
-			self.geo({ 
-				type: 'town', 
-				key: this.get('value'), 
+			self.geo({
+				type: 'town',
+				key: this.get('value'),
 				state: state.get('value'),
 				callback: (!e) ? null : function(select){
 					if (Tap.Vars.region) {
@@ -176,13 +176,17 @@ Tap.Profile = {
 				}
 			});
 		});
-		
-		country.getElement('option[value="'+Tap.Vars.country+'"]').set('selected', 'selected');
+
+		if (Tap.Vars.country) {
+			country.getElement('option[value="'+Tap.Vars.country+'"]').set('selected', 'selected');
+		} else {
+			country.getElement('option[value="us"]').set('selected', 'selected');
+		}
 		country.fireEvent('change', [{}, true]);
-		
+
 		if (!Tap.Vars.lang.isEmpty()) account_data.lang.getElement('option[value="'+Tap.Vars.lang+'"]').set('selected', 'selected');
 	},
-	
+
 	geo: function(options){
 		var self = this;
 		var loader = $('geo-loader');
@@ -432,7 +436,7 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 							<div class="error-msg"></div>
 						</h2>
 						<h2 class="in-title">
-							Primary Language: 
+							Primary Language:
 							<select name="language" style="margin-right:140px">
 								<option value="English">English</option>
 								<option value="Afrikaans">Afrikaans</option>
@@ -557,7 +561,7 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 							</select>
 						</h2>
 						<h2 id="geo-loader" class="loader">Loading Next</h2>
-						
+
 						<h1>Picture </h1><hr class="hr2"/>
 						<form enctype="multipart/form-data" action="/AJAX/profile_picture_upload.php" method="post" target="picture">
 							<h2 class="in-title">

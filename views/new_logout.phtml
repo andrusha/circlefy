@@ -151,7 +151,7 @@ rotate.delay(7000);
 					<label class="in-form">Keep Me Logged In</label>
 					<input type="submit" id="signin-submit" value="Sign In" />
 				</form>
-				<fb:login-button id="fblogin" onlogin="on_connect()"></fb:login-button>
+				<fb:login-button id="fblogin" onlogin="on_connect()" onclick="click_connect()"></fb:login-button>
 			</div>
 			<!--
 			<div id="groups-tab">
@@ -296,7 +296,7 @@ rotate.delay(7000);
 					-->
 					<label style="display:none">Primary Language</label>
 						<select name="language" class="text" style="display:none">
-							<option value="English">English</option>
+							<option value="English" selected="selected">English</option>
 							<option value="Afrikaans">Afrikaans</option>
 							<option value="Albanian">Albanian</option>
 							<option value="Aragonese">Aragonese</option>
@@ -457,7 +457,13 @@ var on_connect = function(){
 		if (data.username) form.getElement('input[name="user"]').set('value', data.username);
 		form.getElement('input[name="name"]').set('value', data.name);
 		form.fireEvent('submit');
+		mpmetrics.track('fbconnect-complete', {});
+		window.fbconnected = true;
 	});
+};
+
+var click_connect = function(){
+	mpmetrics.track('fbconnect-click', {});
 };
 
 FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm"); 

@@ -1,7 +1,7 @@
 Tap = window.Tap || {};
 
 window.addEvent('domready', function(){
- var onBlur = function(){
+var onBlur = function(){
 	document.body.className = 'blurred';
 };
 var onFocus = function(){
@@ -245,7 +245,14 @@ Tap.Home = {
 	// GEN FUNCS
 
 	setChannels: function(){
-		Tap.Push.sendCIDs([].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap]));
+		var chans = [].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap]);
+		Tap.Push.sendCIDs(chans.filter(function(item){
+			try {
+				return $type((item * 1)) == 'number';
+			} catch (e) {
+				return false;
+			}
+		}));
 	},
 
 	parseTemplate: function(type, data){
@@ -531,7 +538,12 @@ Tap.Home = {
 				indic.setStyle('background-color', '#FBC9CB');
 			}
 			if ($(document.body).hasClass('blurred')) {
+				var timeroo = new Date().getTime();
 				document.msgs = (function(){
+					if ((new Date.getTime() - timeroo) > 60000) {
+						$clear(document.msgs);
+						return null;
+					}
 					document.title = 'You have a new response!';
 					(function(){ document.title = 'tap — alpha'; }).delay(1000);
 				}).periodical(2000);

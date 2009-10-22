@@ -71,6 +71,8 @@ Tap.CreateGroups = {
 			if (this.get('value') === 'yes') {
 				locMore.slide('in');
 				self.localized = true;
+				self.data.country.getElement('option[value="us"]').set('selected', 'selected');
+				self.data.country.fireEvent('change', [{}, true]);
 			} else {
 				locMore.slide('out');
 				self.localized = false;
