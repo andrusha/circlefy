@@ -108,6 +108,7 @@ ul.tap-stream .tap-chat li {
 
 ul.tap-stream .tap-chat li span.time {
 	float: right;
+	font-size: 10px;
 }
 
 ul.tap-stream li.noresults {
@@ -340,10 +341,12 @@ ul.tap-stream .tap-response-box {
 	font-weight:bold; }
 
 .tap-views {
-	color: #666;
-	float:right;
+	background:transparent url(/images/cimages/eye.png) repeat scroll 0 0;
+	color:#666666;
+	float:left;
 	font-size:11px;
-	font-weight:bold; }
+	font-weight:bold;
+	margin-left:10px; }
 
 .tap-respond.noresp {
 	font-weight:normal; }
