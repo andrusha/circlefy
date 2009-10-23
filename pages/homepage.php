@@ -81,6 +81,8 @@ class homepage extends Base{
 			$uid = $_SESSION['uid'];
 			} else {
 			$this->page_name = "new_logout";
+			if($_GET['q'] == 'swineflu')
+			$this->page_name = "swineflu";
 		}
 
 	
