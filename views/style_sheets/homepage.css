@@ -341,12 +341,10 @@ ul.tap-stream .tap-response-box {
 	font-weight:bold; }
 
 .tap-views {
-	/* background:transparent url(/images/cimages/eye.png) repeat scroll 0 0; */
-	color:#666666;
-	ffloat:left;
-	font-size:10px;
-	font-weight:bold;
-	fmargin-left:10px; }
+	color: #666;
+	float:right;
+	font-size:11px;
+	font-weight:bold; }
 
 .tap-respond.noresp {
 	font-weight:normal; }

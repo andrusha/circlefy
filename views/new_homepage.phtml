@@ -1,4 +1,4 @@
- <?php
+<?php
 $last = (!empty($_t['last_tap'])) ? $_t['last_tap'][0] : null;
 $inits = array();
 if (is_array($_t['groups_bits'])) {
@@ -195,11 +195,11 @@ window.addEvent('domready', function(){
 						<li id="yid_<?= $last['cid'] ?>">
 							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" title="<?= $last['uname'] ?>" alt="<?= $last['uname'] ?>" rel="<?= $last['uid'] ?>" />
 							<div class="tap-actions">
-								<div class="tap-views"> 
+								<span class="tap-views">Viewers: 
 									<strong>
 									<?= (!empty($last['viewer_count'])) ? $last['viewer_count'] : '0' ?>
 									</strong>
-								</div>
+								</span>
 								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
 								</a>
@@ -256,11 +256,11 @@ window.addEvent('domready', function(){
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
 							<div class="tap-actions">
-								<div class="tap-views">Viewers: 
+								<span class="tap-views">Viewers: 
 									<strong>
 									<?= (!empty($bit['viewer_count'])) ? $bit['viewer_count'] : '0' ?>
 									</strong>
-								</div>
+								</span>
 								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="#">
 									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
 								</a>
@@ -376,9 +376,9 @@ window.addEvent('domready', function(){
 			<li id="tid_<#: bit.cid #>">
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" rel="<#: bit.uid #>"  />
 				<div class="tap-actions">
-					<div class="tap-views">Viewers: 
+					<span class="tap-views">Viewers: 
 						<strong><#: bit.viewer_count || 0 #></strong>
-					</div>
+					</span>
 					<# if (bit.count) { #>
 					<a class="tap-respond" href="#">
 					<# } else { #>
