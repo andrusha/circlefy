@@ -95,7 +95,7 @@ Tap.Home = {
 		var body = $(document.body);
 		this.mainStream = $('main-stream');
 
-		$('main').getElements('.tap-msg, .tap-respond-last').each(function(item){
+		$('main').getElements('.tap-msg, .tap-respond-last span').each(function(item){
 			item.set('html', item.get('html').linkify());
 		});
 
@@ -397,8 +397,9 @@ Tap.Home = {
 								minutes + ((hours > 11) ? ' PM' : ' AM')
 							].join(':');
 						})();
+						item.chat_text = item.chat_text.linkify();
 						new Element('li', {
-							html: '<span class="time">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute(item).linkify()
+							html: '<span class="time">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute(item)
 						}).inject(box);
 					}
 					box.scrollTo(0, box.getScrollSize().y);
@@ -487,9 +488,9 @@ Tap.Home = {
 		var item = new Element('li', {
 			html: '<span class="time">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute({
 				uname: user,
-				chat_text: msg,
+				chat_text: msg.linkify(),
 				time: time
-			}).linkify()
+			})
 		});
 		var parent;
 		parent = $('tid_' + id);
@@ -977,13 +978,14 @@ Tap.Home = {
 	switchTapper: function(name, symbol, id, type){
 		if (this.tapper.msg.get('value').isEmpty()){
 			this.tapper.people.empty();
-			console.log(id);
-			if (!id) return;
-			type = (type === '0') ? 'group' : (type === '2') ? 'building' : 'book_open';
-			var val = [[name, [name.remove(/\s\([\d\D]*\)/), symbol, '0', id].join(':'), "<img src='images\/icons\/"+type+".png' \/> " + symbol, name + " <img src='images\/icons\/"+type+".png' \/><span class='online online'>online (218)<\/span>"]];
-			this.tapper.people.setValues(val);
+			if (id) {
+				type = (type === '0') ? 'group' : (type === '2') ? 'building' : 'book_open';
+				var val = [[name, [name.remove(/\s\([\d\D]*\)/), symbol, '0', id].join(':'), "<img src='images\/icons\/"+type+".png' \/> " + symbol, name + " <img src='images\/icons\/"+type+".png' \/><span class='online online'>online (218)<\/span>"]];
+				this.tapper.people.setValues(val);
+			}
 			$('tap-box-people').fireEvent('focus');
 			$('tap-box-msg').fireEvent('focus');
+			if (!id) $('tap-box-msg').blur();
 		}
 	},
 

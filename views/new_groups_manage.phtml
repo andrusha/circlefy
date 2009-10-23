@@ -402,7 +402,7 @@ Tap.Groups = {
 				onFailure: function(){},
 				onComplete: function(){}
 			}).send();
-			mpmetrics.track('send-invites', {});
+			mpmetrics.track('send-invites', {'group': invitees.retrieve('grname')});
 		} else {
 			invitees.setStyle('background-color', '#FBC9CB');
 		}

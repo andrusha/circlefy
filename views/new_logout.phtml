@@ -48,6 +48,18 @@ pageTracker._trackPageview();
 	border-bottom: 1px solid #BBD0EE;
 }
 
+#connect-guide {
+	margin-top: 5px;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align: center;
+	background: #C9DEFB;
+	border-top: 1px solid #BBD0EE;
+	border-bottom: 1px solid #BBD0EE;
+	margin-right: 8px;
+	display: none;
+}
+
 ul.pitch {
 	margin-bottom: 10px;
 	font-size: 16px;
@@ -277,6 +289,10 @@ rotate.delay(7000);
 			</div>
 			<div>
 				<form id="signup-form" action="#" method="post">
+					<div id="connect-guide">
+						<strong>FB Connect Done!</strong><br />
+						We just need a few more info!
+					</div>
 					<label>Username</label>
 						<input type="text" name="user" class="text"/>
 						<div class="guide"></div>
@@ -456,7 +472,10 @@ var on_connect = function(){
 		var form = $('signup-form');
 		if (data.username) form.getElement('input[name="user"]').set('value', data.username);
 		form.getElement('input[name="name"]').set('value', data.name);
+		form.getElement('input[name="email"]').focus();
 		form.fireEvent('submit');
+		form.highlight();
+		$('connect-guide').setStyle('display', 'block');
 		mpmetrics.track('fbconnect-complete', {});
 		window.fbconnected = true;
 	});
