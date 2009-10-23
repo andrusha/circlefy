@@ -422,7 +422,11 @@ body {
 		}
 
 .group {
-padding-bottom: 3px; }
+	margin-left:-6px;
+	margin-right:5px;
+	padding-bottom:3px;
+	padding-left:3px;
+	padding-top:3px; }
 
 .status {
 	display: block;

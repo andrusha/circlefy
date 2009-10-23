@@ -545,7 +545,7 @@ li.convo:hover a.remove-convo {
 
 a.add-tap-to {
 	display: none;
-	float: right;
+	sfloat: right;
 	margin-top: 8px;
 	margin-right: 5px;
 	font-weight: bold;
