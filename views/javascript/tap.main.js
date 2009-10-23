@@ -246,6 +246,10 @@ Tap.Main = {
 	onSignup: function(el, e){
 		var data = this.data;
 		if (this.noErrors()) {
+			if (!this.metricked) {
+				mpmetrics.track('signup-forms-finished', {});
+				this.metricked = true;
+			}
 			new Request({
 				url: 'AJAX/ajaz_sign_up.php',
 				data: {
