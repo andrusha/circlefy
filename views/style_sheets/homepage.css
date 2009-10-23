@@ -101,9 +101,9 @@ ul.tap-stream li {
 ul.tap-stream .tap-chat li {
 /*	border: none;*/
 /*	border-top:1px solid #D8D8D8; }*/
-	border:  1px solid #65ABE9;
 	margin-right: 5px;
-	margin-bottom: 3px;
+/*	margin-bottom: 3px;
+	border:  1px solid #65ABE9; */
 }
 
 ul.tap-stream .tap-chat li span.time {
@@ -268,8 +268,8 @@ ul.tap-stream .tap-response-box {
 	margin-bottom:10px;
 	display: none;
 	background: #fff;
-	margin-left: 60px;
-	width: 450px;
+	margin-left: 0px;
+	width: 522px;
 }
 
 #right-col {
@@ -544,8 +544,8 @@ li.convo:hover a.remove-convo {
 }
 
 a.add-tap-to {
-	display: none;
 	sfloat: right;
+	display: none;
 	margin-top: 8px;
 	margin-right: 5px;
 	font-weight: bold;
@@ -553,12 +553,13 @@ a.add-tap-to {
 }
 
 a.add-tap-to:hover {
-	color: green;
+	color: #00b9eb;
 	text-decoration: none;
 }
 
 .group {
 	cursor: pointer;
+	background-color: #B8E2ED;
 }
 
 .group:hover a.add-tap-to {
