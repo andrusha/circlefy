@@ -40,8 +40,8 @@ EOF;
                 $is_admin_results = $this->mysqli->query($is_admin_query);
 		if($is_admin_results->num_rows)
 		while($res = $is_admin_results->fetch_assoc()){
-			$admin = $res['gadmin'];
-			if($admin == $uid)
+			$gadmin = $res['gadmin'];
+			if($gadmin == $uid)
 				$admin = 1;
 		}
 		
