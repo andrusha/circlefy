@@ -27,7 +27,7 @@ class invite_functions{
 
 		private $email;
 
-		private $from = "invite@tap.info";
+		private $from = "From: tap.info\r\n";;
 		private $to;
 		private $subject;
 		private $body;
@@ -72,7 +72,9 @@ class invite_functions{
 		$this->to =  $this->email;
 		$this->subject = $fname.' '.$lname.' ( '.$uname.' ) Could not find you on Tap!  Check out tap to get experience something new.';
 		$this->body = <<<EOF
-		\t {$fname} invited you to tap.info so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.  F*ck Web 2.0
+	{$fname} invited you to tap.info so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.
+
+-Team Tap
 EOF;
 	}
 
@@ -80,7 +82,9 @@ EOF;
 		$this->to =  $this->email;
 		$this->subject = $fname.' '.$lname.' ( '.$uname.' ) invited you to join the real-time group '.$gname.'  Get on tap to get experience true real-time connectivity, it\'s amazing. new.';
 		$this->body = <<<EOF
-		\t {$fname} invited you to tap.info to join the group {$gname} so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.
+	{$fname} invited you to tap.info to join the group {$gname} so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.
+-
+-Team Tap
 EOF;
 	}
 

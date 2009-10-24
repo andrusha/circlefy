@@ -33,6 +33,7 @@ class leave_functions{
                 $gid = $this->mysqli->real_escape_string($gid);
 
 		$del_group_query = "DELETE FROM group_members WHERE uid = {$uid} AND gid = {$gid};";
+		echo $del_group_query;
                 $del_group_results = $this->mysqli->query($del_group_query);
 
 		//hack

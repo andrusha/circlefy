@@ -32,14 +32,56 @@ class join_functions{
                 $uid = $this->mysqli->real_escape_string($uid);
                 $gid = $this->mysqli->real_escape_string($gid);
 
-		$create_rel_query = "INSERT INTO group_members(uid,gid) values('{$uid}',{$gid});";
+		//Set admin to 0 unless he was the creator of the group
+		$admin = 0;
+		$is_admin_query = <<<EOF
+		SELECT gadmin FROM groups WHERE gid = {$gid} LIMIT 1
+EOF;
+                $is_admin_results = $this->mysqli->query($is_admin_query);
+		if($is_admin_results->num_rows)
+		while($res = $is_admin_results->fetch_assoc()){
+			$admin = $res['gadmin'];
+			if($admin == $uid)
+				$admin = 1;
+		}
+		
+		$create_rel_query = "INSERT INTO group_members(uid,gid,admin) values('{$uid}',{$gid},{$admin});";
                 $create_rel_results = $this->mysqli->query($create_rel_query);
 		$last_id = $this->mysqli->query($this->last_id);
 
                 $last_id = $last_id->fetch_assoc();
                 $last_id = $last_id['last_id'];
-		if($last_id > 0)
-			return json_encode(array('good' => 1));
+		if($last_id > 0){
+			$get_admins_query = <<<EOF
+			SELECT g.gname,l.email FROM group_members AS gm 
+			JOIN groups AS g ON gm.gid = g.gid
+			JOIN login AS l ON l.uid = gm.uid
+			WHERE gm.admin > 0 AND gm.gid = {$gid}
+EOF;
+			$get_admins_results = $this->mysqli->query($get_admins_query);
+			if($get_admins_results->num_rows)
+			while($res = $get_admins_results->fetch_assoc() ){
+				$to = $res['email'];
+				$gname = $res['gname'];
+
+				$subject = "Your tap group $gname has a new member!";
+				$from = "From: tap.info\r\n";
+				$body = <<<EOF
+{$uname} joined your tap group at http://tap.info !  It seems others have joined as well, so keep the real-time collaberative tapping going.
+
+Make sure you organize your community or group , so that everyone on tap will feel the communities greatness.  
+
+Feel free to invite more people and keep your good ( and popular ) community growing!
+
+{$uname} ( and me! ) are glad to have you on tap. :)
+
+-Team Tap
+http://tap.info
+EOF;
+				mail($to,$subject,$body,$from);
+			}
+		return json_encode(array('good' => 1));
+		}
 		return json_encode(array('good' => 0));
 	}
 

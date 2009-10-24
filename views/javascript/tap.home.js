@@ -107,14 +107,16 @@ Tap.Home = {
 				if (e.loadNot) return false;
 				this.removeClass('unread');
 				groupList.each(function(item){
-					if (!item.hasClass('unread')) item.setStyle('background-color', '#F2F2F2');
+					// if (!item.hasClass('unread')) item.setStyle('background-color', '#F2F2F2');
+					if (!item.hasClass('unread')) item.removeClass('selected');
 				});
-				this.setStyle('background-color', '#BFBFBF');
+				// this.setStyle('background-color', '#BFBFBF');
+				this.addClass('selected');
 				if (this.get('id') == 'gid_all') {
 					groupList.each(function(el){
 						if (el.hasClass('unread')) {
 							el.removeClass('unread');
-							el.setStyle('background-color', '#F2F2F2');
+							// el.setStyle('background-color', '#F2F2F2');
 						}
 						var counter = el.getElement('.unread-counter');
 						if (counter && counter.set) counter.set('text', '(0)');
@@ -132,7 +134,7 @@ Tap.Home = {
 							return ($type(c) == 'array') ? c[1].toInt() : 0;
 						})();
 						counter.set('text', ['(', count - newcount, ')'].join(''));
-						if ((count - newcount) <= 0) $('gid_all').removeClass('unread').setStyle('background-color', '#F2F2F2');
+						if ((count - newcount) <= 0) $('gid_all').removeClass('unread').removeClass('selected'); //.setStyle('background-color', '#F2F2F2');
 					}
 				}
 				if (this.getElement('.unread-counter')) this.getElement('.unread-counter').set('text', '(0)');
@@ -192,6 +194,23 @@ Tap.Home = {
 			})
 		};
 		new OverText(tapper.msg, { positionOptions: { offset: {x: 6, y: 6}}}).show();
+		var char_indic = $('tap-box-counter');
+		tapper.msg.addEvents({
+			'focus': function(){
+				char_indic.set('text', 240 - this.get('value').length);
+				char_indic.setStyle('display', 'block');
+			},
+			'keypress': function(){
+				char_indic.set('text', 240 - this.get('value').length);
+			},
+			'change': function(){
+				char_indic.set('text', 240 - this.get('value').length);
+			},
+			'blur': function(){
+				char_indic.set('text', 240 - this.get('value').length);
+				if (this.get('value').isEmpty()) char_indic.setStyle('display', 'none');
+			}
+		});
 		$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
 
 		$('tap-notify').slide('hide').addEvent('click', this.getPushed.toHandler(this));
@@ -246,13 +265,15 @@ Tap.Home = {
 
 	setChannels: function(){
 		var chans = [].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap]);
-		Tap.Push.sendCIDs(chans.filter(function(item){
+		chans = chans.filter(function(item){
 			try {
 				return $type((item * 1)) == 'number';
 			} catch (e) {
 				return false;
 			}
-		}));
+		});
+		console.log(chans);
+		Tap.Push.sendCIDs(chans);
 	},
 
 	parseTemplate: function(type, data){
@@ -262,19 +283,20 @@ Tap.Home = {
 		if (!this.templater) this.templater = new Template();
 		return this.templater.parse(template, data);
 	},
-	
+
 	// VIEWS
-	
+
 	addViews: function(ids){
 		for (var x = ids.reverse().length; x--;) {
 			var id = ids[x];
 			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
+				if (!item) return;
 				item.set('text', item.get('text').toInt() + 1);
 			});
 		}
 	},
-	
+
 	removeViews: function(ids){
 		for (var x = ids.reverse().length; x--;) {
 			var id = ids[x];
@@ -290,6 +312,7 @@ Tap.Home = {
 
 	showResponseBox: function(el){
 		var box = el.getParent('li').getElement('.tap-response-box');
+		var char_indic = box.getElement('.tap-response-counter');
 		var input = box.getElement('input.tap-response');
 		input.set('value', '');
 		var overtext = input.retrieve('overtext') || new OverText(input, {
@@ -298,12 +321,33 @@ Tap.Home = {
 			}
 		});
 		input.store('overtext', overtext);
+		if (!input.retrieve('extended')) {
+			input.addEvents({
+				'focus': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+					char_indic.setStyle('display', 'block');
+				},
+				'keypress': function(e){
+					char_indic.set('text', 240 - this.get('value').length);
+					if (e.key == 'enter') char_indic.set('text', 240);
+				},
+				'change': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+				},
+				'blur': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+					if (this.get('value').isEmpty()) char_indic.setStyle('display', 'none');
+				}
+			});
+			input.store('extended', true);
+		}
 		box.setStyle('display', 'block');
 		overtext.show();
 	},
 
 	hideResponseBox: function(el){
 		var box = el.getParent('li').getElement('.tap-response-box');
+		var char_indic = box.getElement('.tap-response-counter').set('text', 240);
 		var input = box.getElement('input.tap-response');
 		if (input.retrieve('overtext')) input.retrieve('overtext').hide();
 		box.setStyle('display', 'none');
@@ -335,12 +379,22 @@ Tap.Home = {
 		var typing = this.typing;
 		var el = $('yid_' + cid) || $('tid_' + cid);
 		if (el) {
+			var timeout = el.retrieve('indic_timeout');
+			if (timeout) $clear(timeout);
+
+			var indic = el.getElement('span.tap-typing');
+			indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
+			var indic_timeout = (function(){ indic.set('html', ''); }).delay(2500);
+			el.store('indic_timeout', indic_timeout);
+
+			/*
 			self.indic = el.getElement('span.tap-typing');
 			$clear(self.indic_timeout);
 
 			//This is the timer when the indicator will reset
 			self.indic_timeout = (function(){ self.indic.set('html', ''); }).delay(2500);
 			self.indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
+			*/
 		}
 	},
 
@@ -369,12 +423,16 @@ Tap.Home = {
 	// RESPONSES
 
 	initResponse: function(el){
+		var self = this;
 		var parent = el.getParent('li');
 		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
 		var box = parent.getElement('.tap-chat');
 		var indic = $('aid_' + id);
 		if (indic) indic.setStyle('background-color', '#F2F2F2');
-		if (el.retrieve('loaded')) return null;
+		if (el.retrieve('loaded')) {
+			box.scrollTo(0, box.getScrollSize().y);
+			return null;
+		}
 		new Request({
 			url: 'AJAX/load_responses.php',
 			data: {
@@ -399,9 +457,10 @@ Tap.Home = {
 						})();
 						item.chat_text = item.chat_text.linkify();
 						new Element('li', {
-							html: '<span class="time">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute(item)
+							html: '<span class="time {chat_time}">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute(item)
 						}).inject(box);
 					}
+					self.changeDates();
 					box.scrollTo(0, box.getScrollSize().y);
 				}
 				el.store('loaded', true);
@@ -474,22 +533,13 @@ Tap.Home = {
 
 	parseResponse: function(id, user, msg){
 		var yid_shown, tid_shown;
-		var time = (function(){
-			var date = new Date();
-			var hours = date.getHours();
-			var minutes = "" + date.getMinutes();
-			if (minutes.length == 1) minutes = "0" + minutes;
-			if (hours > 12) hours = hours - 12;
-			return [
-				(hours > 12) ? hours - 12 : (hours == 0) ? 12 : hours,
-				minutes + ((hours > 11) ? ' PM' : ' AM')
-			].join(':');
-		})();
+		var timestamp = new Date().getTime();
 		var item = new Element('li', {
-			html: '<span class="time">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute({
+			html: '<span class="time {time_stamp}">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute({
 				uname: user,
 				chat_text: msg.linkify(),
-				time: time
+				time: "Just Now",
+				time_stamp: timestamp
 			})
 		});
 		var parent;
@@ -507,7 +557,12 @@ Tap.Home = {
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
-			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', (msg || '').linkify()].join(''));
+			last.removeClass('noresp').set('html', [
+				'<strong>', 
+				user, 
+				':</strong> ', 
+				((msg.length < 70) ? msg : msg.substring(0, 70) + "..." || '').linkify()
+			].join(''));
 			tid_shown = parent.getElement('div.tap-response-box').getStyle('display') == 'block';
 		}
 		parent = $('yid_' + id);
@@ -524,7 +579,12 @@ Tap.Home = {
 			})();
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
-			last.removeClass('noresp').set('html', ['<strong>', user, ':</strong> ', (msg || '').linkify()].join(''));
+			last.removeClass('noresp').set('html', [
+				'<strong>',
+				user,
+				':</strong> ', 
+				((msg.length < 70) ? msg : msg.substring(0, 70) + "..." || '').linkify()
+			].join(''));
 			yid_shown = parent.getElement('div.tap-response-box').getStyle('display') == 'block';
 		}
 
@@ -682,7 +742,8 @@ Tap.Home = {
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.data)
 					});
-					self.currentStream = self.currentStream.combine(response.data.map(function(item){
+					// self.currentStream = self.currentStream.combine(response.data.map(function(item){
+					self.currentStream = [].combine(response.data.map(function(item){
 						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
 					}));
 					self.setChannels();
@@ -967,9 +1028,9 @@ Tap.Home = {
 					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'block');
 				$('taps-responded').setStyle('display', 'none');
 
-				self.switchTapper(el.getElement('a').get('title'), 
-					(el.getElement('a').get('grsymbol') || {toLowerCase: $empty}).toLowerCase(), 
-					id, 
+				self.switchTapper(el.getElement('a').get('title'),
+					(el.getElement('a').get('grsymbol') || {toLowerCase: $empty}).toLowerCase(),
+					id,
 					(el.getElement('a.add-tap-to') || {get:$empty}).get('grtype'));
 			}
 		}).send();
@@ -1081,7 +1142,7 @@ Tap.Home = {
 			}
 			var element = $((item.type == 'groups') ? 'gid_all' : item.type.replace('group', 'gid'));
 			if (element && item.perm) {
-				element.setStyle('background-color', '#FBC9CB');
+				// element.setStyle('background-color', '#FBC9CB');
 				element.addClass('unread');
 				// item.getElement('a').e
 				var counter = element.getElement('.unread-counter');
@@ -1127,7 +1188,9 @@ Tap.Home = {
 					$(document.body).fireEvent('click', {
 						target: (function(){
 							var parent = $(type == 'groups' ? 'gid_all' : type.replace('group', 'gid'));
-							return parent.getElement('a') || document.body;
+							console.log(parent);
+							return parent;
+							// return parent.getElement('a') || document.body;
 						})(),
 						stop: $empty,
 						preventDefault: $empty,
@@ -1140,9 +1203,10 @@ Tap.Home = {
 	},
 
 	changeDates: function(){
+		console.time('Dates');
 		var now = new Date().getTime();
-		$$('.tap-time').each(function(el){
-			var timestamp = el.className.remove(/tap-time\s/);
+		$$('.tap-time, span.time').each(function(el){
+			var timestamp = el.className.remove(/tap-time\s/).remove(/time\s/);
 			var orig = new Date(timestamp.toInt() * 1000);
 			var diff = ((now - orig) / 1000);
 			var day_diff = Math.floor(diff / 86400);
@@ -1150,13 +1214,14 @@ Tap.Home = {
 			el.set('text', day_diff == 0 && (
 					// diff < 60 && "Just Now" ||
 					diff < 120 && "Just Now" ||
-					diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+					diff < 3600 && Math.floor( diff / 60 ) + "min ago" ||
 					diff < 7200 && "An hour ago" ||
 					diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
 				day_diff == 1 && "Yesterday" ||
 				day_diff < 7 && day_diff + " days ago" ||
 				day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago");
 		});
+		console.timeEnd('Dates');
 	}
 
 };

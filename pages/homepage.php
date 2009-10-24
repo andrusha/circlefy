@@ -229,7 +229,7 @@ EOF;
 				'gname' => $gname,
 				'pic_36' => $pic_36,
 				'symbol' => $symbol,
-				'display_symbol' => $display_symbol,
+				'display_symbol' => $gname,
 				'type' => $connected,
 				'tapd' => $tapd,
 				'message_count' => $message_count
@@ -392,7 +392,7 @@ $this->set($data_all_logout_bits,'logout_bits');
 	AS ugm 
 	JOIN group_members AS t1 ON t1.gid=ugm.gid
 	JOIN groups AS t2 ON t2.gid = ugm.gid
-	GROUP BY ugm.gid ORDER BY gid DESC, count DESC LIMIT 5;
+	GROUP BY ugm.gid ORDER BY gid DESC, count DESC LIMIT 15;
 EOF;
 	$this->db_class_mysql->set_query($trending_groups_query,'trending_groups',"This query tells you the groups that are trending");
 	$trending_groups_results = $this->db_class_mysql->execute_query('trending_groups');
@@ -407,7 +407,7 @@ EOF;
 			'gid' => $gid,
 			'gname' => $gname,
 			'pic_36' => $pic_36,
-			'count' => $count+199
+			'count' => $count
 		);
 	
 	}

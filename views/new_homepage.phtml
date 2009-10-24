@@ -166,7 +166,8 @@ window.addEvent('domready', function(){
 
 		<div id="center-col">
 			<div id="tap-box" class="section">
-				<input type="text" id="tap-box-msg" alt="Start tapping by writing a message here." />
+				<div id="tap-box-counter">240</div>
+				<input type="text" id="tap-box-msg" maxlength="240" alt="Start tapping by writing a message here." />
 				<div id="tap-box-more">
 					<input type="text" id="tap-box-people" alt="Add some groups who'll receive your tap!" />
 					<a id="tap-box-send" href="#">tap!</a>
@@ -207,7 +208,12 @@ window.addEvent('domready', function(){
 									<strong>
 										<?= (!empty($last['resp_uname'])) ? $last['resp_uname'] . ":" : "" ?>
 									</strong>
-									<span><?= $last['last_resp'] ?></span>
+									<span>
+										<?php
+											$last_rep = $last['last_resp'];
+											echo (strlen($last_rep) < 70) ? $last_rep : substr($last_rep, 0, 70) . '...';
+										?>
+									</span>
 								</p>
 							</div>
 							<div class="tap-body">
@@ -221,9 +227,10 @@ window.addEvent('domready', function(){
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
+								<div class="tap-response-counter">240</div>
 								<ul class="tap-chat <?= empty($last['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:360px" alt="Respond to this tap." />
+								<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -268,7 +275,12 @@ window.addEvent('domready', function(){
 									<strong>
 										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
 									</strong>
-									<span><?= $bit['last_resp'] ?></span>
+									<span>
+										<?php
+											$last_rep = $bit['last_resp'];
+											echo (strlen($last_rep) < 70) ? $last_rep : substr($last_rep, 0, 70) . '...';
+										?>
+									</span>
 								</p>
 							</div>
 							<div class="tap-body">
@@ -282,9 +294,10 @@ window.addEvent('domready', function(){
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
+								<div class="tap-response-counter"></div>
 								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:360px" alt="Respond to this tap." />
+								<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -315,7 +328,7 @@ window.addEvent('domready', function(){
 						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
 						<strong><a href="#" title="Public Feed">Public Taps</a></strong>
 					</li>
-					<li id="gid_all" class="group">
+					<li id="gid_all" class="group selected">
 						<span class="counter"></span>
 						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
 						<strong><a href="#" title="Groups Feed">All Your Groups <span class="unread-counter">(0)</span></a></strong>
@@ -394,7 +407,9 @@ window.addEvent('domready', function(){
 						<strong>
 							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>
 						</strong>
-						<#: (bit.last_resp || "").linkify() #>
+						<# if (bit.last_resp) { #>
+							<#: ((bit.last_resp.length < 70) ? bit.last_resp : bit.last_resp.substring(0, 70) + "...").linkify() #>
+						<# } #>
 					</p>
 				</div>
 				<div class="tap-body">
@@ -408,13 +423,14 @@ window.addEvent('domready', function(){
 					</p>
 				</div>
 				<div class="tap-response-box clarity">
+					<div class="tap-response-counter"></div>
 					<# if (bit.count) { #>
 					<ul class="tap-chat">
 					<# } else { #>
 					<ul class="tap-chat noresp">
 					<# } #>
 					</ul>
-					<input type="text" class="tap-response" style="width:360px" alt="Respond to this tap." />
+					<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
 					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 				</div>
 				<div class="clarity"></div>

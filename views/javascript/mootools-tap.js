@@ -506,7 +506,7 @@ String.implement({
 
 	linkify: function(){
 		var regexp = new RegExp("\
-			(?:(?:ht|f)tp(?:s?)\\:\\/\\/|~\\/|\\/)?\
+			(?:(?:ht|f)tp(?:s?)\\:\\/\\/|~\\/|\\/){1}\
 			(?:\\w+:\\w+@)?\
 			(?:(?:[-\\w]+\\.)+\
 			(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))\
