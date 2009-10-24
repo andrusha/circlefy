@@ -58,6 +58,7 @@ EOF;
 			JOIN login AS l ON l.uid = gm.uid
 			WHERE gm.admin > 0 AND gm.gid = {$gid}
 EOF;
+			
 			$get_admins_results = $this->mysqli->query($get_admins_query);
 			if($get_admins_results->num_rows)
 			while($res = $get_admins_results->fetch_assoc() ){
