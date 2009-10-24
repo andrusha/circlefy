@@ -309,10 +309,8 @@ Tap.Groups = {
 					}
 				}).inject(document.body).adopt(desc.clone()).adopt(focus.clone());
 				temp.getElements('p').setStyles({'width': '260px', 'font-size': '16px'})
-				console.log(temp.getCoordinates().height);
 				adjust = (temp.getCoordinates().height * 1);
 				// adjust = (adjust > 100) ? 220 : adjust;
-				console.log(adjust);
 				top.store('adjust', adjust);
 				temp.destroy();
 			}

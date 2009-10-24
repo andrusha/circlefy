@@ -641,3 +641,17 @@ li.group.unread .unread-counter {
 	color: #999;
 	display: none;
 }
+
+.welcome_tap {
+	line-height: 1.8;
+	
+}
+
+.welcome_tap a {
+	text-transform: uppercase;
+	font-size: 11px;
+	color: #333;
+	padding: 3px;
+	border: 1px solid #BBE1EE;
+	background: #C9EEFB;
+}

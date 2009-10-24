@@ -272,7 +272,6 @@ Tap.Home = {
 				return false;
 			}
 		});
-		console.log(chans);
 		Tap.Push.sendCIDs(chans);
 	},
 
@@ -1188,7 +1187,6 @@ Tap.Home = {
 					$(document.body).fireEvent('click', {
 						target: (function(){
 							var parent = $(type == 'groups' ? 'gid_all' : type.replace('group', 'gid'));
-							console.log(parent);
 							return parent;
 							// return parent.getElement('a') || document.body;
 						})(),
@@ -1203,7 +1201,6 @@ Tap.Home = {
 	},
 
 	changeDates: function(){
-		console.time('Dates');
 		var now = new Date().getTime();
 		$$('.tap-time, span.time').each(function(el){
 			var timestamp = el.className.remove(/tap-time\s/).remove(/time\s/);
@@ -1221,7 +1218,6 @@ Tap.Home = {
 				day_diff < 7 && day_diff + " days ago" ||
 				day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago");
 		});
-		console.timeEnd('Dates');
 	}
 
 };

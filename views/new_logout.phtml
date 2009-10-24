@@ -107,6 +107,89 @@ ul.pitch li {
 	margin-top: 20px;
 	margin-left: 20px;
 }
+
+#curtain {
+	display: none;
+	position: absolute;
+	background: #000;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	top: 0;
+}
+
+#connect-signup {
+	display: none;
+	position: absolute;
+	width: 500px;
+	z-index: 2;
+	background: #F2F2F2;
+	top: 100px;
+	left: 200px;
+	border: 1px solid #ccc;
+	padding: 10px;
+}
+
+#connect-signup h2 {
+	border-bottom: 2px solid #ccc;
+	color: #333;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+#connect-signup p {
+	margin-bottom: 10px;
+	font-size: 13px;
+}
+
+#connect-signup span.indicator {
+	display: none;
+}
+
+#connect-signup p.forms {
+	margin-top: 10px;
+	padding-left: 30px;
+	clear: both;
+}
+
+#connect-signup label {
+	font-size: 16px;
+	margin-top: 20px;
+	font-weight: bold;
+	color: #3088ED;
+}
+
+#connect-signup p.guide {
+	display: none;
+	margin-top: -5px;
+	text-align: right;
+	padding-right: 60px;
+	margin-bottom: 10px;
+	clear: both;
+	color: #F12C46;
+}
+
+#connect-signup input {
+	border: 1px solid #ccc;
+	padding: 5px;
+	float: right;
+	margin-right: 50px;
+	width: 300px;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+#connect-signup input.error {
+	background: #FDEBEB;
+}
+
+#connect-signup input.passed {
+	background: #EEFDEB;
+}
+
+#connect-signup button {
+	font-size: 16px;
+}
 </style>
 <script type="text/javascript">
 window.addEvent('load', function(){
@@ -143,6 +226,28 @@ rotate.delay(7000);
 </head>
 
 <body>
+
+	<div id="curtain"></div>
+	<div id="connect-signup">
+		<h2>Just one more thing before we log you in..</h2>
+		<p>We're almost there <strong><span id="connect-signup-name"></span></strong>, but first we'll need you to add a few more details to personalize your Tap experience.</p>
+		<input type="text" name="name" style="display:none" />
+		<p class="forms" style="margin-top:30px"><label>Username</label> <input type="text" name="uname" /></p>
+		<p class="guide">This username is already taken.</p>
+		<p class="forms"><label>Email</label> <input type="text" name="email" /></p>
+		<p class="guide">Enter a valid email address.</p>
+		<p class="forms"><label>Password</label> <input type="password" name="pass" /></p>
+		<p class="guide">Passwords must be at least 4 characters.</p>
+		<p style="margin-top: 50px; text-align: right; font-size: 14px; margin-right: 20px">
+			<span class="indicator">
+				<img src="/images/spinner.gif" /> 
+				<span class="indic-msg">Signing you up...</span>
+			</span> 
+			<span id="connect-signup-actions">
+				<button>Start Tapping!</button> or <a id="connect-cancel" href="#">close</a>
+			</span>
+		</p>
+	</div>
 
 	<?php include(LOGOUT_HEADER); ?>
 
@@ -214,10 +319,9 @@ rotate.delay(7000);
 
 			<?php if ($_GET['q'] != 'swineflu'): ?>
 			<div id="rotator" class="section">
-				
+
 			</div>
 			<?php endif;?>
-			
 			<!-- 			<div id="rotator-icon"></div>
 						<div id="rotator-text">
 							<strong>#1 — Join groups, schools and companies related to your life.</strong><br/>
@@ -470,12 +574,164 @@ rotate.delay(7000);
 		</ul>
 	</div>
 <script type="text/javascript">
-var on_connect = function(){
+(function(){
+
+var curtain = $('curtain');
+var connectForm = $('connect-signup');
+var indic = connectForm.getElement('span.indicator');
+var indic_msg = indic.getElement('span.indic-msg');
+$('connect-cancel').addEvent('click', function(e){
+	e.stop();
+	$$(curtain, connectForm).setStyle('display', 'none')
+});
+var signupData = {
+	name: connectForm.getElement('input[name="name"]').store('passed', true),
+	uname: connectForm.getElement('input[name="uname"]'),
+	email: connectForm.getElement('input[name="email"]'),
+	pass: connectForm.getElement('input[name="pass"]')
+};
+
+var showError = function(el, msg){
+	el.store('passed', false).addClass('error');
+	el.getParent('p').getNext('p.guide').set('text', msg).setStyle('display', 'block');
+};
+
+var removeError = function(el){
+	el.store('passed', true).removeClass('err').addClass('passed');
+	el.getParent('p').getNext('p.guide').setStyle('display', 'none');
+};
+
+var noErrors = function(){
+	return !$H(signupData).getValues().map(function(item){
+		return !!item.retrieve('passed');
+	}).contains(false);
+};
+
+var checkUname = function(el){
+	if (el.isEmpty() || !el.ofLength(4, 20)) {
+		return showError(el, 'Username must be at least 4 characters');
+	} else {
+		new Request({
+			url: 'AJAX/check_signup.php',
+			data: {
+				type: 1,
+				val: el.get('value')
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (!response.available) {
+					showError(el, 'This username is already taken.');
+				} else {
+					removeError(el);
+				}
+			}
+		}).send();
+	}
+	mpmetrics.track('username-complete', {});
+	return removeError(el);
+};
+
+var checkEmail = function(el){
+	if (el.isEmpty() || !el.isEmail()) {
+		return showError(el, 'Please enter a valid email.');
+	} else {
+		new Request({
+			url: 'AJAX/check_signup.php',
+			data: {
+				type: 2,
+				val: el.get('value')
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (!response.available) {
+					showError(el, 'This email is already used.');
+				} else {
+					removeError(el);
+				}
+			}
+		}).send();
+	}
+	return removeError(el);
+};
+
+var checkPass = function(el){
+	if (el.isEmpty() || !el.ofLength(6, 20)) {
+		return showError(el, 'Password must be at least 6 characters.');
+	}
+	mpmetrics.track('password-complete', {});
+	return removeError(el);
+};
+
+signupData.uname.addEvent('blur', checkUname.toHandler(this));
+signupData.email.addEvent('blur', checkEmail.toHandler(this));
+signupData.pass.addEvent('blur', checkPass.toHandler(this));
+
+connectForm.getElement('button').addEvent('click', function(e){
+	var self = this;
+	if (noErrors()) {
+		if (!connectForm.metricked) {
+			mpmetrics.track('signup-forms-finished', {});
+			connectForm.metricked = true;
+		}
+		new Request({
+			url: 'AJAX/ajaz_sign_up.php',
+			data: {
+				uname: signupData.uname.get('value'),
+				fname: signupData.name.get('value'),
+				email: signupData.email.get('value'),
+				pass: signupData.pass.get('value'),
+				lang: "English",
+				fid: 0,
+				signup_flag: 'signup_function();'
+			},
+			onRequest: function(){
+				$('connect-signup-actions').setStyle('display', 'none');
+				indic_msg.set('text', 'Signing you up..');
+				indic.setStyle('display', 'block');
+			},
+			onSuccess: function(){
+				indic_msg.set('text', 'Logging you in..');
+				mpmetrics.track('signup', {'success' : 'true'}, function(){
+					window.location = window.location.toString().replace('?logout=true', '');
+				});
+			}
+		}).send();
+	} else {
+		$$($H(signupData).getValues().filter(function(item){
+			return !item.retrieve('passed');
+		})).fireEvent('blur', [e]);
+	}
+});
+
+this.on_connect = function(e){
 	var api = FB.Facebook.apiClient;
 	var uid = api.get_session().uid;
 	api.users_getInfo(uid, 'username, name, pic_square', function(data){
 		if (!data) return null;
 		data = data.pop();
+
+		$('connect-signup-name').set('text', data.name);
+		signupData.name.set('value', data.name);
+		if (data.username) signupData.uname.set('value', data.username).fireEvent('blur', {
+			stop: $empty, 
+			preventDefault: $empty,
+			stopPropagation: $empty
+		});
+
+		curtain.set('styles', {
+			'opacity': '.3',
+			'display': 'block',
+			'height': window.getSize().x,
+			'width': window.getWidth()
+		});
+		connectForm.set('styles', {
+			left: (window.getSize().x / 2) - 265,
+			'display': 'block'
+		});
+		
+		signupData.uname.focus();
+
+		/*
 		var form = $('signup-form');
 		if (data.username) form.getElement('input[name="user"]').set('value', data.username);
 		form.getElement('input[name="name"]').set('value', data.name);
@@ -483,16 +739,19 @@ var on_connect = function(){
 		form.fireEvent('submit');
 		form.highlight();
 		$('connect-guide').setStyle('display', 'block');
+		*/
 		mpmetrics.track('fbconnect-complete', {});
-		window.fbconnected = true;
+		// window.fbconnected = true;
 	});
 };
 
-var click_connect = function(){
+this.click_connect = function(){
 	mpmetrics.track('fbconnect-click', {});
 };
 
-FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm"); 
+FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm");
+
+})();
 </script>
 </body>
 </html>

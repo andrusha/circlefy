@@ -267,7 +267,6 @@ Tap.Main = {
 				},
 				onSuccess: function(){
 					$('signup-guide').set('text', 'Logging you in...').setStyle('display', 'block');
-					if (window.fbconnected) mpmetrics.track('fbconnect-signup', {});
 					mpmetrics.track('signup', {'success' : 'true'}, function(){
 						window.location = window.location.toString().replace('?logout=true', '');
 					});
