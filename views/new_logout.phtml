@@ -31,9 +31,7 @@ pageTracker._trackPageview();
 <script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
 <script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
-<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
 <script type="text/javascript" src="views/javascript/tap.main.js"></script>
-<script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
 <script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <style type="text/css" media="screen">
@@ -308,20 +306,14 @@ rotate.delay(7000);
 
 			<?php if ($_GET['q'] == 'swineflu'): ?>
 			<div class="section info" style="text-align:center; font-size: 14px">
-			<h2><b>Join the SwineFlu Conversation!</b>
-			<br/>
-			<br/>
-			Connect with Facebook Connect!</h2>
-			<br/>
-				<fb:login-button id="fblogin" onlogin="on_connect()" onclick="click_connect()"></fb:login-button>
+				Join the SwineFlu Conversation!
 			</div>
 			<?php endif; ?>
 
-			<?php if ($_GET['q'] != 'swineflu'): ?>
 			<div id="rotator" class="section">
 
 			</div>
-			<?php endif;?>
+
 			<!-- 			<div id="rotator-icon"></div>
 						<div id="rotator-text">
 							<strong>#1 — Join groups, schools and companies related to your life.</strong><br/>
@@ -573,6 +565,7 @@ rotate.delay(7000);
 			</li>
 		</ul>
 	</div>
+<script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
 <script type="text/javascript">
 (function(){
 
