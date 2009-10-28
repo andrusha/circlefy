@@ -1,12 +1,14 @@
 Tap = window.Tap || {};
 
+Tap.Vars = {};
+
 Tap.Main = {
 
 	init: function(){
 		var self = this;
 		this.changeDates();
 
-		$('login').addEvent('submit', this.onLogin.toHandler(this));
+		$('tap-login').addEvent('submit', this.onLogin.toHandler(this));
 
 		var signUp = $('signup-form');
 		var data = this.data = {
@@ -43,7 +45,7 @@ Tap.Main = {
 		});
 		$('signup-title').setStyle('cursor', 'pointer').addEvent('click', function(){
 			if (!this.retrieve('metric')) {
-				mpmetrics.track('signup-image-click', {});
+				mpmetrics.track('signup-image-click', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 				this.store('metric', true);
 			}
 			data.user.focus();
@@ -56,7 +58,7 @@ Tap.Main = {
 		input.set('value', 'Sign in to join the conversation!');
 		box.setStyle('display', 'block');
 		if (!el.retrieve('metric')) {
-			mpmetrics.track('outside-response-box', {});
+			mpmetrics.track('outside-response-box', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 			el.store('metric', true);
 		}
 	},
@@ -105,7 +107,7 @@ Tap.Main = {
 				items.getElements('li').reverse().inject('main-stream', 'top');
 				Tap.ResponseBot.init();
 				self.changeDates();
-				if (keyword) mpmetrics.track('outside-search', {'keyword': keyword});
+				if (keyword) mpmetrics.track('outside-search', {'keyword': keyword, 'type': Tap.Vars.ref ? 'referral' : 'direct'});
 			}
 		}).send();
 	},
@@ -167,7 +169,7 @@ Tap.Main = {
 				}
 			}).send();
 		}
-		mpmetrics.track('username-complete', {});
+		mpmetrics.track('username-complete', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 		return this.removeError(el);
 	},
 
@@ -206,7 +208,7 @@ Tap.Main = {
 		if (el.isEmpty() || !el.ofLength(6, 20)) {
 			return this.showError(el, 'Password must be at least 6 characters.');
 		}
-		mpmetrics.track('password-complete', {});
+		mpmetrics.track('password-complete', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 		return this.removeError(el);
 	},
 
@@ -247,7 +249,7 @@ Tap.Main = {
 		var data = this.data;
 		if (this.noErrors()) {
 			if (!this.metricked) {
-				mpmetrics.track('signup-forms-finished', {});
+				mpmetrics.track('signup-forms-finished', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 				this.metricked = true;
 			}
 			new Request({
@@ -267,7 +269,7 @@ Tap.Main = {
 				},
 				onSuccess: function(){
 					$('signup-guide').set('text', 'Logging you in...').setStyle('display', 'block');
-					mpmetrics.track('signup', {'success' : 'true'}, function(){
+					mpmetrics.track('signup', {'success' : 'true', 'type': Tap.Vars.ref ? 'referral' : 'direct'}, function(){
 						window.location = window.location.toString().replace('?logout=true', '');
 					});
 				}

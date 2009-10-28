@@ -1,0 +1,796 @@
+<?php
+$inits = array();
+if (is_array($_t['groups_bits'])) {
+	foreach($_t['groups_bits'] as $bit) {
+		array_push($inits, $bit['cid']);
+	}
+}
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-11153159-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>tap - alpha</title>
+
+<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<style type="text/css" media="all">@import "/views/style_sheets/TextboxList.css";</style>
+<style type="text/css" media="all">@import "/views/style_sheets/TextboxList.Autocomplete.css";</style>
+<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript" src="/views/javascript/textboxlist-complete.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
+<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+<script type="text/javascript" src="/views/javascript/tap.push.js"></script>
+<script type="text/javascript">
+Tap = window.Tap || {};
+Tap.Vars = {
+	uname: '<?= $_SESSION["uname"] ?>',
+	user: '<?= $_t["uid"] ?>',
+	group: '<?= $_t["gid"] ?>',
+	tap: '<?= $_t["cid"] ?>'
+};
+
+Tap = window.Tap || {};
+
+Tap.Public = {
+
+	init: function(){
+		var self = this;
+		var search = this.search = $('tap-feed-search');
+		this.mainStream = $('main-stream');
+
+		if (search) {
+			new OverText(search, { positionOptions: { offset: {x: 6, y: 4}}}).show();
+				search.addEvents({
+				'keypress': function(e){
+					if (e.key == 'enter') self.onSearch(this, e);
+				},
+				// 'blur': self.onSearch.toHandler(this)
+			});
+			$(document.body).addEvents({
+				'click:relay(a.reset-feed)': function(e){
+					e.stop();
+					search.set('value', '');
+					self.onSearch(search, e);
+				}
+			});
+		}
+
+		var chat = this.chatbox = $('tap-chat-perma');
+		if (chat) {
+			Tap.Push.addEvents({
+				'connect': function(){
+					Tap.Push.sendCIDs([Tap.Vars.tap]);
+				},
+				'typing': this.typingIndicator.bind(this),
+				'response': this.parseResponse.bind(this)
+			});
+			var uid = this.uid = $('tapper-info').getElement('p.tap').get('rel');
+			var chatBox = this.chatBox = chat.getElement('ul.tap-chat');
+			chatBox.scrollTo(0, chatBox.getScrollSize().y);
+			var char_indic = chat.getElement('div.tap-response-counter');
+			var chatText = this.chatText = chat.getElement('input.tap-response');
+			new OverText(chatText, {positionOptions: {offset: {x: 6, y: 6}}});
+			chatText.addEvents({
+				'keypress': function(e){
+					if (e.key == 'enter') {
+						char_indic.set('text', 240);
+						self.sendResponse();
+					} else {
+						char_indic.set('text', 240 - this.get('value').length);
+						self.typing();
+					}
+				},
+				'focus': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+					char_indic.setStyle('display', 'block');
+				},
+				'change': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+				},
+				'blur': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+					if (this.get('value').isEmpty()) char_indic.setStyle('display', 'none');
+				}
+			});
+		}
+	},
+	
+	typing: function(){
+		var self = this;
+		if (this.isTyping) return null;
+		(function(){ self.isTyping = false; }).delay(1500);
+		this.isTyping = true;
+		new Request({
+			url: '/AJAX/typing.php',
+			data: {
+				cid: Tap.Vars.tap,
+				response: 1
+			}
+		}).send();
+	},
+
+	typingIndicator: function(cid){
+		var self = this;
+		if (this.timeout) this.timeout = $clear(this.timeout);
+		var indic = $('tapper-info').getElement('span.tap-typing');
+		indic.set('text', '(Someone\'s typing)');
+		this.timeout = (function(){ indic.set('text', ''); }).delay(2500);
+	},
+
+	sendResponse: function(){
+		var self = this;
+		var id = Tap.Vars.tap;
+		var msg = this.chatText.get('value');
+		if (msg.isEmpty()) return null;
+		new Request({
+			url: '/AJAX/respond.php',
+			data: {
+				cid: id,
+				response: msg,
+				init_tapper: this.uid,
+				first: (!this.firstResp) ? 1 : 0
+			},
+			onRequest: function(){
+				self.chatText.set('value', '');
+				self.chatText.focus();
+			},
+			onSuccess: function(){
+				var response = this.response.text;
+				this.firstResp = true;
+				self.addConvo();
+			}
+		}).send();
+		// this.fireEvent('sendResponse');
+	},
+
+	parseResponse: function(id, user, msg){
+		var self = this;
+		var timestamp = new Date().getTime();
+		var item = new Element('li', {
+			html: '<span class="time {time_stamp}">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute({
+				uname: user,
+				chat_text: msg.linkify(),
+				time: "Just Now",
+				time_stamp: timestamp
+			})
+		});
+		item.inject(this.chatBox, 'bottom').set('tween', {duration:800}).highlight('#d5fbc9');
+		this.chatBox.removeClass('noresp').scrollTo(0, this.chatBox.getScrollSize().y);
+		
+		// Convo Box
+		var list = $('people-list');
+		var person = $('person_' + user.replace(' ', ''));
+		if (!person) {
+			person = new Element('li', {
+				'id': 'person_' + user.replace(' ', ''),
+				'html': '<a href="/user/'+ user +'">'+ user +'</a> \
+				<span class="floater">0<span>'
+			}).inject(list);
+		}
+		list.getElements('.no-convos').destroy();
+		var counter = person.getElement('span.floater');
+		counter.does(function(){
+			this.set('text', this.get('text').toInt() + 1);
+		});
+	},
+	
+	addConvo: function(){
+		if (this.addedConvo) return null;
+		var list = $('people-list');
+		var person = $('person_' + (Tap.Vars.uname || "").replace(" ", ""));
+		if (!person) {
+			new Request({
+				url: 'AJAX/add_active.php',
+				data: {
+					cid: Tap.Vars.tap
+				},
+				onSuccess: function(){
+					var response = this.response.text;
+				}
+			}).send();
+		}
+	},
+
+	onSearch: function(el, e){
+		var self = this;
+		var keyword = el.get('value');
+		// if (!keyword.isEmpty()){
+			new Request({
+				url: '/AJAX/filter_creator.php',
+				data: (function(){
+					var data = {search: keyword};
+					if (Tap.Vars.user) $extend(data, {
+						type: 99,
+						uid: Tap.Vars.user
+					});
+					if (Tap.Vars.group) $extend(data, {
+						type: 1,
+						id: Tap.Vars.group
+					});
+					return data;
+				})(),
+				onRequest: function(){
+					$('loading-indicator').setStyle('display', 'inline');
+				},
+				onComplete: function(){
+					$('loading-indicator').setStyle('display', 'none');
+				},
+				onSuccess: function(){
+					var response = JSON.decode(this.response.text);
+					var items;
+					if (response.results) {
+						response.data = response.data.filter(function(item){
+							return !!item.cid;
+						});
+						items = new Element('div', {
+							html: self.parseTemplate('taps', response.data)
+						});
+						self.currentStream = response.data.map(function(item){
+							return item.cid;
+						});
+					} else {
+						items = new Element('div').adopt($('no-results').clone());
+					}
+					self.mainStream.empty();
+					items.getElements('li').reverse().inject('main-stream', 'top');
+				}
+			}).send();
+	},
+
+	parseTemplate: function(type, data){
+		var template = $(({
+			taps: 'template-bit'
+		})[type]).innerHTML.cleanup();
+		if (!this.templater) this.templater = new Template();
+		return this.templater.parse(template, data);
+	}
+
+};
+
+window.addEvent('domready', Tap.Public.init.bind(Tap.Public));
+</script>
+<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
+<style>
+div.stats {
+	margin-bottom: 20px;
+}
+
+div.stats h2 {
+	font-size: 13px;
+	color: #666;
+	font-weight: normal;
+	margin-bottom: 10px;
+}
+
+.tab-list p.icon {
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 20px;
+}
+
+.tab-list h2 {
+	font-size: 20px;
+	color: #333;
+}
+
+.tab-list p.actions {
+	font-size: 10px;
+}
+
+div.stats h2 span {
+	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+div.stats ul li {
+	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
+	color: #666;
+	font-size: 12px;
+	padding: 5px;
+}
+
+div.stats li span.floater {
+	float: right;
+	color: #666;
+	font-size: 12px;
+	padding: 5px;
+	padding-top: 0;
+}
+
+#tapper-info {
+	padding: 20px;
+	margin-bottom: 20px;
+	background: #F2F2F2;
+	border: 1px solid #E0E0E0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#tapper-info p.tap-name {
+	font-size: 18px;
+}
+
+#tapper-info a.button {
+	padding: 5px;
+	float: right;
+	background: #ccc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	font-size: 12px;
+}
+
+#tapper-info a.button:hover {
+	background: #84B5ED;
+	text-decoration: none;
+	color: #fff;
+}
+
+#tapper-info p.icon {
+	float: left;
+	margin-right: 30px;
+}
+
+#tapper-info p.tap {
+	margin-top: 10px;
+	font-size: 16px;
+	padding-left: 90px;
+}
+
+#tapper-info span.tap-info {
+	margin-top: 5px;
+	font-size: 12px;
+}
+
+#tapper-info span.tap-resp {
+	margin-left: 10px;
+	font-size: 12px;
+	padding-left: 10px;
+	border-left: 1px solid #333;
+}
+
+#tapper-info a {
+	color: #333;
+}
+
+#tap-chat-perma {
+	background: #F2F2F2;
+	border: 1px solid #E0E0E0;
+	padding: 8px;
+}
+
+ul.tap-chat {
+	height: 300px;
+}
+
+ul.tap-chat li {
+	font-size: 16px;
+}
+
+input.tap-response {
+	font-size: 14px;
+}
+
+div.tap-response-counter {
+	right: 10px;
+	color: #00B7E9;
+}
+</style>
+</head>
+
+<body>
+
+	<?php include(NEW_HEADER); ?>
+
+	<div id="tap-feed-outside-more">
+		<p style="margin-bottom:5px">Allow messages from this groups:</p>
+		<p>
+			<input type="text" name="outside-from" alt="Choose sources.." />
+		</p>
+		<p style="clear:both;">
+			<a href="#" id="tap-feed-outside-set">Save</a>
+		</p>
+	</div>
+
+	<div id="main">
+
+		<div class="left-col" style="margin-right: 20px">
+			<?php
+				if ($page == 'public_user'):
+					$stats = $_t['stats'];
+			?>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Statistics</div>
+			</div>
+			<div class="tab-list">
+				<div class="stats">
+					<h2><span><?= $stats['message_count'] ?></span> taps sent.</h2>
+					<h2><span><?= $stats['response_count'] ?></span> responses received.</h2>
+					<h2><span><?= $stats['group_count'] ?></span> groups joined.</h2>
+				</div>
+			</div>
+			<?php
+				elseif ($page == 'public_group'):
+			?>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">Popular Taps</div>
+			</div>
+			<div class="tab-list">
+				<div class="stats">
+					<?php
+						if (!empty($_t['popular_taps'])):
+							foreach ($_t['popular_taps'] as $tap):
+					?>
+					<ul>
+						<li>
+							<a href="/tap/<?= $tap['cid'] ?>">
+								<?= (strlen($tap['tap']) > 15) ? substr($tap['tap'], 0, 15) . '...' : $tap['tap'] ?>
+							</a>
+							<span class="floater"><?= $tap['count'] ?><span>
+						</li>
+					</ul>
+					<?php
+							endforeach;
+						endif;
+					?>
+				</div>
+			</div>
+			<?php
+				elseif ($page == 'public_tap'):
+			?>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff">User Info</div>
+			</div>
+			<div class="tab-list">
+			</div>
+			<?php
+				endif;
+			?>
+
+		</div>
+
+		<div id="center-col">
+
+			<div id="tapper-info" class="section">
+				<?php if ($page == 'public_user' || $page == 'public_tap'): ?>
+				<p class="icon"><img src="/user_pics/<?= $_t['user_pic_med'] ?>" /></p>
+				<p class="tap-name">
+					<strong><?= $_t['user'] ?></strong> 
+					<span class="tap-typing" style="color:#518E3E; font-size:12px;"></span>
+				</p>
+				<?php elseif ($page == 'public_group'): ?>
+				<p class="icon"><img src="/group_pics/<?= $_t['group_pic_med'] ?>" /></p>
+				<a href="/groups?search=<?= $_t['gname'] ?>" class="button">Join Group</a>
+				<p class="tap-name"><strong><?= $_t['gname'] ?></strong></p>
+				<?php endif; ?>
+				<?php
+					if (!empty($_t['user_bits'])):
+						$bit = array_shift($_t['user_bits'])
+				?>
+					<p class="tap" rel="<?= $bit['uid'] ?>">
+						<?php if ($page == 'public_group'): ?>
+						<a href="/user/<?= $bit['uname']?>" class="tap-from"><strong><?= $bit['uname']?>:</strong></a>
+						<?php endif; ?>
+						<?= $bit['chat_text'] ?><br />
+						<span class="tap-info">
+							<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
+							<?php if ($page == 'public_group' || $page == 'public_user'): ?>
+							<span class="tap-resp"><a href="/tap/<?= $bit['cid'] ?>">Respond</a></span>
+							<?php else: ?>
+							<span class="tap-resp">Viewers: 
+								<strong><?= (!empty($bit['viewer_count'])) ? $bit['viewer_count'] : '0' ?></strong>
+							</span>
+							<?php endif; ?>
+						</span>
+					</p>
+				<?php
+					endif;
+				?>
+				<div style="clear:both;"></div>
+			</div>
+
+			<?php
+				if ($page == 'public_user' || $page == 'public_group'):
+			?>
+			<div id="tap-feed" class="section">
+				<div class="section-head">
+					<h1>
+						<input type="text" id="tap-feed-search" alt="Search through feed." />
+						<span style="clear:right"></span>
+						<?php if ($page == 'public_user'): ?>
+						<!-- <img id="tap-feed-icon" src="/user_pics/<?= $_t['user_pic_small'] ?>" style="float:left; margin-right:10px; height: 20px; width: 20px" /> -->
+						<span id="tap-feed-name"><?= $_t['user'] ?>'s Feed</span>
+						<?php elseif ($page == 'public_group'): ?>
+						<span id="tap-feed-name"><?= $_t['gname'] ?>'s Feed</span>
+						<?php endif; ?>
+						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
+					</h1>
+				</div>
+				<div class="section-body">
+					<div id="tap-notify" style="display:none"></div>
+					<ul id="main-stream" class="tap-stream">
+						<?php
+							if (!empty($_t['user_bits'])):
+								foreach($_t['user_bits'] as $bit):
+						?>
+						<li id="tid_<?= $bit['cid'] ?>">
+							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
+							<div class="tap-actions">
+								<span class="tap-views">Viewers:
+									<strong>
+									<?= (!empty($bit['viewer_count'])) ? $bit['viewer_count'] : '0' ?>
+									</strong>
+								</span>
+								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="/tap/<?= $bit['cid'] ?>">
+									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
+								</a>
+								<p class="tap-respond-last <?= empty($bit['count']) ? 'noresp' : '' ?>">
+									<strong>
+										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
+									</strong>
+									<span>
+										<?php
+											$last_rep = $bit['last_resp'];
+											echo (strlen($last_rep) < 70) ? $last_rep : substr($last_rep, 0, 70) . '...';
+										?>
+									</span>
+								</p>
+							</div>
+							<div class="tap-body">
+								<p class="tap-info">
+									<span class="tap-from">
+										<a href="/user/<?= $bit['uname'] ?>"><?= $bit['fname'] . " " . $bit['lname'] ?></a>
+									</span>
+									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
+									<span class="tap-typing"></span>
+								</p>
+								<p>
+									<span class="tap-msg"><?= $bit['chat_text'] ?></span>
+								</p>
+							</div>
+							<div class="tap-response-box clarity">
+								<div class="tap-response-counter"></div>
+								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
+								</ul>
+								<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
+								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
+							</div>
+							<div class="clarity"></div>
+						</li>
+						<?php
+								endforeach;
+							else:
+						?>
+						<li class="noresults">
+							<?php if ($page == 'public_user'): ?>
+							<p>There isn't anything here yet! <a href="/">Send a tap</a>!</p>
+							<?php elseif ($page == 'public_group'): ?>
+							<p>There isn't anything here yet! <a href="/">Send this group a tap</a>!</p>
+							<?php endif; ?>
+						</li>
+						<?php
+							endif;
+						?>
+					</ul>
+				</div>
+			</div>
+			<?php
+				else:
+			?>
+			<div id="tap-chat-perma" class="section">
+				<div class="tap-response-box clarity" style="display: block">
+					<div class="tap-response-counter">240</div>
+					<ul class="tap-chat <?= empty($_t['responses']) ? 'noresp' : '' ?>">
+						<?php
+							if (!empty($_t['responses'])):
+								foreach($_t['responses'] as $resp):
+						?>
+						<li>
+							<span class="time <?= $resp['chat_time'] ?>"><?= date('g:i A', $resp['chat_time']) ?></span>
+							<strong><?= $resp['uname'] ?>:</strong>
+							<?= $resp['chat_text'] ?>
+						</li>
+						<?php
+								endforeach;
+							endif;
+						?>
+					</ul>
+					<input type="text" class="tap-response" style="width:483px" maxlength="240" alt="Respond to this tap." />
+					<!-- <a href="#">Respond</a> or  <a class="tap-respond-cancel" href="#">Close</a> -->
+				</div>
+			</div>
+			<?php
+				endif;
+			?>
+		</div>
+
+		<div id="left-col">
+			<?php
+				if ($page == 'public_user'):
+			?>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff"><?= $_t['user'] ?>'s Groups</div>
+			</div>
+			<div class="tab-list">
+				<ul>
+					<?php
+						if (!empty($_t['your_groups'])):
+							foreach ($_t['your_groups'] as $group):
+					?>
+					<li id="gid_<?= $group['gid'] ?>" class="group">
+						<img src="/group_pics/<?= $group['pic_36']?>" />
+						<a href="/group/<?= $group['symbol'][0] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
+						<!-- <a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a> -->
+					</li>
+					<?php
+							endforeach;
+						endif;
+					?>
+				</ul>
+			</div>
+			<?php
+				elseif ($page == 'public_group'):
+			?>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff; font-size: 12px"><?= $_t['gname'] ?>'s Members</div>
+			</div>
+			<div class="tab-list">
+				<p style="font-size: 16px;"><strong>This group has <?= (!empty($_t['member_count'])) ? $_t['member_count'] : 0 ?> members.</strong></p>
+				<div class="stats" style="margin-top: 20px">
+					<p style="margin-bottom: 10px"><strong>Popular Members</strong></p>
+					<ul>
+					<?php
+						if (!empty($_t['popular_members'])):
+							foreach ($_t['popular_members'] as $member):
+					?>
+					<li>
+						<a href="/user/<?= $member['member'] ?>"><?= $member['member'] ?></a>
+						<span class="floater"><?= $member['count'] ?><span>
+					</li>
+					<?php
+							endforeach;
+						endif;
+					?>
+					</ul>
+				</div>
+			</div>
+			<?php
+				elseif ($page == 'public_tap'):
+			?>
+			<div id="groups-tab">
+				<div class="tab-in" style="color:#fff; font-size: 12px">In This Conversation</div>
+			</div>
+			<div class="tab-list">
+				<div class="stats">
+					<ul id="people-list">
+					<?php
+						if (!empty($_t['invovled'])):
+							foreach ($_t['invovled'] as $person):
+					?>
+					<li id="person_<?= str_replace(" ", "", $person['uname']) ?>">
+						<a href="/user/<?= $person['uname'] ?>"><?= $person['uname'] ?></a>
+						<span class="floater"><?= $person['count'] ?><span>
+					</li>
+					<?php
+							endforeach;
+						else:
+					?>
+					<li class="no-convos">
+						<strong>No One Responded Yet</strong>
+					</li>
+					<?php
+						endif;
+					?>
+					</ul>
+				</div>
+			</div>
+			<?php
+				endif;
+			?>
+		</div>
+
+	</div>
+
+	<div id="templates" style="display:none">
+		<ul id="template-bit">
+			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
+			<li id="tid_<#: bit.cid #>">
+				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" rel="<#: bit.uid #>"  />
+				<div class="tap-actions">
+					<span class="tap-views">Viewers:
+						<strong><#: bit.viewer_count || 0 #></strong>
+					</span>
+					<# if (bit.count) { #>
+					<a class="tap-respond" href="#">
+					<# } else { #>
+					<a class="tap-respond noresp" href="#">
+					<# } #>
+						<a href="/tap/<#: bit.cid #>">
+						Respond <span class="tap-respond-count">(<#: bit.count #>)</span>
+						</a>
+					</a>
+					<# if (bit.count) { #>
+					<p class="tap-respond-last">
+					<# } else { #>
+					<p class="tap-respond-last noresp">
+					<# } #>
+						<strong>
+							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>
+						</strong>
+						<# if (bit.last_resp) { #>
+							<#: ((bit.last_resp.length < 70) ? bit.last_resp : bit.last_resp.substring(0, 70) + "...").linkify() #>
+						<# } #>
+					</p>
+				</div>
+				<div class="tap-body">
+					<p class="tap-info">
+						<span class="tap-from">
+							<a href="/user/<#: bit.uname #>">
+							<#: [bit.fname, bit.lname].join(" ") #>
+							</a>
+						</span>
+						<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
+						<span class="tap-typing"></span>
+					</p>
+					<p>
+						<span class="tap-msg"><#: bit.chat_text.linkify() #></span>
+					</p>
+				</div>
+				<div class="tap-response-box clarity">
+					<div class="tap-response-counter"></div>
+					<# if (bit.count) { #>
+					<ul class="tap-chat">
+					<# } else { #>
+					<ul class="tap-chat noresp">
+					<# } #>
+					</ul>
+					<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
+					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
+				</div>
+				<div class="clarity"></div>
+			</li>
+			<# } #>
+		</ul>
+		<ul>
+			<li id="no-taps" class="noresults">
+				<p>There doesn't seem to be anything here.</p>
+			</li>
+			<li id="no-results" class="noresults">
+				<p>
+					No taps match your search keyword.
+					<a href="#" class="reset-feed">Show all taps.</a>
+				</p>
+			</li>
+		</ul>
+	</div>
+
+	<div id="footer">
+
+	</div>
+
+</body>
+</html>

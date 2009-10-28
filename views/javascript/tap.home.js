@@ -475,7 +475,7 @@ Tap.Home = {
 		var msg = el.get('value');
 		if (msg.isEmpty()) return null;
 		new Request({
-			url: 'AJAX/respond.php',
+			url: '/AJAX/respond.php',
 			data: {
 				cid: id,
 				response: msg,
@@ -507,27 +507,6 @@ Tap.Home = {
 			}
 		}).send();
 */
-	},
-
-	handleResponse: function(cid, response){
-		var parent = $try(function(){ return $('tid_' + cid).getElement('.tap-chat'); });
-		if (parent) {
-			item.time = (function(){
-				var date = new Date(item.chat_time.toInt() * 1000);
-				var hours = date.getHours();
-				var minutes = "" + date.getMinutes();
-				if (minutes.length == 1) minutes = "0" + minutes;
-				if (hours > 12) hours = hours - 12;
-				return [
-					(hours > 12) ? hours - 12 : (hours == 0) ? 12 : hours,
-					minutes + ((hours > 11) ? ' PM' : ' AM')
-				].join(':');
-			})();
-			new Element('li', {
-				html: '<span class="time"></span><strong>{uname}:</strong> {chat_text}'.substitute(item)
-			}).inject(parent);
-			parent.scrollTo(0, parent.getScrollSize().y);
-		}
 	},
 
 	parseResponse: function(id, user, msg){
@@ -600,7 +579,7 @@ Tap.Home = {
 			if ($(document.body).hasClass('blurred')) {
 				var timeroo = new Date().getTime();
 				document.msgs = (function(){
-					if ((new Date.getTime() - timeroo) > 60000) {
+					if ((new Date().getTime() - timeroo) > 60000) {
 						$clear(document.msgs);
 						return null;
 					}

@@ -41,14 +41,14 @@ pageTracker._trackPageview();
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<style type="text/css" media="all">@import "views/style_sheets/TextboxList.css";</style>
-<style type="text/css" media="all">@import "views/style_sheets/TextboxList.Autocomplete.css";</style>
-<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" />
-<link rel="stylesheet" href="views/style_sheets/homepage.css" type="text/css" />
-<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
-<script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
-<script type="text/javascript" src="views/javascript/textboxlist-complete.js"></script>
-<script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
+<link rel="stylesheet" href="/views/style_sheets/TextboxList.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/TextboxList.Autocomplete.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript" src="/views/javascript/textboxlist-complete.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
 <script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
 <script type="text/javascript">
 Tap = window.Tap || {};
@@ -59,10 +59,11 @@ Tap.Vars = {
 	currentStream: JSON.decode('<?= json_encode($inits) ?>'),
 	activeConvos: JSON.decode('<?= json_encode($convos) ?>')
 };
+// <?= $_GET['page'] ?>
 </script>
-<script type="text/javascript" src="views/javascript/tap.push.js"></script>
-<script type="text/javascript" src="views/javascript/tap.home.js"></script>
-<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script type="text/javascript" src="/views/javascript/tap.push.js"></script>
+<script type="text/javascript" src="/views/javascript/tap.home.js"></script>
+<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript">
 // Metrics
 try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) }
@@ -218,7 +219,11 @@ window.addEvent('domready', function(){
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
-									<span class="tap-from"><?= $last['fname'] . " " . $last['lname'] ?></span>
+									<span class="tap-from">
+										<a href="/user/<?= $last['uname'] ?>" title="">
+										<?= $last['fname'] . " " . $last['lname'] ?>
+										</a>
+									</span>
 									<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
@@ -285,7 +290,11 @@ window.addEvent('domready', function(){
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
-									<span class="tap-from"><?= $bit['fname'] . " " . $bit['lname'] ?></span>
+									<span class="tap-from">
+										<a href="/user/<?= $bit['uname'] ?>" title="">
+										<?= $bit['fname'] . " " . $bit['lname'] ?>
+										</a>
+									</span>
 									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
@@ -414,7 +423,11 @@ window.addEvent('domready', function(){
 				</div>
 				<div class="tap-body">
 					<p class="tap-info">
-						<span class="tap-from"><#: [bit.fname, bit.lname].join(" ") #></span>
+						<span class="tap-from">
+							<a href="/user/<#: bit.uname #>" title="">
+							<#: [bit.fname, bit.lname].join(" ") #>
+							</a>
+						</span>
 						<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
 						<span class="tap-typing"></span>
 					</p>

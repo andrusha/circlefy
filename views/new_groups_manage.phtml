@@ -25,7 +25,7 @@ pageTracker._trackPageview();
 
 <title>tap - alpha</title>
 
-<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" >
+<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" >
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
@@ -34,10 +34,10 @@ pageTracker._trackPageview();
         <script type="text/javascript" src="js/unitpngfix.js"></script>
 <![endif]-->
 
-<script src="views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
-<script src="views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
-<script src="views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
+<script src="/views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
+<script src="/views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
+<script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <script type="text/javascript" charset="utf-8">
 
@@ -87,7 +87,7 @@ Tap.Groups = {
 			},
 			'click:relay(a.suggestion-item)': function(e){
 				e.stop();
-				var key = this.get('text');
+				var key = this.get('title');
 				$('search-field').set('value', key);
 				self.onSearch(key);
 				mpmetrics.track('group-suggestion', {'group': key});
@@ -471,7 +471,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 					<ul>
 						<?php foreach ($_t['random_group_results'] as $random): ?>
 						<li class="list-item">
-							<p style="height: 14px; font-weight: bold;"><a href="#" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
+							<p style="height: 14px; font-weight: bold;"><a href="#" title="<?= $random['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
 								$gname = $random['gname'];
 								echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
 							?></a></p>

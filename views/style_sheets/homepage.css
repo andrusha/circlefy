@@ -88,7 +88,7 @@ img { vertical-align:-4px;}
 	padding:4px 0 0 6px;
 }
 
-ul.tap-stream li {
+ul.tap-stream li, ul.tap-chat li {
 	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
 	border:1px solid #D8D8D8;
 	font-size:12px;
@@ -96,10 +96,10 @@ ul.tap-stream li {
 	margin-left:2px;
 	padding:8px 8px 0;
 }
-	ul.tap-stream li:hover {
+	ul.tap-stream li:hover, ul.tap-chat li:hover {
 		background: #f1f1f1; }
 
-ul.tap-stream .tap-chat li {
+ul.tap-stream .tap-chat li, .tap-chat li {
 /*	border: none;*/
 /*	border-top:1px solid #D8D8D8; }*/
 	margin-right: 5px;
@@ -107,7 +107,7 @@ ul.tap-stream .tap-chat li {
 	border:  1px solid #65ABE9; */
 }
 
-ul.tap-stream .tap-chat li span.time {
+ul.tap-stream .tap-chat li span.time, .tap-chat li span.time {
 	float: right;
 	font-size: 10px;
 	color: #999;
@@ -136,22 +136,22 @@ ul.tap-stream .floater {
 	float: left;
 }
 
-ul.tap-stream ul.tap-chat {
+ul.tap-stream ul.tap-chat, ul.tap-chat {
 	height: 100px;
 	margin-bottom: 5px;
 	overflow: auto;
 	background: #fff;
 }
 
-ul.tap-stream ul.tap-chat.noresp {
+ul.tap-stream ul.tap-chat.noresp, ul.tap-chat.noresp {
 	background: #fff url(/images/silent_responses.png) no-repeat center center;
 }
 
-ul.tap-stream ul.tap-chat.out {
+ul.tap-stream ul.tap-chat.out, ul.tap-chat.out {
 	background: #fff url(/images/out_responses.png) no-repeat center center;
 }
 
-ul.tap-stream ul.tap-chat li {
+ul.tap-stream ul.tap-chat li, ul.tap-chat li {
 	padding: 5px;
 }
 
@@ -187,6 +187,10 @@ ul.tap-stream .tap-from {
 	font-weight: bold;
 	font-size: 14px;
 	margin-right: 5px;
+}
+
+.tap-from a {
+	color: #464646;
 }
 
 ul.tap-stream .tap-time {
@@ -265,7 +269,7 @@ span.counter {
 	float:right; background:#666; padding: 2px 5px; -moz-border-radius:6px; font-weight: bold; color:#fff;
 }
 
-ul.tap-stream .tap-response-box {
+ul.tap-stream .tap-response-box, .tap-response-box {
 	padding: 5px;
 /*	background: #DFDFDF;*/
 	margin-bottom:10px;

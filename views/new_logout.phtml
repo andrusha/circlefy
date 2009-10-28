@@ -28,12 +28,12 @@ pageTracker._trackPageview();
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" />
 <link rel="stylesheet" href="views/style_sheets/homepage.css" type="text/css" />
-<script type="text/javascript" src="views/javascript/mootools-1.2.3-core-yc.js"></script>
-<script type="text/javascript" src="views/javascript/mootools-1.2.3.1-more.js"></script>
-<script type="text/javascript" src="views/javascript/mootools-tap.js"></script>
-<script type="text/javascript" src="views/javascript/tap.main.js"></script>
-<script type="text/javascript" src="views/javascript/mpmetrics.js"></script>
-<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
+<script type="text/javascript" src="/views/javascript/tap.main.js"></script>
+<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
 <style type="text/css" media="screen">
 #signup-guide {
 	display: none;
@@ -191,7 +191,7 @@ ul.pitch li {
 </style>
 <script type="text/javascript">
 window.addEvent('load', function(){
-	mpmetrics.track('main-view', {});
+	mpmetrics.track('main-view', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 });
 
 window.addEvent('domready', function(){
@@ -256,7 +256,7 @@ rotate.delay(7000);
 				<div class="tab-in" style="color:#fff">Log in</div>
 			</div>
 			<div class="tab-list">
-				<form id="login" action="<?=ROOT?>" method="POST">
+				<form id="tap-login" action="<?=ROOT?>" method="POST">
 					<label>Username</label>
 						<input type="text" id="uname" name="uname" class="text" />
 					<label>Password</label>
@@ -304,7 +304,7 @@ rotate.delay(7000);
 			</div>
 			<?php endif; ?>
 
-			<?php if ($_GET['q'] == 'swineflu'): ?>
+			<?php if ($_GET['q'] === 'swineflu'): ?>
 			<div class="section info" style="text-align:center; font-size: 14px">
 				Join the SwineFlu Conversation!
 			</div>
@@ -620,7 +620,7 @@ var checkUname = function(el){
 			}
 		}).send();
 	}
-	mpmetrics.track('username-complete', {});
+	mpmetrics.track('username-complete', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 	return removeError(el);
 };
 
@@ -651,7 +651,7 @@ var checkPass = function(el){
 	if (el.isEmpty() || !el.ofLength(6, 20)) {
 		return showError(el, 'Password must be at least 6 characters.');
 	}
-	mpmetrics.track('password-complete', {});
+	mpmetrics.track('password-complete', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 	return removeError(el);
 };
 
@@ -663,7 +663,7 @@ connectForm.getElement('button').addEvent('click', function(e){
 	var self = this;
 	if (noErrors()) {
 		if (!connectForm.metricked) {
-			mpmetrics.track('signup-forms-finished', {});
+			mpmetrics.track('signup-forms-finished', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 			connectForm.metricked = true;
 		}
 		new Request({
@@ -684,7 +684,7 @@ connectForm.getElement('button').addEvent('click', function(e){
 			},
 			onSuccess: function(){
 				indic_msg.set('text', 'Logging you in..');
-				mpmetrics.track('signup', {'success' : 'true'}, function(){
+				mpmetrics.track('signup', {'success' : 'true', 'type': Tap.Vars.ref ? 'referral' : 'direct'}, function(){
 					window.location = window.location.toString().replace('?logout=true', '');
 				});
 			}
@@ -733,18 +733,23 @@ this.on_connect = function(e){
 		form.highlight();
 		$('connect-guide').setStyle('display', 'block');
 		*/
-		mpmetrics.track('fbconnect-complete', {});
+		mpmetrics.track('fbconnect-complete', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 		// window.fbconnected = true;
 	});
 };
 
 this.click_connect = function(){
-	mpmetrics.track('fbconnect-click', {});
+	mpmetrics.track('fbconnect-click', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 };
 
 FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm");
 
 })();
 </script>
+<?php if (!empty($_GET['q'])): ?>
+<script type="text/javascript">
+if (Tap.Vars) Tap.Vars.ref = true;
+</script>
+<?php endif; ?>
 </body>
 </html>

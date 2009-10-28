@@ -455,6 +455,15 @@ Element.Events.outerClick = {
 
 };
 
+Element.implement({
+
+	does: function(fn){
+		if (fn instanceof Function) fn.apply(this);
+		return this;
+	}
+
+});
+
 Function.implement({
 
 	toHandler: function(bound){
