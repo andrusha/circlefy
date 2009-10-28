@@ -522,7 +522,6 @@ div.tap-response-counter {
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
 						<span style="clear:right"></span>
 						<?php if ($page == 'public_user'): ?>
-						<!-- <img id="tap-feed-icon" src="/user_pics/<?= $_t['user_pic_small'] ?>" style="float:left; margin-right:10px; height: 20px; width: 20px" /> -->
 						<span id="tap-feed-name"><?= $_t['user'] ?>'s Feed</span>
 						<?php elseif ($page == 'public_group'): ?>
 						<span id="tap-feed-name"><?= $_t['gname'] ?>'s Feed</span>
@@ -537,8 +536,7 @@ div.tap-response-counter {
 							if (!empty($_t['user_bits'])):
 								foreach($_t['user_bits'] as $bit):
 						?>
-						<li id="tid_<?= $bit['cid'] ?>">
-							<!-- <img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />-->
+						<li class="prof-stram" id="tid_<?= $bit['cid'] ?>">
 							<div class="tap-actions">
 								<span class="tap-views">Viewers:
 									<strong>
@@ -561,15 +559,12 @@ div.tap-response-counter {
 								</p>
 							</div>
 							<div class="tap-body">
-								<p class="tap-info">
-									<!-- <span class="tap-from">
-										<a href="/user/<?= $bit['uname'] ?>"><?= $bit['fname'] . " " . $bit['lname'] ?></a>
-									</span>-->
+								<p class="tap-prof-info">
 									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
 								<p>
-									<span class="tap-msg"><?= $bit['chat_text'] ?></span>
+									<span class="tap-prof-msg"><?= $bit['chat_text'] ?></span>
 								</p>
 							</div>
 							<div class="tap-response-box clarity">
@@ -747,7 +742,7 @@ div.tap-response-counter {
 					</p>
 				</div>
 				<div class="tap-body">
-					<p class="tap-info">
+					<p class="tap-prof-info">
 						<span class="tap-from">
 							<a href="/user/<#: bit.uname #>">
 							<#: [bit.fname, bit.lname].join(" ") #>
