@@ -5,6 +5,7 @@ if (is_array($_t['groups_bits'])) {
 		array_push($inits, $bit['cid']);
 	}
 }
+$logged = (!empty($_SESSION['uid']));
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -47,6 +48,7 @@ pageTracker._trackPageview();
 <script type="text/javascript">
 Tap = window.Tap || {};
 Tap.Vars = {
+	logged: !!'<?= $logged ?>',
 	uname: '<?= $_SESSION["uname"] ?>',
 	user: '<?= $_t["uid"] ?>',
 	group: '<?= $_t["gid"] ?>',
@@ -142,6 +144,7 @@ Tap.Public = {
 	},
 
 	sendResponse: function(){
+		if (!Tap.Vars.logged) return null;
 		var self = this;
 		var id = Tap.Vars.tap;
 		var msg = this.chatText.get('value');
@@ -536,6 +539,8 @@ div.tap-response-counter {
 							if (!empty($_t['user_bits'])):
 								foreach($_t['user_bits'] as $bit):
 						?>
+						<li id="tid_<?= $bit['cid'] ?>">
+							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
 						<li class="prof-stram" id="tid_<?= $bit['cid'] ?>">
 							<div class="tap-actions">
 								<span class="tap-views">Viewers:
@@ -559,6 +564,10 @@ div.tap-response-counter {
 								</p>
 							</div>
 							<div class="tap-body">
+								<p class="tap-info">
+									<span class="tap-from">
+										<a href="/user/<?= $bit['uname'] ?>"><?= $bit['fname'] . " " . $bit['lname'] ?></a>
+									</span>
 								<p class="tap-prof-info">
 									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
@@ -614,7 +623,9 @@ div.tap-response-counter {
 							endif;
 						?>
 					</ul>
-					<input type="text" class="tap-response" style="width:483px" maxlength="240" alt="Respond to this tap." />
+					<input type="text" class="tap-response" style="width:483px" maxlength="240" 
+						<?= ($logged) ? 'alt="Respond to this tap."' : 'alt="Login to respond to this tap!" disabled="disabled"' ?>
+					/>
 					<!-- <a href="#">Respond</a> or  <a class="tap-respond-cancel" href="#">Close</a> -->
 				</div>
 			</div>
