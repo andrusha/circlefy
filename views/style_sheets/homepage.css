@@ -96,10 +96,10 @@ ul.tap-stream li, ul.tap-chat li {
 	margin-left:2px;
 	padding:8px 8px 0;
 }
-	ul.tap-stream li:hover, ul.tap-chat li:hover, ul.tap-prof-stream li:hover {
+	ul.tap-stream li:hover, ul.tap-chat li:hover {
 		background: #f1f1f1; }
 		
-ul.tap-prof-stream li {
+ul.tap-stream li.prof-stram {
 	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
 	border:1px solid #D8D8D8;
 	font-size:12px;
