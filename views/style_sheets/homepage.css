@@ -96,8 +96,17 @@ ul.tap-stream li, ul.tap-chat li {
 	margin-left:2px;
 	padding:8px 8px 0;
 }
-	ul.tap-stream li:hover, ul.tap-chat li:hover {
+	ul.tap-stream li:hover, ul.tap-chat li:hover, ul.tap-prof-stream li:hover {
 		background: #f1f1f1; }
+		
+ul.tap-prof-stream li {
+	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
+	border:1px solid #D8D8D8;
+	font-size:12px;
+	margin-bottom:-1px;
+	margin-left:2px;
+	padding:8px 8px 8px 12px;
+}
 
 ul.tap-stream .tap-chat li, .tap-chat li {
 /*	border: none;*/
@@ -165,10 +174,23 @@ ul.tap-stream .clarity {
 	clear: both;
 }
 
+ul.tap-stream .tap-prof-info {
+	margin-bottom:3px;
+	margin-left:0px;
+	margin-top:-1px;
+}
+
 ul.tap-stream .tap-info {
 	margin-bottom:3px;
 	margin-left:70px;
 	margin-top:-1px;
+}
+
+ul.tap-stream .tap-prof-msg {
+	font-size:14px;
+	margin-bottom:8px;
+	position:relative;
+	width:300px;
 }
 
 ul.tap-stream .tap-msg {

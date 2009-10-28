@@ -538,7 +538,7 @@ div.tap-response-counter {
 								foreach($_t['user_bits'] as $bit):
 						?>
 						<li id="tid_<?= $bit['cid'] ?>">
-							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
+							<!-- <img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />-->
 							<div class="tap-actions">
 								<span class="tap-views">Viewers:
 									<strong>
@@ -562,9 +562,9 @@ div.tap-response-counter {
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
-									<span class="tap-from">
+									<!-- <span class="tap-from">
 										<a href="/user/<?= $bit['uname'] ?>"><?= $bit['fname'] . " " . $bit['lname'] ?></a>
-									</span>
+									</span>-->
 									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
 								</p>
