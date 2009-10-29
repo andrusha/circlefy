@@ -480,6 +480,7 @@ div.tap-response-counter {
 
 			<div id="tapper-info" class="section">
 				<?php if ($page == 'public_user' || $page == 'public_tap'): ?>
+				<p class="icon"><img src="/user_pics/<?= $_t['user_pic_med'] ?>" /></p>
 				<p class="tap-name">
 					<strong><?= $_t['user'] ?></strong> 
 					<span class="tap-typing" style="color:#518E3E; font-size:12px;"></span>
@@ -538,7 +539,6 @@ div.tap-response-counter {
 							if (!empty($_t['user_bits'])):
 								foreach($_t['user_bits'] as $bit):
 						?>
-						<li id="tid_<?= $bit['cid'] ?>">
 						<li id="tid_<?= $bit['cid'] ?>">
 							<div class="tap-actions">
 								<span class="tap-views">Viewers:
