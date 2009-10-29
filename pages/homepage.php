@@ -266,7 +266,7 @@ $gid_query_list = substr($gid_query_list,0,-1);
 
 $counting=0;
 
-	$outside = "2,0";
+	$outside = "2";
         $slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
         $get_groups_bits_query = <<<EOF
 		SELECT
@@ -314,7 +314,7 @@ $res = $max_mid_results->fetch_assoc();
 $max_mid = $res['mid'];
 $this->set($max_mid,'max_mid');
 
-$push_channel_id = $uid;
+$push_channel_id = $_SESSION['uid'];
 $this->set($push_channel_id,'pcid');
 
 

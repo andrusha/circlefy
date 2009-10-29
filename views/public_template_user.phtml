@@ -313,7 +313,7 @@ div.tap-response-counter {
 							foreach ($_t['your_groups'] as $group):
 					?>
 					<li id="gid_<?= $group['gid'] ?>" class="group">
-						<img src="/group_pics/<?= $group['pic_36']?>" />
+						<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)" style="vertical-align: 0; margin-right: 5px"><img src="/group_pics/<?= $group['pic_36']?>" /></a>
 						<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
 						<!-- <a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a> -->
 					</li>

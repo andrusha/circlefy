@@ -50,7 +50,7 @@ if(!$gid)
 //END get gid
 
 //START get groups initial taps
-$outside = "2,0";
+$outside = "2";
 $get_users_taps_query = $this->ind_group_filter($gid,$outside,null,null);
 $this->db_class_mysql->set_query($get_users_taps_query,'public_users_taps',"This query gets a specific users tap's");
 $users_bits_results = $this->db_class_mysql->execute_query('public_users_taps');
