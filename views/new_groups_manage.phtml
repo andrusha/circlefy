@@ -86,10 +86,11 @@ Tap.Groups = {
 				self.onFilter(body.getElement('input[name="keywords"]'));
 			},
 			'click:relay(a.suggestion-item)': function(e){
-				e.stop();
+				/*e.stop();
 				var key = this.get('title');
 				$('search-field').set('value', key);
 				self.onSearch(key);
+				*/
 				mpmetrics.track('group-suggestion', {'group': key});
 			}
 		});
@@ -471,7 +472,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 					<ul>
 						<?php foreach ($_t['random_group_results'] as $random): ?>
 						<li class="list-item">
-							<p style="height: 14px; font-weight: bold;"><a href="#" title="<?= $random['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
+							<p style="height: 14px; font-weight: bold;"><a href="/group/<?= $random['symbol'] ?>" title="<?= $random['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
 								$gname = $random['gname'];
 								echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
 							?></a></p>
@@ -546,15 +547,20 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 							$count = $group['count'];
 							$last_chat = $group['last_chat'];
 							$last_user = $group['last_uname'];
+							$symbol = $group['symbol'];
 					?>
 						<li id="gr-id_<?= $gid ?>" class="listing">
-							<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
+							<a href="/group/<?= $symbol ?>">
+								<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
+							</a>
 							<div class="gr-info">
 								<p>
 									<?php if ($official == "*"): ?>
 									<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" title="This is an offical group"/>
 									<?php endif; ?>
-									<strong class="gr-name"><?= $gname ?></strong>&nbsp;&nbsp;
+									<strong class="gr-name">
+										<a href="/group/<?= $symbol ?>"><?= $gname ?></a>
+									</strong>&nbsp;&nbsp;
 								</p>
 								<p class="gr-desc description">
 									<strong><a href="#" class="leave-group">Leave this Group</a></strong><br /><br />
@@ -608,13 +614,18 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 			<ul id="search-template">
 				<# for (var x = this.reverse().length; x--;) { var data = this[x]; #>
 				<li id="gr-id_<#: data.gid #>" class="listing">
-					<img src="/group_pics/<#: data.pic #>" alt="group logo" class="gr-image" />
+					<a href="/group/<#: data.symbol #>">
+						<img src="/group_pics/<#: data.pic #>" alt="group logo" class="gr-image" />
+					</a>
 					<div class="gr-info">
 						<p>
 							<# if (data.official == "*") { #>
 							<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" />
 							<# } #>
-							<strong class="gr-name"><#: data.gname #></strong>&nbsp;&nbsp;</p>
+							<strong class="gr-name">
+								<a href="/group/<#: data.symbol #>"><#: data.gname #></a>
+							</strong>&nbsp;&nbsp;
+						</p>
 							<p class="gr-desc description">
 								<#: data.descr #><br /><br />
 								<strong>Latest Tap: </strong><#: data.last_chat #>
@@ -640,7 +651,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 				</li>
 				<li class="more-invite">
 					<div>
-						<p>Please enter your official email address: <input type="text" class="invitees"> <span class="gr-domain">@<#: data.domain #></span></p>
+						<p>Please enter your official email address: <input type="text" class="invitees"> <span class="gr-domain">@<#: data.symbol #></span></p>
 						<p class="status"><a href="#" class="send-join">Send confirmation</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
 					</div>
 				</li>

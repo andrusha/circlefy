@@ -977,7 +977,9 @@ Tap.Home = {
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
 				if (!force) {
-					$('tap-feed-name').set('text', el.getElement('a').get('title').remove(/\([\D\d]*\)/));
+					var title = el.getElement('a').get('title').remove(/\([\D\d]*\)/);
+					var html = '<a href="/group/'+ el.getElement('a').get('grsymbol') + '">' + title + '</a>';
+					$('tap-feed-name').set('html', (({gid_all: 1, gid_public: 1})[gid]) ? title : html );
 					$('tap-feed-icon').set('src', el.getElement('img').get('src'));
 				}
 				self.feedView = gid;

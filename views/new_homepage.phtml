@@ -142,7 +142,7 @@ window.addEvent('domready', function(){
 				<ul>
 					<?php foreach($_t['trending_groups'] as $trending): ?>
 						<li class="list-item" style="height:30px">
-							<p style="height: 14px;"><a href="/groups?search=<?= $trending['gname'] ?>" class="suggestion-item" title="<?= $trending['gname'] ?>"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" />
+							<p style="height: 14px;"><a href="/group/<?= $trending['symbol'] ?>" class="suggestion-item" title="<?= $trending['gname'] ?>"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" />
 								<strong>
 									<?php
 										$gname = $trending['gname'];
@@ -224,7 +224,9 @@ window.addEvent('domready', function(){
 										<?= $last['fname'] . " " . $last['lname'] ?>
 										</a>
 									</span>
-									<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
+									<a href="/tap/<?= $last['cid'] ?>">
+										<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
+									</a>
 									<span class="tap-typing"></span>
 								</p>
 								<p>
@@ -295,7 +297,9 @@ window.addEvent('domready', function(){
 										<?= $bit['fname'] . " " . $bit['lname'] ?>
 										</a>
 									</span>
-									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
+									<a href="/tap/<?= $bit['cid'] ?>">
+										<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
+									</a>
 									<span class="tap-typing"></span>
 								</p>
 								<p>
@@ -428,7 +432,9 @@ window.addEvent('domready', function(){
 							<#: [bit.fname, bit.lname].join(" ") #>
 							</a>
 						</span>
-						<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
+						<a href="/tap/<#: bit.cid #>">
+							<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
+						</a>
 						<span class="tap-typing"></span>
 					</p>
 					<p>
