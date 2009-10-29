@@ -185,7 +185,9 @@ div.tap-response-counter {
 
 <body>
 
-	<?php include(NEW_HEADER); ?>
+	<?php 
+		include($logged ? NEW_HEADER : LOGOUT_HEADER);
+	?>
 
 	<div id="main">
 

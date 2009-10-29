@@ -123,6 +123,10 @@ EOF;
 			}
 			$this->set($my_groups_array,'your_groups');	
 
+		if($_SESSION['uid'])
+                        $logged_in_id = $_SESSION['uid'];
+                else
+                        $logged_in_id = 0;
 
 		//START get tap
 		$users_query_bits_info = <<<EOF
@@ -132,7 +136,7 @@ EOF;
 		JOIN special_chat as t3
 		ON t3.uid = t2.uid
 		LEFT JOIN (
-		SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$_SESSION['uid']}
+		SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$logged_in_id}
 		) AS t4
 		ON t4.mid = t3.cid
 		LEFT JOIN TAP_ONLINE AS TAP_ON

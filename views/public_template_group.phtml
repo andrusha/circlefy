@@ -185,7 +185,9 @@ div.tap-response-counter {
 
 <body>
 
-	<?php include(NEW_HEADER); ?>
+	<?php 
+		include($logged ? NEW_HEADER : LOGOUT_HEADER);
+	?>
 
 	<div id="main">
 
@@ -221,9 +223,19 @@ div.tap-response-counter {
 				<p class="icon"><img src="/group_pics/<?= $_t['group_pic_med'] ?>" /></p>
 				<?php if ($_t['joined']): ?>
 				<span class="button selected">You're A Member!</span>
-				<?php else: ?>
+				<?php 
+					else: 
+						if ($logged):
+				?>
 				<a href="/groups?search=<?= $_t['gname'] ?>" class="button">Join Group</a>
-				<?php endif; ?>
+				<?php 
+						else:
+				?>
+				<a href="/" class="button">Signup to Tap this Group!</a>
+				<?php 
+						endif;
+					endif; 
+				?>
 				<p class="tap-name"><strong><?= $_t['gname'] ?></strong></p>
 				<?php
 					if (!empty($_t['user_bits'])):
