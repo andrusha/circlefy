@@ -480,7 +480,6 @@ div.tap-response-counter {
 
 			<div id="tapper-info" class="section">
 				<?php if ($page == 'public_user' || $page == 'public_tap'): ?>
-				<p class="icon"><img src="/user_pics/<?= $_t['user_pic_med'] ?>" /></p>
 				<p class="tap-name">
 					<strong><?= $_t['user'] ?></strong> 
 					<span class="tap-typing" style="color:#518E3E; font-size:12px;"></span>
@@ -540,8 +539,7 @@ div.tap-response-counter {
 								foreach($_t['user_bits'] as $bit):
 						?>
 						<li id="tid_<?= $bit['cid'] ?>">
-							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
-						<li class="prof-stram" id="tid_<?= $bit['cid'] ?>">
+						<li id="tid_<?= $bit['cid'] ?>">
 							<div class="tap-actions">
 								<span class="tap-views">Viewers:
 									<strong>
@@ -565,9 +563,6 @@ div.tap-response-counter {
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
-									<span class="tap-from">
-										<a href="/user/<?= $bit['uname'] ?>"><?= $bit['fname'] . " " . $bit['lname'] ?></a>
-									</span>
 								<p class="tap-prof-info">
 									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
 									<span class="tap-typing"></span>
