@@ -33,7 +33,11 @@ pageTracker._trackPageview();
 <!--[if lt IE 7]>
         <script type="text/javascript" src="js/unitpngfix.js"></script>
 <![endif]-->
-
+<style>
+.description, .more-invite {
+	display: none;
+}
+</style>
 <script src="/views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
 <script src="/views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
 <script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
@@ -56,8 +60,8 @@ Tap.Groups = {
 		/* Set delegated listeners... */
 		this.list = $('groups-list');
 		this.list.store('groups', this.list.get('html'));
-		this.list.getElements('.more-invite').slide('hide');
-		this.list.getElements('.description').slide('hide');
+		this.list.getElements('.more-invite').setStyle('display', 'list-item').slide('hide');
+		this.list.getElements('.description').setStyle('display', 'block').slide('hide');
 		this.list.addEvents({
 			'click:relay(a.more-btn3)': this.onMore.toHandler(this),
 			'click:relay(a.gr-invite-btn)': this.onInvite.toHandler(this),
