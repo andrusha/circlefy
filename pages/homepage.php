@@ -308,15 +308,9 @@ $this->set($data_all_groups_bits,'groups_bits');
 /////////////////////////////////////////////////////////////////////////////
 $groups_you_are_in->data_seek(0);
 
-$this->db_class_mysql->set_query('SELECT MAX(mid) AS mid FROM chat','max_mid_query',"Gets max mid for poller");
-$max_mid_results = $this->db_class_mysql->execute_query('max_mid_query');
-$res = $max_mid_results->fetch_assoc();
-$max_mid = $res['mid'];
-$this->set($max_mid,'max_mid');
-
-$push_channel_id = $_SESSION['uid'];
-$this->set($push_channel_id,'pcid');
-
+//START set the session uid for Orbited
+$this->set($_SESSION['uid'],'pcid');
+//END set the session uid for Orbited
 
 $this->db_class_mysql->set_query('UPDATE TEMP_ONLINE SET timeout = 0,cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';','TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');

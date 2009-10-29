@@ -143,6 +143,9 @@ while($res = $popular_taps_results->fetch_assoc()){
         $this->set($popular_taps_data,'popular_taps');
 //END get popular taps
 
+//START set the session uid for Orbited
+$this->set($_SESSION['uid'],'pcid');
+//END set the session uid for Orbited
 
 
 

@@ -155,6 +155,10 @@ EOF;
 		//START invovled
 		$this->set($this->person,'invovled');
 		//END invovled	
+
+		//START set the session uid for Orbited
+		$this->set($_SESSION['uid'],'pcid');
+		//END set the session uid for Orbited
 		}
 
 

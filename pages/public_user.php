@@ -191,6 +191,10 @@ EOF;
 		);
 		$this->set($stats,'stats');
 		//END stats
+
+		//START set the session uid for Orbited
+                $this->set($_SESSION['uid'],'pcid');
+                //END set the session uid for Orbited
 	}
 
  private function personal_filter($search,$responses,$public_uid){
