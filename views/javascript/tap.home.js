@@ -251,7 +251,7 @@ Tap.Home = {
 			if ($(e.target) !== button) self.hideOutside();
 		});
 		*/
-		$('tap-feed-outside').addEvent('click', this.toggleOutside.toHandler(this));
+		// $('tap-feed-outside').addEvent('click', this.toggleOutside.toHandler(this));
 		$('archived-taps').addEvent('click', function(){
 			self.showArchive(this.get('id'));
 		});
@@ -737,8 +737,7 @@ Tap.Home = {
 				$('tap-feed-name').set('text', 'Convo: ' + parent.getElement('strong').get('text'));
 				$('tap-feed-icon').set('src', '/group_pics/36wh_default_group.gif');
 				$('tap-notify').slide('hide');
-				$$('#tap-feed-search, \
-					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'none');
+				$$('#tap-feed-search, label[for="tap-feed-search"]').setStyle('display', 'none');
 				$('taps-responded').setStyle('display', 'none');
 			}
 		}).send();
@@ -785,8 +784,7 @@ Tap.Home = {
 				$('tap-feed-name').set('text', 'Your Archived Taps');
 				$('tap-feed-icon').set('src', '/group_pics/36wh_default_group.gif');
 				$('tap-notify').slide('hide');
-				$$('#tap-feed-search, \
-					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'none');
+				$$('#tap-feed-search, label[for="tap-feed-search"]').setStyle('display', 'none');
 				$('taps-responded').setStyle('display', 'block');
 			}
 		}).send();
@@ -902,7 +900,7 @@ Tap.Home = {
 
 	setSettings: function(gid){
 		var settings = this.getSettings(gid || this.feedView);
-		$('tap-feed-outside').set('text', 'Outside: ' + (settings.outside ? 'On' : 'Off'));
+		// $('tap-feed-outside').set('text', 'Outside: ' + (settings.outside ? 'On' : 'Off'));
 	},
 
 	showOutside: function(){
@@ -1004,8 +1002,7 @@ Tap.Home = {
 				items.getElements('li').reverse().inject('main-stream', 'top');
 				self.changeDates();
 				$('tap-notify').slide('hide');
-				$$('#tap-feed-search, \
-					#tap-feed-outside, label[for="tap-feed-search"]').setStyle('display', 'block');
+				$$('#tap-feed-search, label[for="tap-feed-search"]').setStyle('display', 'block');
 				$('taps-responded').setStyle('display', 'none');
 
 				self.switchTapper(el.getElement('a').get('title'),

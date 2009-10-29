@@ -264,7 +264,7 @@ Tap.Groups = {
 		var parent = el.getParent('li');
 		var invitees = parent.getElement('input.invitees');
 		var status = parent.getElement('p.status');
-		var previous = parent.getPrevious('li');
+		var previous = parent.getParent('div').getPrevious('li');
 		var btn = previous.getElement('.gr-join-btn');
 		var ok = previous.getElement('.join-ok');
 
@@ -284,6 +284,7 @@ Tap.Groups = {
 					btn.setStyle('display', 'none');
 					ok.setStyle('display', 'block');
 					status.set('text', 'Please check your inbox for a confirmation email.');
+					(function(){ parent.slide('out'); }).delay(5000);
 				}
 			},
 			onFailure: function(){},

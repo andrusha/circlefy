@@ -84,10 +84,12 @@ Tap.Profile = {
 			lname: body.getElement('input[name="lname"]').store('passed', true),
 			email: body.getElement('input[name="email"]').store('passed', true),
 			lang: body.getElement('select[name="language"]').store('passed', true),
-			country: body.getElement('select[name="country"]').store('passed', true),
+			country: body.getElement('select[name="country"]').store('passed', true)
+			/*
 			state: body.getElement('select[name="state"]').store('passed', true),
 			region: body.getElement('select[name="region"]').store('passed', true),
 			town: body.getElement('select[name="town"]').store('passed', true)
+			*/
 		};
 
 		account_data.fname.addEvent('blur', this.checkFname.toHandler(this));
@@ -127,13 +129,16 @@ Tap.Profile = {
 		$('pic-uploader').addEvent('change', this.uploadPic.toHandler(this));
 		window.addEvent('uploaded', this.displayPic.bind(this));
 
-		var country = account_data.country,
+		var country = account_data.country;
+		/*
 			state = account_data.state,
 			region = account_data.region,
 			town = account_data.town;
 			state.getParent('h2').hide(); region.getParent('h2').hide(); town.getParent('h2').hide();
+		*/
 		country.addEvent('change', function(a, e){
 			$('flagger').set('src', 'images/geo_pics/gif/' + this.get('value') + '.gif');
+			/*
 			state.empty().getParent('h2').hide();
 			region.empty().getParent('h2').hide();
 			town.empty().getParent('h2').hide();
@@ -147,7 +152,9 @@ Tap.Profile = {
 					}
 				}
 			});
+			*/
 		});
+		/*
 		state.addEvent('change', function(a, e){
 			region.empty().getParent('h2').hide();
 			town.empty().getParent('h2').hide();
@@ -176,6 +183,7 @@ Tap.Profile = {
 				}
 			});
 		});
+		*/
 
 		if (Tap.Vars.country) {
 			country.getElement('option[value="'+Tap.Vars.country+'"]').set('selected', 'selected');
@@ -342,9 +350,9 @@ Tap.Profile = {
 		};
 		if (this.pic) $extend(send, { old_name: this.pic });
 		if (!data.country.get('value').isEmpty()) send.country = data.country.get('value');
-		if (!data.state.get('value').isEmpty()) send.state = data.state.get('value');
-		if (!data.region.get('value').isEmpty()) send.region = data.region.get('value');
-		if (!data.town.get('value').isEmpty()) send.town = data.town.get('value');
+		// if (!data.state.get('value').isEmpty()) send.state = data.state.get('value');
+		// if (!data.region.get('value').isEmpty()) send.region = data.region.get('value');
+		// if (!data.town.get('value').isEmpty()) send.town = data.town.get('value');
 		this.onSave(send, 'edit_profile', e);
 		mpmetrics.track('update-profile', {});
 	},
@@ -548,6 +556,7 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 							</select>
 							<img id="flagger" src="images/geo_pics/gif/<?= empty($item['country']) ? $item['country'] : 'af' ?>.gif" style="float:right; margin-top: 5px" />
 						</h2>
+						<!--
 						<h2 class="in-title">State:
 							<select name="state" style="margin-right:140px">
 							</select>
@@ -561,6 +570,7 @@ window.addEvent('domready', Tap.Profile.init.bind(Tap.Profile));
 							</select>
 						</h2>
 						<h2 id="geo-loader" class="loader">Loading Next</h2>
+						-->
 
 						<h1>Picture </h1><hr class="hr2"/>
 						<form enctype="multipart/form-data" action="/AJAX/profile_picture_upload.php" method="post" target="picture">

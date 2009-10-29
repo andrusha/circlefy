@@ -50,6 +50,10 @@ Tap.Main = {
 			}
 			data.user.focus();
 		});
+		$('signup-link-main').addEvent('click', function(e){
+			e.stop();
+			data.user.focus();
+		});
 	},
 	
 	showResponseBox: function(el){
