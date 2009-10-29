@@ -68,13 +68,13 @@ Tap.Public = {
 			var type, data;
 			if (Tap.Vars.user) {
 				type = 'public-user';
-				data = {'user': Tap.Vars.username, 'logged': Tap.Vars.logged};
+				data = {'user': Tap.Vars.username, 'logged': Tap.Vars.logged ? 'yes' : 'no'};
 			} else if (Tap.Vars.group) {
 				type = 'public-group';
-				data = {'group': Tap.Vars.groupname, 'logged': Tap.Vars.logged};
+				data = {'group': Tap.Vars.groupname, 'logged': Tap.Vars.logged ? 'yes' : 'no'};
 			} else {
 				type = 'public-tap';
-				data = {'logged': Tap.Vars.logged};
+				data = {'logged': Tap.Vars.logged ? 'yes' : 'no'};
 			}
 			self.metrics = {type: type, data: data};
 			mpmetrics.track(type, data);
@@ -125,7 +125,7 @@ Tap.Public = {
 				var response = this.response.text;
 				this.firstResp = true;
 				self.addConvo();
-				mpmetrics.track('public-respond', self.metrics);
+				mpmetrics.track('public-respond', self.metrics.data);
 			}
 		}).send();
 		// this.fireEvent('sendResponse');
@@ -223,7 +223,7 @@ Tap.Public = {
 					self.mainStream.empty();
 					items.getElements('li').reverse().inject('main-stream', 'top');
 					self.changeDates();
-					mpmetrics.track('public-search', $merge(self.metrics, {keyword: keyword}));
+					mpmetrics.track('public-search', $merge(self.metrics.data, {keyword: keyword}));
 				}
 			}).send();
 	},

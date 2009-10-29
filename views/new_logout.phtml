@@ -189,6 +189,15 @@ ul.pitch li {
 	font-size: 16px;
 }
 </style>
+<style type="text/css">
+.tap-from a, #tapper-info a.tap-from {
+	color: #115E69;
+}
+
+a.tap-respond {
+	color: #115E69;
+}
+</style>
 <script type="text/javascript">
 window.addEvent('load', function(){
 	mpmetrics.track('main-view', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
@@ -345,7 +354,7 @@ rotate.delay(7000);
 						<li id="tid_<?= $bit['cid'] ?>">
 							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" />
 							<div class="tap-actions">
-								<a href="#" class="tap-respond" style="color:#000">Responses <span class="tap-respond-count">(<?= $bit['count'] ?>)</span></a>
+								<a href="#" class="tap-respond">Responses <span class="tap-respond-count">(<?= $bit['count'] ?>)</span></a>
 								<p class="tap-respond-last">
 									<strong>
 										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
@@ -535,7 +544,7 @@ rotate.delay(7000);
 			<li id="tid_<#: bit.cid #>">
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" />
 				<div class="tap-actions">
-					<a href="#" class="tap-respond" style="color:#000">Responses <span class="tap-respond-count">(<#: bit.count #>)</span></a>
+					<a href="#" class="tap-respond">Responses <span class="tap-respond-count">(<#: bit.count #>)</span></a>
 					<p class="tap-respond-last">
 						<strong>
 							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>
