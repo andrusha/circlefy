@@ -1,6 +1,10 @@
 <?php
 define("METRIC_KEY","5bd5b8c8a6ade9f37721523f9da29b1f");
 
+define("PUBLIC_TEMPLATE","views/public_template.phtml");
+define("PUBLIC_TEMPLATE_USER","views/public_template_user.phtml");
+define("PUBLIC_TEMPLATE_GROUP","views/public_template_group.phtml");
+
 define("D_ADDR","127.0.0.1");
 define("D_PASS","root");
 define("D_USER","root");

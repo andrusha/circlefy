@@ -104,7 +104,7 @@ class ajaz_sign_up{
 		$from = "From: tap.info\r\n";
 		$body = <<<EOF
      Welcome to tap.info , with tap you'll be able to stay connected with people and information
-you're interested.  tap also allows you to 'tap' into specific groups of people by sending a message
+you're interested in.  tap also allows you to 'tap' into specific groups of people by sending a message
 to that group.  For example, if you want to send a message to everyone at Harvard, simply find the Harvard
 group via the autocompleter and people at Harvard will see that show up in their outside messages
 tab.  There's many applications and uses for tap, espcially when it comes to community management, so

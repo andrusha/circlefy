@@ -471,6 +471,7 @@ window.addEvent('domready', Tap.Groups.init.bind(Tap.Groups));
 				<div class="tab-list">
 					<ul>
 						<?php foreach ($_t['random_group_results'] as $random): ?>
+						<!-- <?=var_dump($random)?> -->
 						<li class="list-item">
 							<p style="height: 14px; font-weight: bold;"><a href="/group/<?= $random['symbol'] ?>" title="<?= $random['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
 								$gname = $random['gname'];

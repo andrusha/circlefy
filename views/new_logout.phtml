@@ -258,9 +258,9 @@ rotate.delay(7000);
 			<div class="tab-list">
 				<form id="tap-login" action="<?=ROOT?>" method="POST">
 					<label>Username</label>
-						<input type="text" id="uname" name="uname" class="text" />
+						<input type="text" id="login-uname" name="uname" class="text" />
 					<label>Password</label>
-						<input type="password" id="pass" name="pass" class="text" />
+						<input type="password" id="login-pass" name="pass" class="text" />
 					<br/>
 					<input type="checkbox" checked="true" id="auto_login" name="auto_login" />
 					<label class="in-form">Keep Me Logged In</label>
@@ -355,8 +355,15 @@ rotate.delay(7000);
 							</div>
 							<div class="tap-body">
 								<p class="tap-info">
-									<span class="tap-from"><?= $bit['fname'] . " " . $bit['lname'] ?></span>
-									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
+									<span class="tap-from">
+										<a href="/user/<?= $bit['uname'] ?>">
+										<?= $bit['fname'] . " " . $bit['lname'] ?>
+										</a>
+									</span>
+									<a href="/tap/<?= $bit['cid'] ?>">
+									<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?>
+									</span>
+									</a>
 									<span class="tap-typing"></span>
 								</p>
 								<p>
@@ -366,7 +373,7 @@ rotate.delay(7000);
 							<div class="tap-response-box clarity">
 								<ul class="tap-chat out">
 								</ul>
-								<input type="text" class="tap-response" disabled="disabled" style="width:450px" alt="Sign in to see responses." />
+								<input type="text" class="tap-response" disabled="disabled" style="width:440px" alt="Sign in to see responses." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -538,8 +545,14 @@ rotate.delay(7000);
 				</div>
 				<div class="tap-body">
 					<p class="tap-info">
-						<span class="tap-from"><#: [bit.fname, bit.lname].join(" ") #></span>
-						<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
+						<span class="tap-from">
+							<a href="/user/<#: bit.uname #>">
+							<#: [bit.fname, bit.lname].join(" ") #>
+							</a>
+						</span>
+						<a href="/tap/<#: bit.cid #>">
+							<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
+						</a>
 						<span class="tap-typing"></span>
 					</p>
 					<p>

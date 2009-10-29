@@ -405,7 +405,7 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 					<ul>
 						<?php foreach ($_t['random_group_results'] as $random): ?>
 						<li class="list-item">
-							<p style="height: 14px; font-weight: bold;"><a href="/groups?search=<?= $random['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
+							<p style="height: 14px; font-weight: bold;"><a href="/group/<?= $random['symbol'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
 								$gname = $random['gname'];
 								echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
 							?></a></p>

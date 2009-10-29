@@ -128,8 +128,8 @@ Tap.Main = {
 	onLogin: function(el, e){
 		e.stop();
 		var errors = false;
-		var user = $('uname');
-		var pass = $('pass');
+		var user = $('login-uname');
+		var pass = $('login-pass');
 		if (user.isEmpty()) {
 			user.addClass('input-err');
 			errors = true;
@@ -182,14 +182,14 @@ Tap.Main = {
 
 	checkEmail: function(el){
 		var self = this;
-		if (el.isEmpty() || !el.isEmail()) {
+		if (el.isEmpty() || !el.get('value').trim().isEmail()) {
 			return this.showError(el, 'Please enter a valid email.');
 		} else {
 			new Request({
 				url: 'AJAX/check_signup.php',
 				data: {
 					type: 2,
-					val: el.get('value')
+					val: el.get('value').trim()
 				},
 				onSuccess: function(){
 					var response = JSON.decode(this.response.text);
@@ -257,7 +257,7 @@ Tap.Main = {
 				data: {
 					uname: data.user.get('value'),
 					fname: data.name.get('value'),
-					email: data.email.get('value'),
+					email: data.email.get('value').trim(),
 					pass: data.pass.get('value'),
 					lang: data.lang.get('value'),
 					fid: 0,

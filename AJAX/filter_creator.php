@@ -62,8 +62,6 @@ class filter_functions{
 		if(!$outside)
 			$outside="0,2";
 
-                $uid = $_SESSION['uid'];
-
 		$type = $this->mysqli->real_escape_string($type);
 		$id = $this->mysqli->real_escape_string($id);
 		$search = $this->mysqli->real_escape_string($search);
@@ -74,7 +72,7 @@ class filter_functions{
 		if($type == 100)
 			$mysql_obj = $this->public_filter($search);
 		if($type == 99)
-			$mysql_obj = $this->personal_filter($search,$flag);
+			$mysql_obj = $this->personal_filter($search,$flag,$id);
 		if($type == 1)
 			$mysql_obj = $this->ind_group_filter($id,$outside,$search,$o_filter);
 		if($type == 2)
@@ -90,8 +88,10 @@ class filter_functions{
 		return json_encode(array('results' => True,'data'=> $data ));
 	}
 
-	private function personal_filter($search,$responses){
-		$uid = $_SESSION['uid'];
+	private function personal_filter($search,$responses,$uid=null){
+		if(!$uid)
+			$uid = $_SESSION['uid'];
+
 		if($search)
 			$search_sql =  "AND chat_text LIKE '%{$search}%'";
 

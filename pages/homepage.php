@@ -387,7 +387,7 @@ $this->set($data_all_logout_bits,'logout_bits');
 
 }
 	$trending_groups_query = <<<EOF
-	SELECT ugm.gid,t2.gname,t2.pic_36,count(t1.uid) AS count FROM  
+	SELECT ugm.gid,t2.symbol,t2.gname,t2.pic_36,count(t1.uid) AS count FROM  
 	( SELECT DISTINCT gid FROM group_members ORDER BY gid )
 	AS ugm 
 	JOIN group_members AS t1 ON t1.gid=ugm.gid
@@ -400,12 +400,14 @@ EOF;
 	while($res = $trending_groups_results->fetch_assoc()){
 		$gid = $res['gid'];
 		$gname = $res['gname'];
+		$symbol = $res['symbol'];
 		$pic_36 = $res['pic_36'];
 		$count = $res['count'];
 		
 		$trending_group_data[] = array(
 			'gid' => $gid,
 			'gname' => $gname,
+			'symbol' => $symbol,
 			'pic_36' => $pic_36,
 			'count' => $count
 		);

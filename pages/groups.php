@@ -25,23 +25,32 @@ class groups extends Base{
 		$uid = $_SESSION['uid'];
 
 		$get_group_query = <<<EOF
-			SELECT ugm.admin,ugm.gid,t2.descr,t2.gid,t2.gname,t2.connected,t2.focus,t2.pic_100,count(t1.uid) AS size
+			SELECT
+			ogm.admin,ogm.gid,
+			g.descr,g.gid,g.symbol,g.gname,g.connected,g.focus,g.pic_100,count(t1.uid) AS size
 			FROM (
 			  SELECT DISTINCT gid,admin
 			  FROM group_members
 			  WHERE uid={$uid}
-			) AS ugm
-			JOIN group_members AS t1 ON t1.gid=ugm.gid
-			JOIN groups AS t2 ON t2.gid = ugm.gid 
-			GROUP BY ugm.gid;
+			) AS ogm
+			JOIN group_members AS t1 ON t1.gid=ogm.gid
+			JOIN groups AS g ON g.gid = ogm.gid 
+			GROUP BY ogm.gid;
 EOF;
 
 			$group_list_query = <<<EOF
-			SELECT t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid={$uid}
+			SELECT
+			g.gname,
+			gm.gid
+			FROM group_members AS gm
+			JOIN groups AS g ON g.gid=gm.gid WHERE gm.uid={$uid}
 EOF;
 
 			$group_random_pick = <<<EOF
-			SELECT t1.gname,t1.gid,t1.focus,t1.descr,t1.pic_36 FROM groups AS t1 WHERE t1.connected = 0 ORDER BY gid DESC LIMIT 5;
+			SELECT
+			g.gname,g.symbol,g.gid,g.focus,g.descr,g.pic_36
+			FROM groups AS g WHERE g.connected = 0
+			ORDER BY gid DESC LIMIT 5;
 EOF;
 
 	
@@ -57,7 +66,6 @@ EOF;
 			$geo_list_query = <<<EOF
 			SELECT cn.abbr2,cn.name AS Country FROM country_translate AS cn WHERE cn.abbr2 != '-' LIMIT 249;
 EOF;
-
 			
 			$this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
 			$geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
@@ -82,13 +90,18 @@ EOF;
 
 			while($res = $rand_group_results->fetch_assoc()){
 				$gid = $res['gid'];
+				$symbol= $res['symbol'];
                                 $descr = $res['descr'];
                                 $focus = $res['focus'];
                                 $pic = $res['pic_36'];
                                 $gname = $res['gname'];
 
+                                $descr = stripslashes($descr);
+                                $focus = stripslashes($focus);
+
                                 $random_groups[] = array(
 					'gid' => $gid,
+					'symbol' => $symbol,
 					'gname' => $gname,
 					'pic' => $pic,
 					'focus' => $focus,
@@ -103,6 +116,7 @@ EOF;
 
                         while($res = $group_results->fetch_assoc()){
 				$gid = $res['gid'];
+				$symbol= $res['symbol'];
 				$descr = $res['descr'];
 				$admin = $res['admin'];
                                 $pic = $res['pic_100'];
@@ -114,9 +128,11 @@ EOF;
                                 if($type)
                                         $official = "*";
                                 else    $official = "";
+				$descr = stripslashes($descr);
 
                                 $groups[$gid] = array(
 					'gid' => $gid,
+					'symbol' => $symbol,
 					'gname' => $gname,
 					'admin' => $admin,
 					'pic' => $pic,

@@ -34,8 +34,22 @@ class friend_functions{
                 $uid = $this->mysqli->real_escape_string($uid);
                 $fid = $this->mysqli->real_escape_string($fid);
 
+		$friend_email_query = "SELECT l.email FROM login AS l WHERE l.uid = {$fid} LIMIT 1";
+		$friend_email_result = $this->mysqli->query($friend_email_query);
+		$res = $friend_email_result->fetch_assoc();
+
 		if($state == 1){
 	                $friend_query = "INSERT INTO friends(fuid,uid) values('{$fid}','{$uid}');";
+			$to = $res['email'];
+                        $subject = "{$uname} now has you on tap.";
+                                $from = "From: tap.info\r\n";
+                                $body = <<<EOF
+{$uname} now has you on tap and will receive anyting you say!  Say something awesome!
+
+-Team Tap
+http://tap.info
+EOF;
+                                #mail($to,$subject,$body,$from);
 		} else {
 			$friend_query = "DELETE FROM friends WHERE fuid = '{$fid}' AND uid = '{$uid}';";
 		}

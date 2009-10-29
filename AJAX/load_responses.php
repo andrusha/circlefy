@@ -8,7 +8,7 @@ require('../config.php');
 $cid = $_POST['cid'];
 
 	$chat_obj = new chat_functions();
-		$results = $chat_obj->load_response($response,$cid);
+		$results = $chat_obj->load_response($cid);
 		echo $results;
 
 class chat_functions{
@@ -22,7 +22,7 @@ class chat_functions{
         }
 
 		
-	function load_response($msg,$cid){
+	function load_response($cid){
                 $resp_message_query = "SELECT c.uname,c.chat_text,UNIX_TIMESTAMP(c.chat_time) AS chat_time FROM chat AS c WHERE c.cid = {$cid}";
                 $responses_data = $this->mysqli->query($resp_message_query);
 		if($responses_data->num_rows){

@@ -93,7 +93,7 @@ EOF;
 				$in = 0;
 			
 			$pic = $res['pic_100'];
-			$domain = $res['symbol'];
+			$symbol = $res['symbol'];
 			$descr = $res['descr'];
 			$focus = $res['focus'];
 			$gname = $res['gname'];
@@ -107,12 +107,12 @@ EOF;
 				'in' => $in,
 				'gid' => $gid,
 				'gname' => $gname,
+				'symbol' => $symbol,
 				'pic' => $pic,
 				'type' => $type,
 				'size' => $size,
 				'focus' => $focus,
                                 'descr' => $descr,
-				'domain' => $domain,
 				'official' => $official,
 				'last_chat' => null,
 				'last_chat'=> null,
