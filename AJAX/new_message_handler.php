@@ -359,10 +359,10 @@ EOF;
 		}
 
 		if($in_groups != ''){
-			$in_groups_query = "( t1.gid IN ( $in_groups ) AND t2.group_outside_state IN(0,1,2,3) )";
+			$in_groups_query = "( t1.gid IN ( $in_groups ) AND t2.group_outside_state IN(1,2,3) )";
 			$dynamic_query_list[] .= $in_groups_query;
 
-			$in_filter_query = "( gid IN ( $in_groups ) AND group_outside_state IN(0,1,2,3) )";
+			$in_filter_query = "( gid IN ( $in_groups ) AND group_outside_state IN(1,2,3) )";
 			$filter_query_list[] .= $in_filter_query;
 		}
 

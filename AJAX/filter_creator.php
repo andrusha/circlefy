@@ -60,7 +60,7 @@ class filter_functions{
 
 	function filter($type,$search,$outside,$o_filter,$id,$flag){
 		if(!$outside)
-			$outside="0,2";
+			$outside="2";
 
 		$type = $this->mysqli->real_escape_string($type);
 		$id = $this->mysqli->real_escape_string($id);
