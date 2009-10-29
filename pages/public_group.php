@@ -37,6 +37,11 @@ $gid = $res['gid'];
 $gname = $res['gname'];
 $pic_100 = $res['pic_100'];
 
+//Part of group?
+$sc =  strpos('x,'.$_SESSION['gid'].',',','.$gid.',');
+$joined = $sc ? True : False;
+
+$this->set($joined,'joined');
 $this->set($pic_100,'group_pic_med');
 $this->set($gname,'gname');
 $this->set($gid,'gid');
@@ -55,6 +60,7 @@ if($_SESSION['uid'])
 	$logged_in_id = $_SESSION['uid'];
 else
 	$logged_in_id = 0;
+
 
 if($users_bits_results->num_rows > 0){
 	$return_list = $this->get_unique_id_list($users_bits_results);

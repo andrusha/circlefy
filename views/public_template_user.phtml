@@ -1,5 +1,6 @@
 <?php
 $logged = (!empty($_SESSION['uid']));
+if ($_t['no_user']) header('location:/');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -44,13 +45,16 @@ Tap.Vars = {
 	logged: !!'<?= $logged ?>',
 	uname: '<?= $_SESSION["uname"] ?>',
 	user: '<?= $_t["uid"] ?>',
+	username: '<?= $_t["user"] ?>',
 	group: '<?= $_t["gid"] ?>',
+	groupname: '<?= $_t["gname"] ?>',
 	tap: '<?= $_t["cid"] ?>'
 };
 </script>
 <script type="text/javascript" src="/views/javascript/tap.push.js"></script>
 <script type="text/javascript" src="/views/javascript/tap.public.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
 <style>
 div.stats {
 	margin-bottom: 20px;
@@ -308,7 +312,7 @@ div.tap-response-counter {
 					?>
 					<li id="gid_<?= $group['gid'] ?>" class="group">
 						<img src="/group_pics/<?= $group['pic_36']?>" />
-						<a href="/group/<?= $group['symbol'][0] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
+						<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
 						<!-- <a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a> -->
 					</li>
 					<?php

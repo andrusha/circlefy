@@ -34,12 +34,12 @@ Tap.Public = {
 				'typing': this.typingIndicator.bind(this),
 				'response': this.parseResponse.bind(this)
 			});
+			var chatText = this.chatText = chat.getElement('input.tap-response');
+			new OverText(chatText, {positionOptions: {offset: {x: 6, y: 6}}});
 			var uid = this.uid = $('tapper-info').getElement('p.tap').get('rel');
 			var chatBox = this.chatBox = chat.getElement('ul.tap-chat');
 			chatBox.scrollTo(0, chatBox.getScrollSize().y);
 			var char_indic = chat.getElement('div.tap-response-counter');
-			var chatText = this.chatText = chat.getElement('input.tap-response');
-			new OverText(chatText, {positionOptions: {offset: {x: 6, y: 6}}});
 			chatText.addEvents({
 				'keypress': function(e){
 					if (e.key == 'enter') {
@@ -63,6 +63,22 @@ Tap.Public = {
 				}
 			});
 		}
+		
+		(function() {
+			var type, data;
+			if (Tap.Vars.user) {
+				type = 'public-user';
+				data = {'user': Tap.Vars.username, 'logged': Tap.Vars.logged};
+			} else if (Tap.Vars.group) {
+				type = 'public-group';
+				data = {'group': Tap.Vars.groupname, 'logged': Tap.Vars.logged};
+			} else {
+				type = 'public-tap';
+				data = {'logged': Tap.Vars.logged};
+			}
+			self.metrics = {type: type, data: data};
+			mpmetrics.track(type, data);
+		})();
 	},
 	
 	typing: function(){
@@ -109,6 +125,7 @@ Tap.Public = {
 				var response = this.response.text;
 				this.firstResp = true;
 				self.addConvo();
+				mpmetrics.track('public-respond', self.metrics);
 			}
 		}).send();
 		// this.fireEvent('sendResponse');
@@ -206,6 +223,7 @@ Tap.Public = {
 					self.mainStream.empty();
 					items.getElements('li').reverse().inject('main-stream', 'top');
 					self.changeDates();
+					mpmetrics.track('public-search', $merge(self.metrics, {keyword: keyword}));
 				}
 			}).send();
 	},

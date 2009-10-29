@@ -51,6 +51,7 @@ Tap.Vars = {
 <script type="text/javascript" src="/views/javascript/tap.push.js"></script>
 <script type="text/javascript" src="/views/javascript/tap.public.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
 <style>
 div.stats {
 	margin-bottom: 20px;
@@ -223,7 +224,7 @@ div.tap-response-counter {
 			<div id="tap-chat-perma" class="section">
 				<div class="tap-response-box clarity" style="display: block">
 					<div class="tap-response-counter">240</div>
-					<ul class="tap-chat <?= empty($_t['responses']) ? 'noresp' : '' ?>">
+					<ul class="tap-chat <?= empty($_t['responses']) ? 'noresp' : '' ?> <? if (!$logged) echo 'out'; ?>">
 						<?php
 							if (!empty($_t['responses'])):
 								foreach($_t['responses'] as $resp):
@@ -239,7 +240,7 @@ div.tap-response-counter {
 						?>
 					</ul>
 					<input type="text" class="tap-response" style="width:483px" maxlength="240" 
-						<?= ($logged) ? 'alt="Respond to this tap."' : 'alt="Login to respond to this tap!" disabled="disabled"' ?>
+						<?= ($logged) ? 'alt="Respond to this tap."' : 'alt="Signup to join the conversation!" disabled="disabled"' ?>
 					/>
 				</div>
 			</div>

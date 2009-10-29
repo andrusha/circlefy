@@ -90,11 +90,12 @@ EOF;
 			$message_count = $res['message_count'];
 
 			//Process
+	/*	
 			$symbol = explode('.',$symbol);
 			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
 			$display_symbol = ucwords($symbol[0].$add);
 			$add = null;
-			
+	*/		
 			
 			$my_groups_array[] = array(
 				'gid' => $gid,

@@ -1,5 +1,6 @@
 <?php
 $logged = (!empty($_SESSION['uid']));
+if ($_t['no_group']) header('location:/');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -44,13 +45,16 @@ Tap.Vars = {
 	logged: !!'<?= $logged ?>',
 	uname: '<?= $_SESSION["uname"] ?>',
 	user: '<?= $_t["uid"] ?>',
+	username: '<?= $_t["user"] ?>',
 	group: '<?= $_t["gid"] ?>',
+	groupname: '<?= $_t["gname"] ?>',
 	tap: '<?= $_t["cid"] ?>'
 };
 </script>
 <script type="text/javascript" src="/views/javascript/tap.push.js"></script>
 <script type="text/javascript" src="/views/javascript/tap.public.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
 <style>
 div.stats {
 	margin-bottom: 20px;
@@ -112,7 +116,7 @@ div.stats li span.floater {
 	font-size: 18px;
 }
 
-#tapper-info a.button {
+#tapper-info a.button, #tapper-info span.button {
 	padding: 5px;
 	float: right;
 	background: #ccc;
@@ -121,7 +125,7 @@ div.stats li span.floater {
 	font-size: 12px;
 }
 
-#tapper-info a.button:hover {
+#tapper-info a.button:hover, #tapper-info span.button.selected {
 	background: #84B5ED;
 	text-decoration: none;
 	color: #fff;
@@ -215,7 +219,11 @@ div.tap-response-counter {
 
 			<div id="tapper-info" class="section">
 				<p class="icon"><img src="/group_pics/<?= $_t['group_pic_med'] ?>" /></p>
+				<?php if ($_t['joined']): ?>
+				<span class="button selected">You're A Member!</span>
+				<?php else: ?>
 				<a href="/groups?search=<?= $_t['gname'] ?>" class="button">Join Group</a>
+				<?php endif; ?>
 				<p class="tap-name"><strong><?= $_t['gname'] ?></strong></p>
 				<?php
 					if (!empty($_t['user_bits'])):
