@@ -349,15 +349,17 @@ EOF;
 		foreach($group_list as $gid)
 			$this->meta_groups[$gid] = 0;
 
+		//These are group's you're sending FROM/ORIGINATING hence and ARE apart of.
 		$groups_left = implode(',',$group_list);
 		if($group_list != '' && $groups_left){
-			$groups_left_query = "( t1.gid IN ( $groups_left ) AND t2.group_outside_state IN (0,2,3) )";
+			$groups_left_query = "( t1.gid IN ( $groups_left ) AND t2.group_outside_state IN (0,3) )";
 			$dynamic_query_list[] .= $groups_left_query;
 
-			$filter_left_query = "( gid IN ( $groups_left ) AND group_outside_state IN (0,2,3) )";
+			$filter_left_query = "( gid IN ( $groups_left ) AND group_outside_state IN (0,3) )";
 			$filter_query_list[] .= $filter_left_query;
 		}
-
+		
+		//These are the groups you're  sending TO/DESTIN and ARE apart of
 		if($in_groups != ''){
 			$in_groups_query = "( t1.gid IN ( $in_groups ) AND t2.group_outside_state IN(1,2,3) )";
 			$dynamic_query_list[] .= $in_groups_query;
@@ -366,6 +368,7 @@ EOF;
 			$filter_query_list[] .= $in_filter_query;
 		}
 
+		//These are the groups you're  sending TO/DESTIN and ARE NOT apart of
 		if($out_groups != ''){
 			$out_groups_query = "( t1.gid IN ( $out_groups ) AND t2.group_outside_state IN(1,3) )";
 			$dynamic_query_list[] .= $out_groups_query;

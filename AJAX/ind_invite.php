@@ -27,7 +27,7 @@ class invite_functions{
 
 		private $email;
 
-		private $from = "From: tap.info\r\n";;
+		private $from = "From: tap.info\r\n";
 		private $to;
 		private $subject;
 		private $body;
