@@ -370,10 +370,10 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 	font-size: 11px; 
 	clear: both; 
 	padding-left: 5px; 
-	padding-bottom: 3px; 
+	padding-bottom: 0px; 
 	padding-top: 3px;
 	text-align:right;
-	margin-bottom: 5px;
+	margin-bottom: -3px;
 	color:#626262; }	
 	
 .tap-respond-cancel {
