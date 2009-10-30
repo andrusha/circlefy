@@ -41,6 +41,7 @@ pageTracker._trackPageview();
 <script>
 Tap = window.Tap || {};
 Tap.Vars = {
+	pcid: "<?= $_t['pcid'] ?>".toInt(),
 	logged: !!'<?= $logged ?>',
 	uname: '<?= $_SESSION["uname"] ?>',
 	user: '<?= $_t["uid"] ?>',

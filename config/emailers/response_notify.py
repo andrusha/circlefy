@@ -22,8 +22,8 @@ class Response_Notify(object):
 		'''
 		new_message_check_query = '''
 		SELECT 
-		l.email,
-		sc.chat_text
+		l.email,l.uname,
+		sc.chat_text,sc.cid
 		FROM special_chat AS sc 
 		JOIN login AS l ON l.uid = sc.uid
 		JOIN chat AS c ON c.cid = sc.cid
@@ -35,37 +35,47 @@ class Response_Notify(object):
 		self.mysql_cursor.execute( new_message_check_query )
 		result_set = self.mysql_cursor.fetchall()
 		old_uid = None
-		email_group = {}
+		email_resp = {}
                 for row in result_set:
                         email = row["email"]
+                        uname = row["uname"]
+                        cid = row["cid"]
 			chat_text = row["chat_text"]
 
-			group_content = chat_text
-
-			if not email_group.has_key(email):
-				email_group.setdefault(email,[group_content])
-			else:
-				email_group[email].append(group_content)
+			email_resp.setdefault(email,[uname,chat_text,cid])
 	
 		content = ''
-		for email in email_group:
-			for piece in email_group[email]:
-				content += piece
+		for email in email_resp:
+			u = email_resp[email]
+			content += "%s : %s\n\n" % (u[0],u[1])
+			content += "You can access your tap directly via http://tap.info/tap/%s" % (u[2])
 			self.send_mail(content,email)
 			content = ''
 
 	def send_mail(self,content,email):
-		email = 'tasoduv@gmail.com'
+	#	email = 'tasoduv@gmail.com'
+		to = "To: %s\n" % email
+		sender = "From: tap.info\n"
+		subject = "Subject: Your tap has new responses!\n"
+		body = '''
+Hey! You have new responses for the following tap:
+
+%(content)s
+
+You should also know we added public profiles, easier access to groups and group creation, and a lot more!  Check it out.
+
+Keep connected in real-time with things you're interested in at http://tap.info , keep on tapping!
+
+-Team Tap ''' % { 'content' : content }
+
 		print "SENDING EMAIL TO %s..." % email
 		SENDMAIL = "/usr/sbin/sendmail" # sendmail location
 		p = os.popen("%s -t" % SENDMAIL, "w")
-		p.write("To: %s\n" % email)
-		p.write("From: tap.info\n")
-		p.write("Subject: Your groups have new taps!\n")
+		p.write(to)
+		p.write(sender)
+		p.write(subject)
 		p.write("\n") # blank line separating headers from body
-		p.write("Hey!  Swine Flu is still ramping up this year and it seems people have been talking about it.  People in your tap community are tapping it up.  You have new responses for this new tap:\n")
-		p.write("%s\n" % content)
-		p.write("Keep connected in real-time with things you're interested in at http://tap.info , keep on tapping!\n-Team Tap")
+		p.write(body)
 		sts = p.close()
 		print "EMAIL TO %s SENT!" % email
 		time.sleep(5)
