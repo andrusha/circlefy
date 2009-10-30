@@ -195,7 +195,11 @@ ul.tap-stream .tap-from {
 
 ul.tap-stream .tap-time {
 	font-size: 10px;
+	color: #898989;
 }
+
+ul.tap-stream .tap-prof-msg {
+	font-size: 14px; }
 
 ul.tap-stream .tap-actions {
 	float: right;
@@ -349,8 +353,7 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 .tap-views {
 	color: #666;
 	float:right;
-	font-size:11px;
-	font-weight:bold; }
+	font-size:11px; }
 
 .tap-respond.noresp {
 	font-weight:normal; }
