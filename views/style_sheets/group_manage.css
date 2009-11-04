@@ -273,10 +273,11 @@ body {
 			width: 545px;
 			color: #545454;
 			border: 1px solid #b4b4b4;
+			border-top: none;
 			background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
 		#gr-list li.more-invite { 
 			height: 100px;
-			background:#F0F0F0; }
+			background:#EAEAEA; }
 		.invitees { background-color: #fff; width: 470px; padding: 5px; } 
 		.overTxtLabel { color: #999; }
 			
