@@ -134,6 +134,9 @@ while($res = $popular_taps_results->fetch_assoc()){
         $tap = $res['chat_text'];
 	$cid = $res['mid'];
         $count = $res['count'];
+	
+	$tap = stripslashes($tap);
+
         $popular_taps_data[] = array(
         'tap' => $tap,
         'cid' => $cid,
