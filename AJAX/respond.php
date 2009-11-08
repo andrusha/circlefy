@@ -28,7 +28,27 @@ class chat_functions{
 	function send_response($msg,$cid,$init_tapper,$first){
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
-
+		if($first){
+			//This query can be moved to client-side once real-time presence of users is taken care of
+			$user_online_query = <<<EOF
+			SELECT uid FROM TEMP_ONLINE WHERE uid = {$init_tapper} AND online = 1
+EOF;
+			$user_online_reults = $this->mysqli->query($user_online_query);
+			if(!$user_online_reults->num_rows){
+				$user_settings_query = <<<EOF
+				SELECT s.email_on_response,l.email FROM settings AS s 
+				JOIN login AS l ON s.uid = l.uid 
+				WHERE s.uid = {$init_tapper} AND s.email_on_response = 1
+EOF;
+				$user_settings_results = $this->mysqli->query($user_settings_query);
+				if($user_settings_results->num_rows){
+					$res = $user_settings_results->fetch_assoc();
+					$email = $res['email'];
+					$this->notify_user($init_tapper,$msg,$uname,$cid,$email);	
+				}
+			}
+		}
+			
 			$action = "response";
 			$response = $msg;
 			$response = str_replace('"','\"',$response);
@@ -49,6 +69,30 @@ class chat_functions{
 			$this->mysqli->query($update_active);
 
 		return json_encode(array('success' => 1));
+	}
+
+	private function notify_user($init_tapper,$msg,$uname,$cid,$email){
+		$update_noftify_query = "UPDATE notifications SET email_on_response = NOW() WHERE email_on_response < SUBTIME(NOW(),'1:00:00') AND uid = {$init_tapper}";
+		$this->mysqli->query($update_noftify_query);
+		if($this->mysqli->affected_rows){
+				$to = $email;
+				$subject = "{$uname} has replied to your tap.";
+					$from = "From: tap.info\r\n";
+					$body = <<<EOF
+{$uname} has responded to your tap with the following:
+
+{$uname}: {$msg}
+
+You can respond back in real-time at http://tap.info/tap/{$cid}
+
+-Team Tap
+http://tap.info
+EOF;
+					mail($to,$subject,$body,$from);
+			return True;
+		} else { 
+			return False;
+		}
 	}
 }
 //END class

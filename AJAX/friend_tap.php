@@ -49,7 +49,7 @@ class friend_functions{
 -Team Tap
 http://tap.info
 EOF;
-                                #mail($to,$subject,$body,$from);
+                                mail($to,$subject,$body,$from);
 		} else {
 			$friend_query = "DELETE FROM friends WHERE fuid = '{$fid}' AND uid = '{$uid}';";
 		}

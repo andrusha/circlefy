@@ -84,7 +84,7 @@ class ajaz_sign_up{
 		$comb2 = $finame;
 		$comb3 = $lname;
 
-		$this->populate_profile();
+		$this->populate_user();
 /*		$this->create_filter('My Area','',94301,0);
 		$this->create_filter('My Name',$comb1.','.$comb2.','.$comb3,0,0);
 		$this->create_filter('Random Area','',10002,0);
@@ -116,15 +116,18 @@ EOF;
 		$mail_val = mail($this->email,$subject,$body,$from);
 	}
 
-	function populate_profile(){
+	function populate_user(){
                 $profile_query = "INSERT INTO profile(uid,language) values($this->uid,'{$this->lang}');";
                 $this->mysqli->query($profile_query);
+                $settings_query = "INSERT INTO settings(uid) values($this->uid);";
+                $this->mysqli->query($settings_query);
+                $notifications_query = "INSERT INTO notifications(uid) values($this->uid);";
+                $this->mysqli->query($notifications_query);
 	}
 
 	function tap_friend($fid){
 		$uname = $this->uname;
 		$uid = $this->uid;		
-
                 $friend_query = "INSERT INTO friends(fuid,uid) values('{$fid}','{$uid}');";
                 $friend_results = $this->mysqli->query($friend_query);
         }
