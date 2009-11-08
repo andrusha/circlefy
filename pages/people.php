@@ -1,6 +1,6 @@
 <?php
 
-class network extends Base{
+class people extends Base{
 
 	protected $text;
 	protected $top;
@@ -16,7 +16,7 @@ class network extends Base{
 				
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
-		$this->page_name = "network";
+		$this->page_name = "people";
 		$this->need_login = 1;
 		$this->need_db = 1;
 	
@@ -94,13 +94,13 @@ EOF;
                                                         $gname = $res['gname'];
                                                         $gid = $res['gid'];
                                                         $symbol = $res['symbol'];
-                                                        $friend_data[$uid]['groups'][] = array(
+                                                        $friend_data[$uid]['groups'][$gid] = array(
                                                         'gid' => $gid,
                                                         'gname' => $gname,
                                                         'symbol' => $symbol
                                                         );
                                                 }
-
+						$c = null;
                                                 $friend_query = <<<EOF
                                                 SELECT fuid FROM friends WHERE uid = {$uid} AND fuid IN({$ids});
 EOF;
@@ -110,7 +110,7 @@ EOF;
                                                 if($friend_res->num_rows > 0)
                                                         while($res = $friend_res->fetch_assoc())
                                                                 $friend_data[$res['fuid']]['friend'] = 1;	
-					$this->set($friend_data,'network_'.$k_query);
+					$this->set($friend_data,'people_'.$k_query);
 					}
 	}
 	

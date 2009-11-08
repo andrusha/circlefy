@@ -129,6 +129,7 @@ EOF;
                                         $official = "*";
                                 else    $official = "";
 				$descr = stripslashes($descr);
+                                $focus = stripslashes($focus);
 
                                 $groups[$gid] = array(
 					'gid' => $gid,

@@ -34,19 +34,20 @@ EOF;
 			$groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
 			$this->set($groups_you_are_in,'your_groups');
 		
-		$search = $_POST['people_search_button'];
-		$fname = $_POST['first_name'];
-		$lname = $_POST['last_name'];
-		$zipcode = $_POST['zipcode'];
-		$parts = explode(":",$_POST['group']);
+		$search = $_GET['people_search_button'];
+		$uname = $_GET['uname'];
+		$fname = $_GET['fname'];
+		$lname = $_GET['lname'];
+		$zipcode = $_GET['zipcode'];
+		$parts = explode(":",$_GET['group']);
 		$group = $parts[0];
 		$connected = $parts[1];
-	
 		if($search){
 					//This is all dynamic query generation!! ( Hence the code looks a bit crazy ) 
 
 		
 					//if the last name is specified tag this on to the end of the query
+					if($uname){ $query_array['uname'] = ' t1.uname = "'.$uname.'"'; }
 					if($fname){ $query_array['fname'] = ' t1.fname = "'.$fname.'"'; }
 					if($lname){ $query_array['lname'] = ' t1.lname ="'.$lname.'"'; }
 					/*if($group){
@@ -56,8 +57,7 @@ EOF;
 						$join['zip_q1'] = 'JOIN profile AS t2 ON t2.uid = t1.uid';
 						$query_array['zip_q2'] = ' t2.zip="'.$zipcode.'"';
 					}
-					
-					if($group != "NULL")  {
+					if($group)  {
 						// This can probably be furher optmized by removeing the second join and stating that t3.gid=# in SQL
 						$join['group_q1'] = 'JOIN group_members AS t3 ON t1.uid=t3.uid';
 						$query_array['group_q2'] = ' t3.gid="'.$group.'"';
@@ -78,131 +78,78 @@ EOF;
 						if($counter != 1 && $k !== 'last_chat'){$v = " AND $v";}
 						$query_array[$k] = $v;
 					}
+				
 
 					
-					$query = 
-					
+					$find_users_query = 
 						<<<EOF
-					
-						SELECT t1.pic_100,t1.uid,t1.uname,t1.fname,t1.lname,t4_sub.chat_text AS last_chat
+						SELECT 
+						t1.pic_100,t1.uid,t1.uname,t1.fname,t1.lname,
+						t4_sub.chat_text AS last_chat
 						FROM login AS t1 {$join['zip_q1']} {$join['group_q1']} {$join['last_chat']}
-						WHERE {$query_array['fname']} {$query_array['lname']} {$query_array['zip_q2']} {$query_array['group_q2']} {$query_array['last_chat']}
+						WHERE {$query_array['uname']}  {$query_array['fname']} {$query_array['lname']} {$query_array['zip_q2']} {$query_array['group_q2']} {$query_array['last_chat']}
 						
 EOF;
 			
-					$this->db_class_mysql->set_query($query,'find_users',"Updating a users alert settings on his profile");
+					$this->db_class_mysql->set_query($find_users_query,'find_users',"Updating a users alert settings on his profile");
 					$search_people = $this->db_class_mysql->execute_query('find_users');
 
-		 	               if($search_people->num_rows > 0){
-				
-							
+		 	                if($search_people->num_rows > 0){
 						while($search_res = $search_people->fetch_assoc()){
-							$counting++;
-							if($counting !== 1){
-								$ids .= ','.$search_res['uid'];
-									} else {
-								$ids .= $search_res['uid'];
-									}
-						 }
+							$uid = $search_res['uid'];
+							$uname = $search_res['uname'];
+							$fname = $search_res['fname'];
+							$lname =  $search_res['lname'];
+							$pic_100 = $search_res['pic_100'];
+							
+							$search_data[$uid] = array(
+							'uid' => $uid,
+							'uname' => $uname,
+							'fname' => $fname,
+							'lname' => $lname,
+							'pic_100' => $pic_100,
+							'groups' => null,
+							'friend' => null
+							);
+							$ids .= $uid.',';
+                                		}
+							$ids = substr($ids,0,-1);
 
-
-						$group_query = "SELECT groups.gid,uid,gname FROM groups JOIN group_members ON groups.gid = group_members.gid WHERE uid IN ({$ids});";
-#						$group_query = "SELECT uid,gname FROM groups JOIN group_members ON groups.gid = group_members.gid WHERE uid IN ({$ids});";
-
+						$group_query = <<<EOF
+						SELECT groups.gid,uid,gname FROM groups 
+						JOIN group_members ON groups.gid = group_members.gid 
+						WHERE uid IN ({$ids})
+EOF;
 						$this->db_class_mysql->set_query($group_query,'users_groups',"Finds all of the group a specific user is in");
 						$search_groups = $this->db_class_mysql->execute_query('users_groups');
-	
 						while($res = $search_groups->fetch_assoc()){
-							$gname = $res['gname'];
+						        $uid = $res['uid'];
+                                                        if($c[$uid])$c[$uid]++; else $c[$uid] = 1;
+                                                        if($c[$uid] > 3) continue;
+
+                                                        $gname = $res['gname'];
                                                         $gid = $res['gid'];
-                                                        $group_array[$res['uid']][$gid] .= $gname;
+                                                        $symbol = $res['symbol'];
+                                                        $friend_data[$uid]['groups'][$gid] = array(
+                                                        'gid' => $gid,
+                                                        'gname' => $gname,
+                                                        'symbol' => $symbol
+                                                        );
 						}
 
-						$friend_query = "SELECT fuid FROM friends WHERE uid = {$uid} AND fuid IN({$ids});";
+						$friend_query = <<<EOF
+						SELECT fuid FROM friends WHERE uid = {$uid} AND fuid IN({$ids});
+EOF;
 						$this->db_class_mysql->set_query($friend_query,'friend_query',"This tells you if they're you haved them tap or not so the correct state can be set upon the page loading");
 						$friend_res = $this->db_class_mysql->execute_query('friend_query');
 						
-						if($friend_res->num_rows > 0){
-							while($res = $friend_res->fetch_assoc()){
-								$fuid = $res['fuid'];
-								$state_array[$fuid] = 1;
-							}					
-						}
+						if($friend_res->num_rows > 0)
+							while($res = $friend_res->fetch_assoc())
+								$search_data[$res['fuid']]['friend'] = 1;
 
-						$search_people->data_seek(0);
-
-						while($search_res = $search_people->fetch_assoc()){
-							//color shifter
-								++$count;
-								$color_offset = $count & 1;
-								if($color_offset){$color="friend_result";} else {$color="friend_result_blue";}
-							//end color shifter
-
-							if($search_res['last_chat'] == NULL){
-								$last_chat = '<span class="notalk"> This users has not chatt\'ed yet, get them to!<span>';
-							} else { 
-								$last_chat = stripslashes($search_res['last_chat']); 
-							}
-		
-							if($state_array[$search_res['uid']] == 1){
-								$tap_msg = "<span class='tap_box'>Untap <img src='images/icons/connect.png' /></span>";
-								$state = 1;
-							}else{
-								$tap_msg = "<span class='tap_box'>Tap <img src='images/icons/disconnect.png' /></span>";
-								$state = 0;
-							}
-							
-							$pic_path = PROFILE_PIC_REL;
-							$res[$count] =
-							<<<EOF
-							<div class="{$color}">
-									<div class="friend_result_name"><span class="friend_result_name_span">{$search_res['fname']}  {$search_res['lname']}</span></div>
-
-									<div class="thumbnail_friend_result"> <img id="edit_profile_picture" src="{$pic_path}{$search_res['pic_100']}" alt='blank' /></div>
-
-									<div class="friend_result_info">
-										<ul class="result_info_list">
-											<li><span class="style_bold">Username: </span>{$search_res['uname']} </li>
-											<li><span class="style_bold">Last chat: </span>{$last_chat}</li>
-										</ul>
-
-										<ul class="result_info_list">
-												<li><span class="style_bold">Groups:</span></li>
-EOF;
-										if(is_array($group_array[$search_res['uid']])){
-											foreach($group_array[$search_res['uid']] as $v => $k){
-                                                                                                $res[$count] .= '<li><a href="group/'.$v.'">'. $k.'</a></li>';
-                                                                                        }
-										} else {	
-												$res[$count] .= "This member is in no groups, get them to join some!";
-										}
-							$res[$count] .=
-							<<<EOF
-										</ul>
-
-										<ul class="result_option_list">
-											<li><span class="style_bold {$state}" id="tap_{$search_res['uid']}" onclick="tap({$search_res['uid']},this.className[this.className.length-1])">{$tap_msg}</span></li>
-										</ul>
-
-
-									</div>
-
-								</div>
-EOF;
-                                		}
-					$this->set($res,'html');
-
-                			} elseif($search_people->num_rows == 0 && $_POST['people_search_button']) {
-			                        $res = '--- <span id="no_people_search_results">The search returned no results, please search again</span> ---';
-						$this->set($res,'no_results');
-			                } else {
-                        			echo "Search for your friends!";
-			                }
-		}
-	}
-
-	function test(){
-
+					$this->set($search_data,'search_data');
+                			}
+			}
 	}
 
 }

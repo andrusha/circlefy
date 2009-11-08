@@ -49,6 +49,35 @@ if(!$gid)
 	return False;
 //END get gid
 
+
+//START get admin list
+$admin_list_query = <<<EOF
+SELECT gm.admin,l.uname FROM group_members AS gm 
+JOIN login AS l
+ON l.uid = gm.uid
+WHERE gm.gid = {$gid} AND admin <> 0;
+EOF;
+
+$this->db_class_mysql->set_query($admin_list_query,'admin_list',"This gets the list of admins for a specific group");
+$admin_list_results = $this->db_class_mysql->execute_query('admin_list');
+
+while($res = $admin_list_results->fetch_assoc() ){
+	$uname = $res['uname'];
+	$type = $res['admin'];
+
+	switch($type){
+		case 1:$type = 'Founder';break;
+		case 2:$type = 'Admin';break;
+	}
+	
+	$admin_data[] = array(
+		'uname'	=> $uname,
+		'type' => $type
+	);
+}
+$this->set($admin_data,'admins');
+
+
 //START get groups initial taps
 $outside = "2";
 $get_users_taps_query = $this->ind_group_filter($gid,$outside,null,null);
