@@ -340,7 +340,20 @@ div.tap-response-counter {
 				<div class="tab-in" style="color:#fff; font-size: 12px"><?= $_t['gname'] ?>'s Members</div>
 			</div>
 			<div class="tab-list">
-				<p style="font-size: 16px;"><strong>This group has <?= (!empty($_t['member_count'])) ? $_t['member_count'] : 0 ?> members.</strong></p>
+			<span id="admin-header" style="font-size: 16px;font-weight:bold;">Admins</span>	
+			<div style="font-size: 12px;" id="groups-admins">
+				<ul id="admin-list">
+					
+					<?php if($_t['admins']): foreach($_t['admins'] as $admin): ?>
+						<li>
+							<a href="/user/<?=$admin['uname']?>" title="<?=$admin['type']?>"><?=$admin['uname']?></a>
+						</li>
+					<?php endforeach; else:?>
+						<li>There are currently no admins</li>
+					<?php endif; ?>
+				</ul>
+			</div>
+				<p style="font-size: 16px;"><strong><a href="/search_people?group=<?=$_t['gid']?>:0&people_search_button=1">This group has <?= (!empty($_t['member_count'])) ? $_t['member_count'] : 0 ?> members.</a></strong></p>
 				<div class="stats" style="margin-top: 20px">
 					<p style="margin-bottom: 10px"><strong>Popular Members</strong></p>
 					<ul>

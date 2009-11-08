@@ -100,14 +100,20 @@ EOF;
                                         </ul>
 
                                 </fieldset>
-			
+
 			</form> 	
 			</div>
 			<div id="people-list">
 
 				<div id="people-header">
-					<h2 class="people-title">People Search Results</h2>
+						<?$q = $_GET['q']; if(!isset($q)) $q=0; if (!$q):?>
+					<h2 class="people-title">People You're Tracking</h2>
+						<? else: ?>
+					<h2 class="people-title">People Tracking You</h2>
+						<?endif;?>
 					<span class="people-filters">
+						<a href="people?q=0">Tracking </a>
+						<a href="people?q=1">Tracked</a>
 					</span>
 				</div>
 
@@ -137,8 +143,9 @@ EOF;
 				<div>
 					<ul id="peoples-list" class="people-listing">
 					<?php
-						if($_t['search_data']):
-						foreach ($_t['search_data'] as $n):
+						$people = "people_$q";	
+						if($_t[$people]):
+						foreach ($_t[$people] as $n):
 						$uid = $n['uid'];
 						$uname = $n['uname'];
 						$fname = $n['fname'];
@@ -150,7 +157,7 @@ EOF;
 					?>
 						<li id="people-id_<?= $uid ?>" class="listing">
 							<a href="/user/<?= $uname ?>">
-								<img src="/user_pics/<?= $pic ?>" alt="people logo" class="people-image" />
+								<img src="/user_pics/<?= $pic ?>" alt="people logo" class="people-image" /><?=$uname?>
 							</a>
 							<div class="people-numbers">
 							<p>
@@ -181,7 +188,7 @@ EOF;
 						</li>
 						<?php endforeach; else:?>
 						<li id="people-id_" class="listing">
-						This person was not found! Try Again!
+						You are tracking nobody 
 						</li>
 						<?php endif; ?>
 					</ul>

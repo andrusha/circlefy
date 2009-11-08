@@ -77,6 +77,11 @@ div.stats h2 {
 	color: #333;
 }
 
+.track{
+font-size:12px;
+background:lightblue;
+}
+
 .tab-list p.actions {
 	font-size: 10px;
 }
@@ -212,6 +217,7 @@ div.tap-response-counter {
 					<a href="/user/<?= $_t['user'] ?>"><strong><?= $_t['user'] ?></strong></a>
 					<span class="tap-typing" style="color:#518E3E; font-size:12px;"></span>
 				</p>
+					<span class="track-public"><a href="#" class="track">track</a></span>
 				<?php
 					if (!empty($_t['user_bits'])):
 						$bit = array_shift($_t['user_bits'])

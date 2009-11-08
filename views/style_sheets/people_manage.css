@@ -24,13 +24,6 @@ body {
 /*	#header .holder { top: 9px; }*/
 /* Taso */
 
-#setting_buttons {
-display:inline;
-color:red;
-font-weight:bold;
-}
-
-
 
 #admin-list li{
 	display:inline;
@@ -83,7 +76,7 @@ font-weight:bold;
 		height: 31px; width: 194px;
 		background: url(/images/cimages/tab_blue.gif); }
 		
-	#groups-tab {
+	#peoples-tab {
 		height: 31px; width: 194px;
 		background: url(/images/cimages/tab_blue.gif); }
 		
@@ -141,12 +134,12 @@ font-weight:bold;
 		height: auto; width: 553px;
 		margin-left: 14px; }
 		
-	#group-search {	
+	#people-search {	
 		height: 50px; width: 553px;
 		margin-top: -2px;
-		background: url(/images/cimages/group_srch_back.gif); }
+		background: url(/images/cimages/people_srch_back.gif); }
 		
-		#group-search p {
+		#people-search p {
 			padding: 12px 0 0 15px;
 			font-size: 14px;
 			font-weight: bold;
@@ -158,73 +151,65 @@ font-weight:bold;
 			height: 20px; width: 180px;
 			padding-top: 5px; padding-left: 5px; padding-right: 30px;
 			border: none;
-			background: transparent url(/images/cimages/group_srch_field.gif) no-repeat scroll 0% 0%; }
+			background: transparent url(/images/cimages/people_srch_field.gif) no-repeat scroll 0% 0%; }
 			
 		#search-btn {
-			height: 26px; width: 77px;
-			margin-left: 6px;
-			vertical-align:-1px;}
+			height: 32px; width: 77px;
+			margin-top: -3px; margin-left: 6px;
+			vertical-align: -10px; }
 			
-		#group-search p #more-btn2 {
+		#people-search p #more-btn2 {
 			font-size: 10px;
 			color: #707070; }
 	
-	#group-search-more {
-		background: url(/images/cimages/group_srch_more.gif) bottom; 
-		height: 30px; 
-		width: 517px;
-		margin-top: 1px;
-		margin-left: 12px;
-		padding: 5px}
-		
-		#group-search-more div {
+		#people-search-more div {
 			margin: auto; width: 450px
 			}
 			
-		#group-search-more label {
+		#people-search-more label {
 			color: #707070;
 			font-weight: bold;
 			margin-left: 10px;
 			margin-right: 5px;
 			font-size: 12px }
 		
-		#group-search-more input {
+		#people-search-more input {
 		}
 		
 		#search-btn-more {
 			color: #707070;
 			font-size: 13px; }
 			
-	#gr-header {	
+	#people-header {	
 		height: 41px; width: 553px;
 		margin-top: 10px;
 		color: white;
 		background: url(/images/cimages/main_bar_blue.gif); }
 		
-			.gr-title {
+			.people-title {
 				margin-top: 10px; margin-left: 21px;
 				float: left;
 				font-size: 18px; }
 			
-			.gr-filters {
+			.people-filters {
 				margin-top: 9px; margin-right: 17px;
 				float: right;
 				width: 280;
 				font-size: 12px; }
 				
-			a#gr-filter1 {
+			a#people-filter1 {
 				color: white;
 				margin-right: 6px; }
 
-			#gr-create-btn {
+			#people-create-btn {
 				width:129px;
 				height:25px; display:block; float:left;
 				background: url(/images/cimages/gr_new_btn_blue.gif) no-repeat left;}
 				
-				#gr-create-btn:hover { 
+				#people-create-btn:hover { 
 					background-position: right; }
 				
-			#gr-header input {
+			#people-header input {
 				background: url(/images/cimages/gr_srch_field.gif) no-repeat;
 				border-style:hidden;
 				border-width:0px;
@@ -238,15 +223,15 @@ font-weight:bold;
 				color: #ccc;
 			}
 			
-			#gr-filter-btn {
+			#people-filter-btn {
 				float: left; height: 21px; margin-top: 3px;
 				background: url(/images/cimages/magn_green.gif) no-repeat left top;
 				padding-left: 22px; padding-top: 4px; padding-bottom: 3px; }
 
-				#gr-filter-btn:hover { 
+				#people-filter-btn:hover { 
 					background-position: right top; }
 
-	#gr-search {
+	#people-search {
 		display: none;
 		font-size: 12px;
 		height: 18px; width: 529px;
@@ -254,13 +239,13 @@ font-weight:bold;
 		margin-top: 10px;
 		background: url(/images/cimages/gr_srch_results_top.gif); }
 		
-		#gr-search .gr-search-title {
+		#people-search .people-search-title {
 			float: left; }
 
-		#gr-search .gr-search-pages {
+		#people-search .people-search-pages {
 			float: right; }
 				
-	.gr-sort-bar {
+	.people-sort-bar {
 		height: 20px; width: 545px;
 		margin-left: 3px; margin-bottom: -1px;
 		padding: 0;
@@ -269,8 +254,8 @@ font-weight:bold;
 		color: #545454;
 		background: #e5e5e5; }
 		
-		.gr-sort-bar p { margin-top: 3px; }
-		.gr-sort-bar span { color: #545454; }
+		.people-sort-bar p { margin-top: 3px; }
+		.people-sort-bar span { color: #545454; }
 		
 		#sort-logo {  margin-left: 28px; }
 		#sort-name { margin-left: 25px; }
@@ -278,10 +263,10 @@ font-weight:bold;
 		#sort-msgs { margin-left: 196px; }
 		#sort-mmbrs { margin-left: 23px; }
 		
-	#gr-list ul {
+	#people-list ul {
 		margin: 0 0 0 3px; }
 		
-		#gr-list li {
+		#people-list li {
 			margin-bottom: -1px;
 			height: 80px; 
 			width: 545px;
@@ -289,37 +274,37 @@ font-weight:bold;
 			border: 1px solid #b4b4b4;
 			border-top: none;
 			background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
-		#gr-list li.more-invite { 
+		#people-list li.more-invite { 
 			height: 100px;
 			background:#EAEAEA; }
 		.invitees { background-color: #fff; width: 470px; padding: 5px; } 
 		.overTxtLabel { color: #999; }
 			
-		.gr-image {
+		.people-image {
 			float: left;
 			margin-top: 15px; margin-left: 16px;
 			height: 46px; width: 46px;
 			border: 1px solid #c4c4c4; }
 			
-		.gr-offic {
+		.people-offic {
 			vertical-align: -2px;
 			margin-right: 4px; }
 			
-		.gr-info {
+		.people-info {
 			float: left;
 			height: auto; width: 260px;
 			font-size: 12px;
 			margin-top: 14px; margin-left: 16px; }
 			
-			div.gr-info > p:first-child { height: 15.2px; overflow: hidden; }
+			div.people-info > p:first-child { height: 15.2px; overflow: hidden; }
 			
-			.gr-info p strong { color: black; font-weight: bold; }
+			.people-info p strong { color: black; font-weight: bold; }
 			
-			.gr-desc {
+			.people-desc {
 				margin-top: 5px;
 				font-size: 11px; }
 			
-				.gr-desc.focus {
+				.people-desc.focus {
 					margin-top: 5px;
 					font-size: 12px; }
 			
@@ -327,53 +312,53 @@ font-weight:bold;
 				color: #545454;
 				margin: 0 0 0 10px; }
 				
-		.gr-numbers {
+		.people-numbers {
 			float: left;
-			margin-top: 23px; margin-left: 4px;
-			height: 46px; width: 58px; }
+			margin-top: 20px; margin-left: 4px;
+			height: 46px; width: 98px; }
 			
-			.gr-numbers p { text-align: center; font-size: 10px; }
+			.people-numbers p { text-align: center; font-size: 10px; }
 			
-			.gr-numbers p strong { font-size: 11px; font-weight: bold; color: black; }
+			.people-numbers p strong { font-size: 11px; font-weight: bold; color: black; }
 				
-		.gr-btns {
+		.people-btns {
 			float: left;
 			height: auto; width: 57px;
 			margin-left: 10px; margin-top: 20px;
 			font-size: 11px;
 			text-align: center; }
 			
-			.gr-btns a {
+			.people-btns a {
 				color: #545454; }
 			
-			a.gr-invite-btn {
+			a.people-invite-btn {
 				padding: 0px 23.5px; 
 				height: 17px; 
 				float: right;
 				margin-bottom: 5px;
 				background: url(/images/cimages/gr_invite_btn.gif) left; }
 			
-			a.gr-invite-btn:hover {
+			a.people-invite-btn:hover {
 				background-position: right;
 			}
 							
-			a.gr-admin-btn {
+			a.people-admin-btn {
 				clear: left;
 				padding: 0px 23.5px;
 				height: 17px;
 				float: right;
 				background: url(/images/cimages/gr_admin_btn.gif) left; }
 							
-			a.gr-admin-btn:hover {
+			a.people-admin-btn:hover {
 				background-position: right; }
 			
-			a.gr-join-btn {
+			a.people-join-btn {
 				padding: 0px 23.5px;
 				height: 29px;
 				float: right;
 				background: url(/images/cimages/gr_join_btn.gif) left; }
 
-			a.gr-join-btn:hover {
+			a.people-join-btn:hover {
 				background-position: right; }
 		
 		.more-btn4 {
@@ -437,7 +422,7 @@ font-weight:bold;
 			font-size: 20px;
 		}
 
-.group {
+.people {
 	margin-left:-7px;
 	padding-bottom:3px;
 	padding-left:3px;
