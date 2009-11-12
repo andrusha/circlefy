@@ -1,9 +1,8 @@
 /* Search */
 #people-search-main {
 	background: url(/images/cimages/ppl_srch_back.gif) no-repeat;
-	height: 50px;
-	margin-bottom: 0;
-	margin-top: -2px;
+	height: 69px;
+	margin: 0;
 	width: 553px;
 }
 
@@ -14,7 +13,7 @@
 	padding: 12px 0 0 15px;
 }
 
-#search-field {
+.people-search-field {
 	background: url(/images/cimages/group_srch_field.gif) no-repeat;
 	border: none;
 	font-size: 12px;
@@ -22,6 +21,13 @@
 	margin: 0 0 0 5px;
 	padding: 5px 30px 1px 5px;
 	width: 180px;
+}
+
+#people-search-main li {
+	color: #707070;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 12px 0 0 15px;	
 }
 
 #search-btn {
