@@ -23,7 +23,7 @@
 	width: 125px;
 }
 
-.people-sel-field
+.people-sel-field {
 	background: url(/images/cimages/people-search-field.gif) no-repeat;
 	border: none;
 	font-size: 12px;
