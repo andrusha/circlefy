@@ -18,8 +18,8 @@
 	border: none;
 	font-size: 12px;
 	height: 20px;
-	margin: 0 0 0 5px;
-	padding: 5px 30px 1px 5px;
+	margin: 4px 0 0 140px;
+	padding: 5px 26px 1px 5px;
 	width: 180px;
 }
 
@@ -27,7 +27,7 @@
 	color: #707070;
 	font-size: 14px;
 	font-weight: bold;
-	padding: 12px 0 0 15px;	
+	padding: 3px 0 0 15px;	
 }
 
 #search-btn {
@@ -35,11 +35,6 @@
 	margin-left: 6px;
 	vertical-align:-1px;
 	width: 70px;
-}
-
-#search-btn-more {
-	color: #707070;
-	font-size: 13px;
 }
 
 /* Search More */
