@@ -50,7 +50,7 @@
 							<li><input type="text" id="fname" class="people-search-field" name="fname"></input>
 							<input type="text" id="lname" class="people-search-field" name="lname"></input></li>
 							<li><input type="text" id="uname" class="people-search-field" name="uname"></input>
-							<select id="group" name="group">
+							<select id="group" class="people-sel-field" name="group">
 							<option value=""> - - - - - - - - -</option>
 							<?while($search_people_results = $_t['your_groups']->fetch_assoc()):?>
 							<option value="<?=$search_people_results['gid']?>:<?=$search_people_results['connected']?>">

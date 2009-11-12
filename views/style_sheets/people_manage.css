@@ -23,6 +23,16 @@
 	width: 125px;
 }
 
+.people-sel-field
+	background: url(/images/cimages/people-search-field.gif) no-repeat;
+	border: none;
+	font-size: 12px;
+	height: 24px;
+	margin: 0 10px 0 0;
+	padding: 4px 4px 0;
+	width: 125px;
+}
+
 #people-search-main li {
 	color: #707070;
 	font-size: 14px;
@@ -31,10 +41,12 @@
 }
 
 #people-search-btn {
-	height: 26px;
-	margin-left: 6px;
-	vertical-align:-1px;
-	width: 70px;
+	height:30px;
+	left:456px;
+	margin-left:6px;
+	position:absolute;
+	top:19px;
+	width:70px;
 }
 
 /* Search More */
