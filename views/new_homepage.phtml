@@ -14,21 +14,10 @@ if (is_array($_t['active_convos'])) {
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-11153159-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta http-equiv="Content-Language" content="EN" />
 <meta name="ROBOTS" content="ALL" />
@@ -36,17 +25,15 @@ pageTracker._trackPageview();
 <meta http-equiv="imagetoolbar" content="false" />
 <meta name="description" content="TAP communication platform" />
 <meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-
 <title>tap - alpha</title>
-
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
 <link rel="stylesheet" href="/views/style_sheets/TextboxList.css" type="text/css" />
 <link rel="stylesheet" href="/views/style_sheets/TextboxList.Autocomplete.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
-<script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript"src="/views/javascript/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript" src="/views/javascript/textboxlist-complete.js"></script>
 <script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
 <script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
@@ -68,6 +55,7 @@ Tap.Vars = {
 // Metrics
 try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) }
 window.addEvent('domready', function(){
+/*
 	$(document.body).addEvents({
 		'click:relay(a.suggestion-item)': function(e){
 			e.stop();
@@ -87,7 +75,8 @@ window.addEvent('domready', function(){
 				})()
 			});
 		}
-	});
+	});*/
+
 
 	Tap.Home.addEvents({
 		'sendTap': function(number){
@@ -112,7 +101,7 @@ window.addEvent('domready', function(){
 
 <body>
 
-	<?php include(NEW_HEADER); ?>
+	<? include(HEADER_CLEAN); ?>
 
 	<div id="tap-feed-outside-more">
 		<p style="margin-bottom:5px">Allow messages from this groups:</p>
@@ -126,46 +115,38 @@ window.addEvent('domready', function(){
 
 	<div id="main">
 
-		<div class="left-col" style="margin-right: 20px">
-			<!--
-			<div id="groups-tab" style="background-image:url(/images/cimages/tab_grey.gif);">
-				<div class="tab-in" style="color:#fff;">What's This?</div>
-			</div>
-			<div class="tab-list">
-				<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.  Use Tap to see what you and your friends are doing, what people around you are doing, and connect with link-minded individuals. Join Tap today!</p>
-			</div>
-			-->
-			<div id="groups-tab" style="visibility:hidden;">
-				<div class="tab-in" style="color:#fff">Popular Groups</div>
-			</div>
-			<div class="tab-list" style="visibility:hidden;">
-				<ul>
-					<?php foreach($_t['trending_groups'] as $trending): ?>
-						<li class="list-item" style="height:30px">
-							<p style="height: 14px;"><a href="/group/<?= $trending['symbol'] ?>" class="suggestion-item" title="<?= $trending['gname'] ?>"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" />
-								<strong>
-									<?php
-										$gname = $trending['gname'];
-										echo stripslashes((strlen($gname) < 10) ? $gname : substr($gname, 0, 10) . '...');
-									?>
-								</strong> (<?= $trending['count'] ?>)</a></p>
+		<div id="sidebar-left" class="sidebar">
+			<div id="groups" class="section">
+				<div class="section-head">
+					<h1>Popular Groups</h1>
+				</div>
+				<div class="section-body">
+					<ul class="suggested-groups">
+						<?php foreach($_t['trending_groups'] as $random): ?>
+						<li class="list-item">
+							<p class="name">
+								<a class="suggestion-item" title="<?= $random['gname'] ?>" href="/group/<?= $random['symbol'] ?>">
+								<img src="/group_pics/<?= $random['pic_36'] ?>">
+								<?php
+									$gname = $random['gname'];
+									echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
+								?>
+								</a>
+							</p>
+							<p class="focus"><?= $random['count'] ?> Taps</p>
 						</li>
-						<!--
-						<li id="gid_<?= $trending['gid'] ?>" class="group trending">
-							<?= $trending['gname'] ?> (<?= $trending['count'] ?>)
-
+						<?php endforeach; ?>
+						<li class="list-item" style="height:30px; margin-top:20px">
+							<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
 						</li>
-						-->
-					<?php endforeach; ?>
-					<li class="list-item" style="height:30px; margin-top:20px">
-						<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
-					</li>
-				</ul>
-				<div style="clear:both"></div>
+					</ul>
+					<div class="clarity"></div>
+				</div>
 			</div>
 		</div>
 
-		<div id="center-col">
+		<div id="content">
+			
 			<div id="tap-box" class="section">
 				<div id="tap-box-counter">240</div>
 				<input type="text" id="tap-box-msg" maxlength="240" alt="Start tapping by writing a message here." />
@@ -183,7 +164,7 @@ window.addEvent('domready', function(){
 						Your Last Tap
 					</h1>
 				</div>
-				<div class="section-body">
+				<div class="section-body feed">
 					<ul id="your-stream" class="tap-stream">
 						<?php if ($last == null): ?>
 						<li class='welcome_tap'>
@@ -260,7 +241,7 @@ window.addEvent('domready', function(){
 						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
 					</h1>
 				</div>
-				<div class="section-body">
+				<div class="section-body feed">
 					<div id="tap-notify"></div>
 					<ul id="main-stream" class="tap-stream">
 						<?php
@@ -328,75 +309,82 @@ window.addEvent('domready', function(){
 					</ul>
 				</div>
 			</div>
+			
 		</div>
-
-		<div id="left-col">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">My Groups</div>
+		
+		<div id="sidebar-right" class="sidebar">
+			
+			<div class="section">
+				<div class="section-head">
+					<h1>My Groups</h1>
+				</div>
+				<div class="section-body">
+					<ul>
+						<li id="gid_public" class="group">
+							<span class="counter"></span>
+							<img src="/group_pics/36wh_default_group.gif" style="display:none" />
+							<strong><a href="#" title="Public Feed">Public Taps</a></strong>
+						</li>
+						<li id="gid_all" class="group selected">
+							<span class="counter"></span>
+							<img src="/group_pics/36wh_default_group.gif" style="display:none" />
+							<strong><a href="#" title="Groups Feed">All Your Groups <span class="unread-counter">(0)</span></a></strong>
+						</li>
+						<?php foreach ($_t['your_groups'] as $group): ?>
+						<li id="gid_<?= $group['gid'] ?>" class="group">
+							<img src="/group_pics/<?= $group['pic_36']?>" />
+							<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
+							<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
+						</li>
+						<?php endforeach; ?>
+						<li style="margin-top:20px">
+							<span class="counter"></span>
+							<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="tab-list">
-				<ul>
-					<li id="gid_public" class="group">
-						<span class="counter"></span>
-						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
-						<strong><a href="#" title="Public Feed">Public Taps</a></strong>
-					</li>
-					<li id="gid_all" class="group selected">
-						<span class="counter"></span>
-						<img src="/group_pics/36wh_default_group.gif" style="display:none" />
-						<strong><a href="#" title="Groups Feed">All Your Groups <span class="unread-counter">(0)</span></a></strong>
-					</li>
-					<?php foreach ($_t['your_groups'] as $group): ?>
-					<li id="gid_<?= $group['gid'] ?>" class="group">
-						<img src="/group_pics/<?= $group['pic_36']?>" />
-						<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
-						<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
-					</li>
-					<?php endforeach; ?>
-					<li style="margin-top:20px">
-						<span class="counter"></span>
-						<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
-					</li>
-				</ul>
-			</div>
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">Active Conversations</div>
-			</div>
-			<div class="tab-list">
-				<ul id="active-convos-list">
-					<?php 
-						if (!empty($_t['active_convos'])):
-							$active_convos = array_reverse($_t['active_convos']);
-							foreach ($active_convos as $convo): 
-					?>
-					<li id="aid_<?= $convo['mid'] ?>" class="convo">
-						<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
-						<span style="font-size:10px">
-						<?php
-							$chat_text = $convo['chat_text'];
-							echo stripslashes((strlen($chat_text) < 20) ? $chat_text : substr($chat_text, 0, 20) . '...');
-						?> 
-						(<span class="convo-count"><?= $convo['resp_count'] ?></span>)
-						</span>
-						<a href="#" class="remove-convo" title="Remove Conversation">&ndash;</a>
-					</li>
-					<?php 
-							endforeach;
-						else: 
-					?>
-					<li class="no-convos">
-						<strong>No Active Conversations</strong>
-					</li>
-					<?php 
-						endif; 
-					?>
-				</ul>
+			
+			<div class="section">
+				<div class="section-head">
+					<h1>Active Convos</h1>
+				</div>
+				<div class="section-body">
+					<ul id="active-convos-list">
+						<?php 
+							if (!empty($_t['active_convos'])):
+								$active_convos = array_reverse($_t['active_convos']);
+								foreach ($active_convos as $convo): 
+						?>
+						<li id="aid_<?= $convo['mid'] ?>" class="convo">
+							<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
+							<span style="font-size:10px">
+							<?php
+								$chat_text = $convo['chat_text'];
+								echo stripslashes((strlen($chat_text) < 20) ? $chat_text : substr($chat_text, 0, 20) . '...');
+							?> 
+							(<span class="convo-count"><?= $convo['resp_count'] ?></span>)
+							</span>
+							<a href="#" class="remove-convo" title="Remove Conversation">&ndash;</a>
+						</li>
+						<?php 
+								endforeach;
+							else: 
+						?>
+						<li class="no-convos">
+							<strong>No Active Conversations</strong>
+						</li>
+						<?php 
+							endif; 
+						?>
+					</ul>
+				</div>
 			</div>
 		</div>
-
+		
 	</div>
-
-	<div id="templates" style="display:none">
+	
+	<div id="templates">
 		<ul id="template-bit">
 			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
 			<li id="tid_<#: bit.cid #>">
@@ -468,10 +456,8 @@ window.addEvent('domready', function(){
 			</li>
 		</ul>
 	</div>
-
-	<div id="footer">
-
-	</div>
+	
+	<? include(ANALYTICS); ?>
 
 </body>
 </html>

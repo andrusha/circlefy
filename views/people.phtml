@@ -4,17 +4,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-11153159-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta http-equiv="Content-Language" content="EN" />
 <meta name="ROBOTS" content="ALL" />
@@ -25,19 +14,10 @@ pageTracker._trackPageview();
 
 <title>tap - alpha</title>
 
+<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" >
 <link rel="stylesheet" href="/views/style_sheets/people_manage.css" type="text/css" >
-
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-
-<!--[if lt IE 7]>
-        <script type="text/javascript" src="js/unitpngfix.js"></script>
-<![endif]-->
-<style>
-.description, .more-invite {
-	display: none;
-}
-</style>
 <script src="/views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
 <script src="/views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
 <script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
@@ -47,89 +27,58 @@ pageTracker._trackPageview();
 
 <body>
 
-	<? include(NEW_HEADER); ?>
+	<? include(HEADER_CLEAN); ?>
 
 	<div id="main">
-		<div id="left-col">
-			<div id="peoples-tab">
-				<div class="tab-in"><a href="" class="name">People Suggestion</a>  </div>
-			</div>
-				<div class="tab-list">
-					<ul>
-						<?php if($_t['random_people_results']) foreach ($_t['random_people_results'] as $random): ?>
-						<!-- <?=var_dump($random)?> -->
-						<li class="list-item">
-							<p style="height: 14px; font-weight: bold;"><a href="/people/<?= $random['uname'] ?>" title="<?= $random['uname'] ?>" class="suggestion-item"><img src="/people_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
-								$uname = $random['uname'];
-								echo stripslashes((strlen($uname) < 15) ? $uname : substr($uname, 0, 15) . '...');
-							?></a></p>
-							<p style="margin-bottom:20px; font-size: 10px"><?= $random['focus'] ?></p>
-						</li>
-						<?php endforeach; ?>
-					</ul>
-					<!-- <p class="more-btn1"><a href="">show more &raquo;</a></p> -->
-					<div style="clear:both"></div>
+
+		<div id="sidebar-left" class="sidebar">
+			<div id="peoples" class="section">
+				<div class="section-head">
+					<h1>Suggested people</h1>
 				</div>
+				<div class="section-body">
+					<ul class="suggested-peoples"></ul>
+				</div>
+			</div>
 		</div>
 
-		<div id="center-col">
-			<div id="people-search">
-				<p>Looking for someone? <input id="search-field" type="text" name="people-search"/> <a id="search-btn-more" href="">more &raquo;</a> <input id="search-btn"  type="image" src="/images/cimages/people_srch_btn.gif"/> </p>
+		<div id="content">
+			<div id="people-search-main" class="section">
+				<form method="get" action="search_people">
+					 <fieldset>
+						<legend>Search Box</legend>
+						<ul>
+							<li><label>User Name</label><input type="text" id="uname" name="uname"></input></li>
+							<li><label>First Name</label><input type="text" id="fname" name="fname"></input></li>
+							<li><label>Last Name</label><input type="text" id="lname" name="lname"></input></li>
+							<li><label>Group</label>
+							<select id="group" name="group">
+							<option value=""> - - - - - - - - -</option>
+							<?while($search_people_results = $_t['your_groups']->fetch_assoc()):?>
+							<option value="<?=$search_people_results['gid']?>:<?=$search_people_results['connected']?>">
+								<?=$search_people_results['gname']?>
+							</option>
+							<?endwhile;?>
+							?>
+							</select></li>
+							<li><input id="people_search_button" type="submit" name="people_search_button" value="Search"></input></li>
+						</ul>
+					</fieldset>
+				</form> 	
 			</div>
-	
-			<div id="people-search-main">
-			<form method="get" action="search_people">
-				 <fieldset>
-                                        <legend>Search Box</legend>
 
-                                        <ul>
-                                                <li><label>User Name</label><input type="text" id="uname" name="uname"></input></li>
-                                                <li><label>First Name</label><input type="text" id="fname" name="fname"></input></li>
-                                                <li><label>Last Name</label><input type="text" id="lname" name="lname"></input></li>
-                                                <li><label>Group</label>
-                                                <select id="group" name="group">
-                                                <option value=""> - - - - - - - - -</option>
-                                                <?
-                                                while($search_people_results = $_t['your_groups']->fetch_assoc())
-                                                echo <<<EOF
-                                                <option value="{$search_people_results['gid']}:{$search_people_results['connected']}">{$search_people_results['gname']}</option>
-EOF;
-                                                ?>
-                                                </select></li>
-                                                <li><input id="people_search_button" type="submit" name="people_search_button" value="Search"></input></li>
-                                        </ul>
+			<div id="people-list" class="section">
 
-                                </fieldset>
-
-			</form> 	
-			</div>
-			<div id="people-list">
-
-				<div id="people-header">
-						<?$q = $_GET['q']; if(!isset($q)) $q=0; if (!$q):?>
-					<h2 class="people-title">People You're Tracking</h2>
-						<? else: ?>
-					<h2 class="people-title">People Tracking You</h2>
-						<?endif;?>
-					<span class="people-filters">
-						<a href="people?q=0">Tracking </a>
-						<a href="people?q=1">Tracked</a>
-					</span>
+				<div id="people-header" class="section-head big">
+					<h1>
+						<a class="tracker" href="people?q=1">Tracked</a>
+						<a class="tracker" href="people?q=0">Tracking </a>
+						<span>People <?= empty($_GET['q']) ? "You're Tracking" : "Tracking You" ?></span>
+					</h1>
 				</div>
 
-				<div id="people-search">
-					<p class="people-search-title">
-						Search Results (<span id="people-search-count">No matching peoples found</span>)
-						| <a href="#" class="remove-search">Show Your People</a>
-					</p>
-					<p class="people-search-pages">
-						<a href="#" id="people-search-pages-back">&laquo; Previous</a>
-						<span id="people-search-sep" style="display:none"> | </span>
-						<a href="#" id="people-search-pages-next">Next &raquo;</a>
-					</p>
-				</div>
 
-				<div class="people-sort-bar">
+				<div id="people-sort">
 					<p>
 						<span id="sort-logo">Logo</span>
 						<span id="sort-name">Name</span>
@@ -143,6 +92,7 @@ EOF;
 				<div>
 					<ul id="peoples-list" class="people-listing">
 					<?php
+						$q = empty($GET['q']) ? 0 : 1;
 						$people = "people_$q";	
 						if($_t[$people]):
 						foreach ($_t[$people] as $n):
@@ -193,88 +143,25 @@ EOF;
 						<?php endif; ?>
 					</ul>
 				</div>
-
-				<!-- <div class="more-btn4"><a href="">show more &raquo;</a></div> -->
 			</div>
 		</div>
 
-		<div id="right-col">
-			<h1>Help and Tips</h1>
-			<h2>Invite your friend.</h2>
-			<p>Having your friends on tap allows for a much richer experience without them, so get them on tap!</p>
-		</div>
-	</div>
-
-
-		<div id="templates" style="display:none">
-			<ul id="search-template">
-				<# for (var x = this.reverse().length; x--;) { var data = this[x]; #>
-				<li id="people-id_<#: data.uid #>" class="listing">
-					<a href="/people/<#: data.uname #>">
-						<img src="/people_pics/<#: data.pic #>" alt="people logo" class="people-image" />
-					</a>
-					<div class="people-info">
-						<p>
-							<# if (data.official == "*") { #>
-							<img src="/images/cimages/star.gif" alt="official people" class="people-offic" />
-							<# } #>
-							<strong class="people-name">
-								<a href="/people/<#: data.uname #>"><#: data.uname #></a>
-							</strong>&nbsp;&nbsp;
-						</p>
-							<p class="people-desc description">
-								<#: data.descr #><br /><br />
-								<strong>Latest Tap: </strong><#: data.last_chat #>
-							</p>
-							<p class="people-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
-					</div>
-					<div class="people-numbers">
-						<p><strong><#: data.count #></strong></p>
-					</div>
-					<div class="people-numbers">
-						<p><strong><#: data.size #></strong></p>
-					</div>
-					<div class="people-btns">
-						<# if (data["in"] == 0) { #>
-						<a href="" class="people-join-btn"></a><br />
-						<p class="status" style="display:none">Please wait..</p>
-						<img src="images/icons/accept.png" class="join-ok" alt="Joined" style="display:none" />
-						<# } else { #>
-						<img src="images/icons/accept.png" alt="Joined" /><br/>Joined!
-						<!-- <img src="images/icons/accept.png" alt="Joined" /> -->
-						<# } #>
-					</div>
-				</li>
-				<li class="more-invite">
-					<div>
-						<p>Please enter your official email address: <input type="text" class="invitees"> <span class="people-domain">@<#: data.uname #></span></p>
-						<p class="status"><a href="#" class="send-join">Send confirmation</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
-					</div>
-				</li>
-				<# } #>
-			</ul>
-			<ul id="listing-templates">
-				<li id="filter-noresults" class="info">
-					<div>
-						<p>Sorry, there are no peoples that match your filter. <a href="#" class="remove-filter">Show All</a></p>
-					</div>
-				</li>
-				<li id="search-noresults" class="info">
-					<div>
-						<p>Sorry, there are no peoples that match your keywords. Try searching for the abbreviations for a school, company or people. (Example: for New York University, try "NYU."<br/>If you're tired of searching, you can go back to viewing <a href="#" class="remove-search">Your People</a></br>"</p>
-					</div>
-				</li>
-				<li id="search-loading" class="info">
-					<div>
-						<p>Loading search results.</p>
-					</div>
-				</li>
-			</ul>
+		<div id="sidebar-right" class="sidebar">
+			<div class="section">
+				<div class="section-head gray">
+					<h1>Help and Tips</h1>
+				</div>
+				<div class="section-body info">
+					<h2>Invite Your Friends!</h2>
+					<p>Having your friends on tap allows for a much richer experience without them, so get them on tap!</p>
+				</div>
+			</div>
 		</div>
 
-	<div id="footer">
 
 	</div>
+
+	<? include(ANALYTICS); ?>
 
 </body>
 </html>
