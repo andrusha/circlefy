@@ -19,55 +19,33 @@ class Response_Notify(object):
 		'''
 		this query will find all messages that have received responses in the 
 		last X hours and email the people letting them know they've gotten a response
-		add WHERE sc.chat_timestamp > SUBTIME(NOW(),'24:00:00') if you want time
 		'''
 		new_message_check_query = '''
-		SELECT
-		MAX(sc.cid),
-		l.email,l.uname,
-		sc.chat_text,sc.cid
-		FROM special_chat AS sc 
-		JOIN login AS l ON l.uid = sc.uid
-		JOIN chat AS c ON c.cid = sc.cid
-		GROUP BY l.uid
+		SELECT 
+		l.email,l.uname,l.fname,l.lname
+		FROM login AS l
 		'''	
 		 
 
 		self.mysql_cursor.execute( new_message_check_query )
 		result_set = self.mysql_cursor.fetchall()
 		old_uid = None
-		email_resp = {}
+		email_group = {}
                 for row in result_set:
                         email = row["email"]
-                        uname = row["uname"]
-                        cid = row["cid"]
-			chat_text = row["chat_text"]
+			content = '''
+			This is a sample news letter.  Fill in the content here for a new one!
+			
 
-			email_resp.setdefault(email,[uname,chat_text,cid])
-	
-		content = ''
-		for email in email_resp:
-			u = email_resp[email]
-			content += "%s : %s\n\n" % (u[0],u[1])
-			content += "You can access your tap directly via http://tap.info/tap/%s" % (u[2])
+			'''
 			self.send_mail(content,email)
-			content = ''
 
 	def send_mail(self,content,email):
-	#	email = 'tasoduv@gmail.com'
-		to = "To: %s\n" % email
+		email = 'tasoduv@gmail.com'
+		to = "To: %s\n" % (email)
+		content = "%s\n" % (content)
 		sender = "From: tap.info\n"
-		subject = "Subject: Your tap has new responses!\n"
-		body = '''
-Hey! You have new responses for the following tap:
-
-%(content)s
-
-You should also know we added public profiles, easier access to groups and group creation, and a lot more!  Check it out.
-
-Keep connected in real-time with things you're interested in at http://tap.info , keep on tapping!
-
--Team Tap ''' % { 'content' : content }
+		subject = "Subject: Lot's of new features on tap!\n"
 
 		print "SENDING EMAIL TO %s..." % email
 		SENDMAIL = "/usr/sbin/sendmail" # sendmail location
@@ -76,7 +54,7 @@ Keep connected in real-time with things you're interested in at http://tap.info 
 		p.write(sender)
 		p.write(subject)
 		p.write("\n") # blank line separating headers from body
-		p.write(body)
+		p.write(content)
 		sts = p.close()
 		print "EMAIL TO %s SENT!" % email
 		time.sleep(5)

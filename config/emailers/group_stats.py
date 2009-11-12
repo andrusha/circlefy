@@ -31,7 +31,7 @@ class Response_Notify(object):
 		JOIN group_members AS gm ON gm.uid = l.uid
 		JOIN ( 
 			SELECT gid,COUNT(sc.mid) AS count FROM special_chat_meta AS scm
-			JOIN special_chat AS sc ON scm.mid = sc.mid AND sc.chat_timestamp > SUBTIME(NOW(), '24:00:00')
+			JOIN special_chat AS sc ON scm.mid = sc.mid AND sc.chat_timestamp > SUBTIME(NOW(), '94:00:00')
 			GROUP BY scm.gid
 		) AS oscm ON gm.gid = oscm.gid
 		JOIN groups AS g ON g.gid = oscm.gid
