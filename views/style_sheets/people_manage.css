@@ -29,15 +29,15 @@
 	font-size: 12px;
 	height: 24px;
 	margin: 0 10px 0 0;
-	padding: 4px 4px 0;
-	width: 125px;
+	padding: 3px 5px 3px 1px;
+	width: 131px;
 }
 
 #people-search-main li {
 	color: #707070;
 	font-size: 14px;
 	font-weight: bold;
-	margin: 0 0 0 142px;	
+	margin: 0 0 0 150px;	
 }
 
 #people-search-btn {
