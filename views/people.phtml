@@ -50,7 +50,6 @@
 							<li><input type="text" id="fname" class="people-search-field" name="fname"></input>
 							<input type="text" id="lname" class="people-search-field" name="lname"></input></li>
 							<li><input type="text" id="uname" class="people-search-field" name="uname"></input>
-							<label>Group</label>
 							<select id="group" name="group">
 							<option value=""> - - - - - - - - -</option>
 							<?while($search_people_results = $_t['your_groups']->fetch_assoc()):?>
@@ -60,7 +59,7 @@
 							<?endwhile;?>
 							?>
 							</select></li>
-							<li><input id="people_search_button" type="submit" name="people_search_button" value="Search"></input></li>
+							<li><input id="people-search-btn" type="submit" name="people_search_button" value="Search"></input></li>
 						</ul>
 					</fieldset>
 				</form> 	

@@ -2,7 +2,7 @@
 #people-search-main {
 	background: url(/images/cimages/ppl_srch_back.gif) no-repeat;
 	height: 69px;
-	margin: 0;
+	padding: 9px 0 0 0;
 	width: 553px;
 }
 
@@ -17,20 +17,20 @@
 	background: url(/images/cimages/people-search-field.gif) no-repeat;
 	border: none;
 	font-size: 12px;
-	height: 20px;
-	margin: 4px 0 0 140px;
-	padding: 5px 26px 1px 5px;
-	width: 180px;
+	height: 24px;
+	margin: 0 10px 0 0;
+	padding: 4px 4px 0;
+	width: 125px;
 }
 
 #people-search-main li {
 	color: #707070;
 	font-size: 14px;
 	font-weight: bold;
-	padding: 3px 0 0 15px;	
+	margin: 0 0 0 142px;	
 }
 
-#search-btn {
+#people-search-btn {
 	height: 26px;
 	margin-left: 6px;
 	vertical-align:-1px;
