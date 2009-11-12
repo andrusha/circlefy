@@ -105,10 +105,11 @@
 
 #people-sort span { color: #545454; }
 
-#sort-pic {  margin-left: 28px; }
-#sort-udata { margin-left: 25px; }
-#sort-lasttap { margin-left: 6px; }
-#sort-groups { margin-left: 196px; }
+#sort-pic {  margin-left: 25px; }
+#sort-udata { margin-left: 12px; }
+#sort-lasttap { margin-left: 80px; }
+#sort-groups { margin-left: 110px; }
+#sort-actions { margin-left: 50px; }
 
 
 /* People List */
@@ -261,7 +262,7 @@ a.tracker {
 	-webkit-border-radius: 3px;
 }
 
-a.tracker:hover { text-decoration: none; }
+a.tracker:hover { text-decoration: underline; }
 
 a .track-icon {
 	border: 0 none;
