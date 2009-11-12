@@ -251,14 +251,20 @@ a.tracker {
 	float: right;
 	cursor: pointer;
 	background: #F5F5F5;
-	padding: 3px 5px;
+	padding: 3px 5px 4px;
 	margin-top: 1px;
 	margin-left: 5px;
 	border: 1px solid #666;
-	font-size: 10px;
-	color: #000;
+	font-size: 11px;
+	color: #505050;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 }
 
 a.tracker:hover { text-decoration: none; }
+
+a .track-icon {
+	border: 0 none;
+	padding: 1px 3px 0 0;
+	vertical-align: -3px;
+}
