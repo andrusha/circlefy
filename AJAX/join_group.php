@@ -56,7 +56,8 @@ EOF;
 			SELECT g.gname,l.email FROM group_members AS gm 
 			JOIN groups AS g ON gm.gid = g.gid
 			JOIN login AS l ON l.uid = gm.uid
-			WHERE gm.admin > 0 AND gm.gid = {$gid}
+			JOIN settings AS s ON s.uid = l.uid
+			WHERE gm.admin > 0 AND gm.gid = {$gid} AND s.join_group = 1
 EOF;
 			
 			$get_admins_results = $this->mysqli->query($get_admins_query);

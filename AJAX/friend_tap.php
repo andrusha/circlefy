@@ -49,6 +49,13 @@ class friend_functions{
 -Team Tap
 http://tap.info
 EOF;
+
+			//Checks the person getting tracked settings before sending them an email
+			$email_check_query = <<<EOF
+			SELECT uid FROM settings WHERE track = 1 AND uid = {$fid}
+EOF;
+                	$email_check_query = $this->mysqli->query($email_check_query);
+			if($email_check_query->num_rows)	
                                 mail($to,$subject,$body,$from);
 		} else {
 			$friend_query = "DELETE FROM friends WHERE fuid = '{$fid}' AND uid = '{$uid}';";
