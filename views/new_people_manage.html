@@ -1,0 +1,274 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-11153159-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="Copyright" content="Copyright (c) 2009 TAP" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="TAP communication platform" />
+<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+
+<title>tap - alpha</title>
+
+<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" >
+
+<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+
+<!--[if lt IE 7]>
+        <script type="text/javascript" src="js/unitpngfix.js"></script>
+<![endif]-->
+<style>
+.description, .more-invite {
+	display: none;
+}
+</style>
+<script src="/views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
+<script src="/views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
+<script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
+<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
+
+</head>
+
+<body>
+
+	<? include(NEW_HEADER); ?>
+
+	<div id="main">
+		<div id="left-col">
+			<div id="groups-tab">
+				<div class="tab-in"><a href="" class="name">Group Suggestions</a>  </div>
+			</div>
+				<div class="tab-list">
+					<ul>
+						<?php foreach ($_t['random_group_results'] as $random): ?>
+						<!-- <?=var_dump($random)?> -->
+						<li class="list-item">
+							<p style="height: 14px; font-weight: bold;"><a href="/group/<?= $random['symbol'] ?>" title="<?= $random['gname'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
+								$gname = $random['gname'];
+								echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
+							?></a></p>
+							<p style="margin-bottom:20px; font-size: 10px"><?= $random['focus'] ?></p>
+						</li>
+						<?php endforeach; ?>
+					</ul>
+					<!-- <p class="more-btn1"><a href="">show more &raquo;</a></p> -->
+					<div style="clear:both"></div>
+				</div>
+		</div>
+
+		<div id="center-col">
+			<div id="group-search">
+				<p>Looking for new groups? <input id="search-field" type="text" name="group-search"/> <a id="search-btn-more" href="">more &raquo;</a> <input id="search-btn"  type="image" src="/images/cimages/group_srch_btn.gif"/> </p>
+			</div>
+			<div id="group-search-more">
+				<div>
+					<label>Location:</label>
+					<input id="search-location" type="text">
+					<label>Focus:</label>
+					<input id="search-focus" type="text">
+				</div>
+			</div>
+			<div id="gr-list">
+
+				<div id="gr-header">
+					<h2 class="gr-title">Groups</h2>
+					<span class="gr-filters">
+						<a id="gr-create-btn" href="/create_group"></a>
+						<input id="gr-filter" type="text" name="keywords" alt="Search your groups" />
+						<a href="#" id="gr-filter-btn" class="set-filter"></a>
+					</span>
+				</div>
+
+				<div id="gr-search">
+					<p class="gr-search-title">
+						Search Results (<span id="gr-search-count">No matching groups found</span>)
+						| <a href="#" class="remove-search">Show Your Groups</a>
+					</p>
+					<p class="gr-search-pages">
+						<a href="#" id="gr-search-pages-back">&laquo; Previous</a>
+						<span id="gr-search-sep" style="display:none"> | </span>
+						<a href="#" id="gr-search-pages-next">Next &raquo;</a>
+					</p>
+				</div>
+
+				<div class="gr-sort-bar">
+					<p>
+						<span id="sort-logo">Logo</span>
+						<span id="sort-name">Name</span>
+						<span id="sort-loc">Location</span>
+						<span id="sort-msgs"># Msg</span>
+						<span id="sort-mmbrs">Members</span>
+					</p>
+				</div>
+
+				
+<!-- new template for people search results -->
+			
+<div class="friend_result">
+	<div class="friend_result_name"><span class="friend_result_name_span">fjoiajfoifa  </span></div>
+
+	<div class="thumbnail_friend_result"> <img id="edit_profile_picture" src="/user_pics/100h_default.jpg" alt='blank' /></div>
+
+	<div class="friend_result_info">
+		<ul class="result_info_list">
+			<li><span class="style_bold">Username: </span>test </li>
+			<li><span class="style_bold">Last chat: </span>test ojof joi jaf</li>
+		</ul>
+
+		<ul class="result_info_list">
+				<li><span class="style_bold">Groups:</span></li><li><a href="group/1">Abound Solar</a></li><li><a href="group/2">Advantage, Inc</a></li>
+		</ul>
+
+		<ul class="result_option_list">
+			<li><span class="style_bold 0" id="tap_64" onclick="tap(64,this.className[this.className.length-1])"><span class='tap_box'>Tap <img src='images/icons/disconnect.png' /></span></span></li>
+		</ul>
+	</div>
+</div>
+
+				<!-- Start of Group Listing -->
+				<div>
+					<ul id="groups-list" class="gr-listing">
+					
+						<li id="gr-id_<?= $gid ?>" class="listing">
+							<a href="/group/<?= $symbol ?>">
+								<img src="/group_pics/<?= $pic ?>" alt="group logo" class="gr-image" />
+							</a>
+							<div class="gr-info">
+								<p>
+									<?php if ($official == "*"): ?>
+									<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" title="This is an offical group"/>
+									<?php endif; ?>
+									<strong class="gr-name">
+										<a href="/group/<?= $symbol ?>"><?= $gname ?></a>
+									</strong>&nbsp;&nbsp;
+								</p>
+								<p class="gr-desc description">
+									<strong><a href="#" class="leave-group">Leave this Group</a></strong><br /><br />
+									<?= $descr ?><br /><br />
+									<strong>Latest Tap: <?= $last_user ?></strong>&mdash;<?= stripslashes($last_chat) ?>
+								</p>
+								<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
+							</div>
+							<div class="gr-numbers">
+								<p><strong><?= $count ?></strong></p>
+							</div>
+							<div class="gr-numbers">
+								<p><strong><?= $size ?></strong></p>
+							</div>
+							<div class="gr-btns">
+								<a href="" class="gr-invite-btn"></a><br />
+								<? if($admin): ?>
+								<a href="/group_edit?group=<?= $gid ?>" class="gr-admin-btn"></a>
+								<? endif; ?>
+							</div>
+						</li>
+						<li class="more-invite">
+							<div>
+								<p><input type="text" class="invitees" alt="Type-in the email addresses of people you'd like to invite, separated by commas."></p>
+								<p class="status"><a href="#" class="send-invite">Invite these people</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
+							</div>
+						</li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+
+				<!-- <div class="more-btn4"><a href="">show more &raquo;</a></div> -->
+			</div>
+		</div>
+
+		<div id="right-col">
+			<h1>Help and Tips</h1>
+			<h2>Find your groups faster.</h2>
+			<p>You can search through your own groups by filtering them out using the filter-bar. Simply enter in a keyword and hit enter, and all corresponding groups will be displayed.</p>
+			<h2>Don't overuse your memes.</h2>
+			<p>It might have been funny the first time you heard it, but most memes are notorious for expiring quickly. Avoid the social awkwardness produced by using an expired meme by not using them when they near their expiry date. Common memes expire within 3 days. Celebrity memes expire with a week, and cat-related ones are good for at least a month. When in doubt, consult your local /b/.</p>
+			<h2>More options for search.</h2>
+			<p>When searching, you can optionally toggle the "more" link to give you the option of adding location and focus criteria to narrow down your search.</p>
+			<h2>Share your groups via invites.</h2>
+			<p>You can send invites to your friends who might be interested in a group you belong to. Simply click on the Invite button and write their email addresses or usernames and send.</p>
+		</div>
+	</div>
+
+
+		<div id="templates" style="display:none">
+			<ul id="search-template">
+				<li id="gr-id_<#: data.gid #>" class="listing">
+					<a href="/group/<#: data.symbol #>">
+						<img src="/group_pics/<#: data.pic #>" alt="group logo" class="gr-image" />
+					</a>
+					<div class="gr-info">
+						<p>
+							<img src="/images/cimages/star.gif" alt="official group" class="gr-offic" />
+							<strong class="gr-name">
+								<a href="/group/<#: data.symbol #>"></a>
+							</strong>&nbsp;&nbsp;
+						</p>
+							<p class="gr-desc description">
+								<br /><br />
+								<strong>Latest Tap: </strong>
+							</p>
+							<p class="gr-desc focus"><span><a href="" class="more-btn3">more &raquo;</a></span></p>
+					</div>
+					<div class="gr-numbers">
+						<p><strong></strong></p>
+					</div>
+					<div class="gr-numbers">
+						<p><strong></strong></p>
+					</div>
+					<div class="gr-btns">
+						<a href="" class="gr-join-btn"></a><br />
+						<p class="status" style="display:none">Please wait..</p>
+						<img src="images/icons/accept.png" class="join-ok" alt="Joined" style="display:none" />
+						<img src="images/icons/accept.png" alt="Joined" /><br/>Joined!
+						<!-- <img src="images/icons/accept.png" alt="Joined" /> -->
+					</div>
+				</li>
+				<li class="more-invite">
+					<div>
+						<p>Please enter your official email address: <input type="text" class="invitees"> <span class="gr-domain">@<#: data.symbol #></span></p>
+						<p class="status"><a href="#" class="send-join">Send confirmation</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
+					</div>
+				</li>
+			</ul>
+			<ul id="listing-templates">
+				<li id="filter-noresults" class="info">
+					<div>
+						<p>Sorry, there are no groups that match your filter. <a href="#" class="remove-filter">Show All</a></p>
+					</div>
+				</li>
+				<li id="search-noresults" class="info">
+					<div>
+						<p>Sorry, there are no groups that match your keywords. Try searching for the abbreviations for a school, company or group. (Example: for New York University, try "NYU."<br/>If you're tired of searching, you can go back to viewing <a href="#" class="remove-search">Your Groups</a></br>"</p>
+					</div>
+				</li>
+				<li id="search-loading" class="info">
+					<div>
+						<p>Loading search results.</p>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+	<div id="footer">
+
+	</div>
+
+</body>
+</html>
