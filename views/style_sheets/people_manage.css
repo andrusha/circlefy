@@ -49,32 +49,8 @@
 	width:70px;
 }
 
-/* Search More */
-#people-search-more {
-	background: url(/images/cimages/group_srch_more.gif) no-repeat bottom;
-	display: none;
-	height: 30px;
-	margin-left: 12px;
-	margin-top: 1px;
-	padding: 5px;
-	width: 517px;
-}
 
-#people-search-more div {
-	margin: auto;
-	padding-top: 5px;
-	width: 450px
-}
-
-#people-search-more label {
-	color: #707070;
-	font-size: 12px;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 5px;
-}
-
-/* Groups Header */
+/* People Header */
 #people-list { margin-top: 20px; }
 
 #people-list label.overTxtLabel {
@@ -129,13 +105,13 @@
 
 #people-sort span { color: #545454; }
 
-#sort-logo {  margin-left: 28px; }
-#sort-name { margin-left: 25px; }
-#sort-loc { margin-left: 6px; }
-#sort-msgs { margin-left: 196px; }
-#sort-mmbrs { margin-left: 23px; }
+#sort-pic {  margin-left: 28px; }
+#sort-udata { margin-left: 25px; }
+#sort-lasttap { margin-left: 6px; }
+#sort-groups { margin-left: 196px; }
 
-/* Groups List */
+
+/* People List */
 ul.people-listing { margin: 0 0 0 3px; }
 
 #people-list li {
