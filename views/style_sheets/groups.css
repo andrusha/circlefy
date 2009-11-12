@@ -1,0 +1,259 @@
+/* Search */
+#gr-search {
+	background: url(/images/cimages/group_srch_back.gif) no-repeat;
+	height: 50px;
+	margin-bottom: 0;
+	margin-top: -2px;
+	width: 553px;
+}
+
+#gr-search p {
+	color: #707070;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 12px 0 0 15px;
+}
+
+#search-field {
+	background: url(/images/cimages/group_srch_field.gif) no-repeat;
+	border: none;
+	font-size: 12px;
+	height: 20px;
+	margin: 0 0 0 5px;
+	padding: 5px 30px 1px 5px;
+	width: 180px;
+}
+
+#search-btn {
+	height: 26px;
+	margin-left: 6px;
+	vertical-align:-1px;
+	width: 70px;
+}
+
+#search-btn-more {
+	color: #707070;
+	font-size: 13px;
+}
+
+/* Search More */
+#gr-search-more {
+	background: url(/images/cimages/group_srch_more.gif) no-repeat bottom;
+	display: none;
+	height: 30px;
+	margin-left: 12px;
+	margin-top: 1px;
+	padding: 5px;
+	width: 517px;
+}
+
+#gr-search-more div {
+	margin: auto;
+	padding-top: 5px;
+	width: 450px
+}
+
+#gr-search-more label {
+	color: #707070;
+	font-size: 12px;
+	font-weight: bold;
+	margin-left: 10px;
+	margin-right: 5px;
+}
+
+/* Groups Header */
+#gr-list { margin-top: 20px; }
+
+#gr-list label.overTxtLabel {
+	font-size: 11px;
+}
+
+#gr-create-btn {
+	background: url(/images/cimages/gr_new_btn_blue.gif) no-repeat left;
+	display: block;
+	float: right;
+	height: 25px;
+	width: 129px;
+}
+
+#gr-create-btn:hover { background-position: right; }
+
+#gr-filter {
+	background: url(/images/cimages/gr_srch_field.gif) no-repeat;
+	border-style: hidden;
+	border-width: 0px;
+	float: right;
+	height: 22px;
+	margin-top: 2px;
+	padding:4px 0 0px 6px;
+	width: 115px;
+}
+
+#gr-filter-btn {
+	background: url(/images/cimages/magn_green.gif) no-repeat left top;
+	float: right;
+	height: 21px;
+	margin-top: 3px;
+	padding-left: 22px; padding-top: 4px; padding-bottom: 3px;
+}
+
+#gr-filter-btn:hover { background-position: right top; }
+
+/* Sortbar */
+#gr-sort {
+	height: 20px; width: 545px;
+	margin-left: 3px;
+	margin-bottom: -1px;
+	margin-top: -1px;
+	padding: 0;
+	font-size: 11px;
+	border: 1px solid #b4b4b4;
+	color: #545454;
+	background: #e5e5e5;
+}
+
+#gr-sort p { margin-top: 3px; }
+
+#gr-sort span { color: #545454; }
+
+#sort-logo {  margin-left: 28px; }
+#sort-name { margin-left: 25px; }
+#sort-loc { margin-left: 6px; }
+#sort-msgs { margin-left: 196px; }
+#sort-mmbrs { margin-left: 23px; }
+
+/* Groups List */
+ul.gr-listing { margin: 0 0 0 3px; }
+
+#gr-list li {
+	margin-bottom: -1px;
+	height: 80px;
+	width: 545px;
+	color: #545454;
+	border: 1px solid #b4b4b4;
+	border-top: none;
+	background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
+
+#gr-list li.more-invite {
+	height: 100px;
+	background:#EAEAEA; }
+.invitees { background-color: #fff; width: 470px; padding: 5px; }
+.overTxtLabel { color: #999; }
+
+.gr-image {
+	float: left;
+	margin-top: 15px; margin-left: 16px;
+	height: 46px; width: 46px;
+	border: 1px solid #c4c4c4; }
+
+.gr-offic {
+	vertical-align: -2px;
+	margin-right: 4px; }
+
+.gr-info {
+	float: left;
+	height: auto; width: 260px;
+	font-size: 12px;
+	margin-top: 14px; margin-left: 16px; }
+
+	div.gr-info > p:first-child { height: 15.2px; overflow: hidden; }
+
+	.gr-info p strong { color: black; font-weight: bold; }
+
+	.gr-desc {
+		margin-top: 5px;
+		font-size: 11px; }
+
+		.gr-desc.focus {
+			margin-top: 5px;
+			font-size: 12px; }
+
+	a.more-btn3 {
+		color: #545454;
+		margin: 0 0 0 10px; }
+
+.gr-numbers {
+	float: left;
+	margin-top: 23px; margin-left: 4px;
+	height: 46px; width: 58px; }
+
+	.gr-numbers p { text-align: center; font-size: 10px; }
+
+	.gr-numbers p strong { font-size: 11px; font-weight: bold; color: black; }
+
+.gr-btns {
+	float: left;
+	height: auto; width: 57px;
+	margin-left: 10px; margin-top: 20px;
+	font-size: 11px;
+	text-align: center; }
+
+	.gr-btns a {
+		color: #545454; }
+
+	a.gr-invite-btn {
+		padding: 0px 23.5px;
+		height: 17px;
+		float: right;
+		margin-bottom: 5px;
+		background: url(/images/cimages/gr_invite_btn.gif) left; }
+
+	a.gr-invite-btn:hover {
+		background-position: right;
+	}
+
+	a.gr-admin-btn {
+		clear: left;
+		padding: 0px 23.5px;
+		height: 17px;
+		float: right;
+		background: url(/images/cimages/gr_admin_btn.gif) left; }
+
+	a.gr-admin-btn:hover {
+		background-position: right; }
+
+	a.gr-join-btn {
+		padding: 0px 23.5px;
+		height: 29px;
+		float: right;
+		background: url(/images/cimages/gr_join_btn.gif) left; }
+
+	a.gr-join-btn:hover {
+		background-position: right; }
+
+.more-btn4 {
+	height: 21px; width: 91px;
+	text-align: center;
+	margin-left: auto; margin-right: auto; margin-top: 1px;
+	background: url(/images/cimages/more_btn.gif); }
+
+	.more-btn4 a {
+		vertical-align: 4px;
+		font-size: 11px;
+		color: #545454; }
+
+li.more-invite div, li.info div {
+	padding: 6px 10px;
+	font-size: 12px;
+	height: auto; }
+
+	li.more-invite p, li.info p {
+		margin-top: 10px; }
+
+.description, .more-invite {
+	display: none;
+}
+
+#gr-search-header {
+	display: none;
+	font-size: 12px;
+	height: 18px; width: 529px;
+	padding: 9px 12px 0 12px;
+	margin-top: 20px;
+	background: url(/images/cimages/gr_srch_results_top.gif); }
+
+	#gr-search-header .gr-search-title {
+		float: left; }
+
+	#gr-search-header .gr-search-pages {
+		float: right; }

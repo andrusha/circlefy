@@ -1,0 +1,238 @@
+/**
+ * Tap Global Styles
+ */
+
+/* RESET */
+html, body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, blockquote {
+	margin: 0; padding: 0; border: 0; outline: 0; font-weight: normal; font-style: inherit; font-size: 100%; font-family: inherit; vertical-align:baseline; list-style-type: none; list-style-image: none;
+}
+
+/* GLOBALS */
+body {
+	background: #fff;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+a:link, a:visited, a:active {
+	outline: none;
+	font-style: normal;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a img {
+	border: 0;
+}
+
+div { position: relative; }
+
+.clarity { clear: both; }
+
+.overTxtLabel {
+	color: #999;
+}
+
+/* SECTIONS */
+
+/* Header */
+#header {
+	margin: 15px auto 0 auto;
+	width: 990px;
+}
+
+#header a { color: #fff; }
+
+#logo {
+	background: url(/images/cimages/mega_alpha_logo.gif) no-repeat center center;
+	float: left;
+	height: 70px;
+	margin-left: 30px;
+	margin-top: -18px;
+	width: 150px;
+}
+
+#logo a { display: none; }
+
+#main-menu {
+	background: url(/images/cimages/new_menu_bar.png) no-repeat left top;
+	float: left;
+	font-size: 13px;
+	font-weight: normal;
+	height: 40px;
+	margin-left: 26px;
+	padding-top: 7px;
+	padding-left: 14px;
+	width: 555px;
+}
+
+#main-menu a {
+	color: #81873D;
+	margin-right: 15px;
+}
+
+#login-info {
+	color: #3A85E2;
+	float: right;
+	font-family: "Trebuchet MS", Arial, sans-serif;
+	font-size: 12px;
+	padding-right: 50px;
+	text-align: right;
+}
+
+#login-info	a { color: #3A85E2; }
+
+#login-info strong { margin-left: 5px; }
+
+/* Body */
+#main {
+	margin: 0 auto 20px;
+	width: 990px;
+}
+
+/* Sidebars */
+div.sidebar {
+	float: left;
+	width: 194px;
+}
+
+#sidebar-left { margin-right: 20px; }
+
+/* Sidebar Sections */
+.sidebar div.section { margin-bottom: 15px; }
+
+.sidebar div.section-head {
+	background: url(/images/cimages/tab_blue.gif) no-repeat;
+	color: #fff;
+	height: 31px;
+}
+
+.sidebar div.section-head.gray {
+	background-image: url(/images/cimages/tab_grey.gif);
+}
+
+.sidebar div.section-head h1 {
+	font-size: 14px;
+	padding: 6px 12px 0;
+}
+
+.sidebar div.section-body {
+	background: #f2f2f2;
+	border: 1px solid #e5e5e5;
+	border-style: none solid solid;
+	font-size: 12px;
+	padding: 8px 3px 10px 10px;
+	width: 176px;
+}
+
+.sidebar div.section-body a {
+	color: #000;
+}
+
+/* Main Content */
+#content {
+	float: left;
+	margin-right: 20px;
+	width: 553px;
+}
+
+div.section {
+	margin-bottom: 20px;
+}
+
+#content div.section-head {
+	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) no-repeat;
+	padding: 3px 4px 5px;
+}
+
+#content div.section-head h1 {
+	color: #fff;
+	font-size: 17px;
+	font-weight: bold;
+	padding: 4px 0 0 6px;
+}
+
+#content div.section-head.big {
+	background-image: url(/images/cimages/main_bar_blue.gif);
+	height: 37px;
+	padding: 5px 10px 0 5px;
+}
+
+#content div.section-head.big h1 {
+	font-size: 18px;
+	font-weight: normal;
+}
+
+#content div.section-body.info {
+	border: 1px solid #b4b4b4;
+	border-top: none;
+	margin-left: 2px;
+	margin-top: -1px;
+	padding: 5px;
+	width: 537px;
+}
+
+#content div.section-body.feed {
+	margin-left: 1px;
+	width: 549px;
+}
+
+/* SPECIALS */
+
+/* Templates (Always Hide) */
+#templates { display: none; }
+
+/* Suggested Groups */
+div.section-body ul.suggested-groups {}
+
+ul.suggested-groups p.name {
+	font-weight: bold;
+	height: 14px;
+}
+
+ul.suggested-groups p.name img {
+	float: left;
+	margin-right: 10px;
+}
+
+ul.suggested-groups p.focus {
+	margin-bottom: 20px;
+	font-size: 10px;
+}
+
+/* User Stats */
+div.section-body.user-stats {}
+
+div.section-body.user-stats p {
+	font-size: 13px;
+	color: #666;
+	font-weight: normal;
+	margin-bottom: 20px;
+}
+
+div.section-body.user-stats span {
+	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+/* Information Blocks */
+.sidebar div.section-body.info {}
+
+.sidebar div.section-body.info h2, div.section-body.info p {
+	color: #666;
+	font-size: 12px;
+	margin-right: 10px;
+}
+
+.sidebar div.section-body.info h2 {
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.sidebar div.section-body.info p {
+	margin-bottom: 15px;
+}
