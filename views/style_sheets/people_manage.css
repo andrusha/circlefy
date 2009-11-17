@@ -1,4 +1,44 @@
 /* Search */
+.people-info-one{
+font-size:12px;
+width:230px;
+padding-left:14px;
+display:block;
+float:left;
+}
+
+.people-uname{
+font-size:14px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.latest-tap{
+margin-top:2px;
+width:200px;
+}
+
+.people-info-two{
+float:left;
+font-size:12px;
+width:160px;
+overflow:hidden;
+padding-left:14px;
+display:block;
+}
+
+#people-list .group_list{
+overflow:hidden;
+width:130px;
+margin-left:10px;
+}
+
+
+#people-list .group_list > li {
+font-size:11px;
+}
+
+
 #people-search-main {
 	background: url(/images/cimages/ppl_srch_back.gif) no-repeat;
 	height: 69px;
@@ -115,7 +155,7 @@
 /* People List */
 ul.people-listing { margin: 0 0 0 3px; }
 
-#people-list li {
+#people-list .listing {
 	margin-bottom: -1px;
 	height: 80px;
 	width: 545px;
@@ -172,11 +212,10 @@ ul.people-listing { margin: 0 0 0 3px; }
 	.people-numbers p strong { font-size: 11px; font-weight: bold; color: black; }
 
 .people-btns {
-	float: left;
-	height: auto; width: 57px;
-	margin-left: 10px; margin-top: 20px;
-	font-size: 11px;
-	text-align: center; }
+float:right;
+font-size:14px;
+margin:4px;
+ }
 
 	.people-btns a {
 		color: #545454; }
@@ -269,3 +308,6 @@ a .track-icon {
 	padding: 1px 3px 0 0;
 	vertical-align: -3px;
 }
+
+
+

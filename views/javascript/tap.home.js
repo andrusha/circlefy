@@ -74,9 +74,19 @@ var EasyOver = new Class({
 Tap.Home = {
 
 	feedView: 'gid_all',
+
+	// taps
 	currentTap: Tap.Vars.currentTap,
 	currentStream: Tap.Vars.currentStream,
 	activeConvos: Tap.Vars.activeConvos,
+
+	// groups
+	groupIds: Tap.Vars.groups,
+	groupsOnline: Tap.Vars.groupsOnline,
+
+	// people
+	peopleIds: Tap.Vars.people,
+
 	currentSearch: null,
 
 	settings: {},
@@ -98,6 +108,8 @@ Tap.Home = {
 		$('main').getElements('.tap-msg, .tap-respond-last span').each(function(item){
 			item.set('html', item.get('html').linkify());
 		});
+		
+		if (this.groupsOnline instanceof Array && !this.groupsOnline.length) this.groupsOnline =  {};
 
 		var groupList = body.getElements('li.group');
 		var convoList = body.getElements('li.convo');
@@ -246,7 +258,11 @@ Tap.Home = {
 			'notification': this.processPushed.bind(this),
 			'convo': this.handleConvo.bind(this),
 			'viewAdd': this.addViews.bind(this),
-			'viewRemove': this.removeViews.bind(this)
+			'viewRemove': this.removeViews.bind(this),
+			'userAdd': this.addUsers.bind(this),
+			'userRemove': this.removeUsers.bind(this),
+			'groupAdd': this.addGroups.bind(this),
+			'groupRemove': this.removeGroups.bind(this)
 		});
 
 		/*
@@ -271,13 +287,15 @@ Tap.Home = {
 	setChannels: function(){
 		var chans = [].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap]);
 		chans = chans.filter(function(item){
-			try {
-				return $type((item * 1)) == 'number';
-			} catch (e) {
-				return false;
-			}
+			try { return $type((item * 1)) == 'number'; } catch (e) { return false; }
 		});
-		Tap.Push.sendCIDs(chans);
+		var people = [].combine(this.peopleIds).filter(function(item){
+			try { return $type((item * 1)) == 'number'; } catch (e) { return false; }
+		});
+		var groups = [].combine(this.groupIds).filter(function(item){
+			try { return $type((item * 1)) == 'number'; } catch (e) { return false; }
+		});
+		Tap.Push.sendCIDs(chans, people, groups);
 	},
 
 	parseTemplate: function(type, data){
@@ -296,7 +314,7 @@ Tap.Home = {
 			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
 				if (!item) return;
-				item.set('text', item.get('text').toInt() + 1);
+				item.set('text', (item.get('text') * 1) + 1);
 			});
 		}
 	},
@@ -306,9 +324,53 @@ Tap.Home = {
 			var id = ids[x];
 			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
-				var count = item.get('text').toInt();
+				var count = (item.get('text') * 1);
 				if (count > 0) item.set('text', count - 1);
 			});
+		}
+	},
+	
+	// USER ONLINE/OFFLINE
+	
+	addUsers: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			var els = $(document.body).getElements('.uol_' + id).set({
+				'src': '/images/icons/bullet_green.png',
+				'alt': 'User Online'
+			});
+		}
+	},
+
+	removeUsers: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			var els = $(document.body).getElements('.uol_' + id).set({
+				'src': '/images/icons/bullet_white.png',
+				'alt': 'User Offline'
+			});
+		}
+	},
+	
+	// Group ONLINE/OFFLINE
+	
+	addGroups: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			if (!this.groupsOnline[id]) this.groupsOnline[id] = 0;
+			var counter = this.groupsOnline[id];
+			counter = (counter*1) + 1;
+			$(document.body).getElements('.gol_' + id).set('text', counter);
+		}
+	},
+
+	removeGroups: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			if (!this.groupsOnline[id]) this.groupsOnline[id] = 0;
+			var counter = this.groupsOnline[id];
+			if (counter > 0) counter = (counter*1) - 1;
+			$(document.body).getElements('.gol_' + id).set('text', counter);
 		}
 	},
 
@@ -387,7 +449,8 @@ Tap.Home = {
 			if (timeout) $clear(timeout);
 
 			var indic = el.getElement('span.tap-typing');
-			indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
+			indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>\
+								<img src="/images/icons/comment.png" />');
 			var indic_timeout = (function(){ indic.set('html', ''); }).delay(2500);
 			el.store('indic_timeout', indic_timeout);
 
@@ -541,9 +604,9 @@ Tap.Home = {
 			counter.set('text', ['(', count + 1, ')'].join(''));
 			var last = parent.getElement('p.tap-respond-last');
 			last.removeClass('noresp').set('html', [
-				'<strong>', 
-				user, 
-				':</strong> ', 
+				'<strong>',
+				user,
+				':</strong> ',
 				((msg.length < 70) ? msg : msg.substring(0, 70) + "..." || '').linkify()
 			].join(''));
 			tid_shown = parent.getElement('div.tap-response-box').getStyle('display') == 'block';
@@ -565,7 +628,7 @@ Tap.Home = {
 			last.removeClass('noresp').set('html', [
 				'<strong>',
 				user,
-				':</strong> ', 
+				':</strong> ',
 				((msg.length < 70) ? msg : msg.substring(0, 70) + "..." || '').linkify()
 			].join(''));
 			yid_shown = parent.getElement('div.tap-response-box').getStyle('display') == 'block';
@@ -729,6 +792,9 @@ Tap.Home = {
 					self.currentStream = [].combine(response.data.map(function(item){
 						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
 					}));
+					self.peopleIds = [].combine(response.data.map(function(item){
+						return $type(item.uid) == 'string' ? item.uid : "" + item.uid;
+					}));
 					self.setChannels();
 					items.getElements('li').reverse().inject('main-stream', 'top');
 					$(document.body).fireEvent('click', {
@@ -778,6 +844,9 @@ Tap.Home = {
 					});
 					self.currentStream = response.data.map(function(item){
 						return item.cid;
+					});
+					self.peopleIds = response.data.map(function(item){
+						return $type(item.uid) == 'string' ? item.uid : "" + item.uid;
 					});
 					self.setChannels();
 				} else {
@@ -842,6 +911,9 @@ Tap.Home = {
 						});
 						self.currentStream = response.data.map(function(item){
 							return item.cid;
+						});
+						self.peopleIds = response.data.map(function(item){
+							return $type(item.uid) == 'string' ? item.uid : "" + item.uid;
 						});
 						self.setChannels();
 					} else {
@@ -981,7 +1053,8 @@ Tap.Home = {
 				var response = JSON.decode(this.response.text);
 				if (!force) {
 					var title = el.getElement('a').get('title').remove(/\([\D\d]*\)/);
-					var html = '<a href="/group/'+ el.getElement('a').get('grsymbol') + '">' + title + '</a>';
+					var html = '<a href="/group/'+ el.getElement('a').get('grsymbol') + '">' + title + '</a> \
+								(<span class="gol_' + (id || 0) + '">' + self.groupsOnline[id || "0"] + '</span>)';
 					$('tap-feed-name').set('html', (({gid_all: 1, gid_public: 1})[gid]) ? title : html );
 					$('tap-feed-icon').set('src', el.getElement('img').get('src'));
 				}
@@ -998,6 +1071,9 @@ Tap.Home = {
 					});
 					self.currentStream = response.data.map(function(item){
 						return item.cid;
+					});
+					self.peopleIds = response.data.map(function(item){
+						return $type(item.uid) == 'string' ? item.uid : "" + item.uid;
 					});
 					self.setChannels();
 				} else {
@@ -1169,6 +1245,9 @@ Tap.Home = {
 					});
 					self.currentStream = self.currentStream.combine(response.data.map(function(item){
 						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
+					}));
+					self.peopleIds = self.peopleIds.combine(response.data.map(function(item){
+						return $type(item.uid) == 'string' ? item.uid : "" + item.uid;
 					}));
 					self.setChannels();
 					items.getElements('li').reverse().inject('main-stream', 'top');

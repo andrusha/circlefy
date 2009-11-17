@@ -147,9 +147,8 @@ Tap.Main = {
 			pass.removeClass('input-err');
 		}
 		if (errors) return;
-		mpmetrics.track('login', {}, function(){
-			el.submit();
-		});
+		el.submit();
+		mpmetrics.track('login', {});
 	},
 
 	checkUser: function(el){

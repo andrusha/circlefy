@@ -26,174 +26,14 @@ pageTracker._trackPageview();
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" href="views/style_sheets/group_manage.css" type="text/css" />
-<link rel="stylesheet" href="views/style_sheets/homepage.css" type="text/css" />
+<link rel="stylesheet" href="views/style_sheets/global.css" type="text/css" />
+<link rel="stylesheet" href="views/style_sheets/logout.css" type="text/css" />
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
 <script type="text/javascript" src="/views/javascript/tap.main.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
-<style type="text/css" media="screen">
-#signup-guide {
-	display: none;
-	text-align: center;
-	margin-top: 15px;
-	margin-right: 10px;
-	padding: 5px;
-	background: #C9DEFB;
-	border-top: 1px solid #BBD0EE;
-	border-bottom: 1px solid #BBD0EE;
-}
-
-#connect-guide {
-	margin-top: 5px;
-	margin-bottom: 10px;
-	padding: 5px;
-	text-align: center;
-	background: #C9DEFB;
-	border-top: 1px solid #BBD0EE;
-	border-bottom: 1px solid #BBD0EE;
-	margin-right: 8px;
-	display: none;
-}
-
-ul.pitch {
-	margin-bottom: 10px;
-	font-size: 16px;
-	list-style: square;
-	font-weight: bold;
-}
-
-ul.pitch li {
-	margin-bottom: 10px;
-	color: #007AE5;
-	margin-left: -3px;
-}
-
-#rotator {
-	height: 257px;
-	background: url(/images/cimages/demo/tap123-1.gif) no-repeat center center;
-}
-
-#rotator-text {
-	font-size: 14px;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: 5px;
-	background: #F2F2F2;
-	opacity: .8;
-}
-
-#rotator-text strong {
-/*	font-weight: normal;*/
-	color: #3F5C06;
-}
-
-#rotator-icon {
-	background: url(/images/cimages/demo/4.PNG) no-repeat;
-	height: 74px;
-	width: 55px;
-	position: absolute;
-	right: 2px;
-	top: 2px;
-}
-
-#fblogin img {
-	margin-top: 20px;
-	margin-left: 20px;
-}
-
-#curtain {
-	display: none;
-	position: absolute;
-	background: #000;
-	height: 100%;
-	width: 100%;
-	z-index: 1;
-	top: 0;
-}
-
-#connect-signup {
-	display: none;
-	position: absolute;
-	width: 500px;
-	z-index: 2;
-	background: #F2F2F2;
-	top: 100px;
-	left: 200px;
-	border: 1px solid #ccc;
-	padding: 10px;
-}
-
-#connect-signup h2 {
-	border-bottom: 2px solid #ccc;
-	color: #333;
-	font-weight: bold;
-	margin-bottom: 10px;
-}
-
-#connect-signup p {
-	margin-bottom: 10px;
-	font-size: 13px;
-}
-
-#connect-signup span.indicator {
-	display: none;
-}
-
-#connect-signup p.forms {
-	margin-top: 10px;
-	padding-left: 30px;
-	clear: both;
-}
-
-#connect-signup label {
-	font-size: 16px;
-	margin-top: 20px;
-	font-weight: bold;
-	color: #3088ED;
-}
-
-#connect-signup p.guide {
-	display: none;
-	margin-top: -5px;
-	text-align: right;
-	padding-right: 60px;
-	margin-bottom: 10px;
-	clear: both;
-	color: #F12C46;
-}
-
-#connect-signup input {
-	border: 1px solid #ccc;
-	padding: 5px;
-	float: right;
-	margin-right: 50px;
-	width: 300px;
-	font-size: 16px;
-	margin-bottom: 10px;
-}
-
-#connect-signup input.error {
-	background: #FDEBEB;
-}
-
-#connect-signup input.passed {
-	background: #EEFDEB;
-}
-
-#connect-signup button {
-	font-size: 16px;
-}
-</style>
-<style type="text/css">
-.tap-from a, #tapper-info a.tap-from {
-	color: #115E69;
-}
-</style>
 <script type="text/javascript">
 window.addEvent('load', function(){
 	mpmetrics.track('main-view', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
@@ -256,52 +96,28 @@ rotate.delay(7000);
 
 	<div id="main">
 
-		<div class="left-col" style="margin-right: 20px">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">Log in</div>
+		<div id="sidebar-left" class="sidebar">
+			<div class="section">
+				<div class="section-head">
+					<h1>Login</h1>
+				</div>
+				<div class="section-body tab-list">
+					<form id="tap-login" action="<?=ROOT?>" method="POST">
+						<label>Username</label>
+							<input type="text" id="login-uname" name="uname" class="text" />
+						<label>Password</label>
+							<input type="password" id="login-pass" name="pass" class="text" />
+						<br/>
+						<input type="checkbox" checked="true" id="auto_login" name="auto_login" />
+						<label class="in-form">Keep Me Logged In</label>
+						<input type="submit" id="signin-submit" value="Sign In" />
+					</form>
+					<fb:login-button id="fblogin" onlogin="on_connect()" onclick="click_connect()"></fb:login-button>
+				</div>
 			</div>
-			<div class="tab-list">
-				<form id="tap-login" action="<?=ROOT?>" method="POST">
-					<label>Username</label>
-						<input type="text" id="login-uname" name="uname" class="text" />
-					<label>Password</label>
-						<input type="password" id="login-pass" name="pass" class="text" />
-					<br/>
-					<input type="checkbox" checked="true" id="auto_login" name="auto_login" />
-					<label class="in-form">Keep Me Logged In</label>
-					<input type="submit" id="signin-submit" value="Sign In" />
-				</form>
-				<fb:login-button id="fblogin" onlogin="on_connect()" onclick="click_connect()"></fb:login-button>
-			</div>
-			<!--
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff;">What's Tap?</div>
-			</div>
-			<div class="tab-list">
-				<ul class="pitch">
-					<li>&bull; Real-time discussions.</li>
-					<li>&bull; Join groups you're interested in.</li>
-					<li>&bull; Keep informed about the latest happenings.</li>
-					<li>&bull; Stay connected about anything and everything</li>
-				</ul>
-				<p style="font-size:12px"><strong>Tap allows you to connect with people around you and stay informed about topics you're interested in.</strong></p>
-			</div>
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">Trending Groups</div>
-			</div>
-			<div class="tab-list">
-				<ul>
-					<?php foreach($_t['trending_groups'] as $trending): ?>
-						<li class="list-item trending" style="height:30px; cursor:pointer">
-							<p style="height: 14px;"><span class="suggestion-item"><img src="/group_pics/<?= $trending['pic_36'] ?>" style="float:left; margin-right: 10px" /><strong><?= $trending['gname'] ?></strong> (<?= $trending['count'] ?>)</span></p>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-			-->
 		</div>
 
-		<div id="center-col">
+		<div id="content">
 
 			<?php if (!empty($_t['errors'])): ?>
 			<div class="section error">
@@ -398,133 +214,137 @@ rotate.delay(7000);
 			</div>
 		</div>
 
-		<div id="left-col">
-			<div id="signup-tab" style="margin-top:0">Sign-up
-				<div id="signup-title">Its very easy<br />and it wont take you<br />more than 45 seconds.</div>
-			</div>
-			<div>
-				<form id="signup-form" action="#" method="post">
-					<div id="connect-guide">
-						<strong>FB Connect Done!</strong><br />
-						We just need a little more info!
+		<div id="sidebar-right" class="sidebar">
+			<div class="section">
+				<div id="signup-tab">Signup
+					<div id="signup-title">
+						Its very easy<br />and it wont take you<br />more than 45 seconds.
 					</div>
-					<label>Username</label>
-						<input type="text" name="user" class="text"/>
-						<div class="guide"></div>
-					<label>Full Name</label>
-						<input type="text" name="name" class="text"/>
-						<div class="guide"></div>
-					<label>E-mail</label>
-						<input type="text" name="email" class="text"/>
-						<div class="guide"></div>
-					<label>Password</label>
-						<input type="password" name="pass" class="text"/>
-						<div class="guide"></div>
-					<!--
-					<label>Retype Password</label>
-						<input type="password" name="passrepeat" class="text"/>
-						<div class="guide"></div>
-					-->
-					<label style="display:none">Primary Language</label>
-						<select name="language" class="text" style="display:none">
-							<option value="English" selected="selected">English</option>
-							<option value="Afrikaans">Afrikaans</option>
-							<option value="Albanian">Albanian</option>
-							<option value="Aragonese">Aragonese</option>
-							<option value="Asturian">Asturian</option>
-							<option value="Azeri">Azeri</option>
-							<option value="Basque">Basque</option>
-							<option value="Belarusian">Belarusian</option>
-							<option value="Breton">Breton</option>
-							<option value="Catalan">Catalan</option>
-							<option value="Cebuano">Cebuano</option>
-							<option value="Cornish">Cornish</option>
-							<option value="Corsican">Corsican</option>
-							<option value="Croatian">Croatian</option>
-							<option value="Czech">Czech</option>
-							<option value="Danish">Danish</option>
-							<option value="Dutch">Dutch</option>
-							<option value="English">English</option>
-							<option value="Esperanto">Esperanto</option>
-							<option value="Estonian">Estonian</option>
-							<option value="Faroese">Faroese</option>
-							<option value="Finnish">Finnish</option>
-							<option value="French">French</option>
-							<option value="Frisian">Frisian</option>
-							<option value="Friulian">Friulian</option>
-							<option value="Fula (Pulaar)">Fula (Pulaar)</option>
-							<option value="Gaelic (Scottish)">Gaelic (Scottish)</option>
-							<option value="Galician">Galician</option>
-							<option value="German">German</option>
-							<option value="Gikuyu">Gikuyu</option>
-							<option value="Guaraní">Guaraní</option>
-							<option value="Hausa">Hausa</option>
-							<option value="Hawai'ian">Hawai'ian</option>
-							<option value="Hungarian">Hungarian</option>
-							<option value="Icelandic">Icelandic</option>
-							<option value="Ido">Ido</option>
-							<option value="Igbo">Igbo</option>
-							<option value="Indonesian">Indonesian</option>
-							<option value="Insubric">Insubric</option>
-							<option value="Interlingua">Interlingua</option>
-							<option value="Irish">Irish</option>
-							<option value="Italian">Italian</option>
-							<option value="Javanese">Javanese</option>
-							<option value="Kikongo">Kikongo</option>
-							<option value="Kinyarwanda">Kinyarwanda</option>
-							<option value="Kirundi">Kirundi</option>
-							<option value="Latin">Latin</option>
-							<option value="Latvian">Latvian</option>
-							<option value="Lingala">Lingala</option>
-							<option value="Lithuanian">Lithuanian</option>
-							<option value="Luganda">Luganda</option>
-							<option value="Luxembourgish">Luxembourgish</option>
-							<option value="Maori">Maori</option>
-							<option value="Malay">Malay</option>
-							<option value="Maltese">Maltese</option>
-							<option value="Manx">Manx</option>
-							<option value="Moldovan">Moldovan</option>
-							<option value="Nahuatl (post Spanish Conquest)">Nahuatl (post Spanish Conquest)</option>
-							<option value="Navaho or Navajo">Navaho or Navajo</option>
-							<option value="Ndebele">Ndebele</option>
-							<option value="Norwegian">Norwegian</option>
-							<option value="Occitan">Occitan</option>
-							<option value="Orobic">Orobic</option>
-							<option value="Oromo">Oromo</option>
-							<option value="Polish">Polish</option>
-							<option value="Portuguese">Portuguese</option>
-							<option value="Quechua">Quechua</option>
-							<option value="Romanian">Romanian</option>
-							<option value="Samoan">Samoan</option>
-							<option value="Scots">Scots</option>
-							<option value="Serbian">Serbian</option>
-							<option value="Shona">Shona</option>
-							<option value="Slovak">Slovak</option>
-							<option value="Slovenian">Slovenian</option>
-							<option value="Somali">Somali</option>
-							<option value="Spanish">Spanish</option>
-							<option value="Swahili">Swahili</option>
-							<option value="Swedish">Swedish</option>
-							<option value="Tagalog/Filipino">Tagalog/Filipino</option>
-							<option value="Tahitian">Tahitian</option>
-							<option value="Tatar">Tatar</option>
-							<option value="Tongan">Tongan</option>
-							<option value="Tswana">Tswana</option>
-							<option value="Turkish">Turkish</option>
-							<option value="Turoyo">Turoyo</option>
-							<option value="Vietnamese">Vietnamese</option>
-							<option value="Võro">Võro</option>
-							<option value="Walloon">Walloon</option>
-							<option value="Welsh">Welsh</option>
-							<option value="Wolof">Wolof</option>
-							<option value="Xhosa">Xhosa</option>
-							<option value="Yoruba">Yoruba</option>
-							<option value="Zulu">Zulu</option>
-						</select>
-						<div class="guide" style="display:none"></div>
-					<input type="submit" id="signup-submit" value="Sign me up!" />
-					<div id="signup-guide">Signing you up..</div>
-				</form>
+				</div>
+				<div>
+					<form id="signup-form" action="#" method="post">
+						<div id="connect-guide">
+							<strong>FB Connect Done!</strong><br />
+							We just need a little more info!
+						</div>
+						<label>Username</label>
+							<input type="text" name="user" class="text"/>
+							<div class="guide"></div>
+						<label>Full Name</label>
+							<input type="text" name="name" class="text"/>
+							<div class="guide"></div>
+						<label>E-mail</label>
+							<input type="text" name="email" class="text"/>
+							<div class="guide"></div>
+						<label>Password</label>
+							<input type="password" name="pass" class="text"/>
+							<div class="guide"></div>
+						<!--
+						<label>Retype Password</label>
+							<input type="password" name="passrepeat" class="text"/>
+							<div class="guide"></div>
+						-->
+						<label style="display:none">Primary Language</label>
+							<select name="language" class="text" style="display:none">
+								<option value="English" selected="selected">English</option>
+								<option value="Afrikaans">Afrikaans</option>
+								<option value="Albanian">Albanian</option>
+								<option value="Aragonese">Aragonese</option>
+								<option value="Asturian">Asturian</option>
+								<option value="Azeri">Azeri</option>
+								<option value="Basque">Basque</option>
+								<option value="Belarusian">Belarusian</option>
+								<option value="Breton">Breton</option>
+								<option value="Catalan">Catalan</option>
+								<option value="Cebuano">Cebuano</option>
+								<option value="Cornish">Cornish</option>
+								<option value="Corsican">Corsican</option>
+								<option value="Croatian">Croatian</option>
+								<option value="Czech">Czech</option>
+								<option value="Danish">Danish</option>
+								<option value="Dutch">Dutch</option>
+								<option value="English">English</option>
+								<option value="Esperanto">Esperanto</option>
+								<option value="Estonian">Estonian</option>
+								<option value="Faroese">Faroese</option>
+								<option value="Finnish">Finnish</option>
+								<option value="French">French</option>
+								<option value="Frisian">Frisian</option>
+								<option value="Friulian">Friulian</option>
+								<option value="Fula (Pulaar)">Fula (Pulaar)</option>
+								<option value="Gaelic (Scottish)">Gaelic (Scottish)</option>
+								<option value="Galician">Galician</option>
+								<option value="German">German</option>
+								<option value="Gikuyu">Gikuyu</option>
+								<option value="Guaraní">Guaraní</option>
+								<option value="Hausa">Hausa</option>
+								<option value="Hawai'ian">Hawai'ian</option>
+								<option value="Hungarian">Hungarian</option>
+								<option value="Icelandic">Icelandic</option>
+								<option value="Ido">Ido</option>
+								<option value="Igbo">Igbo</option>
+								<option value="Indonesian">Indonesian</option>
+								<option value="Insubric">Insubric</option>
+								<option value="Interlingua">Interlingua</option>
+								<option value="Irish">Irish</option>
+								<option value="Italian">Italian</option>
+								<option value="Javanese">Javanese</option>
+								<option value="Kikongo">Kikongo</option>
+								<option value="Kinyarwanda">Kinyarwanda</option>
+								<option value="Kirundi">Kirundi</option>
+								<option value="Latin">Latin</option>
+								<option value="Latvian">Latvian</option>
+								<option value="Lingala">Lingala</option>
+								<option value="Lithuanian">Lithuanian</option>
+								<option value="Luganda">Luganda</option>
+								<option value="Luxembourgish">Luxembourgish</option>
+								<option value="Maori">Maori</option>
+								<option value="Malay">Malay</option>
+								<option value="Maltese">Maltese</option>
+								<option value="Manx">Manx</option>
+								<option value="Moldovan">Moldovan</option>
+								<option value="Nahuatl (post Spanish Conquest)">Nahuatl (post Spanish Conquest)</option>
+								<option value="Navaho or Navajo">Navaho or Navajo</option>
+								<option value="Ndebele">Ndebele</option>
+								<option value="Norwegian">Norwegian</option>
+								<option value="Occitan">Occitan</option>
+								<option value="Orobic">Orobic</option>
+								<option value="Oromo">Oromo</option>
+								<option value="Polish">Polish</option>
+								<option value="Portuguese">Portuguese</option>
+								<option value="Quechua">Quechua</option>
+								<option value="Romanian">Romanian</option>
+								<option value="Samoan">Samoan</option>
+								<option value="Scots">Scots</option>
+								<option value="Serbian">Serbian</option>
+								<option value="Shona">Shona</option>
+								<option value="Slovak">Slovak</option>
+								<option value="Slovenian">Slovenian</option>
+								<option value="Somali">Somali</option>
+								<option value="Spanish">Spanish</option>
+								<option value="Swahili">Swahili</option>
+								<option value="Swedish">Swedish</option>
+								<option value="Tagalog/Filipino">Tagalog/Filipino</option>
+								<option value="Tahitian">Tahitian</option>
+								<option value="Tatar">Tatar</option>
+								<option value="Tongan">Tongan</option>
+								<option value="Tswana">Tswana</option>
+								<option value="Turkish">Turkish</option>
+								<option value="Turoyo">Turoyo</option>
+								<option value="Vietnamese">Vietnamese</option>
+								<option value="Võro">Võro</option>
+								<option value="Walloon">Walloon</option>
+								<option value="Welsh">Welsh</option>
+								<option value="Wolof">Wolof</option>
+								<option value="Xhosa">Xhosa</option>
+								<option value="Yoruba">Yoruba</option>
+								<option value="Zulu">Zulu</option>
+							</select>
+							<div class="guide" style="display:none"></div>
+						<input type="submit" id="signup-submit" value="Sign me up!" />
+						<div id="signup-guide">Signing you up..</div>
+					</form>
+				</div>
 			</div>
 		</div>
 

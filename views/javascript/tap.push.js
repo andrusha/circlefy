@@ -1,4 +1,4 @@
-Tap = window.Tap || {};
+var Tap = window.Tap || {};
 
 Tap.Push = {
 
@@ -28,14 +28,17 @@ Tap.Push = {
 	},
 
 	send: function(data){
+		console.log(JSON.encode(data));
 		this.socket.send(JSON.encode(data) + '\r\n');
 		this.fireEvent('send', data);
 		return this;
 	},
 
-	sendCIDs: function(data){
-		data = [].combine($splat(data));
-		this.send({ cids: data.join(',') });
+	sendCIDs: function(cids, uids, gids){
+		cids = [].combine($splat(cids));
+		uids = [].combine($splat(uids || []));
+		gids = [].combine($splat(gids || []));
+		this.send({ cids: cids.join(','), uids: uids.join(','), gids: gids.join(',') });
 	},
 
 	onOpen: function(){
@@ -44,6 +47,7 @@ Tap.Push = {
 	},
 
 	onData: function(raw){
+		console.log(raw);
 		raw = raw.split('\n');
 		for (var x = raw.reverse().length; x--;){
 			data = raw[x];
@@ -60,10 +64,20 @@ Tap.Push = {
 				});
 			} catch(e) {}
 			if (!test) {
-				if (data.msgData.add_cound || data.msgData.minus_count) {
+				if (data.msgData.add_count || data.msgData.minus_count) {
 					parsed = {
-						type: (data.msgData.add_cound) ? 'view_add' : 'view_minus',
-						data: (data.msgData.add_cound || data.msgData.minus_count).split(',')
+						type: (data.msgData.add_count) ? 'view_add' : 'view_minus',
+						data: (data.msgData.add_count || data.msgData.minus_count).split(',')
+					};
+				} else if (data.msgData.add_group || data.msgData.minus_group) {
+					parsed = {
+						type: (data.msgData.add_group) ? 'group_add' : 'group_minus',
+						data: (data.msgData.add_group || data.msgData.minus_group).split(',')
+					};
+				} else if (data.msgData.add_user || data.msgData.minus_user) {
+					parsed = {
+						type: (data.msgData.add_user) ? 'user_add' : 'user_minus',
+						data: (data.msgData.add_user || data.msgData.minus_user).split(',')
 					};
 				} else {
 					parsed = {
@@ -94,6 +108,18 @@ Tap.Push = {
 					break;
 				case 'view_minus':
 					this.fireEvent('viewRemove', [parsed.data, 0]);
+					break;
+				case 'group_add':
+					this.fireEvent('groupAdd', [parsed.data, 0]);
+					break;
+				case 'group_minus':
+					this.fireEvent('groupRemove', [parsed.data, 0]);
+					break;
+				case 'user_add':
+					this.fireEvent('userAdd', [parsed.data, 0]);
+					break;
+				case 'user_minus':
+					this.fireEvent('userRemove', [parsed.data, 0]);
 					break;
 				case 'notification':
 					this.fireEvent('notification', [parsed.data, 0]);

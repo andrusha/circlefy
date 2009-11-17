@@ -31,8 +31,8 @@ Tap.Groups = {
 				e.stop();
 				$('search-noresults').inject('listing-templates');
 				self.list.set('html', self.list.retrieve('groups'));
-				self.list.getElements('.more-invite').slide('hide');
-				self.list.getElements('.description').slide('hide');
+				self.list.getElements('.more-invite').setStyle('display', 'list-item').slide('hide');
+				self.list.getElements('.description').setStyle('display', 'block').slide('hide');
 				$('gr-search-header').setStyle('display', 'none');
 				$('gr-header').setStyle('display', 'block');
 			},
@@ -138,9 +138,9 @@ Tap.Groups = {
 					html = new Template().parse(template, response.group_results);
 					listing.fade('hide').set('html', html);
 					var descs = listing.getElements('.description');
-					descs.slide('hide');
+					descs.setStyle('display', 'block').slide('hide');
 					var slidables = listing.getElements('.more-invite');
-					slidables.slide('hide');
+					slidables.setStyle('display', 'list-item').slide('hide');
 					count.set('text', [
 						response.row_count,
 						'matching',
@@ -250,6 +250,7 @@ Tap.Groups = {
 	onMore: function(el){
 		var top = el.getParent('li');
 		var top_height = top.getStyle('height').toInt();
+		console.log(top);
 		if (!top.retrieve('before')) top.store('before', top_height);
 		var desc = top.getElement('.description');
 

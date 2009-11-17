@@ -21,8 +21,19 @@ Tap.Public = {
 					e.stop();
 					search.set('value', '');
 					self.onSearch(search, e);
-				}
+				},
+				'click:relay(a.track)': this.track.toHandler(this),
+				'click:relay(a.untrack)': this.track.toHandler(this)
 			});
+			if (Tap.Vars.feed) {
+				Tap.Push.addEvents({
+					'connect': function(){
+						Tap.Push.sendCIDs(Tap.Vars.feed, Tap.Vars.people);
+					},
+					'viewAdd': this.addViews.bind(this),
+					'viewRemove': this.removeViews.bind(this)
+				});
+			}
 		}
 
 		var chat = this.chatbox = $('tap-chat-perma');
@@ -99,8 +110,52 @@ Tap.Public = {
 		var self = this;
 		if (this.timeout) this.timeout = $clear(this.timeout);
 		var indic = $('tapper-info').getElement('span.tap-typing');
-		indic.set('text', '(Someone\'s typing)');
-		this.timeout = (function(){ indic.set('text', ''); }).delay(2500);
+		indic.set('html', '(Someone\'s typing) <img src="/images/icons/comment.png" />');
+		this.timeout = (function(){ indic.set('html', ''); }).delay(2500);
+	},
+	
+	// VIEWS
+
+	addViews: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
+			els.each(function(item){
+				if (!item) return;
+				item.set('text', (item.get('text') * 1) + 1);
+			});
+		}
+	},
+
+	removeViews: function(ids){
+		for (var x = ids.reverse().length; x--;) {
+			var id = ids[x];
+			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
+			els.each(function(item){
+				var count = (item.get('text') * 1);
+				if (count > 0) item.set('text', count - 1);
+			});
+		}
+	},
+	
+	track: function(el){
+		var uid = el.get('id').remove(/uid_/);
+		var track = el.hasClass('track');
+		new Request({
+			url: '/AJAX/track.php',
+			data: {
+				fid: uid,
+				state: (track) ? 1 : 0
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (response.success) {
+					el.set({
+						'text': track ? 'Untrack' : 'Track'
+					}).removeClass(track ? 'track' : 'untrack').addClass(track ? 'untrack' : 'track');
+				}
+			}
+		}).send();
 	},
 
 	sendResponse: function(){

@@ -76,22 +76,13 @@
 				</div>
 
 
-				<div id="people-sort">
-					<p>
-						<span id="sort-pic">Picture</span>
-						<span id="sort-udata">User data</span>
-						<span id="sort-lasttap">Last tap</span>
-						<span id="sort-groups">Membership</span>
-						<span id="sort-actions">Actions</span>
-					</p>
-				</div>
 
 				<!-- Start of People Listing -->
 				<div>
 					<ul id="peoples-list" class="people-listing">
 					<?php
-						$q = empty($GET['q']) ? 0 : 1;
-						$people = "people_$q";	
+						$q = empty($_GET['q']) ? 0 : 1;
+						$people = "people_$q";
 						if($_t[$people]):
 						foreach ($_t[$people] as $n):
 						$uid = $n['uid'];
@@ -104,27 +95,37 @@
 						$groups = $n['groups'];
 					?>
 						<li id="people-id_<?= $uid ?>" class="listing">
-							<a href="/user/<?= $uname ?>">
-								<img src="/user_pics/<?= $pic ?>" alt="people logo" class="people-image" /><?=$uname?>
+							<a class="people-picture" href="/user/<?= $uname ?>">
+								<img src="/user_pics/<?= $pic ?>" alt="people logo" class="people-image" />
 							</a>
-							<div class="people-numbers">
-							<p>
-									Latest Tap: <?= $last_tap ?>&mdash;<?= stripslashes($last_chat) ?>
-							</p>
+		
+							<div class="people-info-one">
+								<a class="people-uname" href="/user/<?= $uname ?>">
+									<?=$uname?>
+								</a>
+
+								<p class="latest-tap">
+										<? if(strlen($last_tap) > 120):?>
+											<?= substr($last_tap,0,120)?>...more
+										<? else:?>
+											<?= $last_tap?>
+										<? endif;?>
+								</p>
 							</div>
-							<div class="people-numbers">
-							<p>
-								<? if($groups)
-									foreach($groups as $g):
-									$gid = $g['gid'];
-									$symbol = $g['symbol'];
-									$gname = $g['gname'];
-										?>
-									<a href="group/<?=$symbol?>"><?=$gname?></a>
-							
-								<? endforeach; ?>	
-							</p>
+
+							<div class="people-info-two">
+								<ul class="group_list">
+									<? if($groups)
+										foreach($groups as $g):
+										$gid = $g['gid'];
+										$symbol = $g['symbol'];
+										$gname = $g['gname'];
+											?>
+										<li><a href="group/<?=$symbol?>"><?=$gname?></a></li>								
+									<? endforeach; ?>	
+								</ul>
 							</div>
+
 							<div class="people-btns">
 								<? if($friend): ?>
 								<a href="#">Untrack</a>
@@ -152,6 +153,9 @@
 				<div class="section-body info">
 					<h2>Invite Your Friends!</h2>
 					<p>Having your friends on tap allows for a much richer experience without them, so get them on tap!</p>
+				</div>
+				<div class="section-body info">
+					<? include('modules/OpenInviter/form.php');?>
 				</div>
 			</div>
 		</div>

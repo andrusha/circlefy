@@ -29,10 +29,10 @@ pageTracker._trackPageview();
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<style type="text/css" media="all">@import "/views/style_sheets/TextboxList.css";</style>
-<style type="text/css" media="all">@import "/views/style_sheets/TextboxList.Autocomplete.css";</style>
-<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/public.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/TextboxList.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/TextboxList.Autocomplete.css" type="text/css" />
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript" src="/views/javascript/textboxlist-complete.js"></script>
@@ -53,132 +53,6 @@ Tap.Vars = {
 <script type="text/javascript" src="/views/javascript/tap.public.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
-<style>
-div.stats {
-	margin-bottom: 20px;
-}
-
-div.stats h2 {
-	font-size: 13px;
-	color: #666;
-	font-weight: normal;
-	margin-bottom: 20px;
-}
-
-.tab-list p.icon {
-	text-align: center;
-	margin-top: 5px;
-	margin-bottom: 20px;
-}
-
-.tab-list h2 {
-	font-size: 20px;
-	color: #333;
-}
-
-.tab-list p.actions {
-	font-size: 10px;
-}
-
-div.stats h2 span {
-	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	font-size: 20px;
-}
-
-div.stats ul li {
-	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
-	color: #666;
-	font-size: 12px;
-	padding: 5px;
-}
-
-div.stats li span.floater {
-	float: right;
-	color: #666;
-	font-size: 12px;
-	padding: 5px;
-	padding-top: 0;
-}
-
-#tapper-info {
-	padding: 20px;
-	margin-bottom: 20px;
-	background: #F2F2F2;
-	border: 1px solid #E0E0E0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-}
-
-#tapper-info p.tap-name {
-	font-size: 18px;
-}
-
-#tapper-info a.button {
-	padding: 5px;
-	float: right;
-	background: #ccc;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	font-size: 12px;
-}
-
-#tapper-info a.button:hover {
-	background: #84B5ED;
-	text-decoration: none;
-	color: #fff;
-}
-
-#tapper-info p.icon {
-	float: left;
-	margin-right: 30px;
-}
-
-#tapper-info p.tap {
-	margin-top: 10px;
-	font-size: 16px;
-	padding-left: 90px;
-}
-
-#tapper-info span.tap-info {
-	margin-top: 5px;
-	font-size: 12px;
-}
-
-#tapper-info span.tap-resp {
-	margin-left: 10px;
-	font-size: 12px;
-	padding-left: 10px;
-	border-left: 1px solid #333;
-}
-
-#tapper-info a {
-	color: #333;
-}
-
-#tap-chat-perma {
-	background: #F2F2F2;
-	border: 1px solid #E0E0E0;
-	padding: 8px;
-}
-
-ul.tap-chat {
-	height: 300px;
-}
-
-ul.tap-chat li {
-	font-size: 16px;
-}
-
-input.tap-response {
-	font-size: 14px;
-}
-
-div.tap-response-counter {
-	right: 10px;
-	color: #00B7E9;
-}
-</style>
 </head>
 
 <body>
@@ -189,15 +63,18 @@ div.tap-response-counter {
 
 	<div id="main">
 
-		<div class="left-col" style="margin-right: 20px">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">User Info</div>
-			</div>
-			<div class="tab-list">
+		<div id="sidebar-left" class="sidebar">
+			<div class="section">
+				<div class="section-head">
+					<h1>User Info</h1>
+				</div>
+				<div class="section-body">
+					
+				</div>
 			</div>
 		</div>
 
-		<div id="center-col">
+		<div id="content">
 
 			<div id="tapper-info" class="section">
 				<p class="icon"><img src="/user_pics/<?= $_t['user_pic_med'] ?>" /></p>
@@ -249,36 +126,37 @@ div.tap-response-counter {
 			</div>
 		</div>
 
-		<div id="left-col">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff; font-size: 12px">In This Conversation</div>
-			</div>
-			<div class="tab-list">
-				<div class="stats">
-					<ul id="people-list">
-					<?php
-						if (!empty($_t['invovled'])):
-							foreach ($_t['invovled'] as $person):
-					?>
-					<li id="person_<?= str_replace(" ", "", $person['uname']) ?>">
-						<a href="/user/<?= $person['uname'] ?>"><?= $person['uname'] ?></a>
-						<span class="floater"><?= $person['count'] ?><span>
-					</li>
-					<?php
-							endforeach;
-						else:
-					?>
-					<li class="no-convos">
-						<strong>No One Responded Yet</strong>
-					</li>
-					<?php
-						endif;
-					?>
-					</ul>
+		<div id="sidebar-right" class="sidebar">
+			<div class="section">
+				<div class="section-head">
+					<h1 style="font-size: 12px">In This Conversation</h1>
+				</div>
+				<div class="section-body">
+					<div class="stats">
+						<ul id="people-list">
+						<?php
+							if (!empty($_t['invovled'])):
+								foreach ($_t['invovled'] as $person):
+						?>
+						<li id="person_<?= str_replace(" ", "", $person['uname']) ?>">
+							<a href="/user/<?= $person['uname'] ?>"><?= $person['uname'] ?></a>
+							<span class="floater"><?= $person['count'] ?><span>
+						</li>
+						<?php
+								endforeach;
+							else:
+						?>
+						<li class="no-convos">
+							<strong>No One Responded Yet</strong>
+						</li>
+						<?php
+							endif;
+						?>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 	<div id="templates" style="display:none">

@@ -4,6 +4,11 @@ font-weight:bold;
 /* edit by Taso */
 }
 
+#home-section-body{
+background:#EFEFEF;
+border:none;
+}
+
 #center-col {
 	margin:0 auto;
 	width: 550px;
@@ -11,8 +16,7 @@ font-weight:bold;
 }
 
 #tap-box {
-	padding: 5px 5px 10px 5px;
-	background: url(/images/cimages/main_text_field2.gif) no-repeat;
+	padding: 0px 5px 5px 5px;
 }
 
 #tap-box-msg {
@@ -32,7 +36,7 @@ img { vertical-align:-4px;}
 	color:grey;
 	float:right;
 	font-weight:bold;
-	margin-right:2px;
+	margin-right:5px;
 	padding:4px 0 5px;
 	text-align:center;
 	width:117px;
@@ -82,10 +86,22 @@ img { vertical-align:-4px;}
 
 .section-head h1 {
 	color:white;
-	font-size:17px;
-	font-weight:bold;
+	font-size:14px;
 	padding:4px 0 0 6px;
 }
+
+.sidebar div.section-head-homepage h1 {
+        font-size: 14px;
+        padding: 6px 12px 0;
+}
+
+
+.sidebar div.section-head-homepage{
+        background: url(/images/cimages/main_bar_blue.gif) no-repeat -3px 0px;
+        color: #fff;
+        height: 28px;
+}
+
 
 ul.tap-stream li, ul.tap-chat li {
 	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
@@ -210,7 +226,7 @@ ul.tap-stream .tap-body {
 
 div.textboxlist {
 	background: #fff;
-	width: 70%;
+	width: 410px;
 	padding: 1px;
 	margin-left:5px;
 	border: 1px solid #999;
@@ -233,21 +249,16 @@ div.textboxlist-autocomplete {
 }
 
 #tap-feed-search {
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll right top;
-	border:medium none;
-	color:#000000;
 	float:right;
+        margin:-1px 1px 0px 0px;
 	font-size:12px;
-	height:19px;
-	width:124px;
-	text-indent: 5px;
+	height:14px;
+	width:160px;
 }
 
 .section-head label {
 	color:grey;
-	font-size:10px;
+	font-size:12px;
 	font-weight:normal;
 }
 
@@ -532,14 +543,13 @@ li.convo:hover a.remove-convo {
 	display: inline;
 }
 
-#archived-taps, #taps-responded {
+#taps-responded {
 	float: right;
 	cursor: pointer;
 	background: #F5F5F5;
-	padding: 3px 5px;
-	margin-top: 1px;
+	padding: 1px 4px;
 	border: 1px solid #666;
-	font-size: 10px;
+	font-size: 12px;
 	color: #000;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -581,7 +591,6 @@ a.add-tap-to:hover {
 }
 
 .group a {
-	vertical-align: 6px;
 }
 
 .group:hover a.add-tap-to {
@@ -689,3 +698,4 @@ li.group.unread .unread-counter {
 	padding-left:170px;
 	background: #FBFBC9;
 	margin-right: 70px }
+

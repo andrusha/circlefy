@@ -221,7 +221,9 @@ Tap.Groups.addEvents({
 					</p>
 						<p class="gr-desc description">
 							<#: data.descr #><br /><br />
-							<strong>Latest Tap: </strong><#: data.last_chat #>
+							<# if (data.last_chat) { #>
+							<strong>Latest Tap: </strong><#: data.last_chat || "" #>
+							<# } #>
 						</p>
 						<p class="gr-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 				</div>
@@ -243,7 +245,10 @@ Tap.Groups.addEvents({
 				</div>
 			</li>
 			<li class="more-invite">
-				<? include('modules/OpenInviter/form.php');?>
+				<div>
+					<p>Please enter your official email address: <input type="text" class="invitees"> <span class="gr-domain">@<#: data.symbol #></span></p>
+					<p class="status"><a href="#" class="send-join">Send confirmation</a>, or <a class="cancel-invite" href="#">cancel.</a></p>
+				</div>
 			</li>
 			<# } #>
 		</ul>

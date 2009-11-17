@@ -1,15 +1,33 @@
 <?php
-$last = (!empty($_t['last_tap'])) ? $_t['last_tap'][0] : null;
-$inits = array();
-if (is_array($_t['groups_bits'])) {
-	foreach($_t['groups_bits'] as $bit) {
-		array_push($inits, $bit['cid']);
-	}
+function map_clean($func, $arr) {
+	return array_filter(array_map($func, $arr));
 }
+
+// Taps
+$last = (!empty($_t['last_tap'])) ? $_t['last_tap'][0] : null;
+
+$inits = array();
+$people = array();
+if (is_array($_t['groups_bits'])) {
+	function get_cids($bit) { return $bit['cid']; }
+	$inits = map_clean("get_cids", $_t['groups_bits']);
+	
+	function get_uids($bit) { return $bit['uid']; }
+	$people = map_clean("get_uids", $_t['groups_bits']);
+}
+
 $convos = array();
 if (is_array($_t['active_convos'])) {
-	foreach($_t['active_convos'] as $bit) {
-		array_push($convos, $bit['mid']);
+	function get_mids($bit) { return $bit['mid']; }
+	$convos = map_clean("get_mids", $_t['active_convos']);
+}
+
+$groups = array(); $groups_online = array();
+if (is_array($_t['your_groups'])) {
+	function get_gids($bit) { return $bit['gid']; }
+	$groups = map_clean("get_gids", $_t['your_groups']);
+	foreach ($_t['your_groups'] as $group){
+		$groups_online[$group['gid']] = $group['online_count'];
 	}
 }
 ?>
@@ -44,7 +62,10 @@ Tap.Vars = {
 	uname: "<?= $_SESSION['uname'] ?>",
 	currentTap: "<?= $last['cid'] ?>".toInt(),
 	currentStream: JSON.decode('<?= json_encode($inits) ?>'),
-	activeConvos: JSON.decode('<?= json_encode($convos) ?>')
+	activeConvos: JSON.decode('<?= json_encode($convos) ?>'),
+	people: JSON.decode('<?= json_encode($people) ?>'),
+	groups: JSON.decode('<?= json_encode($groups) ?>'),
+	groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>')
 };
 // <?= $_GET['page'] ?>
 </script>
@@ -117,7 +138,7 @@ window.addEvent('domready', function(){
 
 		<div id="sidebar-left" class="sidebar">
 			<div id="groups" class="section">
-				<div class="section-head">
+				<div class="section-head section-head-home">
 					<h1>Popular Groups</h1>
 				</div>
 				<div class="section-body">
@@ -160,7 +181,6 @@ window.addEvent('domready', function(){
 			<div id="tap-yours" class="section">
 				<div class="section-head">
 					<h1>
-						<span id="archived-taps">Archived Taps</span>
 						Your Last Tap
 					</h1>
 				</div>
@@ -204,6 +224,7 @@ window.addEvent('domready', function(){
 										<a href="/user/<?= $last['uname'] ?>" title="">
 										<?= $last['fname'] . " " . $last['lname'] ?>
 										</a>
+										<img src="/images/icons/bullet_green.png" title="User Online" alt="User Online" class="online-indicator uol_<?= $last['uid'] ?>" />
 									</span>
 									<a href="/tap/<?= $last['cid'] ?>">
 										<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
@@ -277,6 +298,11 @@ window.addEvent('domready', function(){
 										<a href="/user/<?= $bit['uname'] ?>" title="">
 										<?= $bit['fname'] . " " . $bit['lname'] ?>
 										</a>
+										<img 
+											src="/images/icons/bullet_<?= $bit['uid'] == $_SESSION['uid'] || $bit['user_online'] ? 'green' : 'white'  ?>.png" 
+											alt="User <?= $bit['uid'] == $_SESSION['uid'] || $bit['user_online'] ? 'Online' : 'Offline'  ?>" 
+											class="online-indicator uol_<?= $bit['uid'] ?>" 
+										/>
 									</span>
 									<a href="/tap/<?= $bit['cid'] ?>">
 										<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
@@ -313,26 +339,42 @@ window.addEvent('domready', function(){
 		</div>
 		
 		<div id="sidebar-right" class="sidebar">
-			
+			<div class="section-head-homepage">
+				<h1>Feeds</h1>
+			</div>
 			<div class="section">
-				<div class="section-head">
-					<h1>My Groups</h1>
-				</div>
-				<div class="section-body">
+				<div id="home-section-body"  class="section-body">
 					<ul>
 						<li id="gid_public" class="group">
 							<span class="counter"></span>
-							<img src="/group_pics/36wh_default_group.gif" style="display:none" />
+							<img src="/images/icons/transmit.png" />
 							<strong><a href="#" title="Public Feed">Public Taps</a></strong>
+						</li>
+						<li class="group">
+							<span class="counter"></span>
+							<img src="/images/icons/folder.png" />
+							<strong id="archived-taps"><a href="#" title="Archived taps">Archived Taps</a></strong>
 						</li>
 						<li id="gid_all" class="group selected">
 							<span class="counter"></span>
-							<img src="/group_pics/36wh_default_group.gif" style="display:none" />
+							<img src="/images/icons/house.png" />
 							<strong><a href="#" title="Groups Feed">All Your Groups <span class="unread-counter">(0)</span></a></strong>
 						</li>
 						<?php foreach ($_t['your_groups'] as $group): ?>
 						<li id="gid_<?= $group['gid'] ?>" class="group">
-							<img src="/group_pics/<?= $group['pic_36']?>" />
+							<? if($group['type'] == 0): ?>
+							<img src="/images/icons/group.png" /> 
+							<? endif ?>
+							<? if($group['type'] == 1): ?>
+							<img src="/images/icons/book.png" /> 
+							<? endif ?>
+							<? if($group['type'] == 2): ?>
+							<img src="/images/icons/building.png" /> 
+							<? endif ?>
+							<? if($group['type'] == 3): ?>
+							<img src="/images/icons/rosette.png" /> 
+							<? endif ?>
+
 							<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
 							<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
 						</li>
@@ -346,7 +388,7 @@ window.addEvent('domready', function(){
 			</div>
 			
 			<div class="section">
-				<div class="section-head">
+				<div class="section-head-homepage">
 					<h1>Active Convos</h1>
 				</div>
 				<div class="section-body">
@@ -391,7 +433,9 @@ window.addEvent('domready', function(){
 				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" rel="<#: bit.uid #>"  />
 				<div class="tap-actions">
 					<span class="tap-views">Viewers: 
-						<strong><#: bit.viewer_count || 0 #></strong>
+						<strong>
+							<#: bit.viewer_count || 0 #>
+						</strong>
 					</span>
 					<# if (bit.count) { #>
 					<a class="tap-respond" href="#">
@@ -419,6 +463,19 @@ window.addEvent('domready', function(){
 							<a href="/user/<#: bit.uname #>" title="">
 							<#: [bit.fname, bit.lname].join(" ") #>
 							</a>
+							<# if (bit.uid == "<?= $_SESSION['uid'] ?>" || bit.user_online == "1"){ #>
+							<img 
+								src="/images/icons/bullet_green.png" 
+								alt="User Online" 
+								class="online-indicator uol_<#: bit.uid #>" 
+							/>
+							<# } else { #>
+								<img 
+									src="/images/icons/bullet_white.png" 
+									alt="User Offline" 
+									class="online-indicator uol_<#: bit.uid #>" 
+								/>
+							<# } #>
 						</span>
 						<a href="/tap/<#: bit.cid #>">
 							<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>

@@ -15,23 +15,11 @@ $invite_only = $res['invite_only'];
 $invite_priv = $res['invite_priv'];
 $private = $res['private'];
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-11153159-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta http-equiv="Content-Language" content="EN" />
 <meta name="ROBOTS" content="ALL" />
@@ -39,23 +27,14 @@ pageTracker._trackPageview();
 <meta http-equiv="imagetoolbar" content="false" />
 <meta name="description" content="TAP communication platform" />
 <meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-
 <title>tap - alpha</title>
-
-<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" ></link>
-<link rel="stylesheet" href="/views/style_sheets/css_new_group.css" type="text/css" ></link>
-
-
-<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-
-<!--[if lt IE 7]>
-        <script type="text/javascript" src="js/unitpngfix.js"></script>
-<![endif]-->
-
-<script src="/views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
-<script src="/views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
-<script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/css_new_group.css" type="text/css" />
+<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
+<script type="text/javascript"src="/views/javascript/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <script type="text/javascript" charset="utf-8">
@@ -75,7 +54,7 @@ Tap.CreateGroups = {
 
 	init: function(){
 		var self = this;
-		var main = $('center-col');
+		var main = $('content');
 		this.data = {
 			focus: main.getElement('input[name="gr-focus"]').store('passed', true),
 			desc: main.getElement('textarea[name="gr-desc"]').store('passed', true),
@@ -161,6 +140,7 @@ Tap.CreateGroups = {
 			});
 		});
 
+		$('geo-loader').setStyle('display', 'none');
 		if (Tap.Vars.country) {
 			country.getElement('option[value="'+Tap.Vars.country+'"]').set('selected', 'selected');
 			country.fireEvent('change', [{}, true]);
@@ -338,14 +318,16 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 </head>
 
 <body>
-	<? include(NEW_HEADER); ?>
+	
+	<? include(HEADER_CLEAN); ?>
 
 	<div id="main">
-		<div id="left-col">
-
-			<div id="groups-tab">
-				<div class="tab-in"><a href="" class="name">Group Suggestions</a>  </div>
-			</div>
+		
+		<div id="sidebar-left" class="sidebar">
+			<div class="section">
+				<div id="groups-tab">
+					<div class="tab-in"><a href="" class="name">Group Suggestions</a>  </div>
+				</div>
 				<div class="tab-list">
 					<ul>
 						<?php foreach ($_t['random_group_results'] as $random): ?>
@@ -361,16 +343,20 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 					<!-- <p class="more-btn1"><a href="">show more &raquo;</a></p> -->
 					<div style="clear:both"></div>
 				</div>
+			</div>
 		</div>
 
-		<div id="center-col">
-			<div id="gr-new">
-				<div id="gr-header">
-					<h2 class="gr-title">Edit Group</h2>
-					<span class="gr-filters" style="padding-top: 5px"><a href="/groups" id="gr-filter1">go back to all groups &raquo;</a></span>
+		<div id="content">
+			<div id="gr-new" class="section">
+				
+				<div id="gr-header" class="section-head big">
+					<span class="gr-filters" style="padding-top: 5px; float: right">
+						<a href="/groups" id="gr-filter1" style="color: #fff;">go back to all groups &raquo;</a>
+					</span>
+					<h1 class="gr-title">Edit Group</h1>
 				</div>
 
-				<div class="main-frame">
+				<div class="section-body info">
 					<h2 class="in-title">
 						Name: <input type="text" disabled="disabled" value="<?= $gname ?>" />
 					</h2>
@@ -443,18 +429,23 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 					</p><br />
 					<p id="gr-create-success" class="input-descr" style="clear: both; width: 400px; margin:auto; margin-top:30px; text-align: center;"></p>
 				</div>
-				<div class="main-frame-bottom"></div>
+
 			</div>
 		</div>
 
-		<div id="right-col">
-			<h1>Help and Tips</h1>
-			<h2>Don't pick your nose in public.</h2>
-			<p>It might feel good to engage in the primal act of picking your nose every once in a while, but resist the urge to do it at all cost in the presence of others. We humans have reached the point where open-mindedness is almost embedded deeply in our psyches, but the act of "digging for green gold" is still frowned upon in most cultures. Plus it's seriously disgusting, dude.</p>
+		<div id="sidebar-right" class="sidebar">
+			<div class="section">
+				<div class="section-head gray">
+					<h1>Help and Tips</h1>
+				</div>
+				<div class="section-body info">
+					<h2>Don't pick your nose in public.</h2>
+					<p>It might feel good to engage in the primal act of picking your nose every once in a while, but resist the urge to do it at all cost in the presence of others. We humans have reached the point where open-mindedness is almost embedded deeply in our psyches, but the act of "digging for green gold" is still frowned upon in most cultures. Plus it's seriously disgusting, dude.</p>
+				</div>
+			</div>
 		</div>
-	</div>
 
-	<div id="footer"></div>
+	<? include(ANALYTICS); ?>
 
 </body>
 </html>

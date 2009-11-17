@@ -30,10 +30,10 @@ pageTracker._trackPageview();
 
 <link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<style type="text/css" media="all">@import "/views/style_sheets/TextboxList.css";</style>
-<style type="text/css" media="all">@import "/views/style_sheets/TextboxList.Autocomplete.css";</style>
-<link rel="stylesheet" href="/views/style_sheets/group_manage.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/public.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/TextboxList.css" type="text/css" />
+<link rel="stylesheet" href="/views/style_sheets/TextboxList.Autocomplete.css" type="text/css" />
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
 <script type="text/javascript" src="/views/javascript/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript" src="/views/javascript/textboxlist-complete.js"></script>
@@ -54,170 +54,49 @@ Tap.Vars = {
 <script type="text/javascript" src="/views/javascript/tap.public.js"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) {} </script>
-<style>
-div.stats {
-	margin-bottom: 20px;
-}
-
-div.stats h2 {
-	font-size: 13px;
-	color: #666;
-	font-weight: normal;
-	margin-bottom: 20px;
-}
-
-.tab-list p.icon {
-	text-align: center;
-	margin-top: 5px;
-	margin-bottom: 20px;
-}
-
-.tab-list h2 {
-	font-size: 20px;
-	color: #333;
-}
-
-.track{
-font-size:12px;
-background:lightblue;
-}
-
-.tab-list p.actions {
-	font-size: 10px;
-}
-
-div.stats h2 span {
-	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	font-size: 20px;
-}
-
-div.stats ul li {
-	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
-	color: #666;
-	font-size: 12px;
-	padding: 5px;
-}
-
-div.stats li span.floater {
-	float: right;
-	color: #666;
-	font-size: 12px;
-	padding: 5px;
-	padding-top: 0;
-}
-
-#tapper-info {
-	padding: 20px;
-	margin-bottom: 20px;
-	background: #F2F2F2;
-	border: 1px solid #E0E0E0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-}
-
-#tapper-info p.tap-name {
-	font-size: 18px;
-}
-
-#tapper-info a.button {
-	padding: 5px;
-	float: right;
-	background: #ccc;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	font-size: 12px;
-}
-
-#tapper-info a.button:hover {
-	background: #84B5ED;
-	text-decoration: none;
-	color: #fff;
-}
-
-#tapper-info p.icon {
-	float: left;
-	margin-right: 30px;
-}
-
-#tapper-info p.tap {
-	margin-top: 10px;
-	font-size: 16px;
-	padding-left: 90px;
-}
-
-#tapper-info span.tap-info {
-	margin-top: 5px;
-	font-size: 12px;
-}
-
-#tapper-info span.tap-resp {
-	margin-left: 10px;
-	font-size: 12px;
-	padding-left: 10px;
-	border-left: 1px solid #333;
-}
-
-#tapper-info a {
-	color: #333;
-}
-
-#tap-chat-perma {
-	background: #F2F2F2;
-	border: 1px solid #E0E0E0;
-	padding: 8px;
-}
-
-ul.tap-chat {
-	height: 300px;
-}
-
-ul.tap-chat li {
-	font-size: 16px;
-}
-
-input.tap-response {
-	font-size: 14px;
-}
-
-div.tap-response-counter {
-	right: 10px;
-	color: #00B7E9;
-}
-</style>
 </head>
 
 <body>
 
 	<?php 
-		include($logged ? NEW_HEADER : LOGOUT_HEADER);
+		include($logged ? HEADER_CLEAN : LOGOUT_HEADER);
 	?>
 
 	<div id="main">
 
-		<div class="left-col" style="margin-right: 20px">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff">Statistics</div>
-			</div>
-			<div class="tab-list">
-				<div class="stats">
-					<?php $stats = $_t['stats']; ?>
-					<h2><span><?= $stats['message_count'] ?></span> taps sent.</h2>
-					<h2><span><?= $stats['response_count'] ?></span> responses received.</h2>
-					<h2><span><?= $stats['group_count'] ?></span> groups joined.</h2>
-				</div>
-			</div>
-		</div>
-
-		<div id="center-col">
+		<div id="content">
 
 			<div id="tapper-info" class="section">
 				<p class="icon"><a href="/user/<?= $_t['user'] ?>"><img src="/user_pics/<?= $_t['user_pic_med'] ?>" /></a></p>
+				<?php if ($_t['user'] == $_SESSION["uname"]): ?>
+				<span class="button selected">This is You!</span>	
+				<?php elseif ($_t['tracked']): ?>
+				<a id="uid_<?= $_t['uid'] ?>" href="#" class="button untrack">Untrack</a>
+				<?php 
+					else: 
+						if ($logged):
+				?>
+				<a id="uid_<?= $_t['uid'] ?>" href="#" class="button track">Track</a>
+				<?php 
+						else:
+				?>
+				<a href="/" class="button">Signup to Track this Member!</a>
+				<?php 
+						endif;
+					endif; 
+				?>
 				<p class="tap-name">
 					<a href="/user/<?= $_t['user'] ?>"><strong><?= $_t['user'] ?></strong></a>
-					<span class="tap-typing" style="color:#518E3E; font-size:12px;"></span>
+					<img
+src="/images/icons/bullet_<?= $_t['uid'] == $_SESSION['uid'] || $_t['user_online'] ? 'green' : 'white'  ?>.png"
+alt="User <?= $_t['uid'] == $_SESSION['uid'] || $_t['user_online'] ? 'Online' : 'Offline'  ?>"
+class="online-indicator uol_<?= $_t['uid'] ?>"
+                                             />	
+					<? if($_t['country']): ?>
+						<img src="/images/geo_pics/gif/<?=$_t['country']?>.gif" />
+					<?endif;?>
+					<span class="tap-typing"></span>
 				</p>
-					<span class="track-public"><a href="#" class="track">track</a></span>
 				<?php
 					if (!empty($_t['user_bits'])):
 						$bit = array_shift($_t['user_bits'])
@@ -232,20 +111,20 @@ div.tap-response-counter {
 				<?php
 					endif;
 				?>
-				<div style="clear:both;"></div>
+				<div class="clarity"></div>
 			</div>
 
 			<div id="tap-feed" class="section">
 				<div class="section-head">
 					<h1>
 						<input type="text" id="tap-feed-search" alt="Search through feed." />
-						<span style="clear:right"></span>
+						<span class="right-clarity"></span>
 						<span id="tap-feed-name"><?= $_t['user'] ?>'s Feed</span>
-						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
+						<img src="/images/loading.gif" id="loading-indicator" />
 					</h1>
 				</div>
 				<div class="section-body">
-					<div id="tap-notify" style="display:none"></div>
+					<div id="tap-notify"></div>
 					<ul id="main-stream" class="tap-stream">
 						<?php
 							if (!empty($_t['user_bits'])):
@@ -286,7 +165,7 @@ div.tap-response-counter {
 								<div class="tap-response-counter"></div>
 								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
+								<input type="text" class="tap-response" maxlength="240" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity" style="margin-bottom:20px"></div>
@@ -307,32 +186,49 @@ div.tap-response-counter {
 
 		</div>
 
-		<div id="left-col">
-			<div id="groups-tab">
-				<div class="tab-in" style="color:#fff"><?= $_t['user'] ?>'s Groups</div>
+		<div id="sidebar-right" class="sidebar">
+			<div id="about" class="section">
+				<div class="section-head">
+					<h1>Statistics</h1>
+				</div>
+				<div class="section-body user-stats">
+					<?php $stats = $_t['stats']; ?>
+					<p><span><?= $stats['message_count'] ?></span> taps sent.</p>
+					<p><span><?= $stats['response_count'] ?></span> responses received.</p>
+					<p><span><?= $stats['group_count'] ?></span> groups joined.</p>
+				</div>
 			</div>
-			<div class="tab-list">
-				<ul>
-					<?php
-						if (!empty($_t['your_groups'])):
-							foreach ($_t['your_groups'] as $group):
-					?>
-					<li id="gid_<?= $group['gid'] ?>" class="group">
-						<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)" style="vertical-align: 0; margin-right: 5px"><img src="/group_pics/<?= $group['pic_36']?>" /></a>
-						<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
-						<!-- <a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a> -->
-					</li>
-					<?php
-							endforeach;
-						endif;
-					?>
-				</ul>
+		</div>
+
+
+		<div id="sidebar-right" class="sidebar">
+			<div class="section">				
+				<div class="section-head">
+					<h1><?= $_t['user'] ?>'s Groups</h1>
+				</div>
+				<div class="section-body">
+					<ul>
+						<?php
+							if (!empty($_t['your_groups'])):
+								foreach ($_t['your_groups'] as $group):
+						?>
+						<li id="gid_<?= $group['gid'] ?>" class="group">
+							<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)" style="vertical-align: 0; margin-right: 5px"><img src="/group_pics/<?= $group['pic_36']?>" /></a>
+							<a href="/group/<?= $group['symbol'] ?>" grsymbol="<?= $group['symbol'] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
+							<!-- <a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a> -->
+						</li>
+						<?php
+								endforeach;
+							endif;
+						?>
+					</ul>
+				</div>
 			</div>
 		</div>
 
 	</div>
 
-	<div id="templates" style="display:none">
+	<div id="templates">
 		<ul id="template-bit">
 			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
 			<li id="tid_<#: bit.cid #>">

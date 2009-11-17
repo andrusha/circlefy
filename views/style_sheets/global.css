@@ -31,6 +31,10 @@ div { position: relative; }
 
 .clarity { clear: both; }
 
+.left-clarity { clear: left; }
+
+.right-clarity { clear: right; }
+
 .overTxtLabel {
 	color: #999;
 }
@@ -39,8 +43,15 @@ div { position: relative; }
 
 /* Header */
 #header {
-	margin: 15px auto 0 auto;
-	width: 990px;
+	margin:0 auto;
+	margin-top:8px;
+	width: 800px;
+}
+
+#signup-link-main{
+float:left;
+display:block;
+width:190px;
 }
 
 #header a { color: #fff; }
@@ -48,10 +59,10 @@ div { position: relative; }
 #logo {
 	background: url(/images/cimages/mega_alpha_logo.gif) no-repeat center center;
 	float: left;
+	margin-left:40px;
 	height: 70px;
-	margin-left: 30px;
 	margin-top: -18px;
-	width: 150px;
+	width: 130px;
 }
 
 #logo a { display: none; }
@@ -65,7 +76,7 @@ div { position: relative; }
 	margin-left: 26px;
 	padding-top: 7px;
 	padding-left: 14px;
-	width: 555px;
+	width: 375px;
 }
 
 #main-menu a {
@@ -76,9 +87,8 @@ div { position: relative; }
 #login-info {
 	color: #3A85E2;
 	float: right;
-	font-family: "Trebuchet MS", Arial, sans-serif;
 	font-size: 12px;
-	padding-right: 50px;
+	padding-right: 2px;
 	text-align: right;
 }
 
@@ -88,8 +98,9 @@ div { position: relative; }
 
 /* Body */
 #main {
-	margin: 0 auto 20px;
-	width: 990px;
+	background:#f2f2f2;
+	margin: 0 auto ;
+	width: 810px;
 }
 
 /* Sidebars */
@@ -98,15 +109,17 @@ div.sidebar {
 	width: 194px;
 }
 
-#sidebar-left { margin-right: 20px; }
+#sidebar-left { display:none;margin-right: 20px; }
+
+#sidebar-right { margin-left:20px;}
 
 /* Sidebar Sections */
 .sidebar div.section { margin-bottom: 15px; }
 
 .sidebar div.section-head {
-	background: url(/images/cimages/tab_blue.gif) no-repeat;
+	background: url(/images/cimages/main_bar_blue.gif) no-repeat;
 	color: #fff;
-	height: 31px;
+	height: 28px;
 }
 
 .sidebar div.section-head.gray {
@@ -114,6 +127,7 @@ div.sidebar {
 }
 
 .sidebar div.section-head h1 {
+
 	font-size: 14px;
 	padding: 6px 12px 0;
 }
@@ -123,8 +137,8 @@ div.sidebar {
 	border: 1px solid #e5e5e5;
 	border-style: none solid solid;
 	font-size: 12px;
-	padding: 8px 3px 10px 10px;
-	width: 176px;
+	padding: 8px 0px 10px 10px;
+	width: 184px;
 }
 
 .sidebar div.section-body a {
@@ -133,8 +147,9 @@ div.sidebar {
 
 /* Main Content */
 #content {
+	margin-left:40px;
 	float: left;
-	margin-right: 20px;
+	margin-right: 0 auto;
 	width: 553px;
 }
 
@@ -149,8 +164,7 @@ div.section {
 
 #content div.section-head h1 {
 	color: #fff;
-	font-size: 17px;
-	font-weight: bold;
+	font-size: 13px;
 	padding: 4px 0 0 6px;
 }
 
@@ -236,3 +250,5 @@ div.section-body.user-stats span {
 .sidebar div.section-body.info p {
 	margin-bottom: 15px;
 }
+
+

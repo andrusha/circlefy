@@ -182,7 +182,7 @@ Tap.Profile = {
 			$('pic-preview').empty().adopt(new Element('img', {
 				'src': ['/user_pics/', data.path].join('')
 			}));
-			this.pic = data.path;
+			this.pic = data.hash;
 			this.removeError(pic);
 		} else {
 			this.pic = null;
@@ -277,7 +277,7 @@ Tap.Profile = {
 			email: data.email.get('value'),
 			lang: data.lang.get('value')
 		};
-		if (this.pic) $extend(send, { old_name: this.pic });
+		if (this.pic) $extend(send, { hash_name: this.pic });
 		if (!data.country.get('value').isEmpty()) send.country = data.country.get('value');
 		// if (!data.state.get('value').isEmpty()) send.state = data.state.get('value');
 		// if (!data.region.get('value').isEmpty()) send.region = data.region.get('value');

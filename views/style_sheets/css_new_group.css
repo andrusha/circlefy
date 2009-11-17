@@ -24,7 +24,7 @@
 			font-size: 13px;
 			font-weight: bold;
 			color: #333333;
-			margin: 0 140px 0 50px; }
+			margin: 0 120px 0 50px; }
 			
 		#gr-new h2.in-title-left {
 			line-height: 30px;
@@ -128,4 +128,12 @@
 			width: 300px;
 			margin: auto;
 			margin-top: 10px;
+		}
+		
+		#content div.section-body.info {
+			padding-top: 20px;
+		}
+		
+		#content div.section-head a {
+			font-size: 12px;
 		}
