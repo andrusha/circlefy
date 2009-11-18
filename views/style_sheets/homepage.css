@@ -594,7 +594,7 @@ a.add-tap-to:hover {
 	background-color: #FBC9CB !important;
 }
 
-.group strong {
+.group strong a {
 	color: #000;
 	font-weight: bold; }
 
@@ -606,11 +606,11 @@ a.add-tap-to:hover {
 	display: inline; 
 }
 
-a.side-link {
+.side-link {
 	color: black;
 }
 
-a.side-link:hover {
+.side-link:hover {
 	color: black;
 }
 
