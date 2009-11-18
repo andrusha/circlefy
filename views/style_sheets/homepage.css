@@ -5,8 +5,7 @@ font-weight:bold;
 }
 
 #home-section-body{
-background:#EFEFEF;
-border:none;
+	background:#EFEFEF;
 }
 
 #center-col {
@@ -592,10 +591,6 @@ a.add-tap-to:hover {
 
 .group a {
 	color: #115E69;
-}
-
-.group a:hover {
-	color: #000;
 }
 
 .group:hover a.add-tap-to {
