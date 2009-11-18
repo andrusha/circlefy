@@ -67,11 +67,11 @@ class join_functions{
 			$last_id = $last_id->fetch_assoc();
 			$last_id = $last_id['last_id'];
 			if($last_id > 0){
-				#domain = DOM
+				$domain = DOMAIN;
 				$this->body = <<<EOF
 				You've tried to join the connected group for {$school}.  Please click click the link below to active your connection:
 					\n\n
-				http://$domain/confirm/{$hash}
+				http://$domain/confirm?code={$hash}
 EOF;
 				$this->subject = "Request to Confirm Your Connected Group for {$school}";
 				$this->to = $email;

@@ -16,7 +16,7 @@ $email = $_POST['email'];
 $password = $_POST['pass'];
 $lang = $_POST['lang'];
 
-if($flag){
+if($flag == 'normal'){
 	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$email,$password,$lang);
 	echo $sign_up_results;
 }
@@ -123,6 +123,8 @@ EOF;
                 $this->mysqli->query($settings_query);
                 $notifications_query = "INSERT INTO notifications(uid) values($this->uid);";
                 $this->mysqli->query($notifications_query);
+                $TEMP_ONLINE_query = "INSERT INTO TEMP_ONLINE(uid) values($this->uid);";
+                $this->mysqli->query($TEMP_ONLINE_query);
 	}
 
 	function tap_friend($fid){

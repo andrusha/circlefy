@@ -30,6 +30,7 @@ class profile_functions{
 		$fname = $_POST['fname'];
 		$lname = $_POST['lname'];
 		$zip = $_POST['zip'];
+		$about = $_POST['about'];
 		$gender =  $_POST['gender'];
 		$email = $_POST['email'];
 		$lang = $_POST['lang'];
@@ -37,7 +38,7 @@ class profile_functions{
 		$state = $_POST['state'];
 		$region = $_POST['region'];
 		$town = $_POST['town'];
-		$old_name = $_POST['old_name'];
+		$hash_name = $_POST['hash_name'];
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $zip = $this->mysqli->real_escape_string($zip);
@@ -64,22 +65,33 @@ class profile_functions{
 				t1.country="$country",
 				t1.state="$state",
 				t1.region="$region",
+				t1.about="$about",
 				t1.town="$town"
                         WHERE t1.uid ={$uid}
 EOF;
 
                 $you_results = $this->mysqli->query($update_you_query);
-		if($old_name){
-                        $hash_filename =  md5($uid.'CjaCXo39c0..$@)(c'.$filename);
-                        $pic_100 = '100h_'.$hash_filename.'.gif';
+		if($hash_name){
+			$old_pics_query = <<<EOF
+			SELECT pic_36,pic_100 FROM login WHERE uid = {$uid} LIMIT 1
+EOF;
+	                $old_pics_results = $this->mysqli->query($old_pics_query);
+			while($res = $old_pics_results->fetch_assoc() ){
+				$old_36 = $res['pic_36'];
+				$old_100 = $res['pic_100'];
 
-                        $old_name = PROFILE_PIC_PATH.'/'.$old_name;
-                        $new_name = PROFILE_PIC_PATH.'/'.$pic_100;
-                        rename($old_name,$new_name);
+				if(strpos($old_36,'default')) $default_pics = 1;
+			}
+                        $pic_100 = '100h_'.$hash_name.'.gif';
+                        $pic_36 = '36wh_'.$hash_name.'.gif';
 
-                        $you_pic_query = "UPDATE login SET pic_100 = '{$pic_100}' WHERE uid = {$uid}";
+                        $you_pic_query = "UPDATE login SET pic_36 = '{$pic_36}', pic_100 = '{$pic_100}' WHERE uid = {$uid}";
                         $this->mysqli->query($you_pic_query);
-                        return json_encode(array('success' => True,'pic' => True));
+		
+			if(!$default){	
+				unlink(PROFILE_PIC_PATH.'/'.$old_36);
+				unlink(PROFILE_PIC_PATH.'/'.$old_100);
+			}
                 }
 
                 if($this->mysqli->affected_rows)

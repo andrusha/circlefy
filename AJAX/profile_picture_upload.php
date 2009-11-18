@@ -89,7 +89,8 @@ class profile_functions{
 					window.top.fireEvent('uploaded', {
 					 success: true,
 					 error: null,
-					 path: "$image"
+					 path: "$image",
+					 hash: "$hash_filename"
 					});
 				</script>
 			<body></body>

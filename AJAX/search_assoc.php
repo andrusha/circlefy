@@ -53,7 +53,7 @@ class assoc_functions{
 			LIMIT 5
 			) ORDER BY connected ASC;*/
 			$create_assoc_query = <<<EOF
-				SELECT t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.online FROM 
+				SELECT t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.count FROM 
 				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
 				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
@@ -81,9 +81,8 @@ EOF;
 				GROUP BY tags
                                 LIMIT 10;
 EOF;
-
+	
 		$create_assoc_results = $this->mysqli->query($create_assoc_query);
-
                         if($create_assoc_results->num_rows > 0){
                                 while($res = $create_assoc_results->fetch_assoc() ) {
 					$tags = explode(',',$res['name']);
@@ -119,7 +118,7 @@ EOF;
 					$name = $res['name'];
 					$symbol = $res['symbol'];
 					$type = $res['connected'];
-					$online = $res['online'];
+					$online = $res['count'];
 					if($online == 0){
 						$online_class = 'offline';
 						$online = 'offline';
@@ -129,7 +128,6 @@ EOF;
 						$online_count = "($online)";
 						$online = "online ($online)";
 					} 
-
 					$sc = strpos('x,'.$my_groups.',',','.$id.',');	
 					if($sc)
 						$my_group = 1;

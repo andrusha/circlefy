@@ -86,6 +86,7 @@ EOF;
 
                 $create_group_results = $this->mysqli->query($create_group_query);
 		
+		
 
 		$last_id = $this->mysqli->query($this->last_id);
 
@@ -93,6 +94,11 @@ EOF;
                 $last_id = $last_id['last_id'];
 
 		$gid = $last_id;
+
+		$GROUP_ONLINE_query = <<<EOF
+		INSERT INTO GROUP_ONLINE(gid) values($gid)
+EOF;
+                $this->mysqli->query($GROUP_ONLINE_query);
 		
 		$create_my_group_query = <<<EOF
 		INSERT INTO group_members(uid,gid,admin) values({$uid},{$gid},1)

@@ -8,10 +8,9 @@ require('../config.php');
 session_start();
 
 $fid = $_POST['fid'];
-$friend = $_POST['friend'];
 $state = $_POST['state'];
 
-if($friend){
+if($fid && isset($state)){
 	$instance = new friend_functions();
 	echo $instance->tap_friend($fid,$state);
 }
@@ -31,15 +30,15 @@ class friend_functions{
   	        $uid = $_SESSION['uid'];
                 $uname = $_SESSION['uname'];
 
-                $uid = $this->mysqli->real_escape_string($uid);
                 $fid = $this->mysqli->real_escape_string($fid);
+                $state = $this->mysqli->real_escape_string($state);
 
 		$friend_email_query = "SELECT l.email FROM login AS l WHERE l.uid = {$fid} LIMIT 1";
 		$friend_email_result = $this->mysqli->query($friend_email_query);
 		$res = $friend_email_result->fetch_assoc();
 
 		if($state == 1){
-	                $friend_query = "INSERT INTO friends(fuid,uid) values('{$fid}','{$uid}');";
+	                $friend_query = "INSERT INTO friends(uid,fuid,time_stamp) values('{$uid}','{$fid}',NOW());";
 			$to = $res['email'];
                         $subject = "{$uname} now has you on tap.";
                                 $from = "From: tap.info\r\n";
@@ -60,13 +59,10 @@ EOF;
 		} else {
 			$friend_query = "DELETE FROM friends WHERE fuid = '{$fid}' AND uid = '{$uid}';";
 		}
-
                 $friend_results = $this->mysqli->query($friend_query);
-		
-		if($friend_results) {
-			$results = json_encode(array('good' => 1));
+			$results = json_encode(array('success' => 1));
+
 			return $results;
-		}
 	}
 
 }	
