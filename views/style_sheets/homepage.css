@@ -594,8 +594,11 @@ a.add-tap-to:hover {
 	color: #115E69;
 }
 
+.group a:hover {
+	color: #000;
+}
+
 .group:hover a.add-tap-to {
-	color: #00B9EB;
 	display: inline; 
 }
 
