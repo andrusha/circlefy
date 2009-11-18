@@ -124,6 +124,7 @@ window.addEvent('domready', function(){
 
 	<? include(HEADER_CLEAN); ?>
 
+	<!--
 	<div id="tap-feed-outside-more">
 		<p style="margin-bottom:5px">Allow messages from this groups:</p>
 		<p>
@@ -133,6 +134,7 @@ window.addEvent('domready', function(){
 			<a href="#" id="tap-feed-outside-set">Save</a>
 		</p>
 	</div>
+	-->
 
 	<div id="main">
 
@@ -157,8 +159,8 @@ window.addEvent('domready', function(){
 							<p class="focus"><?= $random['count'] ?> Taps</p>
 						</li>
 						<?php endforeach; ?>
-						<li class="list-item" style="height:30px; margin-top:20px">
-							<strong><a href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
+						<li class="list-item create-link">
+							<strong><a class="side-link" href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
 						</li>
 					</ul>
 					<div class="clarity"></div>
@@ -174,7 +176,7 @@ window.addEvent('domready', function(){
 				<div id="tap-box-more">
 					<input type="text" id="tap-box-people" alt="Add some groups who'll receive your tap!" />
 					<a id="tap-box-send" href="#">tap!</a>
-					<div style="clear:both"></div>
+					<div class="clarity"></div>
 				</div>
 			</div>
 
@@ -188,11 +190,11 @@ window.addEvent('domready', function(){
 					<ul id="your-stream" class="tap-stream">
 						<?php if ($last == null): ?>
 						<li class='welcome_tap'>
-							<h1 style="font-size:14px; font-weight:bold; margin-bottom: 5px; color: #4F9CDF;">Welcome To Tap!</h1>
-							<p style="margin-bottom: 10px;">Tap allows you to connect with people around you and stay informed about topics you're interested in.</p>
-							<p style="margin-bottom: 10px;"></p>
-							<p style="margin-bottom: 10px;">You can start by updating your <a href="/profile"><strong>profile pic</strong></a>, joining a <a href="/groups"><strong>group</strong></a>, or you can send a tap right now using the TapBox above. If you get stuck, check out the <a href="/help"><strong>Help</strong></a> section, or send a tap to <strong>Support</strong>.</p>
-							<p style="margin-bottom: 10px;"><strong>Keep on tapping!</strong></p>
+							<h1>Welcome To Tap!</h1>
+							<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.</p>
+							<p></p>
+							<p>You can start by updating your <a href="/profile"><strong>profile pic</strong></a>, joining a <a href="/groups"><strong>group</strong></a>, or you can send a tap right now using the TapBox above. If you get stuck, check out the <a href="/help"><strong>Help</strong></a> section, or send a tap to <strong>Support</strong>.</p>
+							<p><strong>Keep on tapping!</strong></p>
 						</li>
 						<?php else: ?>
 						<li id="yid_<?= $last['cid'] ?>">
@@ -256,10 +258,10 @@ window.addEvent('domready', function(){
 						<!-- <span id="tap-feed-outside-drop"></span> -->
 						<!-- <span id="tap-feed-outside">Outside: Off</span> -->
 						<span id="taps-responded">Taps You've Responded To</span>
-						<span style="clear:right"></span>
-						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" style="float:left; margin-right:10px; height: 20px; width: 20px" />
+						<span class="right-clarity"></span>
+						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" />
 						<span id="tap-feed-name">Groups Feed</span>
-						<img src="/images/loading.gif" id="loading-indicator" style="display:none" />
+						<img src="/images/loading.gif" id="loading-indicator" />
 					</h1>
 				</div>
 				<div class="section-body feed">
@@ -317,7 +319,7 @@ window.addEvent('domready', function(){
 								<div class="tap-response-counter"></div>
 								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
 								</ul>
-								<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
+								<input type="text" class="tap-response" maxlength="240" alt="Respond to this tap." />
 								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 							</div>
 							<div class="clarity"></div>
@@ -379,7 +381,7 @@ window.addEvent('domready', function(){
 							<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
 						</li>
 						<?php endforeach; ?>
-						<li style="margin-top:20px">
+						<li class="create-link">
 							<span class="counter"></span>
 							<strong><a class="side-link" href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
 						</li>
@@ -400,7 +402,7 @@ window.addEvent('domready', function(){
 						?>
 						<li id="aid_<?= $convo['mid'] ?>" class="convo">
 							<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
-							<span style="font-size:10px">
+							<span class="resp-data">
 							<?php
 								$chat_text = $convo['chat_text'];
 								echo stripslashes((strlen($chat_text) < 20) ? $chat_text : substr($chat_text, 0, 20) . '...');
@@ -494,7 +496,7 @@ window.addEvent('domready', function(){
 					<ul class="tap-chat noresp">
 					<# } #>
 					</ul>
-					<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
+					<input type="text" class="tap-response" maxlength="240" alt="Respond to this tap." />
 					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
 				</div>
 				<div class="clarity"></div>
