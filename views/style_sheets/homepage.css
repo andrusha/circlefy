@@ -591,9 +591,11 @@ a.add-tap-to:hover {
 }
 
 .group a {
+	color: #115E69;
 }
 
 .group:hover a.add-tap-to {
+	color: #00B9EB;
 	display: inline; 
 }
 
@@ -682,7 +684,7 @@ li.group.unread .unread-counter {
 .group {
 	margin-left:-7px;
 	padding-bottom:3px;
-	padding-left:3px;
+	padding-left:8px;
 	padding-top:3px; }
 
 .status {
