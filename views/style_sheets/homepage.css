@@ -710,7 +710,7 @@ li.group.unread .unread-counter {
 	background: #FBFBC9;
 	margin-right: 70px }
 
-.tap-feed-name a {
+#tap-feed-name a {
 	color: white;
 	font-weight: bold;
 }
