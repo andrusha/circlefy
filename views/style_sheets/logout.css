@@ -1,0 +1,850 @@
+#join-create-group{
+color:blue;
+font-weight:bold;
+/* edit by Taso */
+}
+
+#center-col {
+	margin:0 auto;
+	width: 550px;
+	margin-right: 20px;
+}
+
+#tap-box {
+	padding: 5px 5px 10px 5px;
+	background: url(/images/cimages/main_text_field2.gif) no-repeat;
+}
+
+#tap-box-msg {
+	width: 490px;
+	margin: 5px;
+	border: 1px solid #999;
+	font-size: 14px;
+	padding: 5px;
+	padding-right: 35px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 5px;
+}
+img { vertical-align:-4px;}
+
+#tap-box-send{
+	background:transparent url(/images/cimages/tap_btn.PNG) no-repeat scroll left top;
+	color:grey;
+	float:right;
+	font-weight:bold;
+	margin-right:2px;
+	padding:4px 0 5px;
+	text-align:center;
+	width:117px;
+	height: 19px;
+}
+
+#tap-box-send:hover {
+	background: url(/images/cimages/tap_btn.PNG) no-repeat right top;
+	text-decoration: none;
+}
+
+#tap-box-people {
+	width: 70%;
+	padding: 2px;
+	border: 1px solid #999;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 5px;
+}
+
+.section {
+	margin-bottom: 20px;
+	/*-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 0px 0px 4px #D8D8D8;
+	-webkit-box-shadow: 0px 0px 4px #D8D8D8;*/
+}
+
+.section.error {
+	padding: 10px;
+	border-bottom: 1px solid #EECEBB;
+	border-top: 1px solid #EECEBB;
+	font-size: 12px;
+	background: #FBDCC9;
+}
+
+.section.info {
+	padding: 10px;
+	border-bottom: 1px solid #EEEEBB;
+	border-top: 1px solid #EEEEBB;
+	font-size: 12px;
+	background: #FBFBC9;
+}
+
+#content div.section-head {
+	padding-right: 10px;
+}
+
+.section-head h1 {
+	color:white;
+	font-size:17px;
+	font-weight:bold;
+	padding:4px 0 0 6px;
+}
+
+ul.tap-stream li, ul.tap-chat li {
+	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
+	border:1px solid #D8D8D8;
+	font-size:12px;
+	margin-bottom:-1px;
+	margin-left:2px;
+	padding:8px 8px 0;
+}
+	ul.tap-stream li:hover, ul.tap-chat li:hover {
+		background: #f1f1f1; }
+
+ul.tap-stream .tap-chat li, .tap-chat li {
+/*	border: none;*/
+/*	border-top:1px solid #D8D8D8; }*/
+	margin-right: 5px;
+/*	margin-bottom: 3px;
+	border:  1px solid #65ABE9; */
+}
+
+ul.tap-stream .tap-chat li span.time, .tap-chat li span.time {
+	float: right;
+	font-size: 10px;
+	color: #999;
+}
+
+ul.tap-stream li.noresults {
+	height: 80px;
+	background-image: none;
+	text-align:center;
+}
+
+ul.tap-stream li.noresults p {
+	margin-top: 30px;
+	font-size: 14px;
+	font-weight:bold;
+	color: #666;
+}
+
+ul.tap-stream img.avatar {
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 8px;
+}
+
+ul.tap-stream .floater {
+	float: left;
+}
+
+ul.tap-stream ul.tap-chat, ul.tap-chat {
+	height: 100px;
+	margin-bottom: 5px;
+	overflow: auto;
+	background: #fff;
+}
+
+ul.tap-stream ul.tap-chat.noresp, ul.tap-chat.noresp {
+	background: #fff url(/images/silent_responses.png) no-repeat center center;
+}
+
+ul.tap-stream ul.tap-chat.out, ul.tap-chat.out {
+	background: #fff url(/images/out_responses.png) no-repeat center center;
+}
+
+ul.tap-stream ul.tap-chat li, ul.tap-chat li {
+	padding: 5px;
+}
+
+ul.tap-stream .floaterdown {
+	clear: left;
+	float: left;
+}
+
+ul.tap-stream .clarity {
+	display: block;
+	clear: both;
+}
+
+ul.tap-stream .tap-info {
+	margin-bottom:2px;
+	margin-left:70px;
+	margin-top:-1px;
+}
+
+ul.tap-stream .tap-msg {
+	font-size:12px;
+/*	margin-left:70px;*/
+	margin-bottom:8px;
+	position:relative;
+	width:300px;
+}
+
+ul.tap-stream .tap-info span {
+	color: #898989;
+}
+
+ul.tap-stream .tap-from {
+	font-weight: bold;
+	font-size: 14px;
+	margin-right: 5px;
+}
+
+.tap-from a {
+	color: #464646;
+}
+
+ul.tap-stream .tap-time {
+	font-size: 10px;
+	color: #898989;
+}
+
+ul.tap-stream .tap-prof-msg {
+	font-size: 14px; }
+
+ul.tap-stream .tap-actions {
+	float: right;
+}
+
+ul.tap-stream .tap-body {
+	width: 80%;
+}
+
+div.textboxlist {
+	background: #fff;
+	width: 70%;
+	padding: 1px;
+	margin-left:5px;
+	border: 1px solid #999;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 5px;
+	float: left;
+}
+
+#tap-feed-outside-more div.textboxlist {
+	width: 100%;
+	margin: 0;
+	padding: 0; }
+
+ul.textboxlist-bits {
+	border: none;
+}
+
+div.textboxlist-autocomplete {
+	z-index: 1;
+}
+
+#tap-feed-search {
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll right top;
+	border:medium none;
+	color:#000000;
+	float:right;
+	font-size:12px;
+	height:19px;
+	width:124px;
+	text-indent: 5px;
+}
+
+.section-head label {
+	color:grey;
+	font-size:10px;
+	font-weight:normal;
+}
+
+#tap-notify {
+/*	display: none;*/
+	background: #FFFFCC;
+	padding: 10px 5px;
+	margin-left: 2px;
+	font-size: 12px;
+	color: #000;
+	cursor: pointer;
+	border-right: 1px solid #ccc;
+	border-left:  1px solid #ccc;
+}
+
+#tap-notify:hover {
+
+}
+
+span.counter {
+	display: none;
+	float:right; background:#666; padding: 2px 5px; -moz-border-radius:6px; font-weight: bold; color:#fff;
+}
+
+ul.tap-stream .tap-response-box, .tap-response-box {
+	padding: 5px;
+/*	background: #DFDFDF;*/
+	margin-bottom:10px;
+	display: none;
+	background: #fff;
+	margin-left: 0px;
+	width: 522px;
+}
+
+#right-col {
+	margin-right: 20px;
+	margin-left: 0;
+}
+
+#tap-feed-outside {
+	font-size: 10px;
+	background: url(/images/cimages/out-msg-btn1short.png) no-repeat;
+	color: #000; float: right;
+	border: none;
+	cursor: pointer;
+	height: 19px;
+	padding: 4px 4px 0px 8px;
+	padding-left: 0;
+	text-align: center;
+	width: 100px;
+}
+
+#tap-feed-outside-drop {
+	background: url(/images/cimages/outside-drop.png) no-repeat right top;
+	border: none;
+	color: #000;
+	cursor: pointer;
+	float: right;
+	height: 22px;
+	margin-right: 5px;
+	width: 20px;
+	padding: 0 0 0 4px;
+}
+
+#tap-feed-outside-more {
+	display: none;
+	position: absolute;
+	width: 200px;
+	height: 80px;
+	background: rgb(247, 247, 247);
+	border: 1px solid rgb(153, 153, 153);
+	padding: 10px;
+	z-index: 1;
+	font-size: 12px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#tap-feed-outside-set { 
+	position: absolute;
+	border: 1px solid #ccc; 
+	padding: 5px 10px; 
+	background: #ccc;
+	color: #000;
+	margin-top: 5px;
+	font-size: 11px; }
+
+#loading-indicator {
+	padding: 0 0 5px 5px; }
+
+.tab-list img {
+	cursor: pointer;
+}
+
+.tap-respond {
+	color:#207BC8;
+	clear: right;
+	float:right;
+	font-size:11px;
+	font-weight:bold; }
+
+.tap-views {
+	color: #666;
+	float:right;
+	font-size:11px; }
+
+.tap-respond.noresp {
+	font-weight:normal; }
+
+.tap-respond.noresp .tap-respond-count {
+	display: none; }
+
+.tap-respond-last.noresp {
+	display: none; }
+
+.tap-respond-last {
+	border-left: 1px solid #ccc; 
+	width: 150px; 
+	font-size: 11px; 
+	clear: both; 
+	padding-left: 5px; 
+	padding-bottom: 0px; 
+	padding-top: 3px;
+	text-align:right;
+	margin-bottom: -3px;
+	color:#626262; }	
+	
+.tap-respond-cancel {
+	font-size: 11px;
+	color: #207BC8; }
+	
+.tap-response {
+	font-family:arial;
+	font-size:12px;
+	margin-right:20px;
+	padding:3px;
+	padding-right: 30px;
+	width:455px; }
+
+.tab-list label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 2px;
+	margin-top: 5px;
+}
+
+.tab-list label.in-form {
+	display: inline;
+	vertical-align: 3px;
+}
+
+.tab-list input.text {
+	padding: 4px;
+	height: 16px;
+	width: 153px;
+	border: 1px solid #cccccc;
+	background: #FBFBFB;
+	font-size: 12px;
+	margin-bottom: 5px;
+}
+
+.tab-list input.text:focus {
+	border: 1px solid #000000;
+	background: white; }
+	
+.tab-list input.text.input-err {
+	background: #fdebeb;
+}
+
+.tab-list .guide {
+	display: none;
+	margin-bottom: 10px;
+}
+
+#signup-tab {
+	background:transparent url(/images/cimages/signup_blue.gif) repeat scroll 0 0;
+	height:126px;
+	margin-top:30px;
+	width:194px;
+	text-indent: -9999px; }
+
+#signup-title {
+	font-size:13px;
+	padding:36px 12px 0; 
+	color: white;
+	text-indent: 0px; }
+
+#signup-form {
+	background:#F2F2F2 none repeat scroll 0 0;
+	border: 1px solid #E5E5E5;
+	border-top: none;
+	font-size:12px;
+	height:auto;
+	margin-right:3px;
+	padding:8px 3px 13px 12px;
+	width:175px; }
+	
+#signup-form label {
+	display:block;
+	font-weight:bold;
+	margin-bottom: 2px;
+	margin-top: 7px; }
+
+#signup-form input.text, #signup-form select.text {
+	background:#FBFBFB none repeat scroll 0 0;
+	border:1px solid #CCCCCC;
+	font-size:11px;
+	height:16px;
+	margin-bottom:5px;
+	padding:2px;
+	width:153px; }
+
+#signup-form input.text.input-err, #signup-form select.text.input-err {
+	background: #fdebeb;
+}
+
+#signup-form select.text {
+	height: 22px;
+	width: 160px;
+}
+
+#signup-form input.text:focus {
+	border: 1px solid #000000;
+	background: #EAFBE5; }
+
+#signup-form .guide { 
+/*	color:#898989;*/
+	color: red;
+	font-size:11px;
+	margin-right:16px;
+	margin-top:-5px;
+	text-align:right; }
+	
+#signin-submit {
+	font-size: 14px; 
+	margin-top: 10px;
+	padding: 0px 4px; }
+	
+#signup-submit {
+	margin: 14px auto 2px 28px;
+	font-size: 14px; }
+
+	li.group.trending {
+		height: 20px;
+	}
+
+span.tap-typing {
+	color: #8BF46A;
+}
+
+a.change-convo {
+	vertical-align: 0;
+	margin-right: 5px;
+}
+
+a.change-convo:hover {
+	text-decoration: none;
+}
+
+a.remove-convo {
+	display: none;
+	vertical-align: 0;
+	margin-right: 3px;
+	font-size: 14px;
+	font-weight: bold;
+	float: right;
+}
+
+a.remove-convo:hover {
+	color: red;
+	text-decoration: none;
+}
+
+li.convo {
+	cursor: pointer;
+	padding: 10px 5px;
+	border-top: 1px solid #ccc;
+	margin-left: -10px;
+}
+
+li.convo:hover a.remove-convo {
+	display: inline;
+}
+
+#archived-taps, #taps-responded {
+	float: right;
+	cursor: pointer;
+	background: #F5F5F5;
+	padding: 3px 5px;
+	margin-top: 1px;
+	border: 1px solid #666;
+	font-size: 10px;
+	color: #000;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+#taps-responded {
+	display: none;
+}
+
+#taps-responded.selected {
+	background: #B6D7F3;
+}
+
+a.add-tap-to {
+	sfloat: right;
+	display: none;
+	margin-top: 8px;
+	margin-right: 5px;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+a.add-tap-to:hover {
+	color: #00b9eb;
+	text-decoration: none;
+}
+
+.group {
+	cursor: pointer;
+/*	background-color: #B8E2ED;*/
+}
+
+.group.selected {
+	background-color: #B8E2ED;
+}
+
+.group.unread {
+	background-color: #FBC9CB !important;
+}
+
+.group a {
+	vertical-align: 6px;
+}
+
+.group:hover a.add-tap-to {
+	display: inline; 
+}
+
+#search-public {
+	background: url(/images/cimages/group_srch_back.gif) no-repeat;
+	height: 40px;
+	padding: 12px;
+	padding-left: 25px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #707070;
+	margin-bottom: 0;
+}
+
+span.spiel {
+	margin-right: 5px;
+}
+
+#search-public-keyword {
+	font-size: 12px;
+	margin: 0;
+	height: 20px; width: 180px;
+	padding-top: 5px; padding-left: 5px; padding-right: 30px;
+	border: none;
+	background: transparent url(/images/cimages/group_srch_field.gif) no-repeat scroll 0% 0%; }
+
+/*
+#search-public-submit {
+	height: 32px; width: 77px;
+	padding: 7px 7px 7px 77px;
+	cursor: pointer;
+	background: url(/images/cimages/group_srch_btn.gif) no-repeat;
+}
+*/
+
+#search-public-submit {
+	font-size: 14px;
+}
+
+li.group .unread-counter {
+	display: none;
+}
+
+li.group.unread .unread-counter {
+	display: inline;
+}
+
+#tap-box-counter {
+	position: absolute;
+	font-size: 12px;
+	font-weight: bold;
+	right: 15px;
+	top: 15px;
+	color: #00B7E9;
+	display: none;
+}
+
+.tap-response-counter {
+	position: absolute;
+	font-size: 10px;
+	font-weight: bold;
+	right: 75px;
+	bottom: 13px;
+	color: #999;
+	display: none;
+}
+
+.welcome_tap {
+	line-height: 1.8;
+	
+}
+
+.welcome_tap a {
+	text-transform: uppercase;
+	font-size: 11px;
+	color: #333;
+	padding: 3px;
+	border: 1px solid #BBE1EE;
+	background: #C9EEFB;
+}
+
+.tap-from a, #tapper-info a.tap-from {
+	color: #115E69;
+}
+
+.group {
+	margin-left:-7px;
+	padding-bottom:3px;
+	padding-left:3px;
+	padding-top:3px; }
+
+.status {
+	display: block;
+	margin-top: -15px; }
+
+.loader {
+	display: none;
+	border-top:1px solid #EEEEBB;
+	border-bottom:1px solid #EEEEBB;
+	font-size: 12px;
+	padding: 5px 5px;
+	padding-left:170px;
+	background: #FBFBC9;
+	margin-right: 70px 
+}
+
+#signup-guide {
+	display: none;
+	text-align: center;
+	margin-top: 15px;
+	margin-right: 10px;
+	padding: 5px;
+	background: #C9DEFB;
+	border-top: 1px solid #BBD0EE;
+	border-bottom: 1px solid #BBD0EE;
+}
+
+#connect-guide {
+	margin-top: 5px;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align: center;
+	background: #C9DEFB;
+	border-top: 1px solid #BBD0EE;
+	border-bottom: 1px solid #BBD0EE;
+	margin-right: 8px;
+	display: none;
+}
+
+ul.pitch {
+	margin-bottom: 10px;
+	font-size: 16px;
+	list-style: square;
+	font-weight: bold;
+}
+
+ul.pitch li {
+	margin-bottom: 10px;
+	color: #007AE5;
+	margin-left: -3px;
+}
+
+#rotator {
+	height: 257px;
+	background: url(/images/cimages/demo/tap123-1.gif) no-repeat center center;
+}
+
+#rotator-text {
+	font-size: 14px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 5px;
+	background: #F2F2F2;
+	opacity: .8;
+}
+
+#rotator-text strong {
+/*	font-weight: normal;*/
+	color: #3F5C06;
+}
+
+#rotator-icon {
+	background: url(/images/cimages/demo/4.PNG) no-repeat;
+	height: 74px;
+	width: 55px;
+	position: absolute;
+	right: 2px;
+	top: 2px;
+}
+
+#fblogin img {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+#curtain {
+	display: none;
+	position: absolute;
+	background: #000;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	top: 0;
+}
+
+#connect-signup {
+	display: none;
+	position: absolute;
+	width: 500px;
+	z-index: 2;
+	background: #F2F2F2;
+	top: 100px;
+	left: 200px;
+	border: 1px solid #ccc;
+	padding: 10px;
+}
+
+#connect-signup h2 {
+	border-bottom: 2px solid #ccc;
+	color: #333;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+#connect-signup p {
+	margin-bottom: 10px;
+	font-size: 13px;
+}
+
+#connect-signup span.indicator {
+	display: none;
+}
+
+#connect-signup p.forms {
+	margin-top: 10px;
+	padding-left: 30px;
+	clear: both;
+}
+
+#connect-signup label {
+	font-size: 16px;
+	margin-top: 20px;
+	font-weight: bold;
+	color: #3088ED;
+}
+
+#connect-signup p.guide {
+	display: none;
+	margin-top: -5px;
+	text-align: right;
+	padding-right: 60px;
+	margin-bottom: 10px;
+	clear: both;
+	color: #F12C46;
+}
+
+#connect-signup input {
+	border: 1px solid #ccc;
+	padding: 5px;
+	float: right;
+	margin-right: 50px;
+	width: 300px;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+#connect-signup input.error {
+	background: #FDEBEB;
+}
+
+#connect-signup input.passed {
+	background: #EEFDEB;
+}
+
+#connect-signup button {
+	font-size: 16px;
+}
+
+.tap-from a, #tapper-info a.tap-from {
+	color: #115E69;
+}
