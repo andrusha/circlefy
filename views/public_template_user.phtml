@@ -87,20 +87,14 @@ Tap.Vars = {
 				?>
 				<p class="tap-name">
 					<a href="/user/<?= $_t['user'] ?>"><strong><?= $_t['user'] ?></strong></a>
-					<img
-src="/images/icons/bullet_<?= $_t['uid'] == $_SESSION['uid'] || $_t['user_online'] ? 'green' : 'white'  ?>.png"
-alt="User <?= $_t['uid'] == $_SESSION['uid'] || $_t['user_online'] ? 'Online' : 'Offline'  ?>"
-class="online-indicator uol_<?= $_t['uid'] ?>"
-                                             />	
+			
 					<? if($_t['country']): ?>
 						<img src="/images/geo_pics/gif/<?=$_t['country']?>.gif" />
 					<?endif;?>
 					<span class="tap-typing"></span>
 				</p>
-				<?php
-					if (!empty($_t['user_bits'])):
-						$bit = array_shift($_t['user_bits'])
-				?>
+				<p class="public-user-about"><?=$_t['about']?></p>
+				<!--
 					<p class="tap" rel="<?= $bit['uid'] ?>">
 						<?= $bit['chat_text'] ?><br />
 						<span class="tap-info">
@@ -108,9 +102,7 @@ class="online-indicator uol_<?= $_t['uid'] ?>"
 							<span class="tap-resp"><a href="/tap/<?= $bit['cid'] ?>">Respond</a></span>
 						</span>
 					</p>
-				<?php
-					endif;
-				?>
+				-->
 				<div class="clarity"></div>
 			</div>
 

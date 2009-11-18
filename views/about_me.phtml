@@ -10,6 +10,7 @@ $state = $res['state'];
 $region = $res['region'];
 $town = $res['town'];
 $lang = $res['lang'];
+$about = $res['about'];
 
 $stat = $_t['stats'];
 $message_count = $stat['message_count'];
@@ -83,6 +84,13 @@ Tap.Vars = {
 				
 				<div class="section-body info">
 					<div id="youraccount" class="panel selected">
+						<h1>About Me</h1><hr class="hr2"/>
+						<h2 class="in-title">
+							About: <input type="text" name="about" value="<?=$about?>" />
+							<p>*For your public profile</p>
+							<div class="error-msg"></div>
+						</h2>
+
 						<h1>Account</h1><hr class="hr2"/>
 						<h2 class="in-title">
 							Username: <input type="text" name="uname" disabled="disabled" value="<?= $uname ?>" />

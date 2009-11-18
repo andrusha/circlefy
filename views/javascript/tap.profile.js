@@ -9,6 +9,7 @@ Tap.Profile = {
 		});
 
 		var account_data = {
+			about: body.getElement('input[name="about"]').store('passed', true),
 			fname: body.getElement('input[name="fname"]').store('passed', true),
 			lname: body.getElement('input[name="lname"]').store('passed', true),
 			email: body.getElement('input[name="email"]').store('passed', true),
@@ -272,6 +273,7 @@ Tap.Profile = {
 			return null;
 		}
 		var send = {
+			about: data.about.get('value'),
 			fname: data.fname.get('value'),
 			lname: data.lname.get('value'),
 			email: data.email.get('value'),

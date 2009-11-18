@@ -1,6 +1,10 @@
 Tap = window.Tap || {};
 
 Tap.Public = {
+	
+	feed: Tap.Vars.feed,
+	people: Tap.Vars.people,
+	group: Tap.Vars.group,
 
 	init: function(){
 		var self = this;
@@ -13,7 +17,7 @@ Tap.Public = {
 				search.addEvents({
 				'keypress': function(e){
 					if (e.key == 'enter') self.onSearch(this, e);
-				},
+				}
 				// 'blur': self.onSearch.toHandler(this)
 			});
 			$(document.body).addEvents({
@@ -27,11 +31,10 @@ Tap.Public = {
 			});
 			if (Tap.Vars.feed) {
 				Tap.Push.addEvents({
-					'connect': function(){
-						Tap.Push.sendCIDs(Tap.Vars.feed, Tap.Vars.people);
-					},
+					'connect': this.setChannels.bind(this),
 					'viewAdd': this.addViews.bind(this),
-					'viewRemove': this.removeViews.bind(this)
+					'viewRemove': this.removeViews.bind(this),
+					'notification': this.loadNew.bind(this)
 				});
 			}
 		}
@@ -90,6 +93,10 @@ Tap.Public = {
 			self.metrics = {type: type, data: data};
 			mpmetrics.track(type, data);
 		})();
+	},
+	
+	setChannels: function(){
+		Tap.Push.sendCIDs(this.feed, this.people, this.group);
 	},
 	
 	typing: function(){
@@ -153,6 +160,57 @@ Tap.Public = {
 					el.set({
 						'text': track ? 'Untrack' : 'Track'
 					}).removeClass(track ? 'track' : 'untrack').addClass(track ? 'untrack' : 'track');
+				}
+			}
+		}).send();
+	},
+	
+	loadNew: function(data){
+		var self = this, key = 'group_' + Tap.Vars.group, pushed = [];
+		data = data.map(function(item){
+			return item.link({
+				x: Number.type,
+				type: String.type,
+				y: Boolean.type,
+				cid: Number.type,
+				perm: Number.type
+			});
+		});
+		for (var x = data.reverse().length; x--;) {
+			var item = data[x];
+			if (item.type == key) pushed.include(item.cid);
+		}
+		if (pushed.length == 0) return;
+		new Request({
+			url: '/AJAX/loader.php',
+			data: {
+				id_list: pushed.join(',')
+			},
+			onRequest: function(){
+				$('loading-indicator').setStyle('display', 'inline');
+			},
+			onComplete: function(){
+				$('loading-indicator').setStyle('display', 'none');
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (response.results) {
+					self.mainStream.getElements('div.noresults').destroy();
+					response.data = response.data.filter(function(item){
+						return !!item.cid;
+					});
+					var items = new Element('div', {
+						html: self.parseTemplate('taps', response.data)
+					});
+					self.feed = self.feed.combine(response.data.map(function(item){
+						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
+					}));
+					self.people = self.people.combine(response.data.map(function(item){
+						return $type(item.uid) == 'string' ? item.uid : "" + item.uid;
+					}));
+					self.setChannels();
+					items.getElements('li').reverse().inject('main-stream', 'top');
+					self.changeDates();
 				}
 			}
 		}).send();

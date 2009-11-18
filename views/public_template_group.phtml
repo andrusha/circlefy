@@ -126,10 +126,10 @@ Tap.Vars = {
 					endif; 
 				?>
 				<p class="tap-name"><strong><?= $_t['gname'] ?></strong></p>
-				<?php
-					if (!empty($_t['user_bits'])):
-						$bit = array_shift($_t['user_bits'])
-				?>
+	
+				<p class="public-group-description"> <?= $_t['descr'] ?></p>
+			
+				<!--
 					<p class="tap" rel="<?= $bit['uid'] ?>">
 						<a href="/user/<?= $bit['uname']?>" class="tap-from"><strong><?= $bit['uname']?>:</strong></a>
 						<?= $bit['chat_text'] ?><br />
@@ -138,9 +138,7 @@ Tap.Vars = {
 							<span class="tap-resp"><a href="/tap/<?= $bit['cid'] ?>">Respond</a></span>
 						</span>
 					</p>
-				<?php
-					endif;
-				?>
+				-->
 				<div class="clarity"></div>
 			</div>
 
@@ -237,7 +235,7 @@ Tap.Vars = {
 							<ul id="admin-list">
 								<?php if($_t['admins']): foreach($_t['admins'] as $admin): ?>
 									<li>
-										<a href="/user/<?=$admin['uname']?>" title="<?=$admin['type']?>"><?=$admin['uname']?></a>
+										<img src="/user_pics/<?=$admin['small_pic']?>" /> <a href="/user/<?=$admin['uname']?>" title="<?=$admin['type']?>"><?=$admin['uname']?></a>
 									</li>
 								<?php endforeach; else:?>
 									<li>There are currently no admins</li>
@@ -250,7 +248,7 @@ Tap.Vars = {
 									foreach ($_t['popular_members'] as $member):
 							?>
 							<li>
-								<a href="/user/<?= $member['member'] ?>"><?= $member['member'] ?></a>
+								<img src="/user_pics/<?=$member['small_pic']?>" /> <a href="/user/<?= $member['member'] ?>"><?= $member['member'] ?></a>
 								<span class="floater"><?= $member['count'] ?><span>
 							</li>
 							<?php

@@ -586,3 +586,11 @@ window.addEvent('domready', function(){
 	var logo = $('logo');
 	if (logo) logo.set('styles', {cursor: 'pointer'}).addEvent('click', function(){ window.location = '/'; });
 });
+
+if (!window.console) {
+	window.console = {
+		log: $empty, debug: $empty, info: $empty, warn: $empty, error: $empty,
+		assert: $empty, dir: $empty, dirxml: $empty, trace: $empty, time: $empty,
+		timeEnd: $empty, profile: $empty, profileEnd: $empty
+	};
+}

@@ -181,7 +181,7 @@ Tap.Home = {
 			}
 		});
 
-		var easy = new EasyOver('tap-box-people').show();
+		var easy = new EasyOver('tap-box-people');
 		var tapper = this.tapper = {
 			msg: $('tap-box-msg'),
 			more: $('tap-box-more'),
@@ -195,6 +195,11 @@ Tap.Home = {
 					}
 				},
 				check: function(val){
+					if (val.toLowerCase() === 'public'){
+						this.list.getElement('input.textboxlist-bit-editable-input').set('value', '');
+						this.add("public:public:0:0","Public","<img src='images\/icons\/transmit.png' \/> Public ");
+						return false;
+					}
 					var count = val.split(':');
 					return count.length >= 3;
 				},
@@ -208,7 +213,7 @@ Tap.Home = {
 				onBitBoxAdd: function(a){
 					mpmetrics.track('tap-box-add', {'group': a.value[0] || a.value[1] });
 				}
-			})
+			}).add("public:public:0:0","Public","<img src='images\/icons\/transmit.png' \/> Public ")
 		};
 		new OverText(tapper.msg, { positionOptions: { offset: {x: 6, y: 6}}}).show();
 		var char_indic = $('tap-box-counter');
