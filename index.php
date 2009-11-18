@@ -27,7 +27,9 @@ $allowedPages = array(
 		'tap'=>true,
 		'search_people'=>true,
 		'people_search'=>true,
-		'network'=>true,
+		'people'=>true,
+		'settings'=>true,
+		'confirm'=>true,
 		'user'=>true
 	);
 
