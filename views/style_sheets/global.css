@@ -180,8 +180,8 @@ div.section {
 
 #content div.section-head.big {
 	background-image: url(/images/cimages/main_bar_blue.gif);
-	height: 37px;
-	padding: 5px 10px 0 5px;
+	height: 30px;
+	padding: 0px 10px 0 5px;
 }
 
 #content div.section-head.big h1 {
@@ -192,10 +192,10 @@ div.section {
 #content div.section-body.info {
 	border: 1px solid #b4b4b4;
 	border-top: none;
-	margin-left: 2px;
+	margin-left: 3px;
 	margin-top: -1px;
 	padding: 5px;
-	width: 537px;
+	width: 535px;
 }
 
 #content div.section-body.feed {
