@@ -606,12 +606,12 @@ a.add-tap-to:hover {
 	display: inline; 
 }
 
-.list-item strong a.side-link {
+a.side-link {
 	color: black;
 	font-size: 13px;
 }
 
-.list-item strong a.side-link:hover {
+a.side-link:hover {
 }
 
 #search-public {
@@ -710,3 +710,7 @@ li.group.unread .unread-counter {
 	background: #FBFBC9;
 	margin-right: 70px }
 
+.tap-feed-name a {
+	color: white;
+	font-weight: bold;
+}

@@ -17,7 +17,7 @@
 .textboxlist-bit-box-deletebutton { position: absolute; right: 4px; top: 6px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../../images/close.gif'); }
 .textboxlist-bit-box-deletebutton:hover { border: none; background-position: 7px; text-decoration: none; }
 .textboxlist-bit-box-hover { background: #B8E2ED; border: 1px solid #6D95E0; }
-.textboxlist-bit-box-focus { border-color: #598BEC; background: #598BEC; color: #fff; }
+.textboxlist-bit-box-focus { border-color: #B8E2ED; background: #598BEC; color: #fff; }
 .textboxlist-bit-box-focus .textboxlist-bit-box-deletebutton { background-position: bottom; }
 
 /*  TextboxList Style guidelines 
