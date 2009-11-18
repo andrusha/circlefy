@@ -257,4 +257,6 @@ div.section-body.user-stats span {
 	margin-bottom: 15px;
 }
 
-
+.no-convos strong {
+	color: #999;
+	font-weight: bold; }

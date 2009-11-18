@@ -579,6 +579,10 @@ a.add-tap-to:hover {
 
 .group {
 	cursor: pointer;
+	margin-left:-7px;
+	padding-bottom:3px;
+	padding-left:8px;
+	padding-top:3px;
 /*	background-color: #B8E2ED;*/
 }
 
@@ -590,12 +594,24 @@ a.add-tap-to:hover {
 	background-color: #FBC9CB !important;
 }
 
+.group strong {
+	color: #000;
+	font-weight: bold; }
+
 .group a {
 	color: #115E69;
 }
 
 .group:hover a.add-tap-to {
 	display: inline; 
+}
+
+a.side-link {
+	color: black;
+}
+
+a.side-link:hover {
+	color: black;
 }
 
 #search-public {
@@ -679,12 +695,6 @@ li.group.unread .unread-counter {
 .tap-from a, #tapper-info a.tap-from {
 	color: #115E69;
 }
-
-.group {
-	margin-left:-7px;
-	padding-bottom:3px;
-	padding-left:8px;
-	padding-top:3px; }
 
 .status {
 	display: block;
