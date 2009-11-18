@@ -97,7 +97,7 @@ img { vertical-align:-4px;}
 
 
 .sidebar div.section-head-homepage{
-        background: url(/images/cimages/main_bar_blue.gif) no-repeat -3px 0px;
+        background: url(/images/cimages/main_bar_blue.gif) no-repeat 0px 0px;
         color: #fff;
         height: 28px;
 }
@@ -195,7 +195,7 @@ ul.tap-stream .tap-msg {
 }
 
 ul.tap-stream .tap-info span {
-	color: #898989;
+	color: #999;
 }
 
 ul.tap-stream .tap-from {
@@ -384,7 +384,7 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 	padding-top: 3px;
 	text-align:right;
 	margin-bottom: -3px;
-	color:#626262; }	
+	color:#666666; }	
 	
 .tap-respond-cancel {
 	font-size: 11px;

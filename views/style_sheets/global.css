@@ -80,21 +80,27 @@ width:190px;
 }
 
 #main-menu a {
-	color: #81873D;
+	color: #115E69;
 	margin-right: 15px;
 }
 
 #login-info {
-	color: #3A85E2;
+	color: #115E69;
 	float: right;
 	font-size: 12px;
 	padding-right: 2px;
 	text-align: right;
+	margin-right: 10px;
 }
 
-#login-info	a { color: #3A85E2; }
+#login-info	a {
+	color: #999;
+	font-size: 11px; }
 
-#login-info strong { margin-left: 5px; }
+#login-info strong {
+	margin-left: 2px;
+	font-size: 14px;
+	color: #115E69; }
 
 /* Body */
 #main {
@@ -143,6 +149,7 @@ div.sidebar {
 
 .sidebar div.section-body a {
 	color: #000;
+	margin-left: 4px;
 }
 
 /* Main Content */
@@ -159,12 +166,12 @@ div.section {
 
 #content div.section-head {
 	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) no-repeat;
-	padding: 3px 4px 5px;
+	padding: 5px 4px 5px;
 }
 
 #content div.section-head h1 {
 	color: #fff;
-	font-size: 13px;
+	font-size: 14px;
 	padding: 4px 0 0 6px;
 }
 
