@@ -24,31 +24,20 @@ class confirm extends Base{
 	
 		$uid = $_SESSION['uid'];
 		$hash = $_GET['code'];
+		if(!$hash)
+			header( 'Location: http://tap.info/groups?error=no_hash' );
 
-		$q1 = 'UPDATE join_group_status SET status=1 WHERE hash="'.$hash.'" AND uid='.$uid;
-		$this->db_class_mysql->set_query($q1,'Query1','This query updates the users status for his connected group');
-		$result1 = $this->db_class_mysql->execute_query('Query1');
-
-		$ar = $this->db_class_mysql->db->affected_rows;
-		if($ar == 1){
+		$check_update_query = 'UPDATE join_group_status SET status=1 WHERE hash="'.$hash.'" AND uid='.$uid;
+		$this->db_class_mysql->set_query($check_update_query,'check_hash','This query updates the users status for his connected group');
+		$result1 = $this->db_class_mysql->execute_query('check_hash');
+		if($this->db_class_mysql->db->affected_rows){
 			$this->set('Accepted','status');
-			$q2 = 'SELECT gid FROM join_group_status WHERE hash="'.$hash.'" AND uid='.$uid;
-			$this->db_class_mysql->set_query($q2,'Query2','This query gets the gid of the connected group');
-			$result2 = $this->db_class_mysql->execute_query('Query2');
-
-			$q3 = 'UPDATE group_members SET status=1 WHERE uid='.$uid;
-			$this->db_class_mysql->set_query($q3,'Query3','This query updates the users status for his connected group [ different table, denormalization reasons ] ');
-			$result3 = $this->db_class_mysql->execute_query('Query3');
+			$update_group_members_query = 'UPDATE group_members SET status=1 WHERE uid='.$uid;
+			$this->db_class_mysql->set_query($update_group_members_query,'update_group_members','This query updates the users status for his connected group [ different table, denormalization reasons ] ');
+			$result3 = $this->db_class_mysql->execute_query('update_group_members');
 		} else { 
 			$this->set('Denied','status');
 		}
-
-
 	}
-
-	function test(){
-
-	}
-
 }
 ?>

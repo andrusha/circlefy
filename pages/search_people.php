@@ -26,7 +26,7 @@ class search_people extends Base{
 		//Match all user IDs with a specific ID, so you will have join the group_members table with the groups table
 		//matching the groups_members table with the groups table based off gid, you need to return the name
 			$get_users_groups_query = <<<EOF
-			SELECT t2.gname,t1.gid,t1.connected FROM group_members AS t1 
+			SELECT t2.gname,t2.symbol,t1.gid,t1.connected FROM group_members AS t1 
 			JOIN groups AS t2 ON t2.gid=t1.gid 
 			WHERE t1.uid={$uid};
 EOF;
@@ -88,9 +88,7 @@ EOF;
 						t4_sub.chat_text AS last_chat
 						FROM login AS t1 {$join['zip_q1']} {$join['group_q1']} {$join['last_chat']}
 						WHERE {$query_array['uname']}  {$query_array['fname']} {$query_array['lname']} {$query_array['zip_q2']} {$query_array['group_q2']} {$query_array['last_chat']}
-						
 EOF;
-			
 					$this->db_class_mysql->set_query($find_users_query,'find_users',"Updating a users alert settings on his profile");
 					$search_people = $this->db_class_mysql->execute_query('find_users');
 
@@ -100,7 +98,11 @@ EOF;
 							$uname = $search_res['uname'];
 							$fname = $search_res['fname'];
 							$lname =  $search_res['lname'];
-							$pic_100 = $search_res['pic_100'];
+							$pic_100 = $search_res['pic_100'];	
+							$last_chat = $search_res['last_chat'];
+							
+							if(!$last_chat)
+								$last_chat = "*This user has not tap'd yet*";
 							
 							$search_data[$uid] = array(
 							'uid' => $uid,
@@ -108,6 +110,7 @@ EOF;
 							'fname' => $fname,
 							'lname' => $lname,
 							'pic_100' => $pic_100,
+							'last_chat' => $last_chat,
 							'groups' => null,
 							'friend' => null
 							);
@@ -130,13 +133,13 @@ EOF;
                                                         $gname = $res['gname'];
                                                         $gid = $res['gid'];
                                                         $symbol = $res['symbol'];
-                                                        $friend_data[$uid]['groups'][$gid] = array(
+                                                        $search_data[$uid]['groups'][$gid] = array(
                                                         'gid' => $gid,
                                                         'gname' => $gname,
                                                         'symbol' => $symbol
                                                         );
 						}
-
+	
 						$friend_query = <<<EOF
 						SELECT fuid FROM friends WHERE uid = {$uid} AND fuid IN({$ids});
 EOF;

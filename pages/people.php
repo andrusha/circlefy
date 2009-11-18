@@ -40,7 +40,6 @@ class people extends Base{
 		WHERE t1.uid = {$uid} GROUP BY t1.fuid;
 EOF;
 
-
                 $query[1] = <<<EOF
 		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1 
 		LEFT JOIN 
@@ -64,6 +63,9 @@ foreach($query as $k_query => $v_query){
                                                         $lname =  $search_res['lname'];
                                                         $pic_100 = $search_res['pic_100'];
 							$last_chat = $search_res['last_chat'];
+	
+							if(!$last_chat)
+                                                                $last_chat = "*This user has not tap'd yet*";
 
                                                         $friend_data[$uid] = array(
                                                         'uid' => $uid,

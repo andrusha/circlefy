@@ -47,7 +47,7 @@ EOF;
 	
 			$get_profile_query = <<<EOF
 				SELECT 
-				t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.region,t1.town,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
+				t1.about,t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.region,t1.town,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
 				t5.email,t5.pic_100,t5.fname,t5.lname
 				FROM profile AS t1
 				JOIN login AS t5
@@ -67,6 +67,7 @@ EOF;
 				$lname = $res['lname'];
 				$email = $res['email'];
 				$lang = $res['language'];
+				$about = $res['about'];
 				$country = $res['country'];
 				$region = $res['region'];
 				$town = $res['town'];
@@ -82,6 +83,7 @@ EOF;
 					'lname' => $lname,
 					'zip' => $zip,
 					'lang' => $lang,
+					'about' => $about,
 					'country' => $country,
 					'region' => $region,
 					'state' => $state,

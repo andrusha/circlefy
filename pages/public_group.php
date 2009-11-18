@@ -28,13 +28,20 @@ class public_group extends Base{
 		$symbol = $_GET['symbol'];
 
 //START get gid
-$get_gid_query = "SELECT gid,pic_100,gname FROM groups WHERE symbol = '{$symbol}' LIMIT 1;";
+$get_gid_query = <<<EOF
+	SELECT GO.count,g.descr,g.gid,g.pic_100,g.gname FROM groups AS g
+	JOIN GROUP_ONLINE AS GO
+	ON GO.gid = g.gid
+	WHERE g.symbol = '{$symbol}' LIMIT 1;
+EOF;
 $this->db_class_mysql->set_query($get_gid_query,'get_gid',"This query gets a specific gid for the public group");
 $gid_result = $this->db_class_mysql->execute_query('get_gid');
 
 $res = $gid_result->fetch_assoc();
 $gid = $res['gid'];
 $gname = $res['gname'];
+$online_count = $res['count'];
+$descr = $res['descr'];
 $pic_100 = $res['pic_100'];
 
 //Part of group?
@@ -45,6 +52,8 @@ $this->set($joined,'joined');
 $this->set($pic_100,'group_pic_med');
 $this->set($gname,'gname');
 $this->set($gid,'gid');
+$this->set($descr,'descr');
+$this->set($online_count,'online_count');
 if(!$gid)
 	return False;
 //END get gid
@@ -52,7 +61,7 @@ if(!$gid)
 
 //START get admin list
 $admin_list_query = <<<EOF
-SELECT gm.admin,l.uname FROM group_members AS gm 
+SELECT gm.admin,l.uname,l.pic_36 FROM group_members AS gm 
 JOIN login AS l
 ON l.uid = gm.uid
 WHERE gm.gid = {$gid} AND admin <> 0;
@@ -64,6 +73,7 @@ $admin_list_results = $this->db_class_mysql->execute_query('admin_list');
 while($res = $admin_list_results->fetch_assoc() ){
 	$uname = $res['uname'];
 	$type = $res['admin'];
+	$pic_36 = $res['pic_36'];
 
 	switch($type){
 		case 1:$type = 'Founder';break;
@@ -72,6 +82,7 @@ while($res = $admin_list_results->fetch_assoc() ){
 	
 	$admin_data[] = array(
 		'uname'	=> $uname,
+		'small_pic' => $pic_36,
 		'type' => $type
 	);
 }
@@ -128,7 +139,7 @@ $this->set($member_count,'member_count');
 
 //START most popular members
 $popular_members_query = <<<EOF
-SELECT l.uname,COUNT(sc.mid) as count FROM special_chat AS sc
+SELECT l.uname,l.pic_36,COUNT(sc.mid) as count FROM special_chat AS sc
 JOIN special_chat_meta AS scm ON sc.mid = scm.mid
 JOIN login AS l ON l.uid = sc.uid
 WHERE scm.gid = {$gid}
@@ -138,9 +149,11 @@ $this->db_class_mysql->set_query($popular_members_query,'popular_members',"This 
 $popular_members_results = $this->db_class_mysql->execute_query('popular_members');
 while($res = $popular_members_results->fetch_assoc()){
 	$member = $res['uname'];
+	$pic_36 = $res['pic_36'];
 	$count = $res['count'];
 	$popular_members_data[] = array(
 	'member' => $member,
+	'small_pic' => $pic_36,
 	'count' => $count
 	);
 }

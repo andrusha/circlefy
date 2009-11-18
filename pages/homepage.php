@@ -197,14 +197,14 @@ EOF;
 	
 		//START group setting creation
 		$group_list_query = <<<EOF
-			SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.gname,t1.gid
+			SELECT COUNT(scm.gid) as message_count,GROUP_ON.count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.gname,t1.gid
 			FROM group_members AS t1
 			JOIN groups AS t2 ON t2.gid=t1.gid
+			JOIN GROUP_ONLINE AS GROUP_ON ON GROUP_ON.gid=t1.gid
 			JOIN special_chat_meta AS scm ON scm.gid=t1.gid
 			WHERE t1.uid={$uid}
 			GROUP BY scm.gid
 EOF;
-
                 $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                                 $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
 
@@ -215,6 +215,7 @@ EOF;
 			$symbol = $res['symbol'];
 			$connected = $res['connected'];
 			$tapd = $res['tapd'];
+			$online_count = $res['count'];
 			$message_count = $res['message_count'];
 
 			//Process
@@ -231,6 +232,7 @@ EOF;
 				'symbol' => $symbol,
 				'display_symbol' => $gname,
 				'type' => $connected,
+				'online_count' => $online_count,
 				'tapd' => $tapd,
 				'message_count' => $message_count
 			);
@@ -285,7 +287,7 @@ if($groups_bits_results->num_rows > 0){
 	$mid_list = $return_list['mid_list'];
 
 	$groups_query_bits_info = <<<EOF
-SELECT t4.mid as good_id,TAP_ON.count AS viewer_count,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
+SELECT t4.mid as good_id,TEMP_ON.online AS user_online,TAP_ON.count AS viewer_count,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
 JOIN special_chat as t3
 ON t3.uid = t2.uid
 LEFT JOIN (
@@ -294,6 +296,8 @@ SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$
 ON t4.mid = t3.cid
 LEFT JOIN TAP_ONLINE AS TAP_ON
 ON t3.mid = TAP_ON.cid
+LEFT JOIN TEMP_ONLINE AS TEMP_ON
+ON t3.uid = TEMP_ON.uid
 WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
 EOF;
 
@@ -429,6 +433,7 @@ private function bit_generator($query,$type){
                                 $pic_100 = $res['pic_100'];
                                 $pic_36 = $res['pic_36'];
 				$viewer_count = $res['viewer_count'];
+				$user_online = $res['user_online'];
                                 $uid = $res['uid'];
 
                                 //Process
@@ -437,7 +442,7 @@ private function bit_generator($query,$type){
                                 $chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
                                 $chat_text = stripslashes($chat_text);
 				if($viewer_count)
-					$viewer_count = $viewer_count-1;
+					$viewer_count = $viewer_count;
 
                                 //Additional
                                 $rand = rand(1,999);
@@ -458,6 +463,7 @@ private function bit_generator($query,$type){
                                 'pic_36'=>        $pic_36,
                                 'uid'=>           $uid,
                                 'viewer_count'=>     $viewer_count,
+                                'user_online'=>     $user_online,
                                 'last_resp'=>     null,
                                 'resp_uname'=>    null,
 				'count'=>	  0

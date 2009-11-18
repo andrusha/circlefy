@@ -27,7 +27,7 @@ class public_user extends Base{
 		$uname = $_GET['public_uid'];;	
 		//This gets all users initial settings such as the groups he's in etc...
 		//SECURITY ... I SHOULD at t2.status = 1 so that only members who are confirmed get updates	
-		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
+		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.country,t3.zip FROM login AS t1
 					LEFT JOIN group_members AS t2
 					ON t1.uid = t2.uid
 					LEFT JOIN profile AS t3
@@ -42,6 +42,7 @@ class public_user extends Base{
 					$uid = $res['uid'];
 					$public_uid = $res['uid'];
 					$uname = $res['uname'];
+					$country = $res['country'];
 					$zip = $res['zip'];
 				}
 			}else{
@@ -49,21 +50,39 @@ class public_user extends Base{
 				return false;
 			}
 
+		$tracked_query = <<<EOF
+		SELECT fuid FROM friends WHERE fuid = {$uid} and uid = {$_SESSION['uid']} LIMIT 1
+EOF;
+                $this->db_class_mysql->set_query($tracked_query,'tracked',"Checks if you're tracking the person");
+                $tracked = $this->db_class_mysql->execute_query('tracked');
+		if($tracked->num_rows)
+			$this->set(1,'tracked');
+		else
+			$this->set(0,'tracked');
+
+		
+
 		//START User Prefences
 		$user_query = <<<EOF
-                        SELECT t1.pic_100,t1.pic_36,t1.uid,t1.uname,t1.help FROM login AS t1
+                        SELECT t2.online,t1.pic_100,t1.pic_36,t1.uid,t1.uname,p.about,p.country,t1.help FROM login AS t1
+			LEFT JOIN profile AS p
+			ON t1.uid = p.uid
+			JOIN TEMP_ONLINE AS t2
+			ON t2.uid = p.uid
                         WHERE t1.uid={$uid}
 EOF;
-
-                 $this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
-                                $user = $this->db_class_mysql->execute_query('get_user');
+	                $this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
+                        $user = $this->db_class_mysql->execute_query('get_user');
 			while($res = $user->fetch_assoc() ){
-			$global_uname = $res['uname'];
-                        $this->set($res['uname'],'user');
-                        $this->set($res['uid'],'uid');
-                        $this->set($res['pic_36'],'user_pic_small');
-                        $this->set($res['pic_100'],'user_pic_med');
-			$this->set($res['help'],'help');
+				$global_uname = $res['uname'];
+				$this->set($res['uname'],'user');
+				$this->set($res['about'],'about');
+				$this->set($res['uid'],'uid');
+				$this->set($res['pic_36'],'user_pic_small');
+				$this->set($res['pic_100'],'user_pic_med');
+				$this->set($res['help'],'help');
+				$this->set($res['country'],'country');
+				$this->set($res['online'],'user_online');
 			}
 	
 		//START group setting creation

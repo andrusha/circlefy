@@ -24,8 +24,20 @@ class group_edit extends Base{
 
 		$uid = $_SESSION['uid'];
 		
+		$gid = $_GET['group'];
 		$this->set($gid,'gid');
-		
+
+		if(!$gid)	
+			header( 'Location: http://tap.info/groups?error=no_group' );
+		$access_granted_query = <<<EOF
+		SELECT admin FROM group_members WHERE gid = {$gid} AND uid = {$uid} AND admin > 0 LIMIT 1
+EOF;
+		$this->db_class_mysql->set_query($access_granted_query,'access_granted',"Says if the user has permission to edit gthe group or not");
+		$access_granted_result = $this->db_class_mysql->execute_query('access_granted');
+		if($access_granted_result->num_rows != 1)
+			header( "Location: http://tap.info/groups?error=denied" );
+
+	
 		$group_random_pick = <<<EOF
                         SELECT t1.gname,t1.gid,t1.focus,t1.descr,t1.pic_36 FROM groups AS t1 WHERE t1.connected = 0 ORDER BY gid DESC LIMIT 5;
 EOF;
