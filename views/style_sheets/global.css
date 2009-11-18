@@ -80,8 +80,12 @@ width:190px;
 }
 
 #main-menu a {
+	color: #999;
+	margin-right: 17px;
+}
+
+#main-menu a:hover {
 	color: #115E69;
-	margin-right: 15px;
 }
 
 #login-info {
