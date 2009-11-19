@@ -39,10 +39,6 @@ div { position: relative; }
 	color: #999;
 }
 
-.input-err {
-	background-color: #fdebeb;
-}
-
 /* SECTIONS */
 
 /* Header */
@@ -84,21 +80,31 @@ width:190px;
 }
 
 #main-menu a {
-	color: #81873D;
-	margin-right: 15px;
+	color: #999;
+	margin-right: 17px;
+}
+
+#main-menu a:hover {
+	color: #115E69;
 }
 
 #login-info {
-	color: #3A85E2;
+	color: #115E69;
 	float: right;
 	font-size: 12px;
 	padding-right: 2px;
 	text-align: right;
+	margin-right: 10px;
 }
 
-#login-info	a { color: #3A85E2; }
+#login-info	a {
+	color: #999;
+	font-size: 11px; }
 
-#login-info strong { margin-left: 5px; }
+#login-info strong {
+	margin-left: 2px;
+	font-size: 14px;
+	color: #115E69; }
 
 /* Body */
 #main {
@@ -139,14 +145,14 @@ div.sidebar {
 .sidebar div.section-body {
 	background: #f2f2f2;
 	border: 1px solid #e5e5e5;
-	border-style: none solid solid;
 	font-size: 12px;
-	padding: 8px 0px 10px 10px;
+	padding: 8px 0px 10px 8px;
 	width: 184px;
 }
 
 .sidebar div.section-body a {
-	color: #000;
+	/* color: #000; */
+	margin-left: 4px;
 }
 
 /* Main Content */
@@ -163,19 +169,19 @@ div.section {
 
 #content div.section-head {
 	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) no-repeat;
-	padding: 3px 4px 5px;
+	padding: 5px 4px 5px;
 }
 
 #content div.section-head h1 {
 	color: #fff;
-	font-size: 13px;
+	font-size: 14px;
 	padding: 4px 0 0 6px;
 }
 
 #content div.section-head.big {
 	background-image: url(/images/cimages/main_bar_blue.gif);
-	height: 37px;
-	padding: 5px 10px 0 5px;
+	height: 30px;
+	padding: 0px 10px 0 5px;
 }
 
 #content div.section-head.big h1 {
@@ -186,10 +192,10 @@ div.section {
 #content div.section-body.info {
 	border: 1px solid #b4b4b4;
 	border-top: none;
-	margin-left: 2px;
+	margin-left: 3px;
 	margin-top: -1px;
 	padding: 5px;
-	width: 537px;
+	width: 535px;
 }
 
 #content div.section-body.feed {
@@ -255,4 +261,6 @@ div.section-body.user-stats span {
 	margin-bottom: 15px;
 }
 
-
+.no-convos strong {
+	color: #999;
+	font-weight: bold; }
