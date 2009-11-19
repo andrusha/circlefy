@@ -16,7 +16,9 @@ Tap.Groups = {
 			'click:relay(a.more-btn3)': this.onMore.toHandler(this),
 			'click:relay(a.gr-invite-btn)': this.onInvite.toHandler(this),
 			'click:relay(a.cancel-invite)': this.onInviteCancel.toHandler(this),
-			'click:relay(a.send-invite)': this.onInviteSend.toHandler(this),
+			'click:relay(button.invite-send)': this.onInviteSend.toHandler(this),
+			'click:relay(a.invite-send)': this.onInviteSend.toHandler(this),
+			// 'click:relay(a.send-invite)': this.onInviteSend.toHandler(this),
 			'click:relay(a.send-join)': this.onJoinSend.toHandler(this),
 			'click:relay(a.gr-join-btn)': this.onJoin.toHandler(this),
 			'click:relay(a.leave-group)': this.onLeave.toHandler(this)
@@ -287,7 +289,7 @@ Tap.Groups = {
 		}
 
 	},
-	
+
 	onLeave: function(el){
 		var remove = confirm('Are you sure you want to leave this group?');
 		if (remove) {
@@ -306,24 +308,75 @@ Tap.Groups = {
 
 	onInvite: function(el){
 		var top = el.getParent('li');
-		var parent = top.getNext('div > li').getElement('li');
-		parent.slide('in');
-		var status = parent.getElement('p.status');
-		if (!status.retrieve('msg')) status.store('msg', status.get('html'));
-		var invitees = parent.getElement('input.invitees');
-		new OverText(invitees, {
-			positionOptions: {
-				offset: {x: 6, y: 6}
-			}
-		});
-		invitees.set({
+		var parent = top.getNext('div > li').getElement('li'),
+			status = parent.getElement('p.status'),
+			email = parent.getElement('input.invite-email'),
+			password = parent.getElement('input.invite-pass');
+		status.setStyle('display', 'none');
+		$$(email, password).removeClass('input-err').set({
 			'value': '',
 			'disabled': null
-		}).store('grname', top.getElement('strong.gr-name').get('text'));
-		status.set('html', status.retrieve('msg'));
+		});
+		parent.slide('in');
 	},
 
 	onInviteSend: function(el){
+		var self = this, errors = false,
+			parent = el.getParent('li'),
+			status = parent.getElement('p.status'),
+			email = parent.getElement('input.invite-email'),
+			password = parent.getElement('input.invite-pass'),
+			provider = parent.getElement('select.invite-provider'),
+			step = (el.get('tag') == 'button') ? 'get_contacts' : 'send_invites';
+
+		if (email.isEmpty()){
+			email.addClass('input-err');
+			errors = true;
+		} else { email.removeClass('input-err'); }
+		if (password.isEmpty()) {
+			password.addClass('input-err');
+			errors = true;
+		} else { password.removeClass('input-err'); }
+		if (errors) return;
+		new Request({
+			url: '/AJAX/test.php',
+			data: (function(){
+				var data = {
+					email_box: email.get('value'),
+					provider_box: provider.get('value'),
+					step: step
+				};
+				if (step == 'get_contacts') data.password_box = password.get('value');
+				else data.oi_session = '';
+				return data;
+			})(),
+			onRequest: function(){
+				status.set({
+					'styles': {'display': 'block'},
+					'html': 'Please wait...'
+				});
+			},
+			onSuccess: function(){
+				var resp = $try(JSON.decode.pass(this.response.text));
+				if (step == 'get_contacts'){
+					if (resp){
+						status.set('html', 'Contacts imported. <a class="invite-send">Send Invites.</a>');
+						$$(email, password).set('disabled', 'disabled');
+					} else {
+						status.set('html', 'There\'s a problem importing your contacts. Please check your login information.');
+						$$(email, password).addClass('input-err');
+					}
+				} else {
+					if (resp){
+						status.set('html', 'Invites sent!');
+					}
+					parent.slide.delay(2000, parent, 'out');
+				}
+			}
+		}).send();
+	},
+
+	onInviteX: function(el){
 		var self = this;
 		var parent = el.getParent('li');
 		var invitees = parent.getElement('input.invitees');
@@ -332,7 +385,7 @@ Tap.Groups = {
 		var invited = invitees.get('value').split(',').filter(function(item){
 			return item.isEmail();
 		});
-		
+
 		if (invited.length > 0) {
 			// Inform user of state..
 			status.set('text', 'Sending Request...');

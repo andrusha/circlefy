@@ -94,6 +94,7 @@
 						$friend = $n['friend'];
 						$groups = $n['groups'];
 					?>
+						<!-- <?= var_dump($n) ?>-->
 						<li id="people-id_<?= $uid ?>" class="listing">
 							<a class="people-picture" href="/user/<?= $uname ?>">
 								<img src="/user_pics/<?= $pic ?>" alt="people logo" class="people-image" />
@@ -127,10 +128,10 @@
 							</div>
 
 							<div class="people-btns">
-								<? if($friend): ?>
-								<a href="#">Untrack</a>
+								<? if ($friend): ?>
+								<a href="#" class="x">Untrack</a>
 								<? else: ?>
-								<a href="#">Track</a>
+								<a href="#" class="x">Track</a>
 								<? endif; ?>
 									
 							</div>

@@ -173,7 +173,51 @@ Tap.Groups.addEvents({
 							</div>
 						</li>
 						<li class="more-invite">
-							<? include('modules/OpenInviter/form.php');?>
+							<div>
+							<p>
+								<label>Invite Contacts From: </label>
+								<select class='invite-provider'>
+									<option value='aol'>AOL</option>
+									<option value='gmail'>GMail</option>
+									<option value='hotmail'>Live/Hotmail</option>
+									<option value='hushmail'>Hushmail</option>
+									<option value='mail_com'>Mail.com</option>
+									<option value='yahoo'>Yahoo!</option>
+									<option value='facebook'>Facebook</option>
+									<option value='myspace'>MySpace</option>
+									<option value='twitter'>Twitter</option>
+									<option value='lastfm'>Last.fm</option>
+									<option value='linkedin'>LinkedIn</option>
+									<option value='lycos'>Lycos</option>
+									<option value='rediff'>Rediff</option>
+									<option value='libero'>Libero</option>
+									<option value='bebo'>Bebo</option>
+									<option value='cyworld'>Cyworld</option>
+									<option value='flickr'>Flickr</option>
+									<option value='flixster'>Flixster</option>
+									<option value='friendfeed'>Friendfeed</option>
+									<option value='friendster'>Friendster</option>
+									<option value='hi5'>Hi5</option>
+									<option value='livejournal'>Livejournal</option>
+									<option value='mycatspace'>Mycatspace</option>
+									<option value='mydogspace'>Mydogspace</option>
+									<option value='orkut'>Orkut</option>
+									<option value='plaxo'>Plaxo</option>
+									<option value='tagged'>Tagged</option>
+									<option value='vimeo'>Vimeo</option>
+									<option value='xanga'>Xanga</option>
+									<option value='xing'>Xing</option>
+								</select>
+							</p>
+							<p>
+								<label>Email: </label>
+								<input type="text" class="invite-email" value="">
+								<label>Password: </label>
+								<input type="password" class="invite-pass" value="">
+								<button class="invite-send">Import</button> or <a class="cancel-invite" href="#">cancel.</a>
+							</p>
+							<p class="status"></p>
+							</div>
 						</li>
 						<?php endforeach; ?>
 					</ul>
