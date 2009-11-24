@@ -122,6 +122,16 @@
 			float: right;
 		}
 		
+		.setting_buttons li input {
+			float: right;
+			font-size: 12px;
+			padding: 4px;
+			margin-top: -2px;
+			height: 16px; width: 220px;
+			border: 1px solid #cccccc;
+			background: #f5f5f5; 
+		}
+		
 		#settings input {
 			float: right;
 			font-size: 12px;
