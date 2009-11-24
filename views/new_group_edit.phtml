@@ -39,7 +39,7 @@ $private = $res['private'];
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
 <script type="text/javascript" charset="utf-8">
 
-var gid = "<?= $_GET['group'] ?>";
+var gid = "<?= $gid ?>";
 
 Tap = window.Tap || {};
 
@@ -206,7 +206,7 @@ Tap.CreateGroups = {
 			$('pic-preview').empty().adopt(new Element('img', {
 				'src': ['/group_pics/', data.path].join('')
 			}));
-			this.pic = data.path;
+			this.pic = data.hash;
 			this.removeError(pic);
 		} else {
 			this.pic = null;
@@ -290,7 +290,7 @@ Tap.CreateGroups = {
 					}
 				}
 			});
-			if (this.pic) $extend(req.options.data, { old_name: this.pic });
+			if (this.pic) $extend(req.options.data, { hash_name: this.pic });
 			if (this.localized) {
 				$extend(req.options.data, { country: data.country.get('value') });
 				var types = {'state': data.state, 'region': data.region, 'town': data.town};
@@ -333,8 +333,8 @@ window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
 						<?php foreach ($_t['random_group_results'] as $random): ?>
 						<li class="list-item">
 							<p style="height: 14px; font-weight: bold;"><a href="/group/<?= $random['symbol'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
-								$gname = $random['gname'];
-								echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
+								$rgname = $random['gname'];
+								echo stripslashes((strlen($gname) < 15) ? $rgname : substr($rgname, 0, 15) . '...');
 							?></a></p>
 							<p style="margin-bottom:20px; font-size: 10px"><?= $random['focus'] ?></p>
 						</li>

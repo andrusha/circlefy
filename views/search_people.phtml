@@ -23,6 +23,48 @@
 <script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
 <script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
+<script type="text/javascript">
+Tap = window.Tap || {};
+
+var page = '<?= empty($_GET["q"]) ? "tracked" : "tracking" ?>';
+
+Tap.People = {
+
+	init: function(){
+		var self = this,
+			body = $(document.body);
+
+		this.list = $('peoples-list');
+
+		body.addEvents({
+			'click:relay(a.tracker-btn)': this.tracker.toHandler(this)
+		});
+	},
+
+	tracker: function(el){
+		var self = this,
+			parent = el.getParent('li'),
+			uid = parent.get('id').remove(/people-id_/),
+			track = el.hasClass('track');
+		new Request({
+			url: '/AJAX/track.php',
+			data: {
+				fid: uid,
+				state: (track) ? 1 : 0
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (response.success){
+						if (track) el.removeClass('track').addClass('untrack').set('text', 'Untrack');
+						else el.removeClass('untrack').addClass('track').set('text', 'Track');
+				}
+			}
+		}).send();
+	}
+};
+
+window.addEvent('domready', Tap.People.init.bind(Tap.People));
+</script>
 </head>
 
 <body>
@@ -84,17 +126,20 @@
 				<div>
 					<ul id="peoples-list" class="people-listing">
 						<?php
-                                                if($_t['search_data']):
-                                                foreach ($_t['search_data'] as $n):
-                                                $uid = $n['uid'];
-                                                $uname = $n['uname'];
-                                                $fname = $n['fname'];
-                                                $lname = $n['lname'];
-                                                $pic = $n['pic_100'];
-                                                $last_tap = $n['last_chat'];
-                                                $friend = $n['friend'];
-                                                $groups = $n['groups'];
-                                        ?>
+							if($_t['search_data']):
+								foreach ($_t['search_data'] as $n):
+									$uid = $n['fuid'];
+									$uname = $n['uname'];
+									$fname = $n['fname'];
+									$lname = $n['lname'];
+									$pic = $n['pic_100'];
+									$last_tap = $n['last_chat'];
+									$friend = $n['friend'];
+									$groups = $n['groups'];
+                        ?>
+						<!--
+							<?= var_dump($n) ?>
+						-->
 
 						<li id="people-id_<?= $uid ?>" class="listing">
 							<a class="people-picture" href="/user/<?= $uname ?>">
@@ -129,17 +174,17 @@
 							</div>
 
 							<div class="people-btns">
-								<? if($friend): ?>
-								<a href="#">Untrack</a>
+								<? if ($friend): ?>
+								<a href="#" class="tracker-btn untrack">Untrack</a>
 								<? else: ?>
-								<a href="#">Track</a>
+								<a href="#" class="tracker-btn track">Track</a>
 								<? endif; ?>
-									
+
 							</div>
 						</li>
 						<?php endforeach; else:?>
-						<li id="people-id_" class="listing">
-						You are tracking nobody 
+						<li class="listing">
+							<p>No users found.</p>
 						</li>
 						<?php endif; ?>
 					</ul>
