@@ -401,16 +401,17 @@ window.addEvent('domready', function(){
 								foreach ($active_convos as $convo): 
 						?>
 						<li id="aid_<?= $convo['mid'] ?>" class="convo">
-							<img src="/images/icons/group.png"/>
+							<img src="/images/icons/comments.png"/>
 							<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
-							<span class="resp-data">
+							<p class="resp-data">
 							<?php
 								$chat_text = $convo['chat_text'];
 								echo stripslashes((strlen($chat_text) < 20) ? $chat_text : substr($chat_text, 0, 20) . '...');
 							?> 
 							(<span class="convo-count"><?= $convo['resp_count'] ?></span>)
-							</span>
 							<a href="#" class="remove-convo" title="Remove Conversation">&ndash;</a>
+							</p>
+							
 						</li>
 						<?php 
 								endforeach;
