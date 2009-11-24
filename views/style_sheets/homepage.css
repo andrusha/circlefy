@@ -520,11 +520,12 @@ a.change-convo:hover {
 
 a.remove-convo {
 	display: none;
-	vertical-align: 0;
-	font-size: 14px;
-	font-weight: bold;
-	float: right;
-	color: black;
+	color:black;
+	float:right;
+	font-size:14px;
+	font-weight:bold;
+	padding-left:2px;
+	position:absolute;
 }
 
 a.remove-convo:hover {
@@ -565,8 +566,10 @@ li.convo:hover a.remove-convo {
 
 a.add-tap-to {
 	display: none;
-	font-weight: bold;
-	font-size: 14px;
+	font-size:14px;
+	font-weight:bold;
+	padding-left:4px;
+	position:absolute;
 }
 
 a.add-tap-to:hover {
