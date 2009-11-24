@@ -565,7 +565,7 @@ li.convo:hover a.remove-convo {
 
 a.add-tap-to {
 	sfloat: right;
-	display: none;
+	display: inline;
 	margin-top: 8px;
 	margin-right: 5px;
 	font-weight: bold;
@@ -607,8 +607,15 @@ a.add-tap-to:hover {
 }
 
 a.side-link {
-	color: black;
-	font-size: 13px;
+	background:#F8F8F8;
+	border-top:1px solid #E5E5E5;
+	bottom:-8px;
+	color:#207BC8;
+	font-size:13px;
+	left:-4px;
+	margin:0 0 8px;
+	padding:9px 19px;
+	position:absolute;
 }
 
 a.side-link:hover {
