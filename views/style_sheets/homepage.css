@@ -535,9 +535,9 @@ a.remove-convo:hover {
 
 li.convo {
 	cursor: pointer;
-	padding: 10px 5px;
 	border-top: 1px solid #ccc;
-	margin: -9px 0 8px -8px;
+	margin:-9px 6px 8px -2px;
+	padding:10px 5px 10px 4px;
 }
 
 li.convo:hover a.remove-convo {
@@ -756,11 +756,12 @@ li.group.unread .unread-counter {
 }
 
 .convo .resp-data {
-	font-size:11px;
+	font-size:12px;
 }
 
 .convo .convo-count {
 	font-weight:bold;
+	font-size:11px;
 }
 
 input.tap-response {
