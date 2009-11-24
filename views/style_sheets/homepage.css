@@ -515,7 +515,7 @@ a.change-convo {
 }
 
 a.change-convo:hover {
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 a.remove-convo {
@@ -753,7 +753,6 @@ li.group.unread .unread-counter {
 
 .convo .change-convo {
 	color: #207BC8;
-	text-decoration: underline;
 }
 
 .convo .resp-data {
