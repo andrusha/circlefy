@@ -18,7 +18,7 @@
 		span.tab {
 			float: right;
 			height: 25px; width: 105px;
-			margin-top: 12px; margin-right: 4px;
+			margin-top: 7px; margin-right: 4px;
 			text-align: center;
 			color: black; }
 			
@@ -62,7 +62,7 @@
 		
 		#picture-side a {
 			color: black;
-			margin-left: -5px;
+			margin-left: -5px;`
 			font-size: 12px;
 			font-weight: bold; }
 		
@@ -117,6 +117,10 @@
 				margin-right: -54px; margin-left: 11px;
 				vertical-align: -1px;
 				font-weight: normal; }
+				
+		.setting_buttons li {
+			float: right;
+		}
 		
 		#settings input {
 			float: right;
