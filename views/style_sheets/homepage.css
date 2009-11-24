@@ -521,10 +521,10 @@ a.change-convo:hover {
 a.remove-convo {
 	display: none;
 	vertical-align: 0;
-	margin-right: 3px;
 	font-size: 14px;
 	font-weight: bold;
 	float: right;
+	color: black;
 }
 
 a.remove-convo:hover {
@@ -564,10 +564,7 @@ li.convo:hover a.remove-convo {
 }
 
 a.add-tap-to {
-	sfloat: right;
-	display: inline;
-	margin-top: 8px;
-	margin-right: 5px;
+	display: none;
 	font-weight: bold;
 	font-size: 14px;
 }
@@ -753,6 +750,7 @@ li.group.unread .unread-counter {
 
 .convo .change-convo {
 	color: #207BC8;
+	text-decoration: underline;
 }
 
 .convo .resp-data {
