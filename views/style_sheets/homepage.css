@@ -188,10 +188,10 @@ ul.tap-stream .tap-info {
 
 ul.tap-stream .tap-msg {
 	font-size:12px;
-/*	margin-left:70px;*/
 	margin-bottom:8px;
 	position:relative;
-	width:300px;
+	width:294px;
+	float: left;
 }
 
 ul.tap-stream .tap-info span {
@@ -227,7 +227,7 @@ ul.tap-stream .tap-body {
 div.textboxlist {
 	background: #fff;
 	width: 410px;
-	padding: 1px;
+	padding: 0px;
 	margin-left:5px;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
