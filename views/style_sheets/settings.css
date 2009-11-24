@@ -107,7 +107,8 @@
 			font-size: 13px;
 			font-weight: bold;
 			color: #333333;
-			margin: 5px 0px 15px 0; }
+			margin: 5px 0px 15px 0;
+			clear: both; }
 			
 			.panel h2.in-title {
 				text-align: right;
