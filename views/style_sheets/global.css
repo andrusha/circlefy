@@ -182,7 +182,7 @@ div.section {
 #content div.section-head.big {
 	background-image: url(/images/cimages/main_bar_blue.gif);
 	height: 30px;
-	padding: 0px 10px 0 5px;
+	padding: 1px 10px 0 5px;
 }
 
 #content div.section-head.big h1 {

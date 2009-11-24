@@ -131,8 +131,10 @@ ul.gr-listing { margin: 0 0 0 3px; }
 	width: 545px;
 	color: #545454;
 	border: 1px solid #b4b4b4;
-	border-top: none;
 	background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
+	
+	#gr-list li:hover {
+		background: #EAEAEA; }
 
 #gr-list li.more-invite {
 	background:#EAEAEA; 
@@ -164,6 +166,9 @@ ul.gr-listing { margin: 0 0 0 3px; }
 	div.gr-info > p:first-child { height: 15.2px; overflow: hidden; }
 
 	.gr-info p strong { color: black; font-weight: bold; }
+	
+	.gr-info .gr-name a {
+		color: #115E69; }
 
 	.gr-desc {
 		margin-top: 5px;
