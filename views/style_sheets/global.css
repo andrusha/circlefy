@@ -128,7 +128,7 @@ div.sidebar {
 .sidebar div.section { margin-bottom: 15px; }
 
 .sidebar div.section-head {
-	background: url(/images/cimages/main_bar_blue.gif) no-repeat;
+	background: url(/images/cimages/tab_blue.gif) no-repeat;
 	color: #fff;
 	height: 28px;
 }

@@ -245,6 +245,7 @@ div.textboxlist-autocomplete {
 	width:124px;
 	text-indent: 5px;
 	margin-top: -3px;
+	margin-right:-3px;
 }
 
 .section-head label {
@@ -754,6 +755,9 @@ li.group.unread .unread-counter {
 	#tapper-info p.tap-name {
 		font-size: 18px;
 	}
+	
+		#tapper-info p.tap-name img {
+			vertical-align: 0px; }
 
 	#tapper-info a.button, #tapper-info span.button {
 		padding: 5px;
