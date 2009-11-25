@@ -199,8 +199,13 @@ ul.gr-listing { margin: 0 0 0 3px; }
 			padding-bottom: 10px; }
 
 	a.more-btn3 {
-		color: #545454;
-		margin: 0 0 0 10px; }
+		color:#666;
+		font-size:11px;
+		font-weight:bold;
+		margin:0 0 0 10px; }
+		
+		a.more-btn3:hover {
+			color:#207BC8; }
 
 .gr-numbers {
 	float: left;
