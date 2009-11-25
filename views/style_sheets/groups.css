@@ -172,13 +172,13 @@ ul.gr-listing { margin: 0 0 0 3px; }
 
 	.gr-desc {
 		margin-top: 5px;
-		font-size: 11px; }
+		font-size: 12px; }
 		
 		.gr-desc .leave-group {
 			color: black; }
 			
 		.gr-desc .leave-group-div {
-			sfloat: right; }
+			color: yellow; }
 
 		.gr-desc.focus {
 			margin-top: 5px;
