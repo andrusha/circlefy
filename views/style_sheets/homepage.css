@@ -588,6 +588,8 @@ a.add-tap-to:hover {
 
 .group.selected {
 	background-color: #B8E2ED;
+	margin-left:-8px;
+	padding-left:12px;
 }
 
 .group.unread {
@@ -743,8 +745,8 @@ li.group.unread .unread-counter {
 #tap-feed-icon {
 	float:left;
 	margin-right:10px;
-	height: 20px; 
-	width: 20px
+	height: 16px; 
+	width: 16px
 }
 
 #loading-indicator {

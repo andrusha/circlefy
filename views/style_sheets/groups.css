@@ -176,9 +176,9 @@ ul.gr-listing { margin: 0 0 0 3px; }
 		
 		.gr-desc .leave-group {
 			color:#666;
-			float:right;
+			display: block;
 			font-size:11px;
-			padding:15px 0 0; }
+			margin-top:4px; }
 			
 			.gr-desc .leave-group:hover {
 				color: black;
