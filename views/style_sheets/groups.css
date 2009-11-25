@@ -189,10 +189,13 @@ ul.gr-listing { margin: 0 0 0 3px; }
 		.gr-desc.focus {
 			margin-top: 5px;
 			font-size: 12px; }
-			
+		
+		.gr-desc .last-tap-img {
+			vertical-align: 10px; }
 		.gr-desc .gr-last-tap {
 			color: #207BC8;
-			margin-top: 6px; }
+			margin-top: 6px;
+			display: block; }
 			
 		.gr-desc .gr-last-tap-txt {
 			font-size: 11px;
