@@ -175,7 +175,10 @@ ul.gr-listing { margin: 0 0 0 3px; }
 		font-size: 12px; }
 		
 		.gr-desc .leave-group {
-			color: black; }
+			color:black;
+			float:right;
+			font-size:11px;
+			padding:15px 0 0; }
 
 		.gr-desc.focus {
 			margin-top: 5px;
