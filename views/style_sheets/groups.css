@@ -134,7 +134,7 @@ ul.gr-listing { margin: 0 0 0 3px; }
 	background: #EAEAEA url(/images/cimages/message_back.gif) no-repeat; }
 	
 	#gr-list li:hover {
-		background: #EAEAEA; }
+		background: white; }
 
 #gr-list li.more-invite {
 	background:#EAEAEA; 
