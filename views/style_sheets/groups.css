@@ -178,7 +178,7 @@ ul.gr-listing { margin: 0 0 0 3px; }
 			color: black; }
 			
 		.gr-desc .leave-group-div {
-			float: right; }
+			sfloat: right; }
 
 		.gr-desc.focus {
 			margin-top: 5px;
