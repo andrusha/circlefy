@@ -178,7 +178,8 @@ ul.gr-listing { margin: 0 0 0 3px; }
 			color:#666;
 			display: block;
 			font-size:11px;
-			margin-top:4px; }
+			margin-top:4px; 
+			margin-bottom:6px;}
 			
 			.gr-desc .leave-group:hover {
 				color: black;
@@ -190,7 +191,9 @@ ul.gr-listing { margin: 0 0 0 3px; }
 			font-size: 12px; }
 			
 		.gr-desc .gr-last-tap {
-			color: #207BC8; }
+			color: #207BC8;
+			display: block;
+			margin-top: 6px; }
 			
 		.gr-desc .gr-last-tap-txt {
 			font-size: 11px; }
