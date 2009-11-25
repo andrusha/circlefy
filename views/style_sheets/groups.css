@@ -175,10 +175,15 @@ ul.gr-listing { margin: 0 0 0 3px; }
 		font-size: 12px; }
 		
 		.gr-desc .leave-group {
-			color:black;
+			color:#666;
 			float:right;
 			font-size:11px;
 			padding:15px 0 0; }
+			
+			.gr-desc .leave-group:hover {
+				color: black;
+				text-decoration: underline;
+			}
 
 		.gr-desc.focus {
 			margin-top: 5px;
@@ -186,6 +191,9 @@ ul.gr-listing { margin: 0 0 0 3px; }
 			
 		.gr-desc .gr-last-tap {
 			color: #207BC8; }
+			
+		.gr-desc .gr-last-tap-txt {
+			font-size: 11px; }
 
 	a.more-btn3 {
 		color: #545454;
