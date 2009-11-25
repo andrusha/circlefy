@@ -153,18 +153,18 @@ Tap.Groups.addEvents({
 									</strong>&nbsp;&nbsp;
 								</p>
 								<p class="gr-desc description">
-									<strong><a href="#" class="leave-group">Leave this Group</a></strong><br /><br />
+									<div class="leave-group-div"><strong><a href="#" class="leave-group">Leave this Group</a></strong></div><br /><br />
 									<?= $descr ?><br /><br />
-									<strong>Latest Tap: <?= $last_user ?></strong>&mdash;<?= stripslashes($last_chat) ?>
+									<strong><span class="gr-last-tap">Latest tap: </span><?= $last_user ?></strong>&mdash;<?= stripslashes($last_chat) ?>
 								</p>
 								<p class="gr-desc focus"><?= $focus ?><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 							</div>
 							<div class="gr-numbers">
-								<img src="/images/icons/comments.png"/>
+								<img title="Amount of taps sent in the group" alt="taps sent" src="/images/icons/comments.png"/>
 								<p><strong><?= $count ?></strong></p>
 							</div>
 							<div class="gr-numbers">
-								<img src="/images/icons/group.png"/>
+								<img title="Amount of members in the group" alt="members" src="/images/icons/group.png"/>
 								<p><strong><?= $size ?></strong></p>
 							</div>
 							<div class="gr-btns">
@@ -268,15 +268,17 @@ Tap.Groups.addEvents({
 						<p class="gr-desc description">
 							<#: data.descr #><br /><br />
 							<# if (data.last_chat) { #>
-							<strong>Latest Tap: </strong><#: data.last_chat || "" #>
+							<strong><span class="gr-last-tap">Latest tap: </span></strong><#: data.last_chat || "" #>
 							<# } #>
 						</p>
 						<p class="gr-desc focus"><#: data.focus ? data.focus : "" #><span><a href="" class="more-btn3">more &raquo;</a></span></p>
 				</div>
 				<div class="gr-numbers">
+					<img title="Amount of taps sent in the group" alt="taps sent" src="/images/icons/comments.png"/>
 					<p><strong><#: data.count #></strong></p>
 				</div>
 				<div class="gr-numbers">
+					<img title="Amount of members in the group" alt="members" src="/images/icons/group.png"/>
 					<p><strong><#: data.size #></strong></p>
 				</div>
 				<div class="gr-btns">

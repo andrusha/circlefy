@@ -173,10 +173,19 @@ ul.gr-listing { margin: 0 0 0 3px; }
 	.gr-desc {
 		margin-top: 5px;
 		font-size: 11px; }
+		
+		.gr-desc .leave-group {
+			color: black; }
+			
+		.gr-desc .leave-group-div {
+			float: right; }
 
 		.gr-desc.focus {
 			margin-top: 5px;
 			font-size: 12px; }
+			
+		.gr-desc .gr-last-tap {
+			color: #207BC8; }
 
 	a.more-btn3 {
 		color: #545454;
@@ -185,15 +194,15 @@ ul.gr-listing { margin: 0 0 0 3px; }
 .gr-numbers {
 	float: left;
 	margin-top: 23px; margin-left: 4px;
-	height: 46px; width: 58px; }
+	height: 46px; width: 58px;
+	text-align: center; }
 	
 	.gr-numbers img {
-		text-align: center;
-		vertical-align:-4px; }
+		vertical-align:-1px; }
 
-	.gr-numbers p { text-align: center; }
+	.gr-numbers p {  }
 
-	.gr-numbers p strong { font-size: 11px; font-weight: bold; color: black; }
+	.gr-numbers p strong { font-size: 11px; font-weight: bold; color: black; vertical-align:10px; }
 
 .gr-btns {
 	float: left;
