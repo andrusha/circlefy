@@ -92,7 +92,8 @@ ul.tap-stream li, ul.tap-chat li {
 	border:1px solid #D8D8D8;
 	font-size:12px;
 	margin-bottom:-1px;
-	margin-left:2px;
+	margin-left:3px;
+	margin-right:3px;
 	padding:8px 8px 0;
 }
 	ul.tap-stream li:hover, ul.tap-chat li:hover {
@@ -198,7 +199,7 @@ ul.tap-stream .tap-time {
 }
 
 ul.tap-stream .tap-prof-msg {
-	font-size: 14px; }
+	font-size: 12px; }
 
 ul.tap-stream .tap-actions {
 	float: right;
@@ -243,6 +244,7 @@ div.textboxlist-autocomplete {
 	height:19px;
 	width:124px;
 	text-indent: 5px;
+	margin-top: -3px;
 }
 
 .section-head label {

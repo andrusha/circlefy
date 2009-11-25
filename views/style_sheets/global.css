@@ -37,7 +37,7 @@ div { position: relative; }
 
 .overTxtLabel {
 	color: #999;
-	font-size: 15px;
+	font-size: 14px;
 }
 
 /* SECTIONS */
@@ -45,7 +45,7 @@ div { position: relative; }
 /* Header */
 #header {
 	margin:0 auto;
-	margin-top:8px;
+	margin-top:14px;
 	width: 800px;
 }
 
