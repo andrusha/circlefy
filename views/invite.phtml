@@ -1,0 +1,113 @@
+﻿<?php
+$logged = (!empty($_SESSION['uid']));
+?>
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="uid" content="<?= $_t['pcid'] ?>" />
+	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
+	<title>tap</title>
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript">
+		window._vars = {type: null};
+	</script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+		<?include(HEADER)?>
+
+		<div id="main">
+
+			<div id="sidebar">
+
+				<?php if ($logged): ?>
+				<div id="you" class="section container">
+					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
+					<p class="special">
+						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
+					</p>
+					<p>
+						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+						<a href="/settings">settings</a>
+						<a href="/?logout=true">logout</a>
+					</p>
+				</div>
+				<?php endif; ?>	
+				
+			</div>
+
+			<div id="content">
+				
+				<div class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">invite</span>
+						</h2>
+						<span class="stream-name">Invite Your Friends</span>
+					</div>
+					<div class="body">
+						<div id="invites" class="form">
+							<p><strong>You have 2 invites left.</strong> Why don't you invite your friends to join tap?</p>
+							<label for="current">
+								name 
+								<span class="help">your friend's name</span>
+								<span class="error"></span>
+							</label>
+							<input name="name" type="text" class="basic full" />
+							
+							<label for="new">
+								email
+								<span class="help">your friend's email address</span>
+								<span class="error"></span>
+							</label>
+							<input name="email" type="text" class="basic full" />
+							
+							<label for="about">
+								message 
+								<span class="help">a short message for your friend</span>
+								<span class="error"></span>
+							</label>
+							<input name="message" type="text" class="basic full" 
+								value="Hey, it's <?= $_SESSION['uname'] ?>! Join me on tap!" />
+							
+							<div class="buttons">
+								<button class="action">send invite</button> or <a href="/">cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="clarity"></div>
+
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/">home</a>
+				<a href="/groups">groups</a>
+				<a href="/people">people</a>
+				<a href="/settings">settings</a>
+				<a href="/?logout=true">logout</a>
+			</span>
+		</div>
+	</div>
+	<?include(JAVASCRIPT_TEMPLATES)?>	
+</body>
+</html>
