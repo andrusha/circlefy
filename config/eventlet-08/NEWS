@@ -1,0 +1,139 @@
+0.8.16
+======
+* GreenSSLObject properly masks ZeroReturnErrors with an empty read; with unit test.
+* Fixed 2.6 SSL compatibility issue.
+
+0.8.15
+======
+
+* GreenSSL object no longer converts ZeroReturnErrors into empty reads, because that is more compatible with the underlying SSLConnection object.
+* Fixed issue caused by SIGCHLD handler in processes.py
+* Stopped supporting string exceptions in saranwrap and fixed a few test failures.
+
+0.8.14
+======
+* Fixed some more Windows compatibility problems, resolving EVT-37 : 
+http://jira.secondlife.com/browse/EVT-37
+* waiting() method on Pool class, which was lost when the Pool implementation
+replaced CoroutinePool.
+
+0.8.13
+======
+* 2.6 SSL compatibility patch by Marcus Cavanaugh.
+* Added greenlet and pyopenssl as dependencies in setup.py.
+
+0.8.12
+======
+
+* The ability to resize() pools of coroutines, which was lost when the 
+Pool implementation replaced CoroutinePool.
+* Fixed Cesar's issue with SSL connections, and furthermore did a 
+complete overhaul of SSL handling in eventlet so that it's much closer 
+to the behavior of the built-in libraries.  In particular, users of 
+GreenSSL sockets must now call shutdown() before close(), exactly 
+like SSL.Connection objects.
+* A small patch that makes Eventlet work on Windows.  This is the first 
+release of Eventlet that works on Windows.
+
+0.8.11
+======
+
+Eventlet can now run on top of twisted reactor. Twisted-based hub is enabled automatically if
+twisted.internet.reactor is imported. It is also possible to "embed" eventlet into a twisted
+application via eventlet.twistedutil.join_reactor. See the examples for details.
+
+A new package, eventlet.twistedutil, is added that makes integration of twisted and eventlet
+easier. It has block_on function that allows to wait for a Deferred to fire and it wraps
+twisted's Protocol in a synchronous interface. This is similar to and is inspired by Christopher
+Armstrong's corotwine library. Thanks to Dan Pascu for reviewing the package.
+
+Another new package, eventlet.green, was added to provide some of the standard modules
+that are fixed not to block other greenlets. This is an alternative to monkey-patching
+the socket, which is impossible to do if you are running twisted reactor.
+The package includes socket, httplib, urllib2.
+
+Much of the core functionality has been refactored and cleaned up, including the removal
+of eventlet.greenlib. This means that it is now possible to use plain greenlets without
+modification in eventlet, and the subclasses of greenlet instead of the old
+eventlet.greenlib.GreenletContext. Calling eventlet.api.get_hub().switch() now checks to
+see whether the current greenlet has a "switch_out" method and calls it if so, providing the
+same functionality that the GreenletContext.swap_out used to. The swap_in behavior can be
+duplicated by overriding the switch method, and the finalize functionality can be duplicated
+by having a try: finally: block around the greenlet's main implementation. The eventlet.backdoor
+module has been ported to this new scheme, although it's signature had to change slightly so
+existing code that used the backdoor will have to be modified.
+
+A number of bugs related to improper scheduling of switch calls has been fixed.
+The fixed functions and classes include api.trampoline, api.sleep, coros.event,
+coros.semaphore, coros.queue.
+
+Many methods of greenio.GreenSocket were fixed to make its behavior more like that of a regular
+socket. Thanks to Marcin Bachry for fixing GreenSocket.dup to preserve the timeout.
+
+Added proc module which provides an easy way to subscribe to coroutine's results. This makes
+it easy to wait for a single greenlet or for a set of greenlets to complete.
+
+wsgi.py now supports chunked transfer requests (patch by Mike Barton)
+
+The following modules were deprecated or removed because they were broken:
+hubs.nginx, hubs.libev, support.pycurls, support.twisteds, cancel method of coros.event class
+
+The following classes are still present but will be removed in the future version:
+- channel.channel (use coros.Channel)
+- coros.CoroutinePool (use pool.Pool)
+
+saranwrap.py now correctly closes the child process when the referring object is deleted,
+received some fixes to its detection of child process death, now correctly deals with the in
+keyword, and it is now possible to use coroutines in a non-blocking fashion in the child process.
+
+Time-based expiry added to db_pool.  This adds the ability to expire connections both by idleness
+and also by total time open.  There is also a connection timeout option.
+
+A small bug in httpd's error method was fixed.
+
+Python 2.3 is no longer supported.
+
+A number of tests was added along with a script to run all of them for all the configurations.
+The script generates an html page with the results.
+
+Thanks to Brian Brunswick for investigation of popen4 badness (eventlet.process)
+Thanks to Marcus Cavanaugh for pointing out some coros.queue(0) bugs.
+
+The twisted integration as well as many other improvements were funded by AG Projects (http://ag-projects.com), thanks!
+
+0.8.x
+=====
+
+Fix a CPU leak that would cause the poll hub to consume 100% CPU in certain conditions, for example the echoserver example. (Donovan Preston)
+
+Fix the libev hub to match libev's callback signature. (Patch by grugq)
+
+Add a backlog argument to api.tcp_listener (Patch by grugq)
+
+0.7.x
+=====
+
+Fix a major memory leak when using the libevent or libev hubs. Timers were not being removed from the hub after they fired. (Thanks Agusto Becciu and the grugq). Also, make it possible to call wrap_socket_with_coroutine_socket without using the threadpool to make dns operations non-blocking (Thanks the grugq).
+
+It's now possible to use eventlet's SSL client to talk to eventlet's SSL server. (Thanks to Ryan Williams)
+
+Fixed a major CPU leak when using select hub. When adding a descriptor to the hub, entries were made in all three dictionaries, readers, writers, and exc, even if the callback is None. Thus every fd would be passed into all three lists when calling select regardless of whether there was a callback for that event or not. When reading the next request out of a keepalive socket, the socket would come back as ready for writing, the hub would notice the callback is None and ignore it, and then loop as fast as possible consuming CPU.
+
+0.6.x
+=====
+
+Fixes some long-standing bugs where sometimes failures in accept() or connect() would cause the coroutine that was waiting to be double-resumed, most often resulting in SwitchingToDeadGreenlet exceptions as well as weird tuple-unpacking exceptions in the CoroutinePool main loop.
+
+0.6.1: Added eventlet.tpool.killall. Blocks until all of the threadpool threads have been told to exit and join()ed. Meant to be used to clean up the threadpool on exit or if calling execv. Used by Spawning.
+
+0.5.x
+=====
+
+"The Pycon 2008 Refactor": The first release which incorporates libevent support. Also comes with significant refactoring and code cleanup, especially to the eventlet.wsgi http server. Docstring coverage is much higher and there is new extensive documentation: http://wiki.secondlife.com/wiki/Eventlet/Documentation
+
+The point releases of 0.5.x fixed some bugs in the wsgi server, most notably handling of Transfer-Encoding: chunked; previously, it would happily send chunked encoding to clients which asked for HTTP/1.0, which isn't legal.
+
+0.2
+=====
+
+Initial re-release of forked linden branch.

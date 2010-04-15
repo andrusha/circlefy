@@ -16,7 +16,7 @@ class settings extends Base{
 
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
-		$this->page_name = "settings";
+		$this->page_name = "about_me";
 		$this->need_login = 1;
 		$this->need_db = 1;
 

@@ -71,6 +71,14 @@
 			.panel input {
 				float: none;
 				margin-left: 15px; margin-right: 140px; }
+		
+		#profile input.check, .panel input.check {
+			float: none;
+			margin: 0;
+			width: auto;
+			border: auto;
+			padding: 0;
+		}
 
 		.panel .input-err {
 			background: #fdebeb; }

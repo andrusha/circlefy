@@ -26,10 +26,29 @@ class people extends Base{
 		$this->db_class_mysql->set_query('SELECT t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid='.$uid,
                         'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                         $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
-
 		$this->set($groups_you_are_in,'your_groups');
 
-	
+		$track_count = <<<EOF
+		SELECT COUNT(*) AS count FROM friends AS f WHERE f.uid = {$uid}
+EOF;
+		$tracked_count = <<<EOF
+		SELECT COUNT(*) AS count FROM friends AS f WHERE f.fuid = {$uid}
+EOF;
+
+		$this->db_class_mysql->set_query($track_count,'tracked_count',"Counts # of users tracking you");
+                $tracked_count_res = $this->db_class_mysql->execute_query('tracked_count');
+		$tracked_count_res = $tracked_count_res->fetch_assoc();
+		$this->set($tracked_count_res['count'],'tracked_count');
+
+		$this->db_class_mysql->set_query($tracked_count,'track_count',"Counts # of users you are tracking");
+                $track_count_res = $this->db_class_mysql->execute_query('track_count');
+		$track_count_res = $track_count_res->fetch_assoc();
+		$this->set($track_count_res['count'],'track_count');
+
+		
+
+
+		if(!$_GET['q'])	
 		$query[0] = <<<EOF
 		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1 
 		LEFT JOIN 
@@ -40,24 +59,26 @@ class people extends Base{
 		WHERE t1.uid = {$uid} GROUP BY t1.fuid;
 EOF;
 
+		if($_GET['q'])	
                 $query[1] = <<<EOF
-		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1 
-		LEFT JOIN 
+		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1
+		LEFT JOIN
 		(
-		 SELECT uid,mid,chat_text FROM special_chat AS t4 ORDER BY mid DESC 
+		SELECT uid,mid,chat_text FROM special_chat AS t4 ORDER BY mid DESC
 		) AS t4_sub ON t4_sub.uid = t1.uid
-		JOIN login AS t2 ON t1.uid = t2.uid 
+		JOIN login AS t2 ON t1.uid = t2.uid
 		WHERE t1.fuid = {$uid} GROUP BY t1.uid;
 EOF;
 
 foreach($query as $k_query => $v_query){
 		 //Reset $res encase next iteration is blank and the variable is cleared , this is because the output layer ( html_1 ) will hold $res if it's not cleared
 		 $res = '';
+		 $ids = '';
 		 $this->db_class_mysql->set_query($query[$k_query],'find_users',"Updating a users alert settings on his profile");	
 		 $search_people = $this->db_class_mysql->execute_query('find_users');
 				 if($search_people->num_rows > 0){
                                                 while($search_res = $search_people->fetch_assoc()){
-                                                        $uid = $search_res['uid'];
+                                                        $fuid = $search_res['uid'];
                                                         $uname = $search_res['uname'];
                                                         $fname = $search_res['fname'];
                                                         $lname =  $search_res['lname'];
@@ -67,8 +88,8 @@ foreach($query as $k_query => $v_query){
 							if(!$last_chat)
                                                                 $last_chat = "*This user has not tap'd yet*";
 
-                                                        $friend_data[$uid] = array(
-                                                        'uid' => $uid,
+                                                        $friend_data[$fuid] = array(
+                                                        'fuid' => $fuid,
                                                         'uname' => $uname,
                                                         'fname' => $fname,
                                                         'lname' => $lname,
@@ -77,7 +98,7 @@ foreach($query as $k_query => $v_query){
                                                         'groups' => null,
                                                         'friend' => null
                                                         );
-                                                        $ids .= $uid.',';
+                                                        $ids .= $fuid.',';
                                                 }
                                                         $ids = substr($ids,0,-1);
 
@@ -89,14 +110,14 @@ EOF;
                                                 $this->db_class_mysql->set_query($group_query,'users_groups',"Finds all of the group a specific user is in");
                                                 $search_groups = $this->db_class_mysql->execute_query('users_groups');
                                                 while($res = $search_groups->fetch_assoc()){
-                                                        $uid = $res['uid'];
-							if($c[$uid])$c[$uid]++; else $c[$uid] = 1;
-							if($c[$uid] > 3) continue;
+                                                        $fuid = $res['uid'];
+							if($c[$fuid])$c[$fuid]++; else $c[$fuid] = 1;
+							if($c[$fuid] > 3) continue;
 
                                                         $gname = $res['gname'];
                                                         $gid = $res['gid'];
                                                         $symbol = $res['symbol'];
-                                                        $friend_data[$uid]['groups'][$gid] = array(
+                                                        $friend_data[$fuid]['groups'][$gid] = array(
                                                         'gid' => $gid,
                                                         'gname' => $gname,
                                                         'symbol' => $symbol

@@ -39,11 +39,12 @@ $type = $_POST['type'];
 $search = $_POST['search'];
 $outside = $_POST['outside'];
 $flag = $_POST['flag'];
+$more = $_POST['more'];
 $id = $_POST['id'];
 
 if(isset($type)){
    	$filter_function = new filter_functions();
-        $json = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag);
+        $json = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag,$more);
         echo $json;
 }
 
@@ -53,20 +54,26 @@ class filter_functions{
                 private $mysqli;
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
                 private $results;
+		private $more = False;
 
         function __construct(){
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
-	function filter($type,$search,$outside,$o_filter,$id,$flag){
+	function filter($type,$search,$outside,$o_filter,$id,$flag,$more){
+		if($more)
+			$this->more = $more;
+
 		if(!$outside)
-			$outside="2";
+			$outside="1,2";
 
 		$type = $this->mysqli->real_escape_string($type);
 		$id = $this->mysqli->real_escape_string($id);
 		$search = $this->mysqli->real_escape_string($search);
 		$outside = $this->mysqli->real_escape_string($outside);
 
+		if($type == 50)
+			$mysql_obj = $this->direct_filter($outside,$search,$o_filter);
 		if($type == 11)
 			$mysql_obj = $this->aggr_group_filter($outside,$search,$o_filter);
 		if($type == 100)
@@ -80,12 +87,33 @@ class filter_functions{
 		if($type == 3)
 			echo "Filter Function";
 
+
 		if($mysql_obj->num_rows > 0)
 			$data = $this->create_filter($mysql_obj);	
 		else
 			return json_encode(array('results' => False,'data' => False));
 	
 		return json_encode(array('results' => True,'data'=> $data ));
+	}
+	
+	private function direct_filter($outside,$search,$o_filter){
+		$uid = $_SESSION['uid'];
+		$outside = NULL;
+                if($search)
+                        $search_sql =  "AND chat_text LIKE '%{$search}%'";
+
+                        $get_groups_bits_query = <<<EOF
+                        SELECT
+                        scm.mid FROM special_chat_meta AS scm
+                        JOIN special_chat AS scj
+                        ON scj.mid = scm.mid
+                        WHERE  scm.uid IN ( {$uid} ) AND connected is NULL
+                        {$search_sql}
+                        GROUP BY mid ORDER BY mid DESC LIMIT 10
+EOF;
+
+                $mysql_obj = $this->mysqli->query($get_groups_bits_query);
+                return $mysql_obj;
 	}
 
 	private function personal_filter($search,$responses,$uid=null){
@@ -178,6 +206,8 @@ EOF;
 	}
 
 	private function ind_group_filter($gid,$outside,$search,$o_filter) {
+		if($this->more)
+			$more = $this->more.',';
 		if($search)
 			$search_sql =  "AND chat_text LIKE '%{$search}%'";
 
@@ -186,7 +216,6 @@ EOF;
 				$o_filter_list = $o_gid.',';
 
 			$o_filter_list = substr($o_filter_list,0,-1);
-	                //$o_filter_sql = " AND scm.gid IN({$o_filter_list})";
 
 			$get_group_bits_query = <<<EOF
 			SELECT
@@ -199,10 +228,11 @@ EOF;
 			WHERE scm.gid = {$gid} AND scm.connected IN ({$outside}) AND scm2.mid = scm.mid
 			AND scm2.gid IN ({$o_filter_list})
 			{$search_sql}
+			LIMIT {$more}10
 EOF;
 
 		} else { 
-
+		
 			$get_group_bits_query = <<<EOF
 			SELECT
 			scj.chat_text,scm.mid FROM special_chat_meta AS scm
@@ -210,7 +240,7 @@ EOF;
 			ON scj.mid = scm.mid 
 			WHERE scm.gid = {$gid} AND scm.connected IN ({$outside}) 
 		 	{$search_sql}	
-			GROUP BY mid ORDER BY mid DESC LIMIT 10
+			GROUP BY mid ORDER BY mid DESC LIMIT {$more}10
 EOF;
 		}
 		
@@ -223,24 +253,38 @@ EOF;
 		$uid = $_SESSION['uid'];
 		if(!$uid)
 			$uid=0;
-		
+
+		$limit = '10';
 
 		$return_list = $this->get_unique_id_list($mysql_obj);
 		$mid_list = $return_list['mid_list'];
 
 		$group_query_bits_info = <<<EOF
-		SELECT t4.mid,TEMP_ON.online AS user_online,TAP_ON.count AS viewer_count,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-		JOIN special_chat as t3
-		ON t3.uid = t2.uid
+		SELECT
+			good.mid as good_id,
+			TEMP_ON.online AS user_online,
+			TAP_ON.count AS viewer_count,
+			sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+			l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
+			g.favicon,g.gname,g.symbol,
+			scm.gid,scm.connected
+		FROM login AS l
+		JOIN special_chat as sc
+			ON sc.uid = l.uid
 		LEFT JOIN (
-		SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$uid}
-		) AS t4
-		ON t4.mid = t3.cid
+			SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$_SESSION['uid']}
+		) AS good
+			ON good.mid = sc.cid
 		LEFT JOIN TAP_ONLINE AS TAP_ON
-		ON t3.mid = TAP_ON.cid
+			ON sc.mid = TAP_ON.cid
 		LEFT JOIN TEMP_ONLINE AS TEMP_ON
-		ON t3.uid = TEMP_ON.uid
-		WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
+			ON sc.uid = TEMP_ON.uid
+		LEFT JOIN special_chat_meta AS scm
+			ON scm.mid = sc.cid
+		JOIN groups AS g
+			ON scm.gid = g.gid
+		WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
+		ORDER BY sc.cid DESC LIMIT 10
 EOF;
 
 		$m_results = $this->mysqli->query($group_query_bits_info);
@@ -248,24 +292,31 @@ EOF;
 		if($m_results->num_rows)
 			while($res = $m_results->fetch_assoc()){
 				//Setup
-				$mid = $res['mid'];
-				$special = $res['special'];
-				$chat_timestamp = $res['chat_timestamp'];
-				$cid = $res['cid'];    
-				$chat_text = $res['chat_text'];
-				$uname = $res['uname'];
-				$fname = $res['fname'];
-				$lname  = $res['lname'];
-				$pic_100 = $res['pic_100'];
-				$pic_36 = $res['pic_36'];
-				$viewer_count = $res['viewer_count'];
-				$user_online = $res['user_online'];
-				$uid = $res['uid'];
+                                $mid = $res['mid'];
+                                $special = $res['special'];
+                                $chat_timestamp = $res['chat_timestamp'];
+                                $cid = $res['cid'];
+                                $chat_text = $res['chat_text'];
+                                $uname = $res['uname'];
+                                $fname = $res['fname'];
+                                $lname  = $res['lname'];
+                                $pic_100 = $res['pic_100'];
+                                $pic_36 = $res['pic_36'];
+                                $viewer_count = $res['viewer_count'];
+                                $user_online = $res['user_online'];
+                                $uid = $res['uid'];
+                                $gid = $res['gid'];
+                                $favicon = $res['favicon'];
+                                $gname = $res['gname'];
+                                $symbol = $res['symbol'];
+                                $connected = $res['connected'];
+
 
 				//Process
 				$chat_timestamp_raw = $chat_timestamp;
 				$chat_timestamp = $this->time_since($chat_timestamp);
 				$chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
+                                $chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $chat_text);
 				$chat_text = stripslashes($chat_text);
 				if($viewer_count)
                                         $viewer_count = $viewer_count;
@@ -276,23 +327,29 @@ EOF;
 	
 				//Store
 				$messages[$cid] = array(
-				'mid' => 	  $mid,
-				'special'=>       $special,
-				'chat_timestamp'=>$chat_timestamp,
-				'chat_timestamp_raw'=>$chat_timestamp_raw,
-				'cid'=>           $cid,
-				'chat_text'=>     $chat_text,
-				'uname'=>         $uname,
-				'fname'=>         $fname,
-				'lname'=>         $lname,
-				'pic_100'=>       $pic_100,
-				'pic_36'=>        $pic_36,
-				'uid'=>           $uid,
-				'viewer_count'=>  $viewer_count,
-				'user_online'=>     $user_online,
-				'last_resp'=>	  null,
-				'resp_uname'=>	  null,
-				'count'=>	  0
+				'mid' =>           $mid,
+                                'special'=>       $special,
+                                'chat_timestamp'=>$chat_timestamp,
+                                'chat_timestamp_raw'=>$chat_timestamp_raw,
+                                'cid'=>           $cid,
+                                'chat_text'=>     $chat_text,
+                                'uname'=>         $uname,
+                                'fname'=>         $fname,
+                                'lname'=>         $lname,
+                                'pic_100'=>       $pic_100,
+                                'pic_36'=>        $pic_36,
+                                'uid'=>           $uid,
+                                'gid'=>           $gid,
+                                'favicon'=>           $favicon,
+                                'gname' =>              $gname,
+                                'symbol' =>              $symbol,
+                                'connected'=>           $connected,
+                                'viewer_count'=>     $viewer_count,
+                                'user_online'=>     $user_online,
+                                'last_resp'=>     null,
+                                'resp_uname'=>    null,
+                                'count'=>         0
+
 				);
 			}
 
@@ -380,7 +437,7 @@ EOF;
 		$seconds2 = $chunks[$i + 1][0];
 		$name2 = $chunks[$i + 1][1];
 
-		// add second item if it's greater than 0
+		// dd second item if it's greater than 0
 		if (($count2 = floor(($since - ($seconds * $count)) / $seconds2)) != 0) {
 		    $print .= ($count2 == 1) ? ', 1 '.$name2 : ", $count2 {$name2}s";
 		}

@@ -52,15 +52,39 @@ class assoc_functions{
                                 WHERE t2.uname LIKE '{$search}%'
 			LIMIT 5
 			) ORDER BY connected ASC;*/
+                	$search = $this->mysqli->real_escape_string($search);
+
+		
+			$full_search = $search;	
+			$search = explode(' ',$search);	
+
+			$discard_list = array(
+				'help','discussion','chat','support', 'assistance','channel','chatroom','room','topic','description','talk','chatting','chatter',
+				'suppor','channe','roo','discuss','discussi','discussio','discus','discu','suppo','supp','cha','chatroo','chatro','chatr','chan',
+				'helpchat','helpsupport','helpchannel',
+				'-',',','*','!','@','#','##','###','^','(',')','.','?'
+			);
+
+			foreach($search as $term){
+				if(in_array($term,$discard_list,true) )
+					continue;
+				$keyterms .= "$term%";
+			}
+			$terms = "gname LIKE '$keyterms' OR ";
+			$search = $search[0];
+
+			$keyword_search = $search;
 			$create_assoc_query = <<<EOF
-				SELECT t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.count FROM 
-				( SELECT * FROM groups WHERE gname LIKE '{$search}%' OR symbol LIKE '{$search}%' ) AS t1
+				SELECT t1.favicon as pic_36,t1.descr,t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.count FROM 
+				( SELECT * FROM groups WHERE (gname LIKE '{$full_search}' OR {$terms} symbol LIKE '{$keyterms}%' ) AND connected != 2) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
 				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
 				LEFT JOIN GROUP_ONLINE AS t4 ON t4.gid=t2.gid
 				GROUP BY t2.gid
+				ORDER BY name ASC
 			LIMIT 10
 EOF;
+	//echo $create_assoc_query;
 		} 
 
 		if($search != '' && $symbol == '@'){
@@ -119,15 +143,19 @@ EOF;
 					$symbol = $res['symbol'];
 					$type = $res['connected'];
 					$online = $res['count'];
-					if($online == 0){
+					$total = $res['members'];
+					$descr = substr($res['descr'],0,45);
+					$group_img = $res['pic_36'];
+					/*if($online == 0){
 						$online_class = 'offline';
-						$online = 'offline';
+#						$online = 'offline';
+						$online = '';
 						$online_count = '';
 					} else { 
 						$online_class = 'online';
 						$online_count = "($online)";
 						$online = "online ($online)";
-					} 
+					} */
 					$sc = strpos('x,'.$my_groups.',',','.$id.',');	
 					if($sc)
 						$my_group = 1;
@@ -138,22 +166,22 @@ EOF;
 
 					if($type == 99){
 						$type_display = "<img src='images/icons/user_suit.png' /><span class='online $online_class'>".$online."</span>";
-						$bullet_display = "<img src='images/icons/user_suit.png' /> $bullet_name $online_count"; 
+						$bullet_display = "<img src='images/icons/user_suit.png' /> $bullet_name"; 
 						}
-					if($type == 0){
-						$type_display = "<img src='images/icons/group.png' /><span class='online $online_class'>".$online."</span>";
-						$bullet_display = "<img src='images/icons/group.png' /> $bullet_name $online_count"; 
+					if($type == 0 || $type == 3){
+						$type_display = "<img class='auto-img' src='group_pics/$group_img' /><span class='online $online_class'></span><span class='auto-descr'>$descr...</span>";
 						}
 					if($type == 2){
 						$type_display = "<img src='images/icons/building.png' /><span class='online $online_class'>".$online."</span>";
-						$bullet_display = "<img src='images/icons/building.png' /> $bullet_name $online_count"; 
+						$bullet_display = "<img src='images/icons/building.png' /> $bullet_name"; 
 						}
 					if($type == 1){
 						$type_display = "<img src='images/icons/book_open.png' /><span class='online $online_class'>".$online."</span>";
-						$bullet_display = "<img src='images/icons/book_open.png' /> $bullet_name $online_count $my_group"; 
+						$type_display = "<img class='auto-img' src='group_pics/$group_img' /><span class='online $online_class'>".$online."</span><span class='auto-descr'>$descr...</span>";
+						$bullet_display = "<img src='images/icons/book_open.png' /> $bullet_name"; 
 					}
 
-				 	$response[] = array($name,"$name:$symbol:$type:$id",$bullet_display,"$name $type_display",$my_group);
+				 	$response[] = array($name,"$name:$symbol:$type:$id:$online:$total:$id",$bullet_display,"$type_display",$my_group);
 				}
 
 			} elseif($search != '') { 

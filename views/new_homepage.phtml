@@ -6,12 +6,11 @@ function map_clean($func, $arr) {
 // Taps
 $last = (!empty($_t['last_tap'])) ? $_t['last_tap'][0] : null;
 
-$inits = array();
-$people = array();
+$inits = array(); $people = array();
 if (is_array($_t['groups_bits'])) {
 	function get_cids($bit) { return $bit['cid']; }
 	$inits = map_clean("get_cids", $_t['groups_bits']);
-	
+
 	function get_uids($bit) { return $bit['uid']; }
 	$people = map_clean("get_uids", $_t['groups_bits']);
 }
@@ -25,500 +24,275 @@ if (is_array($_t['active_convos'])) {
 $groups = array(); $groups_online = array();
 if (is_array($_t['your_groups'])) {
 	function get_gids($bit) { return $bit['gid']; }
-	$groups = map_clean("get_gids", $_t['your_groups']);
+	//$groups = map_clean("get_gids", $_t['your_groups']);
+
+	$count=0;
+	foreach($_t['your_groups'] as $k => $v){
+		$groups[$count] = $k;
+		$count++;
+	}
 	foreach ($_t['your_groups'] as $group){
 		$groups_online[$group['gid']] = $group['online_count'];
 	}
 }
+
+$_SESSION['upic'] = $_t['user_pic_100'];
+
+$all_your_groups_topic = "Aggregate feed of all of the groups";
+$public_groups_topic = "Your public space";
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!doctype html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="Content-Language" content="EN" />
-<meta name="ROBOTS" content="ALL" />
-<meta name="Copyright" content="Copyright (c) 2009 TAP" />
-<meta http-equiv="imagetoolbar" content="false" />
-<meta name="description" content="TAP communication platform" />
-<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-<title>tap - alpha</title>
-<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/homepage.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/TextboxList.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/TextboxList.Autocomplete.css" type="text/css" />
-<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
-<script type="text/javascript"src="/views/javascript/mootools-1.2.3.1-more.js"></script>
-<script type="text/javascript" src="/views/javascript/textboxlist-complete.js"></script>
-<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
-<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
-<script type="text/javascript">
-Tap = window.Tap || {};
-Tap.Vars = {
-	pcid: "<?= $_t['pcid'] ?>".toInt(),
-	uname: "<?= $_SESSION['uname'] ?>",
-	currentTap: "<?= $last['cid'] ?>".toInt(),
-	currentStream: JSON.decode('<?= json_encode($inits) ?>'),
-	activeConvos: JSON.decode('<?= json_encode($convos) ?>'),
-	people: JSON.decode('<?= json_encode($people) ?>'),
-	groups: JSON.decode('<?= json_encode($groups) ?>'),
-	groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>')
-};
-// <?= $_GET['page'] ?>
-</script>
-<script type="text/javascript" src="/views/javascript/tap.push.js"></script>
-<script type="text/javascript" src="/views/javascript/tap.home.js"></script>
-<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
-<script type="text/javascript">
-// Metrics
-try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) }
-window.addEvent('domready', function(){
-/*
-	$(document.body).addEvents({
-		'click:relay(a.suggestion-item)': function(e){
-			e.stop();
-			var self = this;
-			mpmetrics.track('trending-click', {'group': this.getElement('strong').get('text')}, function(){
-				window.location = self.get('href');
-			});
-		},
-		'click:relay(li.group a)': function(){
-			var self = this;
-			var id = this.get('id');
-			if (!id) return;
-			mpmetrics.track('feed-change', {
-				'group': (function(){
-					if (id === 'gid_all') return 'All Groups';
-					return self.getElement('a').get('title');
-				})()
-			});
-		}
-	});*/
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="uid" content="<?= $_t['pcid'] ?>" />
+	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
+	<title>tap - home</title>
+	<? echo $_t['your_groups']['favicon'] ?>
+	
 
-
-	Tap.Home.addEvents({
-		'sendTap': function(number){
-			mpmetrics.track('send-tap', {
-				'type': number !== 0 ? 'private' : 'public',
-				'groups': number
-			});
-		},
-		'loadResponses': function(){
-			mpmetrics.track('view-responses', {});
-		},
-		'sendResponse': function(){
-			mpmetrics.track('send-responses', {});
-		},
-		'searchFeed': function(keyword){
-			mpmetrics.track('search-feed', {'keyword': keyword});
-		}
-	});
-});
-</script>
+	 <link rel="shortcut icon" href="http://mark.tap.info/group_pics/default.ico" />
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+	<!-- // <script type="text/javascript" src="/assets.php?type=javascript&amp;package=mootools"></script> -->
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript">
+		window._vars = {
+			uid: "<?= $_t['pcid'] ?>",
+			uname: "<?= $_SESSION['uname'] ?>",
+			stream: JSON.decode('<?= json_encode($inits) ?>'),
+			convos: JSON.decode('<?= json_encode($convos) ?>'),
+			people: JSON.decode('<?= json_encode($people) ?>'),
+			groups: JSON.decode('<?= json_encode($groups) ?>'),
+			groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>')
+		};
+	</script>
+	<!-- <script type="text/javascript" src="/assets.php?type=javascript&amp;package=home"></script> -->
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript" src="/views/scripts/push.js"></script>
+	<script type="text/javascript" src="/views/scripts/home.js"></script>
 </head>
-
 <body>
+	<div id="wrapper">
 
-	<? include(HEADER_CLEAN); ?>
+		<?include(HEADER)?>
 
-	<!--
-	<div id="tap-feed-outside-more">
-		<p style="margin-bottom:5px">Allow messages from this groups:</p>
-		<p>
-			<input type="text" name="outside-from" alt="Choose sources.." />
-		</p>
-		<p style="clear:both;">
-			<a href="#" id="tap-feed-outside-set">Save</a>
-		</p>
-	</div>
-	-->
+		<div id="main">
 
-	<div id="main">
+			<div id="sidebar">
 
-		<div id="sidebar-left" class="sidebar">
-			<div id="groups" class="section">
-				<div class="section-head section-head-home">
-					<h1>Popular Groups</h1>
+				<div id="you" class="section container">
+					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
+					<p class="special">
+						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
+					</p>
+					<p>
+						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+						<a href="/settings">settings</a>
+						<a href="/?logout=true">logout</a>
+					</p>
 				</div>
-				<div class="section-body">
-					<ul class="suggested-groups">
-						<?php foreach($_t['trending_groups'] as $random): ?>
-						<li class="list-item">
-							<p class="name">
-								<a class="suggestion-item" title="<?= $random['gname'] ?>" href="/group/<?= $random['symbol'] ?>">
-								<img src="/group_pics/<?= $random['pic_36'] ?>">
-								<?php
-									$gname = $random['gname'];
-									echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
-								?>
-								</a>
-							</p>
-							<p class="focus"><?= $random['count'] ?> Taps</p>
+				
+				<div id="filter" class="section">
+					<p class="inblock ellipsis">search <span class="title">all your groups</span> <a href="#" class="clear">clear</a></p>
+					<input id="filterkey" type="text" class="basic" />
+				</div>
+
+				<div id="lists" class="section container">
+					<a id="tab-groups" data-name="groups" title="groups" class="tab selected" href=""></a>
+					<a id="tab-convos" data-name="convos" title="convos" class="tab" href=""></a>
+					<a id="tab-people" data-name="people" title="contacts" class="tab" href=""></a>
+					<a id="tab-direct" data-name="direct" title="messages" class="tab" href=""></a>
+					<h2>
+						<a id="list-action" href="/groups">create new</a>
+						<span id="tab-name">groups</span>
+					</h2>
+					<ul id="panel-groups" class="panel selected"
+						data-action="manage" data-action-href="/groups" data-name="groups">
+						<li id="gid_public" class="panel-item" 
+							data-topic="<?= $public_groups_topic ?>"
+							data-id="public" data-name="Public Taps">
+							<span class="count"></span>
+							<a href="#" class="names inblock ellipsis">public</a>
+						</li>
+						<li id="gid_all" class="selected panel-item" 
+							data-topic="<?= $all_your_groups_topic ?>"
+							data-id="all" data-name="All Your Groups">
+							<span class="count"></span>
+							<a href="#" class="names inblock ellipsis">all your groups</a>
+						</li>
+						<?php foreach ($_t['your_groups'] as $group): ?>
+						<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
+							data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
+							data-symbol="<?= $group['symbol'][0] ?>"
+							data-topic="<?= $group['topic']?>"
+							data-online_count="<?= $group['online_count'] ?>"
+							data-total_count="<?= $group['total_count'] ?>"
+							<?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
+							<span class="count"></span>
+							<a href="#" class="names inblock ellipsis" 
+								alt="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>"
+								title="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>">
+								<?= ($group['admin'] ? '&#10070; ' : '') ?>
+								<?= strtolower($group['display_symbol']) ?>
+							</a>
+							<span class="favicon">
+								<span class="online-group-count" title="number of users online"><?=$group['online_count']?></span>
+								<img class="favicon-img" src="/group_pics/<?=$group['favicon'];?>" />
+							</span>	
 						</li>
 						<?php endforeach; ?>
-						<li class="list-item create-link">
-							<strong><a class="side-link" href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
-						</li>
 					</ul>
-					<div class="clarity"></div>
-				</div>
-			</div>
-		</div>
-
-		<div id="content">
-			
-			<div id="tap-box" class="section">
-				<div id="tap-box-counter">240</div>
-				<input type="text" id="tap-box-msg" maxlength="240" alt="Start tapping by writing a message here." />
-				<div id="tap-box-more">
-					<input type="text" id="tap-box-people" alt="Add some groups who'll receive your tap!" />
-					<a id="tap-box-send" href="#">tap!</a>
-					<div class="clarity"></div>
-				</div>
-			</div>
-
-			<div id="tap-yours" class="section">
-				<div class="section-head">
-					<h1>
-						Your Last Tap
-					</h1>
-				</div>
-				<div class="section-body feed">
-					<ul id="your-stream" class="tap-stream">
-						<?php if ($last == null): ?>
-						<li class='welcome_tap'>
-							<h1>Welcome To Tap!</h1>
-							<p>Tap allows you to connect with people around you and stay informed about topics you're interested in.</p>
-							<p></p>
-							<p>You can start by updating your <a href="/profile"><strong>profile pic</strong></a>, joining a <a href="/groups"><strong>group</strong></a>, or you can send a tap right now using the TapBox above. If you get stuck, check out the <a href="/help"><strong>Help</strong></a> section, or send a tap to <strong>Support</strong>.</p>
-							<p><strong>Keep on tapping!</strong></p>
-						</li>
-						<?php else: ?>
-						<li id="yid_<?= $last['cid'] ?>">
-							<img src="/user_pics/<?= $last['pic_100'] ?>" class="avatar" title="<?= $last['uname'] ?>" alt="<?= $last['uname'] ?>" rel="<?= $last['uid'] ?>" />
-							<div class="tap-actions">
-								<span class="tap-views">Viewers: 
-									<strong>
-									<?= (!empty($last['viewer_count'])) ? $last['viewer_count'] : '0' ?>
-									</strong>
-								</span>
-								<a class="tap-respond <?= empty($last['count']) ? 'noresp' : '' ?>" href="#">
-									Respond <span class="tap-respond-count">(<?= $last['count'] ?>)</span>
-								</a>
-								<p class="tap-respond-last <?= empty($last['count']) ? 'noresp' : '' ?>">
-									<strong>
-										<?= (!empty($last['resp_uname'])) ? $last['resp_uname'] . ":" : "" ?>
-									</strong>
-									<span>
-										<?php
-											$last_rep = $last['last_resp'];
-											echo (strlen($last_rep) < 70) ? $last_rep : substr($last_rep, 0, 70) . '...';
-										?>
-									</span>
-								</p>
-							</div>
-							<div class="tap-body">
-								<p class="tap-info">
-									<span class="tap-from">
-										<a href="/user/<?= $last['uname'] ?>" title="">
-										<?= $last['fname'] . " " . $last['lname'] ?>
-										</a>
-										<img src="/images/icons/bullet_green.png" title="User Online" alt="User Online" class="online-indicator uol_<?= $last['uid'] ?>" />
-									</span>
-									<a href="/tap/<?= $last['cid'] ?>">
-										<span class="tap-time <?= $last['chat_timestamp_raw'] ?>"><?= $last['chat_timestamp'] ?></span>
-									</a>
-									<span class="tap-typing"></span>
-								</p>
-								<p>
-									<span class="tap-msg"><?= $last['chat_text'] ?></span>
-								</p>
-							</div>
-							<div class="tap-response-box clarity">
-								<div class="tap-response-counter">240</div>
-								<ul class="tap-chat <?= empty($last['count']) ? 'noresp' : '' ?>">
-								</ul>
-								<input type="text" class="tap-response" style="width:420px" maxlength="240" alt="Respond to this tap." />
-								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
-							</div>
-							<div class="clarity"></div>
-						</li>
-						<?php endif; ?>
-					</ul>
-				</div>
-			</div>
-
-			<div id="tap-feed" class="section">
-				<div class="section-head">
-					<h1>
-						<input type="text" id="tap-feed-search" alt="Search through feed." />
-						<!-- <span id="tap-feed-outside-drop"></span> -->
-						<!-- <span id="tap-feed-outside">Outside: Off</span> -->
-						<span id="taps-responded">Taps You've Responded To</span>
-						<span class="right-clarity"></span>
-						<img id="tap-feed-icon" src="/group_pics/36wh_default_group.gif" />
-						<span id="tap-feed-name">Groups Feed</span>
-						<img src="/images/loading.gif" id="loading-indicator" />
-					</h1>
-				</div>
-				<div class="section-body feed">
-					<div id="tap-notify"></div>
-					<ul id="main-stream" class="tap-stream">
+					<ul id="panel-convos" class="panel" data-name="convos">
 						<?php
-							if (!empty($_t['groups_bits'])):
-								foreach($_t['groups_bits'] as $bit):
+							if (!empty($_t['active_convos'])):
+								$active_convos = array_reverse($_t['active_convos']);
+								foreach ($active_convos as $convo):
 						?>
-						<li id="tid_<?= $bit['cid'] ?>">
-							<img src="/user_pics/<?= $bit['pic_100'] ?>" class="avatar" alt="<?= $bit['uname'] ?>" rel="<?= $bit['uid'] ?>" />
-							<div class="tap-actions">
-								<span class="tap-views">Viewers: 
-									<strong>
-									<?= (!empty($bit['viewer_count'])) ? $bit['viewer_count'] : '0' ?>
-									</strong>
-								</span>
-								<a class="tap-respond <?= empty($bit['count']) ? 'noresp' : '' ?>" href="#">
-									Respond <span class="tap-respond-count">(<?= $bit['count'] ?>)</span>
-								</a>
-								<p class="tap-respond-last <?= empty($bit['count']) ? 'noresp' : '' ?>">
-									<strong>
-										<?= (!empty($bit['resp_uname'])) ? $bit['resp_uname'] . ":" : "" ?>
-									</strong>
-									<span>
-										<?php
-											$last_rep = $bit['last_resp'];
-											echo (strlen($last_rep) < 70) ? $last_rep : substr($last_rep, 0, 70) . '...';
-										?>
-									</span>
-								</p>
-							</div>
-							<div class="tap-body">
-								<p class="tap-info">
-									<span class="tap-from">
-										<a href="/user/<?= $bit['uname'] ?>" title="">
-										<?= $bit['fname'] . " " . $bit['lname'] ?>
-										</a>
-										<img 
-											src="/images/icons/bullet_<?= $bit['uid'] == $_SESSION['uid'] || $bit['user_online'] ? 'green' : 'white'  ?>.png" 
-											alt="User <?= $bit['uid'] == $_SESSION['uid'] || $bit['user_online'] ? 'Online' : 'Offline'  ?>" 
-											class="online-indicator uol_<?= $bit['uid'] ?>" 
-										/>
-									</span>
-									<a href="/tap/<?= $bit['cid'] ?>">
-										<span class="tap-time <?= $bit['chat_timestamp_raw'] ?>"><?= $bit['chat_timestamp'] ?></span>
-									</a>
-									<span class="tap-typing"></span>
-								</p>
-								<p>
-									<span class="tap-msg"><?= $bit['chat_text'] ?></span>
-								</p>
-							</div>
-							<div class="tap-response-box clarity">
-								<div class="tap-response-counter"></div>
-								<ul class="tap-chat <?= empty($bit['count']) ? 'noresp' : '' ?>">
-								</ul>
-								<input type="text" class="tap-response" maxlength="240" alt="Respond to this tap." />
-								<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
-							</div>
-							<div class="clarity"></div>
+						<li id="cid_<?= $convo['mid'] ?>" class="new panel-item" 
+							data-id="<?= $convo['mid'] ?>" data-user="<?= $convo['uname'] ?>">
+							<span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
+							<p class="from inblock">
+								<img class="active-convo-pic" src="/user_pics/<?=$convo['small_pic']?>" /> 
+									<span class="active-convo-uname"><?= $convo['uname'] ?></span>
+								<span class="new">*</span></p>
+							<p class="body ellipsis"><?= stripslashes($convo['chat_text']); ?></p>
 						</li>
+						<?php
+								endforeach;
+							endif;
+						?>
+					</ul>
+					<ul id="panel-people" class="panel"
+						data-action="add contacts" data-action-href="/people" data-name="people">
+						<li>All your people</li>
+						<?php if($_t['your_friends']) : ?>
+						<?php foreach ($_t['your_friends'] as $person): ?>
+							<a href="/user/<?=$person['friend_uname']?>" />
+							<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
+								title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">
+							</li>
+							</a>
 						<?php
 								endforeach;
 							else:
 						?>
-						<li class="noresults">
-							<p>This feed is too silent. Try sending a tap!</p>
-						</li>
-						<?php
-							endif;
-						?>
+							<li class="notify">You have no contacts</li>
+						<? endif; ?>
+						
+					</ul>
+					<ul id="panel-direct" class="panel" data-name="direct">
+						<li class="notify">You have no messages</li>
 					</ul>
 				</div>
-			</div>
-			
-		</div>
-		
-		<div id="sidebar-right" class="sidebar">
-			<div class="section-head-homepage">
-				<h1>Feeds</h1>
-			</div>
-			<div class="section">
-				<div id="home-section-body"  class="section-body">
-					<ul>
-						<li id="gid_public" class="group">
-							<span class="counter"></span>
-							<img src="/images/icons/transmit.png" />
-							<strong><a href="#" title="Public Feed">Public Taps</a></strong>
-						</li>
-						<li class="group">
-							<span class="counter"></span>
-							<img src="/images/icons/folder.png" />
-							<strong id="archived-taps"><a href="#" title="Archived taps">Archived Taps</a></strong>
-						</li>
-						<li id="gid_all" class="group selected">
-							<span class="counter"></span>
-							<img src="/images/icons/house.png" />
-							<strong><a href="#" title="Groups Feed">All Your Groups <span class="unread-counter">(0)</span></a></strong>
-						</li>
-						<?php foreach ($_t['your_groups'] as $group): ?>
-						<li id="gid_<?= $group['gid'] ?>" class="group">
-							<? if($group['type'] == 0): ?>
-							<img src="/images/icons/group.png" /> 
-							<? endif ?>
-							<? if($group['type'] == 1): ?>
-							<img src="/images/icons/book.png" /> 
-							<? endif ?>
-							<? if($group['type'] == 2): ?>
-							<img src="/images/icons/building.png" /> 
-							<? endif ?>
-							<? if($group['type'] == 3): ?>
-							<img src="/images/icons/rosette.png" /> 
-							<? endif ?>
 
-							<a href="#<?= $group['display_symbol'] ?>" grsymbol="<?= $group['symbol'][0] ?>" title="<?= $group['gname'] ?> (<?= $group['message_count'] ?>)"><?= $group['display_symbol'] ?> <span class="unread-counter">(0)</span></a>
-							<a class="add-tap-to" grtype="<?= $group['type'] ?>" href="#" title="Tap this group!">+</a>
-						</li>
-						<?php endforeach; ?>
-						<li class="create-link">
-							<span class="counter"></span>
-							<strong><a class="side-link" href="/groups" title="Create/Join New Groups">Create/Join New Groups</a></strong>
-						</li>
-					</ul>
-				</div>
 			</div>
-			
-			<div class="section">
-				<div class="section-head-homepage">
-					<h1>Active Convos</h1>
-				</div>
-				<div class="section-body">
-					<ul id="active-convos-list">
-						<?php 
-							if (!empty($_t['active_convos'])):
-								$active_convos = array_reverse($_t['active_convos']);
-								foreach ($active_convos as $convo): 
-						?>
-						<li id="aid_<?= $convo['mid'] ?>" class="convo">
-							<img src="/images/icons/comments.png"/>
-							<strong><a href="#" class="change-convo"><?= $convo['uname'] ?></a></strong>
-							<p class="resp-data">
+
+			<div id="content">
+
+				<form id="tapbox" action="" class="section active">
+					<div id="tapto">tap the public feed..</div>
+					<span class="counter">240</span>
+					<input id="taptext" tabindex="1" type="text">
+					<button id="tapsend" tabindex="3" type="submit" class="">tap!</button>
+				</form>
+
+				<div id="tapstream" class="section description">
+					<div class="header">
+						<a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
+						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">feed</span>
+						</h2>
+						<span class="stream-name">All Your Groups</span>
+					</div>
+					<div class="description"><?= $all_your_groups_topic ?></div>
+					<div class="body">
+						<ul id="taps" class="stream">
 							<?php
-								$chat_text = $convo['chat_text'];
-								echo stripslashes((strlen($chat_text) < 20) ? $chat_text : substr($chat_text, 0, 20) . '...');
-							?> 
-							(<span class="convo-count"><?= $convo['resp_count'] ?></span>)
-							<a href="#" class="remove-convo" title="Remove Conversation">&ndash;</a>
-							</p>
-							
-						</li>
-						<?php 
-								endforeach;
-							else: 
-						?>
-						<li class="no-convos">
-							<strong>No Active Conversations</strong>
-						</li>
-						<?php 
-							endif; 
-						?>
-					</ul>
+								if (!empty($_t['groups_bits'])):
+									foreach($_t['groups_bits'] as $tap):
+							?>
+							<li id="tid_<?= $tap['cid'] ?>" class="container" 
+								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $tap['user'] ?>">
+								<a href="/user/<?= $tap['uname'] ?>">
+									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
+								</a>
+								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '' : 'offline' ?>">
+									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['fname'] . " " . $tap['lname']) ?></a>,
+									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
+										<?= $tap['chat_timestamp'] ?>
+									</a>
+									<a href="/group/<?=$tap['symbol']?>" />
+										<img class="aggr-favicons" src="/group_pics/<?=$tap['favicon']?>" title="<?=$tap['gname']?>" />
+									</a>
+								</p>
+								<p class="tap-body">
+									<?= $tap['chat_text'] ?>
+								</p>
+								<p class="tap-actions">
+									<span class="tap-resp">
+										<span class="indicator">Someone's replying..</span>
+										<span class="last-resp">
+											<strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
+											<span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
+										</span>
+									</span>
+									<a href="#" class="tap-resp-count" title="view responses">
+										<span class="count">
+											<?= $tap['count'] ?>
+										</span>
+									</a>
+									<span class="tap-view-count count" title="viewers">
+										<?= (!empty($tap['viewer_count'])) ? $tap['viewer_count'] : '0' ?>
+									</span>
+								</p>
+								<div class="responses">
+									<ul class="chat">
+									</ul>
+									<input class="chatbox" type="text" />
+									<div class="counter">240</div>
+									<div class="overlay">type in your response and press enter.</div>
+								</div>
+							</li>
+							<?php
+									endforeach;
+								endif;
+							?>
+							<li class="loadmore">
+								<p>more...</p>
+							</li>
+						</ul>
+					</div>
 				</div>
-			</div>
-		</div>
-		
-	</div>
-	
-	<div id="templates">
-		<ul id="template-bit">
-			<# for (var x = this.reverse().length; x--;) { var bit = this[x]; #>
-			<li id="tid_<#: bit.cid #>">
-				<img src="/user_pics/<#: bit.pic_100 #>" class="avatar" alt="<#: bit.uname #>" rel="<#: bit.uid #>"  />
-				<div class="tap-actions">
-					<span class="tap-views">Viewers: 
-						<strong>
-							<#: bit.viewer_count || 0 #>
-						</strong>
-					</span>
-					<# if (bit.count) { #>
-					<a class="tap-respond" href="#">
-					<# } else { #>
-					<a class="tap-respond noresp" href="#">
-					<# } #>
-						Respond <span class="tap-respond-count">(<#: bit.count #>)</span>
-					</a>
-					<# if (bit.count) { #>
-					<p class="tap-respond-last">
-					<# } else { #>
-					<p class="tap-respond-last noresp">
-					<# } #>
-						<strong>
-							<#: bit.resp_uname ? bit.resp_uname + ":" : "" #>
-						</strong>
-						<# if (bit.last_resp) { #>
-							<#: ((bit.last_resp.length < 70) ? bit.last_resp : bit.last_resp.substring(0, 70) + "...").linkify() #>
-						<# } #>
-					</p>
-				</div>
-				<div class="tap-body">
-					<p class="tap-info">
-						<span class="tap-from">
-							<a href="/user/<#: bit.uname #>" title="">
-							<#: [bit.fname, bit.lname].join(" ") #>
-							</a>
-							<# if (bit.uid == "<?= $_SESSION['uid'] ?>" || bit.user_online == "1"){ #>
-							<img 
-								src="/images/icons/bullet_green.png" 
-								alt="User Online" 
-								class="online-indicator uol_<#: bit.uid #>" 
-							/>
-							<# } else { #>
-								<img 
-									src="/images/icons/bullet_white.png" 
-									alt="User Offline" 
-									class="online-indicator uol_<#: bit.uid #>" 
-								/>
-							<# } #>
-						</span>
-						<a href="/tap/<#: bit.cid #>">
-							<span class="tap-time <#: bit.chat_timestamp_raw #>"><#: bit.chat_timestamp #></span>
-						</a>
-						<span class="tap-typing"></span>
-					</p>
-					<p>
-						<span class="tap-msg"><#: bit.chat_text.linkify() #></span>
-					</p>
-				</div>
-				<div class="tap-response-box clarity">
-					<div class="tap-response-counter"></div>
-					<# if (bit.count) { #>
-					<ul class="tap-chat">
-					<# } else { #>
-					<ul class="tap-chat noresp">
-					<# } #>
-					</ul>
-					<input type="text" class="tap-response" maxlength="240" alt="Respond to this tap." />
-					<!-- <a href="#">Respond</a> or  --><a class="tap-respond-cancel" href="#">Close</a>
-				</div>
-				<div class="clarity"></div>
-			</li>
-			<# } #>
-		</ul>
-		<ul>
-			<li id="no-taps" class="noresults">
-				<p>There doesn't seem to be anything here.</p>
-			</li>
-			<li id="no-results" class="noresults">
-				<p>
-					No taps match your search keyword.
-					<a href="#" class="reset-feed">Show all taps.</a>
-				</p>
-			</li>
-		</ul>
-	</div>
-	
-	<? include(ANALYTICS); ?>
 
+			</div>
+
+		</div>
+
+		<div class="clarity"></div>
+
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/">home</a>
+				<a href="/groups">groups</a>
+				<a href="/people">people</a>
+				<a href="/settings">settings</a>
+				<a href="/?logout=true">logout</a>
+			</span>
+		</div>
+	</div>
+	<?include(JAVASCRIPT_TEMPLATES)?>
+	
 </body>
 </html>

@@ -94,7 +94,7 @@ EOF;
 
 		 	                if($search_people->num_rows > 0){
 						while($search_res = $search_people->fetch_assoc()){
-							$uid = $search_res['uid'];
+							$fuid = $search_res['uid'];
 							$uname = $search_res['uname'];
 							$fname = $search_res['fname'];
 							$lname =  $search_res['lname'];
@@ -104,8 +104,8 @@ EOF;
 							if(!$last_chat)
 								$last_chat = "*This user has not tap'd yet*";
 							
-							$search_data[$uid] = array(
-							'uid' => $uid,
+							$search_data[$fuid] = array(
+							'fuid' => $fuid,
 							'uname' => $uname,
 							'fname' => $fname,
 							'lname' => $lname,
@@ -114,7 +114,7 @@ EOF;
 							'groups' => null,
 							'friend' => null
 							);
-							$ids .= $uid.',';
+							$ids .= $fuid.',';
                                 		}
 							$ids = substr($ids,0,-1);
 
@@ -126,14 +126,14 @@ EOF;
 						$this->db_class_mysql->set_query($group_query,'users_groups',"Finds all of the group a specific user is in");
 						$search_groups = $this->db_class_mysql->execute_query('users_groups');
 						while($res = $search_groups->fetch_assoc()){
-						        $uid = $res['uid'];
-                                                        if($c[$uid])$c[$uid]++; else $c[$uid] = 1;
-                                                        if($c[$uid] > 3) continue;
+						        $fuid = $res['uid'];
+                                                        if($c[$fuid])$c[$fuid]++; else $c[$fuid] = 1;
+                                                        if($c[$fuid] > 3) continue;
 
                                                         $gname = $res['gname'];
                                                         $gid = $res['gid'];
                                                         $symbol = $res['symbol'];
-                                                        $search_data[$uid]['groups'][$gid] = array(
+                                                        $search_data[$fuid]['groups'][$gid] = array(
                                                         'gid' => $gid,
                                                         'gname' => $gname,
                                                         'symbol' => $symbol

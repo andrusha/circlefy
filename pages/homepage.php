@@ -81,6 +81,25 @@ class homepage extends Base{
 			$uid = $_SESSION['uid'];
 			} else {
 			$this->page_name = "new_logout";
+
+		$pics = <<<EOF
+		   select favicon as pic_36,symbol from groups where pic_36 != '36wh_default_group.gif' and connected = 3 order by rand() limit 77;
+EOF;
+		$pics_data = $this->db_class_mysql->db->query($pics);
+
+		while($res = $pics_data->fetch_assoc()){
+			$pic_36 = $res['pic_36'];
+			$symbol = $res['symbol'];
+
+			$pics_array[] = array(
+				'pic_36' => $pic_36,
+				'symbol' => $symbol
+			);
+		}
+		$this->set($pics_array,'pics_array');
+	
+	
+
 			if($_GET['q'] == 'swineflu')
 			$this->page_name = "swineflu";
 		}
@@ -116,6 +135,12 @@ class homepage extends Base{
 					$gids = 'null';
 				$_SESSION['gid'] = $gids;
 				$_SESSION['zip'] = $zip;
+			
+				//This is the admin list	
+				if(substr($uid.',', ',63,75,1414,'))
+				$_SESSION['admin'] = 1;
+				else
+				$_SESSION['admin'] = 0;
 
 
 		//START User Prefences
@@ -130,6 +155,7 @@ EOF;
 			$global_uname = $res['uname'];
                         $this->set($res['uname'],'user');
                         $this->set($res['pic_36'],'user_pic');
+                        $this->set($res['pic_100'],'user_pic_100');
 			$this->set($res['help'],'help');
 			}
 		//START User Prefences
@@ -138,14 +164,15 @@ EOF;
 		//START get active conversations
 
 		$ac_query = <<<EOF
-		SELECT t1.mid,t3.uname,t1.uid,t2.uname,t2.chat_text,count(chat.cid) AS resp_count FROM active_convo as t1
+		SELECT t1.mid,t3.uname,t2.uid,t2.uname,t2.chat_text,t3.pic_36 AS small_pic, count(chat.cid) AS resp_count FROM active_convo as t1
 		JOIN chat ON t1.mid = chat.cid
 		JOIN special_chat AS t2
 		ON t1.mid = t2.mid
 		JOIN login AS t3
-		ON t3.uid = t1.uid
+		ON t3.uid = t2.uid
 		WHERE t1.uid = {$uid} AND t1.active = 1 GROUP BY chat.cid ORDER BY mid ASC;		
 EOF;
+
 		$this->db_class_mysql->set_query($ac_query,'active_convos',"This is a SPECIAL QUERY that is part of a active of queries - This is for active convos: ALL ");
 	        $actives_bits_results = $this->db_class_mysql->execute_query('active_convos');
 
@@ -153,6 +180,7 @@ EOF;
 		while($res = $actives_bits_results->fetch_assoc() ) {
 			$mid = $res['mid'];
 			$uid = $res['uid'];
+			$small_pic = $res['small_pic'];
 			$uname = $res['uname'];
 			$chat_text = $res['chat_text'];
 			$resp_count = $res['resp_count'];
@@ -161,6 +189,7 @@ EOF;
 			'mid'	=>	$mid,
 			'uid'	=>	$uid,
 			'uname'	=>	$uname,
+			'small_pic' => $small_pic,
 			'chat_text' =>	$chat_text,
 			'resp_count' =>	$resp_count
 			);
@@ -197,16 +226,18 @@ EOF;
 	
 		//START group setting creation
 		$group_list_query = <<<EOF
-			SELECT COUNT(scm.gid) as message_count,GROUP_ON.count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.gname,t1.gid
+			SELECT COUNT(scm.gid) as message_count,GROUP_ON.count,t2.descr AS topic,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
 			FROM group_members AS t1
 			JOIN groups AS t2 ON t2.gid=t1.gid
-			JOIN GROUP_ONLINE AS GROUP_ON ON GROUP_ON.gid=t1.gid
-			JOIN special_chat_meta AS scm ON scm.gid=t1.gid
+			LEFT JOIN GROUP_ONLINE AS GROUP_ON ON GROUP_ON.gid=t1.gid
+			LEFT JOIN special_chat_meta AS scm ON scm.gid=t1.gid
 			WHERE t1.uid={$uid}
 			GROUP BY scm.gid
 EOF;
                 $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                                 $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
+
+
 
 		while($res = $groups_you_are_in->fetch_assoc()){
 			$gid = $res['gid'];
@@ -214,31 +245,86 @@ EOF;
 			$pic_36 = $res['pic_36'];
 			$symbol = $res['symbol'];
 			$connected = $res['connected'];
+			$admin = $res['admin'];
+			$topic = $res['topic'];
 			$tapd = $res['tapd'];
 			$online_count = $res['count'];
+			$favicon = $res['favicon'];
 			$message_count = $res['message_count'];
 
 			//Process
+/* server side linkify homepage
+			$string = $topic;
+                        $topic = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $string);
+*/
+			$real_symbol[0] = $symbol;
 			$symbol = explode('.',$symbol);
 			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
 			$display_symbol = ucwords($symbol[0].$add);
 			$add = null;
 			
 			
-			$my_groups_array[] = array(
+			$my_groups_array[$gid] = array(
 				'gid' => $gid,
 				'gname' => $gname,
+				'topic' => $topic,
 				'pic_36' => $pic_36,
-				'symbol' => $symbol,
+				'symbol' => $real_symbol,
 				'display_symbol' => $gname,
+				'favicon' => $favicon,
 				'type' => $connected,
 				'online_count' => $online_count,
 				'tapd' => $tapd,
-				'message_count' => $message_count
+				'admin' => $admin,
+				'message_count' => $message_count,
+				'total_count' => null,
 			);
+			$gid_list .= $gid.',';
+		}
+		$gid_list = substr($gid_list,0,-1);
+
+		$group_member_count_query = <<<EOF
+		SELECT COUNT(uid) AS member_count,gid,uid FROM group_members AS gm WHERE gid IN ({$gid_list}) GROUP BY gid;
+EOF;
+
+                $this->db_class_mysql->set_query($group_member_count_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
+                $group_count_res = $this->db_class_mysql->execute_query('get_users_groups');
+
+		if($group_count_res->num_rows)
+		while($res = $group_count_res->fetch_assoc()){
+			$count = $res['member_count'];
+			$gid = $res['gid'];
+			$my_groups_array[$gid]['total_count'] = $count;
 		}
                 $this->set($my_groups_array,'your_groups');	
 
+		$people_query = <<<EOF
+		SELECT f.fuid,l.uname,l.pic_36 AS small_pic,l.fname,l.lname FROM friends AS f 
+		JOIN login AS l
+		ON f.fuid = l.uid
+		WHERE f.uid = {$uid};
+EOF;
+                $this->db_class_mysql->set_query($people_query,'people_query',"This gets the initial lists of users people so he can search within his friends");
+                $people_res = $this->db_class_mysql->execute_query('people_query');
+		
+		if($people_res->num_rows)
+		while($res = $people_res->fetch_assoc()){
+			$friend_uname= $res['uname'];
+			$friend_fname= $res['fname'];
+			$friend_lname= $res['lname'];
+			$friend_uid  = $res['fuid'];
+			$friend_pic  = $res['small_pic'];
+
+			$friends_array[] = array(
+				'friend_uid' => $friend_uid,
+				'friend_pic' => $friend_pic,
+				'friend_uname'=>$friend_uname,
+				'friend_fname'=>$friend_fname,
+				'friend_lname'=>$friend_lname
+			);
+
+		}
+		$this->set($friends_array,'your_friends');
 
 //START GROUP AGGR
 $counting=0;
@@ -246,6 +332,7 @@ $uid_list = '';
 $mid_list = '';
 $old_uid = '';
 $gid_query_list = '';
+if($group_count_res->num_rows)
 foreach($my_groups_array as $res){
         $gid = $res['gid'];
         $gname = $res['gname'];
@@ -268,11 +355,11 @@ $gid_query_list = substr($gid_query_list,0,-1);
 
 $counting=0;
 
-	$outside = "2";
+	$outside = "1,2";
         $slashes_gname = addslashes(addslashes(addslashes($res['gname'])));
         $get_groups_bits_query = <<<EOF
 		SELECT
-		scm.mid FROM special_chat_meta AS scm
+		scm.gid,scm.connected,scm.mid FROM special_chat_meta AS scm
 		WHERE gid IN ( {$gid_query_list} ) AND connected IN ( {$outside} )
 		GROUP BY mid ORDER BY mid DESC LIMIT 10;
 EOF;
@@ -287,18 +374,35 @@ if($groups_bits_results->num_rows > 0){
 	$mid_list = $return_list['mid_list'];
 
 	$groups_query_bits_info = <<<EOF
-SELECT t4.mid as good_id,TEMP_ON.online AS user_online,TAP_ON.count AS viewer_count,t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-JOIN special_chat as t3
-ON t3.uid = t2.uid
+SELECT 
+	good.mid as good_id,
+	TEMP_ON.online AS user_online,
+	TAP_ON.count AS viewer_count,
+	sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+	l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
+	g.favicon,g.gname,g.symbol,
+	scm.gid,scm.connected
+FROM login AS l
+JOIN special_chat as sc
+ON sc.uid = l.uid
 LEFT JOIN (
-SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$_SESSION['uid']}
-) AS t4
-ON t4.mid = t3.cid
+SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$_SESSION['uid']}
+) AS good
+ON good.mid = sc.cid
 LEFT JOIN TAP_ONLINE AS TAP_ON
-ON t3.mid = TAP_ON.cid
+ON sc.mid = TAP_ON.cid
 LEFT JOIN TEMP_ONLINE AS TEMP_ON
-ON t3.uid = TEMP_ON.uid
-WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
+ON sc.uid = TEMP_ON.uid
+
+LEFT JOIN special_chat_meta AS scm
+ON scm.mid = sc.cid
+
+JOIN groups AS g
+ON scm.gid = g.gid
+
+WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
+
+ORDER BY sc.cid DESC LIMIT 10
 EOF;
 
 $data_all_groups_bits = $this->bit_generator($groups_query_bits_info,'groups_aggr');
@@ -435,12 +539,19 @@ private function bit_generator($query,$type){
 				$viewer_count = $res['viewer_count'];
 				$user_online = $res['user_online'];
                                 $uid = $res['uid'];
+				$gid = $res['gid'];
+				$favicon = $res['favicon'];
+				$gname = $res['gname'];
+				$symbol = $res['symbol'];
+				$connected = $res['connected'];
+
 
                                 //Process
 				$chat_timestamp_raw = $chat_timestamp;
                                 $chat_timestamp = $this->time_since($chat_timestamp);
                                 $chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
                                 $chat_text = stripslashes($chat_text);
+				$chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $chat_text);
 				if($viewer_count)
 					$viewer_count = $viewer_count;
 
@@ -462,6 +573,11 @@ private function bit_generator($query,$type){
                                 'pic_100'=>       $pic_100,
                                 'pic_36'=>        $pic_36,
                                 'uid'=>           $uid,
+                                'gid'=>           $gid,
+                                'favicon'=>           $favicon,
+				'gname' =>		$gname,
+				'symbol' =>		$symbol,
+                                'connected'=>           $connected,
                                 'viewer_count'=>     $viewer_count,
                                 'user_online'=>     $user_online,
                                 'last_resp'=>     null,

@@ -4,7 +4,7 @@
 */
 session_start();
 require('../config.php');
-
+echo "hfoahfoha";
 $file = $_FILES['gr-pic'];
 
 if(isset($file)){
@@ -46,25 +46,35 @@ class group_functions{
                                     move_uploaded_file($file['tmp_name'], $upload_dir.'/'.$filename);
 
                                 $full_file = $upload_dir.'/'.$filename;
-				$gid = 99999999999;
-                                $hash_filename = md5($gid.'CjaCXo39c0..$@)(c'.$filename);
+				$randnum = rand(1,989999);
+                                $hash_filename = md5($randnum.'CjaCXo39c0..$@)(c'.$filename);
                                 $image = $full_file;
                                 $im = new imagick( $image );
+
                                 $normal = $im->clone();
                                 $crop = $im->clone();
                                 $ftype = ".gif";
 
-                                $pic_180 = '180h_'.$hash_filename.$ftype;
+
+	
+				$d = $im->getImageGeometry();
+				$w = $d['width'];
+				$h = $d['height'];
+
+                                $pic_180 = 'large_'.$hash_filename.$ftype;
                                 $normal->thumbnailImage( 180,null );
                                 $normal->writeImage( $upload_dir.'/'.$pic_180 );
 
-                                $pic_100 = '100h_'.$hash_filename.$ftype;
+                                $pic_100 = 'med_'.$hash_filename.$ftype;
                                 //$normal->thumbnailImage( 100,null );
-                                $crop->cropThumbnailImage( 60, 60 );
-                                $crop->setImagePage(60, 60, 0, 0);
+                                //$crop->cropThumbnailImage( 160, 60 );
+			
+				if($h > 120)
+                                	$crop->thumbnailImage( 120,null );
+                                //$crop->setImagePage(60, 60, 0, 0);
                                 $crop->writeImage( $upload_dir.'/'.$pic_100 );
 
-                                $pic_36 = '36wh_'.$hash_filename.$ftype;
+                                $pic_36 = 'small_'.$hash_filename.$ftype;
                                 $crop->cropThumbnailImage( 30, 30 );
                                 $crop->writeImage( $upload_dir.'/'.$pic_36 );
 	
@@ -75,8 +85,8 @@ class group_functions{
                         else
                                 $result_msg = 'Unknown error';
                         }
-			echo $result_msg;
-			echo $result;
+			// echo $result_msg;
+			// echo $result;
                         // you may add more error checking
                         // see http://www.php.net/manual/en/features.file-upload.errors.php
 
@@ -85,14 +95,19 @@ class group_functions{
                     // This is a PHP code outputing Javascript code.
                     // Do not be so confused ;) 
                     $output = <<<EOF
-			<!DOCTYPE html><head><title></title></head>
-				<script language="JavaScript" type="text/javascript">
-					window.top.fireEvent('uploaded', {
-					 success: true,
-					 error: null,
-					 path: "$image"
-					});
-				</script>
+			<!DOCTYPE html>
+			<head>
+			<title></title>
+			<script type="text/javascript">
+				window.top.fireEvent('uploaded', {
+				 success: true,
+				 error: null,
+				 path: "$image",
+				 type: "picture",
+				 hash: "$hash_filename"
+				});
+			</script>
+			</head>
 			<body></body>
 			</html>
 EOF;

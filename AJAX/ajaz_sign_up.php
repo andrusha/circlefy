@@ -29,11 +29,11 @@ if($flag == "check_im_status();"){
 */
 class ajaz_sign_up{
 	
-		private $mysqli;
+		public $mysqli;
 		private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
 		private $results;
 		private $uname;
-		private $uid;
+		public $uid;
 		private $lang;
 	
 	function __construct(){
@@ -53,7 +53,7 @@ class ajaz_sign_up{
 		$lang = $this->mysqli->real_escape_string($lang);
 
 		list($finame,$lname) = explode(' ',$fname);
-		
+	
 		$password = md5($password);
 		
 		$sign_up_query = "INSERT INTO login(uname,fname,lname,email,pass) values('{$uname}','{$finame}','{$lname}','{$email}','{$password}');";
@@ -63,7 +63,9 @@ class ajaz_sign_up{
 		$last_id = $last_id->fetch_assoc();
 		$last_id = $last_id['last_id'];
 		$this->fname = $fname;
+	
 		$this->uid = $last_id;
+		echo $this->uid;
 		$this->uname = $uname;
 		$this->email = $email;
 		$this->lang = $lang;

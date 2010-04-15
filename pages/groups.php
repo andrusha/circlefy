@@ -37,7 +37,6 @@ class groups extends Base{
 			JOIN groups AS g ON g.gid = ogm.gid 
 			GROUP BY ogm.gid;
 EOF;
-
 			$group_list_query = <<<EOF
 			SELECT
 			g.gname,

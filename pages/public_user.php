@@ -27,7 +27,7 @@ class public_user extends Base{
 		$uname = $_GET['public_uid'];;	
 		//This gets all users initial settings such as the groups he's in etc...
 		//SECURITY ... I SHOULD at t2.status = 1 so that only members who are confirmed get updates	
-		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.country,t3.zip FROM login AS t1
+		$get_user_id_query = "SELECT t1.uname,t1.uid,t1.private,t2.gid,t3.country,t3.zip FROM login AS t1
 					LEFT JOIN group_members AS t2
 					ON t1.uid = t2.uid
 					LEFT JOIN profile AS t3
@@ -40,6 +40,7 @@ class public_user extends Base{
 			if($get_user_id_result->num_rows){
 				while($res = $get_user_id_result->fetch_assoc()){
 					$uid = $res['uid'];
+					$private = $res['private'];
 					$public_uid = $res['uid'];
 					$uname = $res['uname'];
 					$country = $res['country'];
@@ -49,6 +50,7 @@ class public_user extends Base{
 				$this->set('no_user','no_user');
 				return false;
 			}
+				$this->set($private,'private');
 
 		$tracked_query = <<<EOF
 		SELECT fuid FROM friends WHERE fuid = {$uid} and uid = {$_SESSION['uid']} LIMIT 1
@@ -87,7 +89,7 @@ EOF;
 	
 		//START group setting creation
 		$group_list_query = <<<EOF
-			SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.gname,t1.gid
+			SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
 			FROM group_members AS t1
 			JOIN groups AS t2 ON t2.gid=t1.gid
 			JOIN special_chat_meta AS scm ON scm.gid=t1.gid
@@ -103,9 +105,11 @@ EOF;
 			$gid = $res['gid'];
 			$gname = $res['gname'];
 			$pic_36 = $res['pic_36'];
+			$favicon = $res['favicon'];
 			$symbol = $res['symbol'];
 			$connected = $res['connected'];
 			$tapd = $res['tapd'];
+			$admin = $res['admin'];
 			$message_count = $res['message_count'];
 
 			//Process
@@ -120,10 +124,12 @@ EOF;
 				'gid' => $gid,
 					'gname' => $gname,
 					'pic_36' => $pic_36,
+					'favicon' => $favicon,
 					'symbol' => $symbol,
 					'display_symbol' => $gname,
 					'type' => $connected,
 					'tapd' => $tapd,
+					'admin' => $admin,
 					'message_count' => $message_count
 				);
 			}
@@ -148,6 +154,39 @@ EOF;
 			$logged_in_id = 0;
 			
 		$users_query_bits_info = <<<EOF
+SELECT
+        good.mid as good_id,
+        TEMP_ON.online AS user_online,
+        TAP_ON.count AS viewer_count,
+        sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+        l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
+        g.favicon,g.gname,g.symbol,
+        scm.gid,scm.connected
+FROM login AS l
+JOIN special_chat as sc
+ON sc.uid = l.uid
+LEFT JOIN (
+SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$logged_in_id}
+) AS good
+ON good.mid = sc.cid
+LEFT JOIN TAP_ONLINE AS TAP_ON
+ON sc.mid = TAP_ON.cid
+LEFT JOIN TEMP_ONLINE AS TEMP_ON
+ON sc.uid = TEMP_ON.uid
+
+LEFT JOIN special_chat_meta AS scm
+ON scm.mid = sc.cid
+
+JOIN groups AS g
+ON scm.gid = g.gid
+
+WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
+
+ORDER BY sc.cid DESC LIMIT 10
+EOF;
+
+/*ORDER BY sc.cid DESC LIMIT 10
+OLD
 		SELECT t4.mid as good_id,TAP_ON.count AS viewer_count,
 		t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,
 		t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
@@ -160,9 +199,8 @@ EOF;
 		LEFT JOIN TAP_ONLINE AS TAP_ON
 		ON t3.mid = TAP_ON.cid
 		WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
-EOF;
 
-
+*/
 		$data_all_users_bits = $this->bit_generator($users_query_bits_info,'users_aggr');
 		$this->set($data_all_users_bits,'user_bits');
 		}
@@ -250,7 +288,7 @@ private function bit_generator($query,$type){
 	if($m_results->num_rows)
                         while($res = $m_results->fetch_assoc()){
                                 //Setup
-                                $mid = $res['mid'];
+    	                        $mid = $res['mid'];
                                 $special = $res['special'];
                                 $chat_timestamp = $res['chat_timestamp'];
                                 $cid = $res['cid'];
@@ -260,8 +298,14 @@ private function bit_generator($query,$type){
                                 $lname  = $res['lname'];
                                 $pic_100 = $res['pic_100'];
                                 $pic_36 = $res['pic_36'];
-				$viewer_count = $res['viewer_count'];
+                                $viewer_count = $res['viewer_count'];
+                                $user_online = $res['user_online'];
                                 $uid = $res['uid'];
+                                $gid = $res['gid'];
+                                $favicon = $res['favicon'];
+                                $gname = $res['gname'];
+                                $symbol = $res['symbol'];
+                                $connected = $res['connected'];
 
                                 //Process
 				$chat_timestamp_raw = $chat_timestamp;
@@ -277,10 +321,10 @@ private function bit_generator($query,$type){
 
                                 //Store
                                 $messages[$cid] = array(
-                                'mid' =>           $mid,
+				'mid' =>           $mid,
                                 'special'=>       $special,
                                 'chat_timestamp'=>$chat_timestamp,
-				'chat_timestamp_raw'=>$chat_timestamp_raw,
+                                'chat_timestamp_raw'=>$chat_timestamp_raw,
                                 'cid'=>           $cid,
                                 'chat_text'=>     $chat_text,
                                 'uname'=>         $uname,
@@ -289,11 +333,18 @@ private function bit_generator($query,$type){
                                 'pic_100'=>       $pic_100,
                                 'pic_36'=>        $pic_36,
                                 'uid'=>           $uid,
+                                'gid'=>           $gid,
+                                'favicon'=>           $favicon,
+                                'gname' =>              $gname,
+                                'symbol' =>              $symbol,
+                                'connected'=>           $connected,
                                 'viewer_count'=>     $viewer_count,
+                                'user_online'=>     $user_online,
                                 'last_resp'=>     null,
                                 'resp_uname'=>    null,
-				'count'=>	  0
+                                'count'=>         0
                                 );
+
 				$mid_list .= $cid.',';
                         }
 			//Don't do further processing for last tap

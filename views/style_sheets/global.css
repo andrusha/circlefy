@@ -9,7 +9,7 @@ html, body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset,
 
 /* GLOBALS */
 body {
-	background: #fff;
+	background:rgb(244, 245, 245) ;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -49,20 +49,37 @@ div { position: relative; }
 	width: 800px;
 }
 
+
 #signup-link-main{
+margin:-4px 0 0 24px;
+padding-top:2px;
+background: url(/images/cimages/signup-bg.PNG) no-repeat 14px -2px;
 float:left;
 display:block;
 width:190px;
+height:44px;
+}
+
+#login-link-main{
+margin:0 0 0 24px;
+}
+
+#login-link-main a:visited, #header #login-link-main a{
+color:blue;
+}
+
+#signup-link-main a:visited, #signup-link-main a{
+color:white;
 }
 
 #header a { color: #fff; }
 
 #logo {
-	background: url(/images/cimages/mega_alpha_logo.gif) no-repeat center center;
+	background: url(/images/cimages/logo_new.gif) no-repeat center center;
 	float: left;
 	margin-left:40px;
-	height: 70px;
-	margin-top: -18px;
+	height: 78px;
+	margin-top: -16px;
 	width: 130px;
 }
 
@@ -128,7 +145,7 @@ div.sidebar {
 .sidebar div.section { margin-bottom: 15px; }
 
 .sidebar div.section-head {
-	background: url(/images/cimages/tab_blue.gif) no-repeat;
+/*	background: url(/images/cimages/tab_blue.gif) no-repeat;*/
 	color: #fff;
 	height: 28px;
 }
@@ -138,7 +155,6 @@ div.sidebar {
 }
 
 .sidebar div.section-head h1 {
-
 	font-size: 14px;
 	padding: 6px 12px 0;
 }
@@ -169,7 +185,6 @@ div.section {
 }
 
 #content div.section-head {
-	background: #EAEAEA url(/images/cimages/main_bar_blue.gif) no-repeat;
 	padding: 5px 4px 5px;
 }
 
@@ -232,15 +247,14 @@ div.section-body.user-stats {}
 
 div.section-body.user-stats p {
 	font-size: 13px;
-	color: #666;
+	color:#CC7744;
 	font-weight: normal;
-	margin-bottom: 20px;
+	margin-bottom: 2px;
 }
 
 div.section-body.user-stats span {
 	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
 	font-weight: bold;
-	font-size: 20px;
 }
 
 /* Information Blocks */
@@ -255,7 +269,6 @@ div.section-body.user-stats span {
 .sidebar div.section-body.info h2 {
 	font-size: 14px;
 	font-weight: bold;
-	margin-bottom: 5px;
 }
 
 .sidebar div.section-body.info p {

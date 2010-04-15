@@ -63,7 +63,7 @@ var Template = new Class({
 		});
 		var func = ['var buffer = ', del, str, del, ';\n', 'return buffer;\n'].join('');
 		func = func.replace(/'/g, "\\'").replace(delexp, "'");
-		console.log(func);
+		console.log(func,data);
 		return new Function(func).apply(data).replace(/%%%/g, '\n');
 	},
 

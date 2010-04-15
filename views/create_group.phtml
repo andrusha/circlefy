@@ -1,514 +1,129 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?php
+$logged = (!empty($_SESSION['uid']));
+?>
+<!doctype html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="Content-Language" content="EN" />
-<meta name="ROBOTS" content="ALL" />
-<meta name="Copyright" content="Copyright (c) 2009 TAP" />
-<meta http-equiv="imagetoolbar" content="false" />
-<meta name="description" content="TAP communication platform" />
-<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-<title>tap - alpha</title>
-<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/css_new_group.css" type="text/css" />
-<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
-<script type="text/javascript"src="/views/javascript/mootools-1.2.3.1-more.js"></script>
-<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
-<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
-<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
-<script type="text/javascript" charset="utf-8">
-
-/* Main Tap Object */
-Tap = window.Tap || {};
-
-Validator.addType('name', new RegExp("^[A-Za-z0-9:,\.\\\/'\\s]+$"));
-
-Tap.CreateGroups = {
-	
-	localized: false,
-
-	init: function(){
-		var self = this;
-		var main = $('content');
-		this.data = {
-			name: main.getElement('input[name="gr-name"]'),
-			symbol: main.getElement('input[name="gr-symbol"]'),
-			focus: main.getElement('input[name="gr-focus"]'),
-			desc: main.getElement('textarea[name="gr-desc"]'),
-			country: main.getElement('select[name="country"]').store('passed', true),
-			state: main.getElement('select[name="state"]').store('passed', true),
-			region: main.getElement('select[name="region"]').store('passed', true),
-			town: main.getElement('select[name="town"]').store('passed', true)
-		};
-
-		var locMore = $('loc-more').slide('hide');
-		$$('input[name="gr-loc"]').addEvent('click', function(){
-			if (!this.match('[checked]')) return null;
-			if (this.get('value') === 'yes') {
-				locMore.slide('in');
-				self.localized = true;
-				self.data.country.getElement('option[value="us"]').set('selected', 'selected');
-				self.data.country.fireEvent('change', [{}, true]);
-			} else {
-				locMore.slide('out');
-				self.localized = false;
-			}
-		});
-
-		this.data.name.addEvent('blur', this.checkName.toHandler(this));
-		this.data.symbol.addEvent('blur', this.checkSymbol.toHandler(this));
-		this.data.focus.addEvent('blur', this.checkFocus.toHandler(this));
-		this.data.desc.addEvent('blur', this.checkDescription.toHandler(this));
-
-		$('gr-create').addEvent('click', this.onSubmit.toHandler(this));
-		$('gr-pic-uploader').addEvent('change', this.uploadPic.toHandler(this));
-		window.addEvent('uploaded', this.displayPic.bind(this));
-		
-		var country = this.data.country,
-			state = this.data.state,
-			region = this.data.region,
-			town = this.data.town;
-			state.getParent('h2').hide(); region.getParent('h2').hide(); town.getParent('h2').hide();
-		country.addEvent('change', function(a, e){
-			$('flagger').set('src', 'images/geo_pics/gif/' + this.get('value') + '.gif');
-			state.empty().getParent('h2').hide();
-			region.empty().getParent('h2').hide();
-			town.empty().getParent('h2').hide();
-			self.geo({
-				type: 'state', 
-				key: this.get('value'),
-				callback: function(select){
-					locMore.slide('in');
-				}
-			});
-		});
-		state.addEvent('change', function(a, e){
-			region.empty().getParent('h2').hide();
-			town.empty().getParent('h2').hide();
-			var key = this.get('value');
-			if (key == 'all') return;
-			self.geo({
-				type: 'region',
-				key: key,
-				callback: function(select){
-					locMore.slide('in');
-				}
-			});
-		});
-		region.addEvent('change', function(a, e){
-			town.empty().getParent('h2').hide();
-			var key = this.get('value');
-			if (key == 'all') return;
-			self.geo({ 
-				type: 'town', 
-				key: key, 
-				state: state.get('value'),
-				callback: function(select){
-					locMore.slide('in');
-				}
-			});
-		});
-		
-		$('geo-loader').setStyle('display', 'none');
-	},
-	
-	geo: function(options){
-		var self = this;
-		var loader = $('geo-loader');
-		var type_code = ({
-			'state': 1,
-			'region': 2,
-			'town': 3
-		})[options.type];
-		new Request({
-			url: 'AJAX/geo.php',
-			data: (function(){
-				return $extend({
-					type: type_code,
-					code: options.key
-				}, options.state ? { state: options.state } : {});
-			})(),
-			onRequest: function(){
-				$('geo-loader').set('text', 'Loading ' + options.type.capitalize() + 's').setStyle('display', 'block');
-			},
-			onSuccess: function(){
-				$('geo-loader').setStyle('display', 'none');
-				var response = JSON.decode(this.response.text);
-				var select = $(document.body).getElement('select[name="' + options.type + '"]');
-				select.empty();
-				if (response.geo) {
-					select.getParent('h2').show();
-					response.geo.unshift({region: 'all', city: 'No ' + options.type.capitalize() });
-					for (var x = response.geo.reverse().length; x--; ) {
-						var item = response.geo[x];
-						new Element('option', {
-							value: item.region,
-							text: item.city
-						}).inject(select);
-					}
-					if ($type(options.callback) == 'function') options.callback.apply(self, [select]);
-				} else {
-					$('geo-loader').set('text', 'Location Complete!').setStyle('display', 'block');
-				}
-			}
-		}).send();
-	},
-
-	uploadPic: function(el){
-		if (!el.get('value').test(/\.(gif|png|bmp|jpeg|jpg)$/i)) {
-			return this.showError(el, 'You can only upload GIFs, PNGs, BMPs or JPEGs.');
-		}
-		this.removeError(el);
-		el.getParent('form').submit();
-	},
-
-	displayPic: function(data){
-		var pic = $('gr-pic-uploader');
-		if (data.success) {
-			$('pic-preview').empty().adopt(new Element('img', {
-				'src': ['/group_pics/', data.path].join('')
-			}));
-			this.pic = data.path;
-			this.removeError(pic);
-		} else {
-			this.pic = null;
-			this.showError(pic, data.error);
-		}
-	},
-
-	checkName: function(el){
-		var self = this;
-		if (el.isEmpty() || !el.ofLength(2, 128)) {
-			return this.showError(el, 'Name must be 2 to 128 characters.');
-		} else if (!el.isName()) {
-			return this.showError(el, 'Name must only contain letters and numbers');
-		} else {
-			new Request({
-				url: '/AJAX/group_check.php',
-				data: {
-					group_check: true,
-					post: 'name',
-					gname: el.get('value')
-				},
-				onSuccess: function(){
-					var response = JSON.decode(this.response.text);
-					var more = el.getParent('h2').getNext('p.input-descr');
-					if (!more.retrieve('orig')) more.store('orig', more.get('text'));
-					if (response.dupe) {
-						self.showError(el, 'This name is already taken');
-						more.set('html', [
-							'Join the group for <a href="/groups?search=',
-							el.get('value'),
-							'">',
-							el.get('value'),
-							'</a>.'
-						].join(''));
-						return null;
-					} else {
-						self.removeError(el);
-					}
-					if ($type(response.results) == 'array') {
-						more.set('html',  [
-							'View groups that are related to <a href="/groups?search=',
-							el.get('value'),
-							'">',
-							el.get('value'),
-							'</a>.'
-						].join(''));
-					} else {
-						more.set('html', more.retrieve('orig'));
-					}
-				}
-			}).send();
-		}
-		return this.removeError(el);
-	},
-
-	checkSymbol: function(el){
-		var self = this;
-		if (el.isEmpty() || !el.ofLength(2, 64)) {
-			return this.showError(el, 'Symbol must be 2 to 64 characters.');
-		} else if (!el.isAlphaNumStrict()) {
-			return this.showError(el, 'Symbol must only contain letters and numbers.');
-		} else {
-			new Request({
-				url: '/AJAX/group_check.php',
-				data: {
-					group_check: true,
-					post: 'symbol',
-					symbol: el.get('value')
-				},
-				onSuccess: function(){
-					var response = JSON.decode(this.response.text);
-					var more = el.getParent('h2').getNext('p.input-descr');
-					if (!more.retrieve('orig')) more.store('orig', more.get('text'));
-					if (response.dupe) {
-						self.showError(el, 'This symbol is already taken');
-						more.set('html', [
-							'Join the group for <a href="/groups?search=',
-							response.results[0].gname,
-							'">',
-							response.results[0].gname,
-							'</a>.'
-						].join(''));
-						return null;
-					} else {
-						self.removeError(el);
-						more.set('html', more.retrieve('orig'));
-					}
-				}
-			}).send();
-		}
-		return this.removeError(el);
-	},
-
-	checkFocus: function(el){
-		var self = this;
-		var focuses = el.get('value').trim().rtrim(',').split(',');
-		if (focuses.length < 3 || focuses.map(function(f){ return f.isEmpty(); }).contains(true)) {
-			return this.showError(el, 'Please enter at least 3 focuses.');
-		}
-		return this.removeError(el);
-	},
-
-	checkDescription: function(el){
-		var self = this;
-		if (el.isEmpty() || !el.ofLength(20, 240)) {
-			return this.showError(el, 'Description must be from 20 to 240 characters.');
-		} else if (!el.get('value').match(/\s/g) || el.get('value').match(/\s/g).length < 8) {
-			return this.showError(el, 'Yeah, right. That\'s not a real description.');
-		}
-		return this.removeError(el);
-	},
-
-	checkCity: function(el){
-		var self = this;
-		if (el.isEmpty()) {
-			return this.showError(el, 'Please enter a city.');
-		}
-		return this.removeError(el);
-	},
-
-	showError: function(el, msg){
-		var parent = el.getParent('h2');
-		el.addClass('input-err').store('passed', false);
-		parent.getElement('span.error-msg').set({
-			text: msg,
-			style: 'display: inline;'
-		});
-	},
-
-	removeError: function(el){
-		var parent = el.getParent('h2');
-		el.removeClass('input-err').store('passed', true);
-		parent.getElement('span.error-msg').set({
-			text: '',
-			style: 'display: none;'
-		});
-	},
-
-	noErrors: function(){
-		return !$H(this.data).getValues().map(function(item){
-			return !!item.retrieve('passed');
-		}).contains(false);
-	},
-
-	onSubmit: function(el, e){
-		var data = this.data;
-		if (this.sending) return;
-		if (this.noErrors() && !!this.pic) {
-			var req = new Request({
-				'url': '/AJAX/group_create.php',
-				'async': false,
-				'data': {
-					gname: data.name.get('value'),
-					symbol: data.symbol.get('value'),
-					focus: data.focus.get('value').trim().rtrim(','),
-					descr: data.desc.get('value'),
-					old_name: this.pic
-				},
-				onRequest: function(){
-					$$(data.name, data.symbol, data.focus, data.desc).set('disabled', 'disabled');
-				},
-				onSuccess: function(){
-					var response = JSON.decode(this.response.text);
-					if (response.success) {
-						$('gr-create-success').set('text', 'Group successfully created!').highlight();
-						(function(){window.location = '/groups';}).delay(3000);
-					} else {
-						$('gr-create-success').set('text', 'There was an error with your request, please try again.').highlight();
-					}
-				}
-			});
-			if (this.localized) {
-				$extend(req.options.data, { country: data.country.get('value') });
-				var types = {'state': data.state, 'region': data.region, 'town': data.town};
-				loopy: for (var i in types) {
-					var item = types[i];
-					if (item.get('value').isEmpty() || item.get('value') == 'all') break loopy;
-					data[i] = item.get('value');
-				}
-			}
-			req.send();
-			this.sending = true;
-			$('gr-create-success').set('text', 'Creating group...').highlight();
-			mpmetrics.track('create-group', {'focus': data.focus.get('value').trim().rtrim(',')});
-		} else {
-			$$($H(this.data).getValues().filter(function(item){
-				return !item.retrieve('passed');
-			})).fireEvent('blur', [e]);
-			if (!this.pic) this.showError($('gr-pic-uploader'), 'Please select a group picture');
-		}
-	}
-
-};
-
-window.addEvent('domready', Tap.CreateGroups.init.bind(Tap.CreateGroups));
-
-</script>
-
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="uid" content="<?= $_t['pcid'] ?>" />
+	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
+	<title>tap</title>
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript" src="/views/scripts/creategroup.js"></script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
-
 <body>
+	<div id="wrapper">
 
-	<? include(HEADER_CLEAN); ?>
+		<?include(HEADER)?>
 
-	<div id="main">
-		
-		<div id="sidebar-left" class="sidebar">
-			<div class="section">
-				<div id="groups-tab">
-					<div class="tab-in"><a href="" class="name">Group Suggestions</a>  </div>
+		<div id="main">
+
+			<div id="sidebar">
+
+				<?php if ($logged): ?>
+				<div id="you" class="section container">
+					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
+					<p class="special">
+						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
+					</p>
+					<p>
+						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+						<a href="/settings">settings</a>
+						<a href="/?logout=true">logout</a>
+					</p>
 				</div>
-				<div class="tab-list">
-					<ul>
-						<?php foreach ($_t['random_group_results'] as $random): ?>
-						<li class="list-item">
-							<p style="height: 14px; font-weight: bold;"><a href="/group/<?= $random['symbol'] ?>" class="suggestion-item"><img src="/group_pics/<?= $random['pic'] ?>" style="float:left; margin-right: 10px" /><?php
-								$gname = $random['gname'];
-								echo stripslashes((strlen($gname) < 15) ? $gname : substr($gname, 0, 15) . '...');
-							?></a></p>
-							<p style="margin-bottom:20px; font-size: 10px"><?= $random['focus'] ?></p>
-						</li>
-						<?php endforeach; ?>
-					</ul>
-					<!-- <p class="more-btn1"><a href="">show more &raquo;</a></p> -->
-					<div style="clear:both"></div>
-				</div>
+				<?php endif; ?>				
 			</div>
-		</div>
 
-		<div id="content">
-			<div id="gr-new" class="section">
+			<div id="content">
 				
-				<div id="gr-header" class="section-head big">
-					<span class="gr-filters" style="padding-top: 5px; float: right">
-						<a href="/groups" id="gr-filter1" style="color: #fff;">go back to all groups &raquo;</a>
-					</span>
-					<h1 class="gr-title">Create A Group..</h1>
-				</div>
-
-				<div class="section-body info">
-					<h2 class="in-title">
-						Name: <input type="text" name="gr-name" maxlength="128" />
-						<span class="error-msg"></span>
-					</h2>
-					<p class="input-descr">NAME is whatever you want the group to be called</p>
-					<h2 class="in-title">
-						Symbol: <input type="text" name="gr-symbol" maxlength="64" />
-						<span class="error-msg"></span>
-					</h2>
-					<p class="input-descr">SYMBOL will be used to identify your group</p>
-					<h2 class="in-title">
-						Focus: <input type="text" name="gr-focus" value="" />
-						<span class="error-msg"></span>
-					</h2>
-					<p class="input-descr">FOCUS should list the areas of interest of the group</p>
-					<h2 class="in-title">
-						Description: <textarea name="gr-desc" rows="3" cols="30" maxlength="240"></textarea>
-						<span class="error-msg"></span>
-					</h2>
-					<p class="input-descr"> </p>
-					<h2 class="in-title-left">Does the group have a specific location? <input class="radio-input" type="radio" name="gr-loc" value="yes"/> yes <input class="radio-input" type="radio" name="gr-loc" value="no" checked /> no</h2>
-					<div id="loc-more">
-						<br />
-						<h2 class="in-title-left">Country:
-							<select name="country" style="margin-right:140px">
-								<? foreach ( $_t['init_geo_data'] as $item): ?>
-								<option
-									value="<?= $item['abbr2'] ?>"
-									style="background: url(images/geo_pics/gif/<?= strtolower($item['abbr2']) ?>.gif) no-repeat 3% center; padding: 5px; padding-left: 30px;">
-									<?= $item['name'] ?>
-								</option>
-								<? endforeach; ?>
-							</select>
-							<img id="flagger" src="images/geo_pics/gif/af.gif" style="float:right; margin-top: 5px" />
+				<div class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">groups</span>
 						</h2>
-						<h2 class="in-title-left">State:
-							<select name="state" style="margin-right:140px">
-							</select>
-						</h2>
-						<h2 class="in-title-left">Region:
-							<select name="region" style="margin-right:140px">
-							</select>
-						</h2>
-						<h2 class="in-title-left">Town:
-							<select name="town" style="margin-right:140px">
-							</select>
-						</h2>
+						<span class="stream-name">Create a Group <a href="/groups">back to your groups</a></span>
 					</div>
-					<h2 id="geo-loader" class="loader" style="margin-left:50px">Loading Next</h2>
-					<br />
-					<br />
-
-					<form enctype="multipart/form-data" action="/AJAX/group_picture_upload.php" method="post" target="picture">
-						<h2 class="in-title-left">
-							Group picture: <input class="file-input" type="file" id="gr-pic-uploader" name="gr-pic" value="" />
-							<span class="error-msg"></span>
-						</h2>
-						<div id="pic-preview">
+					<div class="body">
+						<div id="create-group" class="form">
+							<p>Fill in all the details below and then hit done to create a new group. Don't forget to invite your contacts after creating your group!</p>
+							<label for="name">
+								name 
+								<span class="help">the name of your group</span>
+								<span class="error"></span>
+							</label>
+							<input name="name" type="text" class="basic full" />
+							
+							<label for="symbol">
+								symbol 
+								<span class="help">this will be used to identify your group</span>
+								<span class="error"></span>
+							</label>
+							<input name="symbol" type="text" class="basic full" />
+							
+							<label for="focus">
+								focus 
+								<span class="help">the areas of interest of your group; at least 3, separated by commas</span>
+								<span class="error"></span>
+							</label>
+							<input name="focus" type="text" class="basic full" />
+							
+							<label for="desc">
+								description 
+								<span class="help">what's your group about? describe it in 20 to 240 characters</span>
+								<span class="error"></span>
+							</label>
+							<input name="desc" type="text" class="basic full" />
+							
+							<form name="picuploader" action="/AJAX/group_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
+								<label for="file">
+									picture 
+									<span class="help">upload a picture for your group</span>
+									<span class="error"></span>
+								</label>
+								<input id="group-pic" name="gr-pic" type="file" class="basic full"/>
+								<img id="preview" src="" class="blank" />
+								<iframe name="picture" style="display:none;"> </iframe>
+							</form>
+							
+							<div class="buttons">
+								<button class="action">create your group</button> or <a href="/groups">cancel</a>
+							</div>
 						</div>
-						<iframe
-							name="picture"
-							style="display:none;">
-						</iframe>
-					</form>
-					<div class="hr-shady"></div>
-					<h2 class="in-title-left">Invite people to your new group:</h2>
-					<h2 class="in-title"><input type="text" name="gr-contacts" value="" /></h2>
-					<p class="input-descr">use your contacts, groups or e-mail addresses<br />(confirm e-mails with Enter)</p><br />
-					<p id="gr-new-btns"><a href="" id="gr-create"></a><a href="/groups" id="gr-cancel" ></a></p><br />
-					<p id="gr-create-success" class="input-descr" style="clear: both; width: 400px; margin:auto; margin-top:30px; text-align: center;"></p>
+					</div>
 				</div>
 
 			</div>
+
 		</div>
 
-		<div id="sidebar-right" class="sidebar">
-			<div class="section">
-				<div class="section-head gray">
-					<h1>Help and Tips</h1>
-				</div>
-				<div class="section-body info">
-					<h2>Choose a meaningful name and symbol.</h2>
-					<p>It will be easier for new users to find your group if you choose a memorable name. Avoid using names that are complicated and hard to find. The same goes for symbols, which will be used to address taps to your group.</p>
-					<h2>Search before you create!</h2>
-					<p>Before creating new groups, do a quick search and see if there are already existing groups that are similar to the one you're gonna create and join them instead. It'll be easier for people to address taps if everyone is part of the same big group. If there are groups with similar names or symbols as the group you're creating, a link will be displayed so you can join them.</p>
-					<h2>Keep an eye on your bacon.</h2>
-					<p>If you plan on frying your bacon, make sure to keep a steady eye on your pan. Bacon could burn in an instant, and older bacon cooks faster than new bacon. So avoid multitasking when cooking bacon. Remember, the key to porcine deliciousness is proper cooking.</p>
-					<h2>Focuses help.</h2>
-					<p>Make sure you set proper focuses for your group. This helps in categorizing your group and enables new users to find your group among similarly named groups easily.</p>
-				</div>
-			</div>
+		<div class="clarity"></div>
+
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/">home</a>
+				<a href="/groups">groups</a>
+				<a href="/people">people</a>
+				<a href="/settings">settings</a>
+				<a href="/?logout=true">logout</a>
+			</span>
 		</div>
 		
 	</div>
-
-	<? include(ANALYTICS); ?>
-
+	<?include(JAVASCRIPT_TEMPLATES)?>	
 </body>
 </html>

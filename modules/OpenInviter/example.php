@@ -141,11 +141,12 @@ class invite_functions {
 			}
 		if (count($this->err)==0)
 			{
+			var_dump($selected_contacts);
 			$sendMessage=$this->inviter->sendMessage($this->session,$message,$selected_contacts);
 			$this->inviter->logout();
 			if ($sendMessage===-1)
 				{
-				$message_footer="\r\n\r\ntap.info 2009";
+				$message_footer="\r\n\r\n2009";
 				$message_subject=$_POST['email_box'].$message['subject'];
 				$message_body=$message['body'].$message['attachment'].$message_footer; 
 				$headers="From: {$_POST['email_box']}";

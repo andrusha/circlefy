@@ -1,5 +1,7 @@
 <?php
-define("METRIC_KEY","5bd5b8c8a6ade9f37721523f9da29b1f");
+session_start();
+
+define("METRIC_KEY","05a951428ed5199e27d52356aae83a22");
 
 define("PUBLIC_TEMPLATE","views/public_template.phtml");
 define("PUBLIC_TEMPLATE_USER","views/public_template_user.phtml");
@@ -11,9 +13,15 @@ define("D_USER","root");
 define("D_DATABASE","rewrite2");
 
 define("FOOTER","parts/footer.phtml");
-define("HEADER","parts/header.phtml");
+define("HEADER","parts/final_header.phtml");
+define("HEADER_LOGOUT","parts/final_header_logout.phtml");
+define("JAVASCRIPT_TEMPLATES","parts/javascript_templates.phtml");
+
+
+
 define("NEW_HEADER","parts/new_header_2.phtml");
-define("LOGOUT_HEADER","parts/logout_header.phtml");
+define("HEADER_CLEAN","parts/header_clean.phtml");
+define("ANALYTICS","parts/analytics.phtml");
 define("LEFT","parts/left.phtml");
 define("SIGNUP","parts/sign_up/sign_up.phtml");
 define("CATEGORY","parts/lists/category.phtml");
@@ -25,6 +33,8 @@ define("PROFILE_PIC_REL", "/user_pics/");
 define("D_GROUP_PIC_REL", "/group_pics/");
 define("PROFILE_PIC_PATH", "/var/data/user_pics");
 define("D_GROUP_PIC_PATH","/var/data/group_pics");
+
+define("ADMIN_GLOBAL",$_SESSION['admin']);
 
 define("ROOT","/");
 ?>

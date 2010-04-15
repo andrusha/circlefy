@@ -1,0 +1,12 @@
+syntax: glob
+*~
+*.pyc
+*.orig
+dist
+eventlet.egg-info
+build
+htmlreports
+*.esproj
+.DS_Store
+results.*.db
+

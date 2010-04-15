@@ -78,6 +78,29 @@ Tap.Public = {
 			});
 		}
 		
+		var msg = $('tap-box-msg');
+		if (msg){
+			new OverText(msg, { positionOptions: { offset: {x: 6, y: 6}}}).show();
+			var char_indic = $('tap-box-counter');
+			msg.addEvents({
+				'focus': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+					char_indic.setStyle('display', 'block');
+				},
+				'keypress': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+				},
+				'change': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+				},
+				'blur': function(){
+					char_indic.set('text', 240 - this.get('value').length);
+					if (this.get('value').isEmpty()) char_indic.setStyle('display', 'none');
+				}
+			});
+			$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
+		}
+		
 		(function() {
 			var type, data;
 			if (Tap.Vars.user) {
@@ -214,6 +237,26 @@ Tap.Public = {
 				}
 			}
 		}).send();
+	},
+	
+	sendTap: function(_, e){
+		if (this.sending) return;
+		this.sending = true;
+		var self = this, msg = $('tap-box-msg');
+		new Request({
+			url: '/AJAX/new_message_handler.php',
+			data: {
+				msg: msg.get('value'),
+				to_box: Tap.Vars.bit
+			},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				self.sending = false;
+				msg.set('value', '');
+				msg.fireEvent('blur', e);
+			}
+		}).send();
+		// this.fireEvent('sendTap', to_box.length);
 	},
 
 	sendResponse: function(){

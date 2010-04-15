@@ -339,7 +339,7 @@ Tap.Groups = {
 		} else { password.removeClass('input-err'); }
 		if (errors) return;
 		new Request({
-			url: '/AJAX/test.php',
+			url: '/AJAX/invite_endpoint.php',
 			data: (function(){
 				var data = {
 					email_box: email.get('value'),
@@ -357,6 +357,8 @@ Tap.Groups = {
 				});
 			},
 			onSuccess: function(){
+				console.log(this.response.text);
+				return;
 				var resp = $try(JSON.decode.pass(this.response.text));
 				if (step == 'get_contacts'){
 					if (resp){

@@ -38,7 +38,9 @@ class profile_functions{
 		$state = $_POST['state'];
 		$region = $_POST['region'];
 		$town = $_POST['town'];
+		$private = $_POST['private'];
 		$hash_name = $_POST['hash_name'];
+
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $zip = $this->mysqli->real_escape_string($zip);
@@ -47,6 +49,7 @@ class profile_functions{
                 $email = $this->mysqli->real_escape_string($email);
                 $gender = $this->mysqli->real_escape_string($gender);
                 $country = $this->mysqli->real_escape_string($country);
+                $private= $this->mysqli->real_escape_string($private);
                 $state = $this->mysqli->real_escape_string($state);
 
 		if(!$zip)
@@ -60,6 +63,7 @@ class profile_functions{
 				t2.fname="$fname",
 				t2.lname="$lname",
 				t2.email="$email",
+				t2.private=$private,
 				t1.zip=$zip,
 				t1.language="$lang",
 				t1.country="$country",
@@ -69,6 +73,7 @@ class profile_functions{
 				t1.town="$town"
                         WHERE t1.uid ={$uid}
 EOF;
+
 
                 $you_results = $this->mysqli->query($update_you_query);
 		if($hash_name){
@@ -82,8 +87,8 @@ EOF;
 
 				if(strpos($old_36,'default')) $default_pics = 1;
 			}
-                        $pic_100 = '100h_'.$hash_name.'.gif';
-                        $pic_36 = '36wh_'.$hash_name.'.gif';
+                        $pic_100 = 'med_'.$hash_name.'.gif';
+                        $pic_36 = 'small_'.$hash_name.'.gif';
 
                         $you_pic_query = "UPDATE login SET pic_36 = '{$pic_36}', pic_100 = '{$pic_100}' WHERE uid = {$uid}";
                         $this->mysqli->query($you_pic_query);

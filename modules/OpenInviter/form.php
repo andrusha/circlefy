@@ -25,9 +25,9 @@
 
 			if (postText.readyState == 4 || postText.readyState == 0)
 			{
-			 postText.open("POST", 'example.php', true);
+			 postText.open("POST", 'modules/OpenInviter/example.php', true);
 			 postText.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-			 postText.onreadystatechange = function() { handlePending(postText) }
+			 postText.onreadystatechange = function() { handlePending(postText,step) }
 				param = 'email_box='+document.getElementById('email_box').value+'&';
 				param += 'provider_box='+provider.options[provider.selectedIndex].value+'&';
 				param += 'step='+step+'&';
@@ -56,13 +56,36 @@
 			}
 	}
 
-	function handlePending(imStatus) {
+	function handlePending(imStatus,step) {
+		if(step == 'get_contacts')
+		$$('.invite_loader').each(function(el){
+			el.fade('in');
+			el.innerHTML = 'Importing Contacts...<img src="images/loader2.gif"/>';
+		});
+		if(step == 'send_invites')
+		$$('.invite_loader').each(function(el){
+			el.fade('in');
+			el.innerHTML = 'Sending Invitations...<img src="images/loader2gif"/>';
+		});
 		if (imStatus.readyState == 4) {
+			console.log(step);
+			if(step == 'send_invites')
+				$$('.invite_loader').each(function(el){
+					el.fade('in');
+					el.innerHTML = 'Invitations Sent!';
+					el.fade.delay(2000,el,'out');
+				});
+			if(step == 'get_contacts')
+				$$('.invite_loader').each(function(el){
+					el.fade('in');
+					el.innerHTML = 'Contacts Imported';
+					el.fade.delay(2000,el,'out');
+				});
 			var json_result = eval('(' + imStatus.responseText + ')');
 			if(json_result != null){
 					console.log("Type: "+json_result.type+" - Message: "+json_result.message);
 				if(json_result.type == 'get_contacts'){
-					document.getElementById('import').value = "Good to go";
+					document.getElementById('import').value = "Invite!";
 					document.getElementById('import').onclick = function(){ import_contacts('send_invites'); } ;
 					document.getElementById('openinviter').innerHTML = json_result.message;
 				}
@@ -84,4 +107,3 @@ include('invite_list.html');
 
 </div>
 
-</div>

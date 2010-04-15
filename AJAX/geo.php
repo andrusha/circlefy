@@ -9,7 +9,7 @@ $type = $_POST['type'];
 $code = $_POST['code'];
 $state = $_POST['state'];
 
-if(isset($code)){
+if(isset($code) && False){ //Disabled
    	$geo_function = new geo_functions();
 	if($type == 1)
 	        $results = $geo_function->state_geo($code);

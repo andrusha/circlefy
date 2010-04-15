@@ -45,7 +45,6 @@ img { vertical-align:-4px;}
 }
 
 #tap-box-people {
-	width: 70%;
 	padding: 2px;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
@@ -77,19 +76,52 @@ img { vertical-align:-4px;}
 }
 
 #content div.section-head {
+		border-bottom: 1px solid rgb(204, 204, 204);
+		border-top:1px solid #ddd;
+/*	background:rgb(244, 245, 245) url(/images/cimages/moo/gradient-bottom.png) repeat-x bottom;*/
+	background: url(/images/cimages/moo/gradient-bottom.png) repeat-x 0% 100% rgb(238, 238, 238);
 	padding-right: 10px;
 }
 
+.sidebar div.section-head {
+
+}
+
+.sidebar div.section-body {
+background:white;
+overflow:hidden;
+margin-right:3px;
+}
+
+#your-group-list li{
+float:left;
+}
+
+.sidebar div.section-head h1 {
+	background:white;
+	font-size:20px;
+	padding:0px;
+	border-bottom:1px solid lightgray;
+}
+
 .section-head h1 {
-	color:white;
-	font-size:17px;
-	font-weight:bold;
+	color:#11abFF;
 	padding:4px 0 0 6px;
 }
 
+
+#tap-feed{
+background:white;
+}
+
+.play-button{
+padding-left:10px;
+}
+
+
 ul.tap-stream li, ul.tap-chat li {
 	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
-	border:1px solid #D8D8D8;
+	border-top:1px solid #D8D8D8;
 	font-size:12px;
 	margin-bottom:-1px;
 	margin-left:3px;
@@ -233,24 +265,83 @@ div.textboxlist-autocomplete {
 	z-index: 1;
 }
 
-#tap-feed-search {
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll right top;
-	border:medium none;
-	color:#000000;
-	float:right;
-	font-size:12px;
-	height:19px;
-	width:124px;
-	text-indent: 5px;
-	margin-top: -3px;
-	margin-right:-3px;
+.users-ind-group{
 }
+
+span.tab-selected{
+	float:left;
+	display:block;
+	background: url(http://mootools.net/assets/images/tab.png) no-repeat 0px 0px;
+	width:75px;
+	height:30px;
+	text-align:center;
+	height: 26px;
+	padding-top:14px;
+	margin-top:-13px;
+	font-size:12px;
+	color: rgb(184, 99, 100);
+	text-decoration: none;
+	font-weight:bold;
+}
+
+span#tap-feed-name {
+	color: rgb(184, 99, 100);
+}
+
+#tap-members-name{
+font-weight:bold;
+color:black;
+font-size:12px;
+margin:0 18px 0 18px ;
+}
+
+a#member-count {
+font-size:10px;
+color:orange;
+}
+a#member-count:visited {
+font-size:10px;
+color:orange;
+}
+	
+#tap-feed-search {
+	background:white url(/images/cimages/x.png) right no-repeat;
+	border:1px solid #11AACC;
+	float:right;
+        font-size:12px;
+        height:18px;
+        margin:-2px 0 0;
+        padding-top:1px;
+        text-indent:3px;
+        width:174px;
+        margin-right:-7px;
+
+}
+
+.public-group-description{
+margin-top:2px;
+color:#885555;
+font-size:12px;
+}
+.public-user-about{
+margin-top:2px;
+color:#885555;
+font-size:12px;
+}
+
+#tap-feed-name a {
+        color: #111111;
+}
+#tap-feed-name {
+	font-weight:bold;
+        color: #111111;
+}
+
+
 
 .section-head label {
 	color:grey;
-	font-size:10px;
+	font-size:12px;
 	font-weight:normal;
 }
 
@@ -377,7 +468,6 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 	padding-bottom: 0px; 
 	padding-top: 3px;
 	text-align:right;
-	margin-bottom: -3px;
 	color:#626262; }	
 	
 .tap-respond-cancel {
@@ -704,7 +794,7 @@ li.group.unread .unread-counter {
 		font-size: 13px;
 		color: #666;
 		font-weight: normal;
-		margin-bottom: 10px;
+		margin-bottom: 2px;
 	}
 
 	.tab-list p.icon {
@@ -732,28 +822,25 @@ li.group.unread .unread-counter {
 		font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
 		color: #666;
 		font-size: 12px;
-		padding: 5px;
 	}
 
 	div.stats li span.floater {
 		float: right;
 		color: #666;
 		font-size: 12px;
-		padding: 5px;
-		padding-top: 0;
+		padding-right:4px;
 	}
 
 	#tapper-info {
 		padding: 20px;
 		margin-bottom: 20px;
-		background: #F2F2F2;
-		border: 1px solid #E0E0E0;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
+		background:rgb(244, 245, 245) url(/images/cimages/moo/gradient-bottom.png) repeat-x bottom;
+		border-top:1px solid #EEEEFE;
+		border-bottom:1px solid #EEFFFF;
 	}
 
 	#tapper-info p.tap-name {
-		font-size: 18px;
+		font-size: 28px;
 	}
 	
 		#tapper-info p.tap-name img {
@@ -761,11 +848,10 @@ li.group.unread .unread-counter {
 
 	#tapper-info a.button, #tapper-info span.button {
 		padding: 5px;
+		color:blue;
+		font-weight:bold;
 		float: right;
-		background: #ccc;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-		font-size: 12px;
+		font-size: 14px;
 	}
 
 	#tapper-info a.button:hover, #tapper-info span.button.selected {
@@ -825,7 +911,9 @@ li.group.unread .unread-counter {
 	}
 
 	.tap-from a, #tapper-info a.tap-from {
-		color: #115E69;
+		/*color: #115E69;*/
+		color: blue;
+		font-weight:none;
 	}
 
 .member-count {
@@ -834,7 +922,6 @@ li.group.unread .unread-counter {
 }
 
 .group-stats {
-	margin-top: 20px
 }
 
 .group-stats p {

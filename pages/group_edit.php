@@ -24,37 +24,47 @@ class group_edit extends Base{
 
 		$uid = $_SESSION['uid'];
 		
-		$gid = $_GET['group'];
+		$symbol = $_GET['group'];
+
+		$get_gid_query = <<<EOF
+		SELECT gid FROM groups WHERE symbol = "$symbol" LIMIT 1
+EOF;
+		$this->db_class_mysql->set_query($get_gid_query,'get_gid',"Gets the gid for the group");
+		$get_gid_result = $this->db_class_mysql->execute_query('get_gid');
+		$res = $get_gid_result->fetch_assoc();
+		$gid = $res['gid'];
+			
 		$this->set($gid,'gid');
 
 		if(!$gid)	
-			header( 'Location: http://tap.info/groups?error=no_group' );
+			header( 'Location: http://mark.tap.info/groups?error=no_group' );
 		$access_granted_query = <<<EOF
 		SELECT admin FROM group_members WHERE gid = {$gid} AND uid = {$uid} AND admin > 0 LIMIT 1
 EOF;
 		$this->db_class_mysql->set_query($access_granted_query,'access_granted',"Says if the user has permission to edit gthe group or not");
 		$access_granted_result = $this->db_class_mysql->execute_query('access_granted');
-		if($access_granted_result->num_rows != 1)
-			header( "Location: http://tap.info/groups?error=denied" );
+		$granted = $access_granted_result->num_rows;
+		if( ($granted != 1) && (!ADMIN_GLOBAL) )
+			header( "Location: http://mark.tap.info/groups?error=denied?$gid:$granted:".ADMIN_GLOBAL );
 
 	
 		$group_random_pick = <<<EOF
-                        SELECT t1.gname,t1.gid,t1.focus,t1.descr,t1.pic_36 FROM groups AS t1 WHERE t1.connected = 0 ORDER BY gid DESC LIMIT 5;
+                        SELECT t1.gname as rgname,t1.gid as rgid,t1.focus,t1.descr,t1.pic_36 FROM groups AS t1 WHERE t1.connected = 0 ORDER BY gid DESC LIMIT 5;
 EOF;
 
                         $this->db_class_mysql->set_query($group_random_pick,'get_random_groups',"Getting random 'relevanct' groups");
                         $rand_group_results = $this->db_class_mysql->execute_query('get_random_groups');
 
                         while($res = $rand_group_results->fetch_assoc()){
-                                $gid = $res['gid'];
+                                $rgid = $res['rgid'];
                                 $descr = $res['descr'];
                                 $focus = $res['focus'];
                                 $pic = $res['pic_36'];
-                                $gname = $res['gname'];
+                                $rgname = $res['rgname'];
 
                                 $random_groups[] = array(
-                                        'gid' => $gid,
-                                        'gname' => $gname,
+                                        'gid' => $rgid,
+                                        'gname' => $rgname,
                                         'pic' => $pic,
                                         'focus' => $focus,
                                         'descr' => $descr,
@@ -81,7 +91,6 @@ EOF;
                 $this->set($init_geo_data,'init_geo_data');
 
 	
-		$gid = $_GET['group'];
 		$query_admins = <<<EOF
 		SELECT t2.admin,t1.pic_36,t1.uname FROM login as t1
 		JOIN group_members as t2 ON t1.uid = t2.uid
@@ -90,7 +99,7 @@ EOF;
 EOF;
 
                 $get_group_info = <<<EOF
-                SELECT picture_path, private, invite_priv, invite_only, descr, focus, gname, symbol, pic_100 FROM groups WHERE gid = {$gid}
+                SELECT gid,picture_path, private, invite_priv, favicon,invite_only, descr, focus, gname, symbol, pic_100 FROM groups WHERE gid = {$gid}
 EOF;
 
 		$this->db_class_mysql->set_query($get_group_info,'get_group_info','This gets all of the basic information about the group ( picture, descr, focus, name, private / invite status )');
@@ -102,6 +111,7 @@ EOF;
 
 		$res = $get_info_result->fetch_assoc();
 		$group_info_result = array(
+			'gid'  =>  $res['gid'],
 			'gname' => $res['gname'],
 			'symbol' => $res['symbol'],
 			'descr' => $res['descr'],
@@ -109,6 +119,7 @@ EOF;
 			'country'=>$res['country'],
 			'region'=>$res['region'],
 			'state'=>$res['state'],
+			'favicon'=>$res['favicon'],
 			'town'=>$res['town'],
 			'picture_path' => $res['picture_path'],
 			'private' => $res['private'],
@@ -116,7 +127,6 @@ EOF;
 			'invite_only' => $res['invite_only'],
 			'pic_100' => $res['pic_100']
 		);
-		
 		
 		$this->set($group_info_result,'group_info_result');
 

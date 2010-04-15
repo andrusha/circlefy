@@ -1,229 +1,167 @@
-﻿
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+﻿<?php
+$logged = (!empty($_SESSION['uid']));
+$tracker = empty($_GET['q']) ? 0 : 1;
+$people = "people_$tracker";
+?>
+<!doctype html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="Content-Language" content="EN" />
-<meta name="ROBOTS" content="ALL" />
-<meta name="Copyright" content="Copyright (c) 2009 TAP" />
-<meta http-equiv="imagetoolbar" content="false" />
-<meta name="description" content="TAP communication platform" />
-<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-
-<title>tap - alpha</title>
-
-<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" >
-<link rel="stylesheet" href="/views/style_sheets/people_manage.css" type="text/css" >
-<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<script src="/views/javascript/mootools-1.2.3-core-yc.js" type="text/javascript"></script>
-<script src="/views/javascript/mootools-1.2.3.1-more.js" type="text/javascript" charset="utf-8"></script>
-<script src="/views/javascript/mootools-tap.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
-<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err); } </script>
-<script type="text/javascript">
-Tap = window.Tap || {};
-
-var page = '<?= empty($_GET["q"]) ? "tracked" : "tracking" ?>';
-
-Tap.People = {
-
-	init: function(){
-		var self = this,
-			body = $(document.body);
-
-		this.list = $('peoples-list');
-
-		body.addEvents({
-			'click:relay(a.tracker-btn)': this.tracker.toHandler(this)
-		});
-	},
-
-	tracker: function(el){
-		var self = this,
-			parent = el.getParent('li'),
-			uid = parent.get('id').remove(/people-id_/),
-			track = el.hasClass('track');
-		new Request({
-			url: '/AJAX/track.php',
-			data: {
-				fid: uid,
-				state: (track) ? 1 : 0
-			},
-			onSuccess: function(){
-				var response = JSON.decode(this.response.text);
-				if (response.success){
-					if (page == 'tracked'){
-						if (!track) parent.set('tween', {
-							onComplete: function(){
-								parent.destroy();
-								if (!self.list.getElements('li').length) $('no-results').clone().inject(self.list);
-							}
-						}).fade('out');
-					} else {
-						if (track) el.removeClass('track').addClass('untrack').set('text', 'Untrack');
-						else el.removeClass('untrack').addClass('track').set('text', 'Track');
-					}
-				}
-			}
-		}).send();
-	}
-};
-
-window.addEvent('domready', Tap.People.init.bind(Tap.People));
-</script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="uid" content="<?= $_t['pcid'] ?>" />
+	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
+	<title>tap</title>
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript" src="/views/scripts/people.js"></script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
-
 <body>
+	<div id="wrapper">
 
-	<? include(HEADER_CLEAN); ?>
+		<?include(HEADER)?>
 
-	<div id="main">
+		<div id="main">
 
-		<div id="sidebar-left" class="sidebar">
-			<div id="peoples" class="section">
-				<div class="section-head">
-					<h1>Suggested people</h1>
+			<div id="sidebar">
+
+				<?php if ($logged): ?>
+				<div id="you" class="section container">
+					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
+					<p class="special">
+						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
+					</p>
+					<p>
+						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+						<a href="/settings">settings</a>
+						<a href="/?logout=true">logout</a>
+					</p>
 				</div>
-				<div class="section-body">
-					<ul class="suggested-peoples"></ul>
-				</div>
-			</div>
-		</div>
-
-		<div id="content">
-			<div id="people-search-main" class="section">
-				<form method="get" action="search_people">
-					 <fieldset>
-						<ul>
-							<li><input type="text" id="fname" class="people-search-field" name="fname"></input>
-							<input type="text" id="lname" class="people-search-field" name="lname"></input></li>
-							<li><input type="text" id="uname" class="people-search-field" name="uname"></input>
-							<select id="group" class="people-sel-field" name="group">
-							<option value=""> - - - - - - - - -</option>
-							<?while($search_people_results = $_t['your_groups']->fetch_assoc()):?>
-							<option value="<?=$search_people_results['gid']?>:<?=$search_people_results['connected']?>">
-								<?=$search_people_results['gname']?>
-							</option>
-							<?endwhile;?>
-							?>
-							</select></li>
-							<li><input id="people-search-btn" type="submit" name="people_search_button" value="Search"></input></li>
-						</ul>
-					</fieldset>
-				</form>
-			</div>
-
-			<div id="people-list" class="section">
-
-				<div id="people-header" class="section-head big">
-					<h1>
-						<a class="tracker" href="people?q=1"><img src="/images/cimages/tracked-icon.gif" alt="tracked users" class="track-icon" />Tracked</a>
-						<a class="tracker" href="people?q=0"><img src="/images/cimages/tracking-icon.gif" alt="tracking users" class="track-icon" />Tracking </a>
-						<span>People <?= empty($_GET['q']) ? "You're Tracking" : "Tracking You" ?></span>
-					</h1>
+				<?php endif; ?>
+				
+				<div id="filter" class="section">
+					<p class="inblock ellipsis">looking for someone? <span class="title"></span> <a href="#" class="clear">clear</a></p>
+					<input id="filterkey" type="text" class="basic" />
 				</div>
 
-
-
-				<!-- Start of People Listing -->
-				<div>
-					<ul id="peoples-list" class="people-listing">
-					<?php
-						$q = empty($_GET['q']) ? 0 : 1;
-						$people = "people_$q";
-						if($_t[$people]):
-						foreach ($_t[$people] as $n):
-						$uid = $n['fuid'];
-						$uname = $n['uname'];
-						$fname = $n['fname'];
-						$lname = $n['lname'];
-						$pic = $n['pic_100'];
-						$last_tap = $n['last_chat'];
-						$friend = $n['friend'];
-						$groups = $n['groups'];
-					?>
-						<!-- <?= var_dump($n) ?>-->
-						<li id="people-id_<?= $uid ?>" class="listing">
-							<a class="people-picture" href="/user/<?= $uname ?>">
-								<img src="/user_pics/<?= $pic ?>" alt="people logo" class="people-image" />
-							</a>
-
-							<div class="people-info-one">
-								<a class="people-uname" href="/user/<?= $uname ?>">
-									<?=$uname?>
-								</a>
-
-								<p class="latest-tap">
-										<? if(strlen($last_tap) > 120):?>
-											<?= substr($last_tap,0,120)?>...more
-										<? else:?>
-											<?= $last_tap?>
-										<? endif;?>
-								</p>
-							</div>
-
-							<div class="people-info-two">
-								<ul class="group_list">
-									<? if($groups):
-										foreach($groups as $g):
-										$gid = $g['gid'];
-										$symbol = $g['symbol'];
-										$gname = $g['gname'];
-											?>
-										<li><a href="group/<?=$symbol?>"><?=$gname?></a></li>
-									<? endforeach; endif; ?>
-								</ul>
-							</div>
-
-							<div class="people-btns">
-								<? if ($friend): ?>
-								<a href="#" class="tracker-btn untrack">Untrack</a>
-								<? else: ?>
-								<a href="#" class="tracker-btn track">Track</a>
-								<? endif; ?>
-
-							</div>
+				<div class="sideinfo section container">
+					<h2>
+						<span id="tab-name">people</span>
+					</h2>
+					<ul class="panel">
+						<li class="panel-item <?= !$tracker ? 'selected' : '' ?>">
+							<span class="count"><?= $_t['tracked_count'] ?></span>
+							<a href="/people?q=0" class="names inblock ellipsis">people you're tracking</a>
 						</li>
-						<?php endforeach; else:?>
-						<li class="listing">
-							<p><?= $q ? "No one's tracking you." : "You are tracking nobody." ?></p>
+						<li class="panel-item <?= $tracker ? 'selected' : '' ?>" >
+							<span class="count"><?= $_t['track_count'] ?></span>
+							<a href="/people?q=1" class="names inblock ellipsis">people tracking you</a>
 						</li>
-						<?php endif; ?>
+						<li class="panel-item" >
+							<span class="count"></span>
+							<a href="/invite" class="names inblock ellipsis">invite people</a>
+						</li>
 					</ul>
 				</div>
+				
 			</div>
-		</div>
 
-		<div id="sidebar-right" class="sidebar">
-			<div class="section">
-				<div class="section-head gray">
-					<h1>Help and Tips</h1>
+			<div id="content">
+				
+				<div id="people-main" class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">people</span>
+						</h2>
+						<span class="stream-name">
+							People 
+							<?php if ($tracker): ?>
+							Tracking You (<?= $_t['track_count'] ?>)
+							<?php else: ?>
+							You're Tracking (<?= $_t['tracked_count'] ?>)
+							<?php endif; ?>
+						</span>
+					</div>
+					<div class="body">
+						<ul class="bodylist <?= empty($_t[$people]) ? 'empty' : '' ?>">
+							<?php
+								if (!empty($_t[$people])):
+									foreach ($_t[$people] as $person):
+										$uid = $n['fuid'];
+										$uname = $n['uname'];
+										$fname = $n['fname'];
+										$lname = $n['lname'];
+										$pic = $n['pic_100'];
+										$last_tap = $n['last_chat'];
+										$friend = $n['friend'];
+										$groups = $n['groups'];
+							?>
+							<li id="pid_<?= $person['fuid'] ?>" class="container list-item" 
+								data-id="<?= $person['fuid'] ?>" data-uname="<?= $person['uname'] ?>">
+								<?php if ($person['friend']): ?>
+								<button class="untrack">untrack</button>
+								<?php else: ?>
+								<button class="track">track</button>
+								<?php endif; ?>
+								<img src="/user_pics/<?= $person['pic_100'] ?>" class="avatar" />
+								<h2>
+									<a href="/user/<?= $person['uname'] ?>" title="<?= $person['uname'] ?>">
+										<?= $person['fname'] ?> <?= trim($person['lname']) ?></a> 
+									<span class="nick"><?= $person['uname'] ?></span>
+								</h2>
+								<p class="headline"><?= $person['last_chat'] ?></p>
+								<p class="stats">
+									<strong><?= $stats['message_count'] ?></strong> Taps sent, 
+									<strong><?= $stats['response_count'] ?></strong> Responses received, and
+									<strong><?= $stats['group_count'] ?></strong> Groups joined.
+								</p>
+							</li>
+							<?php
+									endforeach;
+								else:
+							?>
+							<li class="notice">
+								<p><?php if ($tracker): ?>
+								No one's tracking you.
+								<?php else: ?>
+								You're tracking no one.
+								<?php endif; ?></p>
+							</li>
+							<?php
+								endif;
+							?>
+						</ul>
+					</div>
 				</div>
-				<div class="section-body info">
-					<h2>Invite Your Friends!</h2>
-					<p>Having your friends on tap allows for a much richer experience without them, so get them on tap!</p>
-				</div>
-				<div class="section-body info">
-					<? include('modules/OpenInviter/form.php');?>
-				</div>
+
 			</div>
+
 		</div>
 
-		<div id="templates">
-			<ul>
-				<li id="no-results" class="listing">
-					<p><?= $q ? "No one's tracking you." : "You are tracking nobody." ?></p>
-				</li>
-			</ul>
+		<div class="clarity"></div>
+
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/">home</a>
+				<a href="/groups">groups</a>
+				<a href="/people">people</a>
+				<a href="/settings">settings</a>
+				<a href="/?logout=true">logout</a>
+			</span>
 		</div>
-
-
+		
 	</div>
-
-	<? include(ANALYTICS); ?>
-
+	<?include(JAVASCRIPT_TEMPLATES)?>
 </body>
 </html>

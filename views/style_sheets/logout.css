@@ -45,7 +45,6 @@ img { vertical-align:-4px;}
 }
 
 #tap-box-people {
-	width: 70%;
 	padding: 2px;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
@@ -77,11 +76,24 @@ img { vertical-align:-4px;}
 }
 
 #content div.section-head {
-	padding-right: 10px;
+padding-right:0px;
+margin-bottom:4px;
+
+}
+
+div .section-head{
+border-top:1px solid #CCCCCC;
+background:rgb(244, 245, 245) url(/images/cimages/moo/gradient.png) repeat-x;
+}
+
+#tap-feed-name{
+color:#222222;
+font-size:16px;
+
 }
 
 .section-head h1 {
-	color:white;
+	color:black;
 	font-size:17px;
 	font-weight:bold;
 	padding:4px 0 0 6px;
@@ -89,7 +101,8 @@ img { vertical-align:-4px;}
 
 ul.tap-stream li, ul.tap-chat li {
 	/*background: #EAEAEA url(/images/cimages/message_back.gif) repeat-x scroll 0 0;*/
-	border:1px solid #D8D8D8;
+	background:white;
+	border-top:1px solid #EEEEEE;
 	font-size:12px;
 	margin-bottom:-1px;
 	margin-left:2px;
@@ -210,9 +223,8 @@ ul.tap-stream .tap-body {
 
 div.textboxlist {
 	background: #fff;
-	width: 70%;
+	width: 220px;
 	padding: 1px;
-	margin-left:5px;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 5px;
@@ -232,22 +244,25 @@ div.textboxlist-autocomplete {
 	z-index: 1;
 }
 
+.play-button{
+padding-left:10px;
+}
+
+
 #tap-feed-search {
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	background:transparent url(/images/cimages/gr_srch_field_b.gif) repeat scroll right top;
-	border:medium none;
-	color:#000000;
+	background:white url(/images/cimages/x.png) no-repeat right;
+	border:1px solid #3399CC;
 	float:right;
 	font-size:12px;
+	margin-top:-2px;
 	height:19px;
-	width:124px;
+	width:194px;
 	text-indent: 5px;
 }
 
 .section-head label {
 	color:grey;
-	font-size:10px;
+	font-size:12px;
 	font-weight:normal;
 }
 
@@ -405,7 +420,7 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 	width: 153px;
 	border: 1px solid #cccccc;
 	background: #FBFBFB;
-	font-size: 12px;
+	font-size: 14px;
 	margin-bottom: 5px;
 }
 
@@ -423,42 +438,50 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 }
 
 #signup-tab {
-	background:transparent url(/images/cimages/signup_blue.gif) repeat scroll 0 0;
-	height:126px;
-	margin-top:30px;
-	width:194px;
-	text-indent: -9999px; }
+	margin-top:4px;
+	width:184px;
+	background:lightyellow;
+	border:1px solid yellow;
+	padding:4px 8px 8px 8px;
+	}
+
+#signup-tab h1{
+color:blue;
+font-size:28px;
+}
 
 #signup-title {
 	font-size:13px;
-	padding:36px 12px 0; 
-	color: white;
-	text-indent: 0px; }
+}
+#signup-title span{
+	display:block;
+	margin-top:4px;
+}
+
 
 #signup-form {
-	background:#F2F2F2 none repeat scroll 0 0;
-	border: 1px solid #E5E5E5;
-	border-top: none;
+	margin-top:20px;
 	font-size:12px;
 	height:auto;
+	width:200px;
 	margin-right:3px;
-	padding:8px 3px 13px 12px;
-	width:175px; }
+}
 	
 #signup-form label {
+	color:#CC7711;
+	font-size:18px;
 	display:block;
-	font-weight:bold;
 	margin-bottom: 2px;
 	margin-top: 7px; }
 
 #signup-form input.text, #signup-form select.text {
-	background:#FBFBFB none repeat scroll 0 0;
+	background:white none repeat scroll 0 0;
 	border:1px solid #CCCCCC;
 	font-size:11px;
-	height:16px;
+	height:26px;
 	margin-bottom:5px;
 	padding:2px;
-	width:153px; }
+	width:193px; }
 
 #signup-form input.text.input-err, #signup-form select.text.input-err {
 	background: #fdebeb;
@@ -487,8 +510,14 @@ ul.tap-stream .tap-response-box, .tap-response-box {
 	padding: 0px 4px; }
 	
 #signup-submit {
-	margin: 14px auto 2px 28px;
-	font-size: 14px; }
+	border:none;
+	background: url(/images/cimages/signup-btn.PNG) no-repeat scroll 0% 0%; 
+	margin: 14px auto 2px 0px;
+	font-size: 14px;
+	height:45px;
+	width:180px;
+	cursor:pointer;
+}
 
 	li.group.trending {
 		height: 20px;
@@ -589,7 +618,6 @@ a.add-tap-to:hover {
 }
 
 #search-public {
-	background: url(/images/cimages/group_srch_back.gif) no-repeat;
 	height: 40px;
 	padding: 12px;
 	padding-left: 25px;
@@ -725,6 +753,70 @@ ul.pitch li {
 	margin-bottom: 10px;
 	color: #007AE5;
 	margin-left: -3px;
+}
+
+#demo-groups{
+
+}
+#demo-groups img{
+margin:2px 28px 14px 18px;
+}
+
+#demo-groups span{
+text-align:center;
+padding-right:6px;
+display:block;
+clear:both;
+}
+
+#demo-groups li{
+margin:0px 3px 1px 0px;
+font-weight:bold;
+color: #007AE5;
+float:left;
+}
+
+#demo-groups a:visited{
+color: #007AE5;
+}
+
+#explain-1{
+font-weight:bold;
+font-size:24px;
+}
+
+#explain-2{
+color: #007cc5;
+display:block;
+clear:both;
+font-size:11px;
+}
+
+#demo-search{
+clear:both;
+padding:40px 10px 40px 80px;
+}
+
+#tap-box-more{
+width:400px;
+}
+
+#demo-search input{
+width:420px;
+height:20px;
+font-size:14px;
+}
+
+#explain{
+clear:both;
+display:block;
+font-size:24px;
+color:black;
+margin:4px 0 14px;
+}
+
+#explain > span{
+color:#CC7711;
 }
 
 #rotator {

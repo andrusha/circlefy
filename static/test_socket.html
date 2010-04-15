@@ -1,0 +1,180 @@
+<html>
+ <head>
+  <script>document.domain = document.domain</script>
+	<script type="text/javascript" src="http://mark.tap.info/views/javascript/mootools-1.2.3-core-yc.js"></script>
+	<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+	<script type="text/javascript" src="irc2.js"></script>
+  <script>
+   DATA = []
+   tcp = null;
+
+var CHANNEL = null
+var IRC_SERVER = null
+var IRC_PORT = 6667
+
+var NICK_NAME = null;
+var PASS = null;
+var g_users = [];
+var op_users = [];
+var voice_users = [];
+var voice_op_user = [];
+var b = null;
+
+var irc = new IRCClient();
+var log = getIrcLogger("Chat");
+
+   function print(s) {
+       output = document.getElementById("shell")
+       while (s.indexOf('\n') > -1) {
+            s = s.replace('\n', '<br>')
+        }
+       output.innerHTML += "&rarr; " + s + "<br>"
+       output.scrollTop = self.output.scrollHeight
+   }
+    if (typeof(console) == "undefined")
+       console = { log: print}
+
+  function parseName(identity) {
+    // TODO remove privileges from name head.
+    return identity.split("!", 1)[0];
+  }
+
+   function isOp(users){
+	for(x = 0; x < users.length; x++){
+		user = users[x];
+
+		if ('@'+NICK_NAME == user){
+			console.log('Permission Granted!!');
+			granted = 1;
+
+		}
+
+		if('@' == user[0]){
+			user = user.substring(1);
+			op_users.push(user);
+			voice_op_users.push(user);
+		}
+
+		if('%' == user[0]){
+			user = user.substring(1);
+		}
+
+		if('+' == user[0]){
+			user = user.substring(0);
+			voice_users.push(user);
+			voice_op_users.push(user);
+		}
+		g_users.push(user)
+	}
+
+	if(granted){
+		//invites all of the ops
+		if('invite_ops'){
+			msgAll(voice_op_users);
+		}
+		if('invite_voice_ops'){
+			msgAll(op_users);
+		}
+		if('invite_all'){
+			msgAll(g_users);
+		}
+		//invites everyone
+		if('invite_all')
+			msg_type = 'all'
+
+		if('link')
+			create_link();
+	}
+   }
+
+
+   function msgAll(msg_users){
+
+	console.log("Message All Users");
+	for(x = 0; x < msg_users.length; x++){
+		user = g_users[x];
+		irc.privmsg(user,'Hey all, this is '+NICK_NAME+', we create a tap group at http://tap.info/group/etn , feel free to join it');
+	}
+   }
+	
+
+   function connect() {
+    print("Opening");
+
+	CHANNEL = $('channel').value;
+	IRC_SERVER = $('server').value;
+	NICK_NAME = $('nick').value;
+	PASS = $('pass').value;
+	irc.connect(IRC_SERVER,IRC_PORT);
+	irc.onresponse = function(command) {
+		var responseCode = parseInt(command.type);
+
+		if (responseCode == 353) {
+			users = command.args[3];
+			users = users.split(' ');
+			isOp(users);
+		}
+	}
+
+	irc.onNOTICE = function (cmd){
+		if(IRC_SERVER == 'irc.freenode.net')
+		try{
+			console.log(cmd);
+			a = cmd.args[1].trim().split(' ');
+			b = a;
+			a.pop();
+			a = a.join(' ');
+			if(a == "You are now identified for"){
+				$('identified').innerHTML = 'Identified';
+				get_name();
+		
+			}
+		} catch(e){}
+		
+	}
+	irc.onopen = function() {
+		 irc.nick(NICK_NAME);
+		 irc.ident(NICK_NAME, '8 *', NICK_NAME);
+		 irc.join(CHANNEL);
+		 irc.privmsg('nickserv','identify '+NICK_NAME+' '+PASS);
+	}
+   }
+
+   function get_names(){
+	a = irc.names(CHANNEL);
+	console.log(a);
+	
+   }
+
+   function quit_irc(){
+	irc.quit("yep");
+	}
+
+   function send2() {
+	console.log(irc.readyState);
+        if (irc.readyState < 3)
+            print("ERR: Not Connected")
+        else if (irc.readyState > 3 ) {
+            print("ERR: Disconnect(ed)(ing)")
+        }
+        else {
+            var d = document.getElementById("data").value
+            session.send(d)
+            print("SEND: " + d)
+        }
+   }
+  </script>
+ </head>
+ <body>
+  <button onClick=connect()>connect</button><br>
+  Channel<input type=text id=channel />
+  Server<input type=text id=server />
+  Nick<input type=text id=nick />
+  Pass<input type=text id=pass />
+  <input type=text id=data>
+  <button onClick=send()>send</button><br>
+  <button onClick=quit_irc()>quit</button><br>
+  <div style="border: 1px solid black; height: 200px; overflow-y: scroll" id="shell"></div>
+  <div id=identified></div>
+ </body>
+</html>

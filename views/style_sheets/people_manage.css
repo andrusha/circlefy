@@ -8,12 +8,14 @@ float:left;
 }
 
 .people-uname{
+color:rgb(34, 118, 187);
 font-size:14px;
 font-weight:bold;
 margin-top:10px;
 }
 
 .latest-tap{
+font-size:11px;
 margin-top:2px;
 width:200px;
 }
@@ -35,12 +37,22 @@ margin-left:10px;
 
 
 #people-list .group_list > li {
+color:rgb(34, 118, 187);
 font-size:11px;
 }
 
+ul.group_list a:visited {
+color:rgb(34, 118, 187);
+}
+
+#track-options a:visited, #track-options a{
+font-size:18px;
+color:rgb(34, 118, 187);
+}
+
+
 
 #people-search-main {
-	background: url(/images/cimages/ppl_srch_back.gif) no-repeat;
 	height: 69px;
 	padding: 9px 0 0 0;
 	width: 553px;
@@ -53,39 +65,53 @@ font-size:11px;
 	padding: 12px 0 0 15px;
 }
 
+#people-search-main  fieldset{
+border:1px solid lightgray;
+padding:2px;
+}
+
+fieldset > ul{
+padding:8px;
+margin: 0 0 10px 12px;	
+}
+
+legend{
+font-weight:bold;
+color:#111111;
+}
+
+.tracker-btn{
+font-weight:bold;
+margin-top:2px;
+}
+
 .people-search-field {
-	background: url(/images/cimages/people-search-field.gif) no-repeat;
-	border: none;
 	font-size: 12px;
-	height: 24px;
-	margin: 0 10px 0 0;
-	padding: 4px 4px 0;
-	width: 125px;
+	margin: 4px 10px 0 0;
+	padding: 0px 4px 4px 0;
+	width: 185px;
 }
 
 .people-sel-field {
-	background: url(/images/cimages/people-search-field.gif) no-repeat;
-	border: none;
-	font-size: 12px;
-	height: 24px;
+	font-size: 11px;
 	margin: 0 10px 0 0;
 	padding: 3px 5px 3px 1px;
-	width: 131px;
+	width: 193px;
 }
 
 #people-search-main li {
 	color: #707070;
 	font-size: 14px;
-	font-weight: bold;
-	margin: 0 0 0 150px;	
+}
+#people-search-main{
 }
 
 #people-search-btn {
-	height:30px;
+	height:26px;
 	left:456px;
 	margin-left:6px;
 	position:absolute;
-	top:19px;
+	top:52px;
 	width:70px;
 }
 
@@ -153,7 +179,10 @@ font-size:11px;
 
 
 /* People List */
-ul.people-listing { margin: 0 0 0 3px; }
+ul.people-listing { 
+margin: 0px 0 0 3px; 
+padding: 4px 0 0 0; 
+}
 
 #people-list .listing {
 	margin-bottom: -1px;
@@ -172,8 +201,7 @@ ul.people-listing { margin: 0 0 0 3px; }
 
 .people-image {
 	float: left;
-	margin-top: 15px; margin-left: 16px;
-	height: 46px; width: 46px;
+	margin-top: 8px; margin-left: 16px;
 	border: 1px solid #c4c4c4; }
 
 .people-offic {
@@ -218,7 +246,13 @@ margin:4px;
  }
 
 	.people-btns a {
-		color: #545454; }
+		font-weight:normal;
+		color: #545454; 
+	}
+	
+	div#track-options a.option-selected{
+		font-weight:bold;
+	}
 
 	a.people-invite-btn {
 		padding: 0px 23.5px;
@@ -290,18 +324,14 @@ li.more-invite div, li.info div {
 a.tracker {
 	float: right;
 	cursor: pointer;
-	background: #F5F5F5;
-	padding: 3px 5px 4px;
-	margin-top: 1px;
-	margin-left: 5px;
-	border: 1px solid #666;
-	font-size: 11px;
-	color: #505050;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+	margin-right:8px;
+	text-decoration: underline;
+}
+a.tracker:visited {
+	color:;
 }
 
-a.tracker:hover { text-decoration: underline; }
+a.tracker:hover { color:#0F0F0F;text-decoration: underline; }
 
 a .track-icon {
 	border: 0 none;

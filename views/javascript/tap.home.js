@@ -99,56 +99,63 @@ Tap.Home = {
 	},
 
 	init: function(){
+		// update the dates
 		this.changeDates();
 		this.changeDates.periodical(60000, this);
-		var self = this;
-		var body = $(document.body);
+
+		var self = this,
+			body = $(document.body);
+
+		// main tapper stream
 		this.mainStream = $('main-stream');
 
+		// turn urls in links
 		$('main').getElements('.tap-msg, .tap-respond-last span').each(function(item){
 			item.set('html', item.get('html').linkify());
 		});
-		
+
 		if (this.groupsOnline instanceof Array && !this.groupsOnline.length) this.groupsOnline =  {};
 
-		var groupList = body.getElements('li.group');
-		var convoList = body.getElements('li.convo');
+		var groupList = body.getElements('li.group'),
+			convoList = body.getElements('li.convo');
+
+		// setup body events
 		body.addEvents({
 			'click:relay(li.group a)': function(e){
 				e.preventDefault();
 				this.removeClass('unread');
 				groupList.each(function(item){
-					// if (!item.hasClass('unread')) item.setStyle('background-color', '#F2F2F2');
 					if (!item.hasClass('unread')) item.removeClass('selected');
 				});
-				// this.setStyle('background-color', '#BFBFBF');
 				this.addClass('selected');
+
+				// update counters..
 				if (this.get('id') == 'gid_all') {
 					groupList.each(function(el){
-						if (el.hasClass('unread')) {
-							el.removeClass('unread');
-							// el.setStyle('background-color', '#F2F2F2');
-						}
 						var counter = el.getElement('.unread-counter');
 						if (counter && counter.set) counter.set('text', '(0)');
+						if (el.hasClass('unread')) el.removeClass('unread');
 					});
 				} else {
-					var counter = $('gid_all').getElement('.unread-counter');
-					var count = (function(){
-						var c = counter.get('text').match(/\(([\d]+)\)/);
-						return ($type(c) == 'array') ? c[1].toInt() : 0;
-					})();
-					var newcounter = this.getElement('.unread-counter');
+					var gid_all = $('gid_all'),
+						counter = gid_all.getElement('.unread-counter'),
+						newcounter = this.getElement('.unread-counter');
 					if (newcounter) {
+						var count = (function(){
+							var c = counter.get('text').match(/\(([\d]+)\)/);
+							return (c instanceof Array) ? (c[1] * 1) : 0;
+						})();
 						var newcount = (function(){
 							var c = newcounter.get('text').match(/\(([\d]+)\)/);
-							return ($type(c) == 'array') ? c[1].toInt() : 0;
+							return (c instanceof Array) ? (c[1] * 1) : 0;
 						})();
 						counter.set('text', ['(', count - newcount, ')'].join(''));
-						if ((count - newcount) <= 0) $('gid_all').removeClass('unread').removeClass('selected'); //.setStyle('background-color', '#F2F2F2');
+						if ((count - newcount) <= 0) gid_all.removeClass('unread').removeClass('selected');
 					}
 				}
 				if (this.getElement('.unread-counter')) this.getElement('.unread-counter').set('text', '(0)');
+
+				// Check if we need to reload..
 				if (e.$loadNot) return false;
 				self.changeFeed(this, e);
 			},
@@ -174,13 +181,14 @@ Tap.Home = {
 				}
 			},
 			'click:relay(a.add-tap-to)': function(){
-				var id = this.getParent('li').get('id').remove(/gid_/);
-				var link = this.getPrevious('a');
-				var type = this.get('grtype');
+				var id = this.getParent('li').get('id').remove(/gid_/),
+					link = this.getPrevious('a'),
+					type = this.get('grtype');
 				self.changeTapper(link.get('title'), link.get('grsymbol').toLowerCase(), id, type);
 			}
 		});
 
+		// setup tapbox
 		var easy = new EasyOver('tap-box-people');
 		var tapper = this.tapper = {
 			msg: $('tap-box-msg'),
@@ -189,7 +197,6 @@ Tap.Home = {
 				unique: true,
 				plugins: {
 					autocomplete: {
-						method: 'binary',
 						minLength: 3, maxResults: 5, queryRemote: true,
 						remote: { url: 'AJAX/search_assoc.php' }
 					}
@@ -200,8 +207,7 @@ Tap.Home = {
 						this.add("public:public:0:0","Public","<img src='images\/icons\/transmit.png' \/> Public ");
 						return false;
 					}
-					var count = val.split(':');
-					return count.length >= 3;
+					return val.split(':') >= 3;
 				},
 				onFocus: function(){
 					easy.hide();
@@ -215,47 +221,42 @@ Tap.Home = {
 				}
 			}).add("public:public:0:0","Public","<img src='images\/icons\/transmit.png' \/> Public ")
 		};
+		
+		// overtext for tapbox
 		new OverText(tapper.msg, { positionOptions: { offset: {x: 6, y: 6}}}).show();
-		var char_indic = $('tap-box-counter');
+		
+		// character counter
+		var charsLeft = $('tap-box-counter'),
+			charCompute = function(){
+				charsLeft.set('text', 240 - this.get('value').length);
+			};
 		tapper.msg.addEvents({
 			'focus': function(){
-				char_indic.set('text', 240 - this.get('value').length);
-				char_indic.setStyle('display', 'block');
+				charCompute.call(this);
+				charsLeft.setStyle('display', 'block');
 			},
 			'keypress': function(){
-				char_indic.set('text', 240 - this.get('value').length);
+				charCompute.call(this);
 			},
 			'change': function(){
-				char_indic.set('text', 240 - this.get('value').length);
+				charCompute.call(this);
 			},
 			'blur': function(){
-				char_indic.set('text', 240 - this.get('value').length);
-				if (this.get('value').isEmpty()) char_indic.setStyle('display', 'none');
+				charCompute.call(this);
+				if (this.get('value').isEmpty()) charsLeft.setStyle('display', 'none');
 			}
 		});
-		$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
 
+		$('tap-box-send').addEvent('click', this.sendTap.toHandler(this));
 		$('tap-notify').slide('hide').addEvent('click', this.getPushed.toHandler(this));
 
-		/*
-			.set('slide', {
-				onStart: function(){
-					$('tap-notify').getParent('div').set('styles', { width: 548 });
-				},
-				onComplete: function(){
-					if (this.wrapper['offset' + this.layout.capitalize()] == 0) {
-						$('tap-notify').getParent('div').set('styles', { width: 0 });
-					}
-				}
-			})
-		*/
-
-		this.tapSearch = $('tap-feed-search');
-		new OverText(this.tapSearch, { positionOptions: { offset: {x: 6, y: 4}}}).show();
-		this.tapSearch.addEvent('keypress', function(e){
+		var tapSearch = this.tapSearch = $('tap-feed-search');
+		new OverText(tapSearch, { positionOptions: { offset: {x: 6, y: 4}}}).show();
+		tapSearch.addEvent('keypress', function(e){
 			if (e.key == 'enter') self.searchFeed();
 		});
 
+		// setup push
 		Tap.Push.addEvents({
 			'connect': this.setChannels.bind(this),
 			'typing': this.typingIndicator.bind(this),
@@ -270,14 +271,6 @@ Tap.Home = {
 			'groupRemove': this.removeGroups.bind(this)
 		});
 
-		/*
-		var button = this.initOutside();
-		button.addEvent('click', this.showOutside.toHandler(this));
-		$('tap-feed-outside-more').addEvent('outerClick', function(e){
-			if ($(e.target) !== button) self.hideOutside();
-		});
-		*/
-		// $('tap-feed-outside').addEvent('click', this.toggleOutside.toHandler(this));
 		$('archived-taps').addEvent('click', function(){
 			self.showArchive(this.get('id'));
 		});
@@ -287,19 +280,16 @@ Tap.Home = {
 		});
 	},
 
-	// GEN FUNCS
-
+	/*
+		GENERIC FUNCTIONS
+	*/
 	setChannels: function(){
-		var chans = [].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap]);
-		chans = chans.filter(function(item){
+		var filterNaN = function(item){
 			try { return $type((item * 1)) == 'number'; } catch (e) { return false; }
-		});
-		var people = [].combine(this.peopleIds).filter(function(item){
-			try { return $type((item * 1)) == 'number'; } catch (e) { return false; }
-		});
-		var groups = [].combine(this.groupIds).filter(function(item){
-			try { return $type((item * 1)) == 'number'; } catch (e) { return false; }
-		});
+		};
+		var people = [].combine(this.peopleIds).filter(filterNaN),
+			groups = [].combine(this.groupIds).filter(filterNaN),
+			chans = ([].combine(this.currentStream).combine(this.activeConvos).combine(["" + this.currentTap])).filter(filterNaN);
 		Tap.Push.sendCIDs(chans, people, groups);
 	},
 
@@ -311,12 +301,14 @@ Tap.Home = {
 		return this.templater.parse(template, data);
 	},
 
-	// VIEWS
+	/*
+	 	VIEWS
+	*/
 
 	addViews: function(ids){
 		for (var x = ids.reverse().length; x--;) {
-			var id = ids[x];
-			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
+			var id = ids[x],
+				els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
 				if (!item) return;
 				item.set('text', (item.get('text') * 1) + 1);
@@ -325,40 +317,44 @@ Tap.Home = {
 	},
 
 	removeViews: function(ids){
-		for (var x = ids.reverse().length; x--;) {
-			var id = ids[x];
-			var els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
+		for (var x = ids.reverse().length; x--;){
+			var id = ids[x],
+				els = $$('#tid_' + id + ', #yid_' + id).getElement('span.tap-views strong');
 			els.each(function(item){
 				var count = (item.get('text') * 1);
 				if (count > 0) item.set('text', count - 1);
 			});
 		}
 	},
-	
-	// USER ONLINE/OFFLINE
-	
+
+	/*
+	 	USER ONLINE/OFFLINE
+	*/
+
 	addUsers: function(ids){
-		for (var x = ids.reverse().length; x--;) {
-			var id = ids[x];
-			var els = $(document.body).getElements('.uol_' + id).set({
-				'src': '/images/icons/bullet_green.png',
-				'alt': 'User Online'
-			});
+		for (var x = ids.reverse().length; x--;){
+			var id = ids[x],
+				els = $(document.body).getElements('.uol_' + id).set({
+					'src': '/images/icons/bullet_green.png',
+					'alt': 'User Online'
+				});
 		}
 	},
 
 	removeUsers: function(ids){
-		for (var x = ids.reverse().length; x--;) {
-			var id = ids[x];
-			var els = $(document.body).getElements('.uol_' + id).set({
-				'src': '/images/icons/bullet_white.png',
-				'alt': 'User Offline'
-			});
+		for (var x = ids.reverse().length; x--;){
+			var id = ids[x],
+				els = $(document.body).getElements('.uol_' + id).set({
+					'src': '/images/icons/bullet_white.png',
+					'alt': 'User Offline'
+				});
 		}
 	},
-	
-	// Group ONLINE/OFFLINE
-	
+
+	/*
+	 	Group ONLINE/OFFLINE
+	*/
+
 	addGroups: function(ids){
 		for (var x = ids.reverse().length; x--;) {
 			var id = ids[x];
@@ -382,32 +378,32 @@ Tap.Home = {
 	// RESPONSES
 
 	showResponseBox: function(el){
-		var box = el.getParent('li').getElement('.tap-response-box');
-		var char_indic = box.getElement('.tap-response-counter');
-		var input = box.getElement('input.tap-response');
-		input.set('value', '');
-		var overtext = input.retrieve('overtext') || new OverText(input, {
-			positionOptions: {
-				offset: {x: 6, y: 6}
-			}
-		});
+		var box = el.getParent('li').getElement('.tap-response-box'),
+			charsLeft = box.getElement('.tap-response-counter'),
+			input = box.getElement('input.tap-response').set('value', ''),
+			overtext = input.retrieve('overtext') || new OverText(input, {
+				positionOptions: {offset: {x: 6, y: 6}}
+			}),
+			charCompute = function(){
+				charsLeft.set('text', 240 - this.get('value').length);
+			};
 		input.store('overtext', overtext);
 		if (!input.retrieve('extended')) {
 			input.addEvents({
 				'focus': function(){
-					char_indic.set('text', 240 - this.get('value').length);
-					char_indic.setStyle('display', 'block');
+					charCompute.call(this);
+					charsLeft.setStyle('display', 'block');
 				},
 				'keypress': function(e){
-					char_indic.set('text', 240 - this.get('value').length);
-					if (e.key == 'enter') char_indic.set('text', 240);
+					charCompute.call(this);
+					if (e.key == 'enter') charsLeft.set('text', 240);
 				},
 				'change': function(){
-					char_indic.set('text', 240 - this.get('value').length);
+					charCompute.call(this);
 				},
 				'blur': function(){
-					char_indic.set('text', 240 - this.get('value').length);
-					if (this.get('value').isEmpty()) char_indic.setStyle('display', 'none');
+					charCompute.call(this);
+					if (this.get('value').isEmpty()) charsLeft.setStyle('display', 'none');
 				}
 			});
 			input.store('extended', true);
@@ -417,14 +413,16 @@ Tap.Home = {
 	},
 
 	hideResponseBox: function(el){
-		var box = el.getParent('li').getElement('.tap-response-box');
-		var char_indic = box.getElement('.tap-response-counter').set('text', 240);
-		var input = box.getElement('input.tap-response');
+		var box = el.getParent('li').getElement('.tap-response-box'),
+			char_indic = box.getElement('.tap-response-counter').set('text', 240),
+			input = box.getElement('input.tap-response');
 		if (input.retrieve('overtext')) input.retrieve('overtext').hide();
 		box.setStyle('display', 'none');
 	},
 
-	// TYPING
+	/* 
+		TYPING INDICATOR
+	*/
 
 	typing_timeout : '',
 	indic_timeout : '',
@@ -447,59 +445,29 @@ Tap.Home = {
 	},
 
 	typingIndicator: function(cid){
-		var typing = this.typing;
-		var el = $('yid_' + cid) || $('tid_' + cid);
+		var typing = this.typing,
+			el = $('yid_' + cid) || $('tid_' + cid);
 		if (el) {
 			var timeout = el.retrieve('indic_timeout');
 			if (timeout) $clear(timeout);
-
 			var indic = el.getElement('span.tap-typing');
 			indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>\
 								<img src="/images/icons/comment.png" />');
 			var indic_timeout = (function(){ indic.set('html', ''); }).delay(2500);
 			el.store('indic_timeout', indic_timeout);
-
-			/*
-			self.indic = el.getElement('span.tap-typing');
-			$clear(self.indic_timeout);
-
-			//This is the timer when the indicator will reset
-			self.indic_timeout = (function(){ self.indic.set('html', ''); }).delay(2500);
-			self.indic.set('html', '<span style="color:#518E3E; font-size:10px;">(Someone\'s typing)</span>');
-			*/
 		}
 	},
 
-	// SLIDING TAP BOX
-	/*
-
-	showTapMore: function(){
-		var tapper = this.tapper;
-		tapper.tapping = true;
-		tapper.more.slide('in');
-	},
-
-	hideTapMore: function(){
-		var tapper = this.tapper;
-		(function(){
-			if (!tapper.tapping) {
-				tapper.more.slide(tapper.msg.get('value').isEmpty()
-					&& tapper.people.getValues().length == 0 ? 'out' : 'in');
-			}
-			tapper.tapping = false;
-		}).delay(500);
-	},
-
+	/* 
+		RESPONSES
 	*/
 
-	// RESPONSES
-
 	initResponse: function(el){
-		var self = this;
-		var parent = el.getParent('li');
-		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
-		var box = parent.getElement('.tap-chat');
-		var indic = $('aid_' + id);
+		var self = this,
+			parent = el.getParent('li'),
+			id = parent.get('id').remove(/yid_/).remove(/tid_/),
+			box = parent.getElement('.tap-chat'),
+			indic = $('aid_' + id);
 		if (indic) indic.setStyle('background-color', '#F2F2F2');
 		if (el.retrieve('loaded')) {
 			box.scrollTo(0, box.getScrollSize().y);
@@ -507,19 +475,17 @@ Tap.Home = {
 		}
 		new Request({
 			url: 'AJAX/load_responses.php',
-			data: {
-				cid: id
-			},
+			data: {cid: id},
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
-				if (response.responses) {
+				if (response.responses){
 					box.removeClass('noresp').empty();
-					for (var x = response.responses.reverse().length; x--; ){
+					for (var x = response.responses.reverse().length; x--;){
 						var item = response.responses[x];
 						item.time = (function(){
-							var date = new Date(item.chat_time.toInt() * 1000);
-							var hours = date.getHours();
-							var minutes = "" + date.getMinutes();
+							var date = new Date(item.chat_time.toInt() * 1000),
+								hours = date.getHours(),
+								minutes = "" + date.getMinutes();
 							if (minutes.length == 1) minutes = "0" + minutes;
 							if (hours > 12) hours = hours - 12;
 							return [
@@ -529,7 +495,8 @@ Tap.Home = {
 						})();
 						item.chat_text = item.chat_text.linkify();
 						new Element('li', {
-							html: '<span class="time {chat_time}">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute(item)
+							html: '<span class="time {chat_time}">{time}</span>\
+									<strong>{uname}:</strong> {chat_text}'.substitute(item)
 						}).inject(box);
 					}
 					self.changeDates();
@@ -542,58 +509,46 @@ Tap.Home = {
 	},
 
 	sendResponse: function(el){
-		var self = this;
-		var parent = el.getParent('li');
-		var id = parent.get('id').remove(/yid_/).remove(/tid_/);
-		var msg = el.get('value');
+		var self = this,
+			parent = el.getParent('li'),
+			id = parent.get('id').remove(/yid_/).remove(/tid_/),
+			msg = el.get('value');
 		if (msg.isEmpty()) return null;
 		new Request({
 			url: '/AJAX/respond.php',
 			data: {
 				cid: id,
 				response: msg,
-				init_tapper: parent.getElement('img').get('rel'),
+				init_tapper: $try(function(){
+						return parent.getElement('img').get('rel');
+					}, function(){
+						return 0;
+				}),
 				first: (!parent.retrieve('first')) ? 1 : 0
 			},
 			onRequest: function(){
-				el.set('value', '');
-				el.focus();
+				el.set('value', '').focus();
 			},
 			onSuccess: function(){
-				// var response = JSON.decode(this.response.text);
 				var response = this.response.text;
 				parent.store('first', true);
 				self.addConvo(id, parent);
 			}
 		}).send();
 		this.fireEvent('sendResponse');
-
-/* EDIT BY taso
-		new Request({
-			url: 'AJAX/typing.php',
-			data: {
-				cid: id,
-				response: 0
-			},
-			onComplete: function(){
-				parent.store('typing', false);
-			}
-		}).send();
-*/
 	},
 
 	parseResponse: function(id, user, msg){
-		var yid_shown, tid_shown;
-		var timestamp = new Date().getTime();
-		var item = new Element('li', {
-			html: '<span class="time {time_stamp}">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute({
-				uname: user,
-				chat_text: msg.linkify(),
-				time: "Just Now",
-				time_stamp: timestamp
-			})
-		});
-		var parent;
+		var yid_shown, tid_shown, parent,
+			timestamp = new Date().getTime(),
+			item = new Element('li', {
+				html: '<span class="time {time_stamp}">{time}</span><strong>{uname}:</strong> {chat_text}'.substitute({
+					uname: user,
+					chat_text: msg.linkify(),
+					time: "Just Now",
+					time_stamp: timestamp
+				})
+			});
 		parent = $('tid_' + id);
 		if (parent) {
 			var box = parent.getElement('ul.tap-chat');
@@ -663,36 +618,36 @@ Tap.Home = {
 		}
 	},
 
-	// ACTIVE CONVERSATIONS
+	/* 
+		ACTIVE CONVERSATIONS
+	*/
 
 	addConvo: function(cid, el){
-		var self = this;
-		var list = $('active-convos-list');
-		var item = list.getElement('#aid_' + cid);
-		if (item) {
+		var self = this,
+			list = $('active-convos-list'),
+			item = list.getElement('#aid_' + cid);
+		if (item){
 			item.inject(list, 'top');
 			item.set('tween', {duration:1000}).highlight('#FBC9CB', '#F2F2F2');
 		} else {
 			new Request({
 				url: 'AJAX/add_active.php',
-				data: {
-					cid: cid
-				},
+				data: {cid: cid},
 				onSuccess: function(){
 					var response = this.response.text;
 					if (response) {
 						list.getElements('.no-convos').destroy();
 						self.activeConvos.include("" + cid);
 						self.setChannels();
-						var msg = el.getElement('.tap-msg').get('text');
-						var data = {
-							uname: el.getElement('img').get('alt'),
-							msg: (msg.length < 20) ? msg : msg.substring(0, 20) + '...',
-							count: (function(){
-								var c = el.getElement('span.tap-respond-count').get('text').match(/\(([\d]+)\)/);
-								return ($type(c) == 'array') ? c[1].toInt() : 0;
-							})()
-						};
+						var msg = el.getElement('.tap-msg').get('text'),
+							data = {
+								uname: el.getElement('img').get('alt'),
+								msg: (msg.length < 20) ? msg : msg.substring(0, 20) + '...',
+								count: (function(){
+									var c = el.getElement('span.tap-respond-count').get('text').match(/\(([\d]+)\)/);
+									return ($type(c) == 'array') ? c[1].toInt() : 0;
+								})()
+							};
 						item = list.getElement('#aid_' + cid) || new Element('li', {
 							'class': 'convo',
 							'id': 'aid_' + cid,
@@ -708,19 +663,16 @@ Tap.Home = {
 	},
 
 	handleConvo: function(cid){
-		var self = this;
-		var list = $('active-convos-list');
-		var item = list.getElement('#aid_' + cid);
+		var self = this,
+			list = $('active-convos-list'),
+			item = list.getElement('#aid_' + cid);
 		if (item) {
 			item.inject(list, 'top');
 			if (self.feedView !== 'aid_' + cid) item.setStyle('background-color', '#FBC9CB');
-			// item.set('tween', {duration:1000}).highlight('#FBC9CB', '#F2F2F2');
 		} else {
 			new Request({
 				url: 'AJAX/loader.php',
-				data: {
-					id_list: cid
-				},
+				data: {id_list: cid},
 				onSuccess: function(){
 					list.getElements('.no-convos').destroy();
 					var response = JSON.decode(this.response.text);
@@ -735,7 +687,6 @@ Tap.Home = {
 							<span style="font-size:10px">{chat_text} (<span class="convo-count">{count}</span>)</span>'.substitute(data)
 						}).inject(list, 'top');
 						if (self.feedView !== 'aid_' + cid) item.setStyle('background-color', '#FBC9CB');
-						// item.set('tween', {duration:1000}).highlight('#FBC9CB', '#F2F2F2');
 					}
 				}
 			}).send();
@@ -743,16 +694,15 @@ Tap.Home = {
 	},
 
 	removeConvo: function(el){
-		var self = this;
-		var parent = el.getParent('li');
-		var gid = parent.get('id');
-		var id = gid.remove(/aid_/);
-		var list = $('active-convos-list');
+		var self = this,
+			parent = el.getParent('li'),
+			gid = parent.get('id'),
+			id = gid.remove(/aid_/),
+			list = $('active-convos-list');
+
 		new Request({
 			url: 'AJAX/remove_active.php',
-			data: {
-				cid: id
-			},
+			data: {cid: id},
 			onSuccess: function(){
 				parent.destroy();
 				if (list.getElements('li').length == 0) new Element('li', {
@@ -765,12 +715,12 @@ Tap.Home = {
 	},
 
 	changeConvo: function(el, e){
-		var self = this;
-		var parent = el;
-		var gid = parent.get('id');
+		var self = this,
+			parent = el,
+			gid = parent.get('id');
 		if (this.feedView == gid) return null;
-		var id = gid.remove(/aid_/);
-		var template = $('template-bit').innerHTML.cleanup();
+		var id = gid.remove(/aid_/),
+			template = $('template-bit').innerHTML.cleanup();
 		this.feedView = gid;
 		new Request({
 			url: 'AJAX/loader.php',
@@ -793,7 +743,6 @@ Tap.Home = {
 					var items = new Element('div', {
 						html: self.parseTemplate('taps', response.data)
 					});
-					// self.currentStream = self.currentStream.combine(response.data.map(function(item){
 					self.currentStream = [].combine(response.data.map(function(item){
 						return $type(item.cid) == 'string' ? item.cid : "" + item.cid;
 					}));
@@ -822,9 +771,8 @@ Tap.Home = {
 	// ARCHIVE
 
 	showArchive: function(id){
-		var self = this;
-		// if (this.feedView == 'gid_archive' && !force) return;
-		var template = $('template-bit').innerHTML.cleanup();
+		var self = this,
+			template = $('template-bit').innerHTML.cleanup();
 		this.feedView = 'gid_archive';
 		new Request({
 			url: 'AJAX/filter_creator.php',
@@ -884,6 +832,8 @@ Tap.Home = {
 						$extend(data, {type: 11});
 					} else if (self.feedView == 'gid_public') {
 						$extend(data, {type: 100});
+					} else if (self.feedView == 'gid_direct') {
+						$extend(data, {type: 50});
 					} else if (self.feedView == 'gid_archive') {
 						$extend(data, {type: 99});
 					} else {
@@ -1039,7 +989,16 @@ Tap.Home = {
 		new Request({
 			url: 'AJAX/filter_creator.php',
 			data: (function(){
-				var data = (id === null) ? {type: 11} : (id === false) ? {type: 100} : {type:1, id: id};
+				//var data = (id === null) ? {type: 11} : (id === false) ? {type: 100} : {type:1, id: id};
+				if (id === null)
+					var data = {type: 11};
+				if (id === false)
+					var data = {type: 100};
+				if (id !== false)
+					var data = {type:1, id: id};
+				if (id == 'direct')
+					var data = {type:50};
+
 				if (settings.outside) {
 					data.outside = 1;
 					data.o_filter = JSON.encode(settings.people.length > 0 ? settings.people.map(function(item){
@@ -1059,9 +1018,10 @@ Tap.Home = {
 				if (!force) {
 					var title = el.getElement('a').get('title').remove(/\([\D\d]*\)/);
 					var html = '<a href="/group/'+ el.getElement('a').get('grsymbol') + '">' + title + '</a> \
-								(<span class="gol_' + (id || 0) + '">' + self.groupsOnline[id || "0"] + '</span>)';
+								(<span title="Members Online" class="gol_' + (id || 0) + '">' + self.groupsOnline[id || "0"] + '</span>)';
 					$('tap-feed-name').set('html', (({gid_all: 1, gid_public: 1})[gid]) ? title : html );
-					$('tap-feed-icon').set('src', el.getElement('img').get('src'));
+					$('topic').set('html',el.getElement('a').get('topic'));
+					$try(function() { $('tap-feed-icon').set('src', el.getElement('img').get('src')) } );
 				}
 				self.feedView = gid;
 				self.setSettings();

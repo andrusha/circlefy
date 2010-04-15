@@ -55,18 +55,18 @@ class profile_functions{
                                 $crop = $im->clone();
                                 $ftype = ".gif";
 
-                                $pic_180 = '180h_'.$hash_filename.$ftype;
+                                $pic_180 = 'large_'.$hash_filename.$ftype;
                                 $normal->thumbnailImage( 180,null );
                                 $normal->writeImage( $upload_dir.'/'.$pic_180 );
 
-                                $pic_100 = '100h_'.$hash_filename.$ftype;
+                                $pic_100 = 'med_'.$hash_filename.$ftype;
                                 //$normal->thumbnailImage( 100,null );
                                 $crop->cropThumbnailImage( 60, 60 );
                                 $crop->setImagePage(60, 60, 0, 0);
                                 $crop->writeImage( $upload_dir.'/'.$pic_100 );
 
-                                $pic_36 = '36wh_'.$hash_filename.$ftype;
-                                $crop->cropThumbnailImage( 20, 20 );
+                                $pic_36 = 'small_'.$hash_filename.$ftype;
+                                $crop->cropThumbnailImage( 25, 25 );
                                 $crop->writeImage( $upload_dir.'/'.$pic_36 );
 	
 				$result = 'OK';
@@ -77,10 +77,11 @@ class profile_functions{
                                 $result_msg = 'Unknown error';
                         }
                         // you may add more error checking
-                        // see http://www.php.net/manual/en/features.file-upload.errors.php
+                        // see http://www.php.net/manAual/en/features.file-upload.errors.php
 
                 $pic_path = PROFILE_PIC_REL;
 		$image =  $pic_100;
+		echo $image;
                     // This is a PHP code outputing Javascript code.
                     // Do not be so confused ;) 
                     $output = <<<EOF

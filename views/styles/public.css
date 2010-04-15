@@ -1,0 +1,183 @@
+#content .body .full {
+	margin: 0;
+	padding: 15px;
+}
+
+div.info {
+	line-height: 1.3;
+	color: #D8DEC2;
+}
+
+div.info h2 {
+	color: #fffa00;
+	font-size: 14px;
+	margin-top: 20px;
+	margin-bottom: 5px;
+}
+
+div.info p {
+	font-size: 12px;
+	margin-top: 0;
+	margin-bottom: 10px;
+}
+
+div.info p.callout {
+	color: #fffa00;
+	font-size: 16px;
+	line-height: 1.2;
+	margin: 0 0 20px 0;
+}
+
+div.form input.stretch {
+	width: 600px;
+}
+
+div.form input.big {
+	font-size: 18px;
+	padding: 10px;
+}
+
+div.form p.buttons, div.form p.center {
+	text-align: center;
+}
+
+div.form p.buttons {
+	margin-top: 30px;
+}
+
+div.form button.action {
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 10px;
+	background: #fffa00;
+	border: 1px solid #fffa00;
+}
+
+div.form button.action:hover {
+	background: #fffa00;
+}
+
+#login a.tab {
+	width: 30px;
+	height: 30px;
+	background-color: #ACB19B;
+	float: left;
+	margin-right: 5px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: #101010;
+	font-size: 12px;
+}
+
+#login a.selected {
+	background-color: #fffa00 !important;
+}
+
+#tab-people {
+	background: url('/images/flat/icon.tap.png') no-repeat 30% center;
+}
+
+#login h2 {
+	margin: 0;
+	margin-top: 0;
+	background: #fffa00;
+	color: #101010;
+	clear: both;
+	float: left;
+	padding: 5px;
+	font-size: 14px;
+	width: 220px;
+}
+
+#login ul {
+	margin: 0;
+	float: left;
+	width: 230px;
+	padding: 0;
+	list-style: none;
+	font-size: 12px;
+	border-bottom: 2px solid #fffa00;
+}
+
+#login li {
+	border-top: 1px solid #616161;
+	background: #101010;
+	padding: 8px 5px;
+	margin: 0;
+}
+
+#login li.notice {
+	font-size: 11px;
+	color: #D8DEC2;
+}
+
+#login li.action {
+	text-align: center;
+}
+
+#login li label {
+	margin-bottom: 3px;
+	font-weight: bold;
+	color: #fffa00;
+}
+
+#login li p {
+	margin: 0;
+}
+
+#login li p.body {
+	font-size: 11px;
+	width: 200px;
+}
+
+#login li input {
+	width: 200px;
+}
+
+#login li button {
+	cursor: pointer;
+	font-size: 14px;
+	padding: 3px;
+	background: #fffa00;
+	width: 60px;
+	border: 1px solid #fffa00;
+}
+
+#login li button:hover {
+	background: #fffa00;
+}
+
+#inviter {
+	background: #3C3C3C;
+	padding: 10px;
+}
+
+#inviter p, #inviter h2 {
+	margin: 0;
+}
+
+#inviter h2 {
+	color: #fffa00;
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+
+#inviter p {
+	color: #D8DEC2;
+	font-size: 12px;
+}
+
+#inviter a {
+	text-decoration: none;
+	margin-right: 3px;
+}
+
+#inviter a:hover {
+	text-decoration: underline;
+	color: #fffa00;
+}
+
+#searchbar {
+	margin-left: 50px;
+}

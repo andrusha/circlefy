@@ -1,7 +1,12 @@
 <?php
 /* CALLS:
 	chat_window.js
+
+format:
+['x:x:1:1']
+['name:symbol:type']
 */
+
 session_start();
 require('../config.php');
 
@@ -592,6 +597,7 @@ EOF;
 			'lname'=>         $lname,
 			'pic_100'=>       $pic_100,
 			'pic_36'=>        $pic_36,
+			'favicon'=>        'default.ico',
 			'uid'=>           $uid,
 			'last_resp'=>     null,
                         'resp_uname'=>    null,

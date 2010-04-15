@@ -1,0 +1,141 @@
+  <div id="templates">
+                <ul id="template-taps">
+                <#
+                        each (var tap from this):
+                                if (!tap.uname) continue;
+                #>
+                <li id="tid_<#: tap.cid #>" class="container"
+                        data-id="<#: tap.cid #>" data-uid="<#: tap.uid #>" data-user="<#: tap.uname #>">
+                        <a href="/user/<#: tap.uname #>">
+                                <img class="avatar" alt="<#: tap.uname #>" src="/user_pics/<#: tap.pic_100 #>" />
+                        </a>
+                        <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.uname) ? '' : 'offline' #>">
+                                <a href="/user/<#: tap.uname #>"><#: [tap.fname, tap.lname].join(" ") #></a>,
+                                <a href="/tap/<#: tap.cid #>" class="date" data-timestamp="<#: tap.chat_timestamp_raw #>">
+                                        <#: tap.chat_timestamp #>
+                                </a>
+				<a href="/group/<#: tap.symbol #>" /><img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" /></a>
+                        </p>
+                        <p class="tap-body">
+                                <#: tap.chat_text #>
+                        </p>
+                        <p class="tap-actions">
+                                <span class="tap-resp">
+                                        <span class="indicator">Someone's replying..</span>
+                                        <span class="last-resp">
+                                                <strong><#: tap.resp_uname ? tap.resp_uname + ":" : "" #></strong>
+                                                <span class="body ellipsis inblock"><#: tap.last_resp #></span>
+                                        </span>
+                                </span>
+                                <a href="#" class="tap-resp-count" title="view responses">
+                                        <span class="count">
+                                                <#: tap.count #>
+                                        </span>
+                                </a>
+                                <span class="tap-view-count count" title="viewers">
+                                        <#: tap.viewer_count || 0 #>
+                                </span>
+                        </p>
+                        <div class="responses">
+                                <ul class="chat">
+                                </ul>
+                                <input class="chatbox" type="text" />
+                                <div class="counter">240</div>
+                                <div class="overlay">type in your response and press enter.</div>
+                        </div>
+                        <div class="clarity"></div>
+                </li>
+                <# end; #>
+                </ul>
+                <ul id="template-responses">
+		<# for (var response from this): #>
+                        <li>
+                                <em data-timestamp="<#: response.chat_time #>">
+                                        <#: new Date((response.chat_time * 1) * 1000).format('jS M Y, h:m a') #>
+                                </em>
+                                <a href="/user/<#: response.uname #>" class="user"><#: response.uname #>:</a> <span><#: response.chat_text.linkify() #></span>
+                        </li>
+                <# end; #>
+                </ul>
+                <ul id="template-list-convo">
+                <# for (var convo from this): #>
+                        <li id="cid_<#: convo.cid #>" class="new panel-item"
+                                data-id="<#: convo.cid #>" data-user="<#: convo.user #>">
+                                <span class="count action" data-action="remove"><a href="#">remove</a></span>
+                                <p class="from inblock"><#: convo.user #> <span class="new">*</span></p>
+                                <p class="body ellipsis"><#: convo.message #></p>
+                        </li>
+                <# end; #>
+                </ul>
+                <ul id="template-suggest-group">
+                <# for (var group from this): #>
+                        <li class="container" data-id="<#: group.id #>"
+                                data-type="group" data-joined="<#: group.joined #>" data-symbol="<#: group.symbol #>" >
+                                <img src="/<#: group.img #>" alt="<#: group.name #>" class="avatar" />
+                                <h2><#: group.name #></h2>
+                                <p>
+					<#: group.desc #>
+					<span class="search-count-container">
+						<span class="search-users-online" title="number of users online"><#: group.online #></span> / 
+						<span class="search-users-total" title="number of users total"><#: group.total #></span>
+					</span>
+				</p>
+                        </li>
+                <# end; #>
+                </ul>
+                <ul>
+                        <li id="no-taps-yet" class="notice">
+                                <p>Nothing yet! Try tapping this feed...</p>
+                        </li>
+                        <li id="load-more" class="loadmore">
+                                <p>more...</p>
+                        </li>
+                </ul>
+
+		 <ul id="template-list-people">
+			<# for (var person from this): #>
+
+			<li id="pid_<#: person.fuid #>" class="container list-item"
+				data-id="<#: person.fuid #>" data-uname="<#: person.uname #>">
+				<# if (person.friend) { #>
+				<button class="untrack">untrack</button>
+				<# } else { #>
+				<button class="track">track</button>
+				<# } #>
+				<img src="/user_pics/<#: person.pic_100 #>" class="avatar" />
+				<h2>
+					<a href="/user/<#: person.uname #>" title="<#: person.uname #>">
+						<#: person.fname #> <#: person.lname #></a>
+					<span class="nick"><#: person.uname #></span>
+				</h2>
+				<p class="headline"><#: person.last_chat #></p>
+				<p class="stats">
+				</p>
+			</li>
+
+			<# if (!person){ #>
+				<li id="no-results"> No user found </li>
+			<# } #>
+
+			<# end; #>
+		</ul>
+
+		<ul id="template-list-member">
+			<# for (var member from this): #>
+			<a href="/user/<#: member.uname #>">
+				<li class="panel-item-public-group" title="<#: (member.online) ? 'online' : '' #>" >
+				<img src="/user_pics/<#: member.small_pic #>" />
+				<# if (member.admin == "1") { #>
+					<span class="user-admin"> &#10070; </span>
+				<# } #>
+				<#: member.uname #>
+				<# if (member.online) { #>	
+					<span class="user-online">*</span>
+				<# } #>
+				</li>
+			</a>
+			<# end; #>
+		</ul>
+
+        </div>
+

@@ -23,6 +23,8 @@ class profile extends Base{
 		parent::__construct();
 
 		$uid = $_SESSION['uid'];
+		if(!$uid)
+			header( 'Location: http://mark.tap.info?error=no_login' );
 		//Takes awayfist settings flag
 		setcookie('profile_edit','',time()-360000);
 
@@ -48,7 +50,7 @@ EOF;
 			$get_profile_query = <<<EOF
 				SELECT 
 				t1.about,t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.region,t1.town,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
-				t5.email,t5.pic_100,t5.fname,t5.lname
+				t5.email,t5.pic_100,t5.fname,t5.lname,t5.private
 				FROM profile AS t1
 				JOIN login AS t5
 				ON t1.uid = t5.uid
@@ -65,6 +67,7 @@ EOF;
 				$pic_100 = $res['pic_100'];				
 				$fname = $res['fname'];
 				$lname = $res['lname'];
+				$private = $res['private'];
 				$email = $res['email'];
 				$lang = $res['language'];
 				$about = $res['about'];
@@ -81,6 +84,7 @@ EOF;
 					'email' => $email,
 					'fname' => $fname,
 					'lname' => $lname,
+					'private' => $private,
 					'zip' => $zip,
 					'lang' => $lang,
 					'about' => $about,

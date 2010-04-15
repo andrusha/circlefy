@@ -11,11 +11,12 @@ $focus = addslashes($_POST['focus']);
 $email_suff = $_POST['email_suffix'];
 $private = $_POST['private'];
 $invite = $_POST['invite'];
-$old_name = $_POST['old_name'];
+$old_pic_name = $_POST['pic_hash_name'];
+$old_fav_name = $_POST['fav_hash_name'];
 
 if(isset($gid)){
    	$group_function = new group_functions();
-        $results = $group_function->create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$old_name);
+        $results = $group_function->create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$old_pic_name,$old_fav_name);
         echo $results;
 }
 
@@ -30,7 +31,7 @@ class group_functions{
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
-        function create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$old_name){
+        function create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$pic_hash_name,$fav_hash_name){
 
                 $uid = $_SESSION["uid"];
                 $uname = $_SESSION["uname"];
@@ -73,27 +74,45 @@ EOF;
 
                 $create_group_results = $this->mysqli->query($create_group_query);
 
-		if($old_name){
-			$hash_filename =  md5($gid.'CjaCXo39c0..$@)(c'.$filename);
-			$pic_100 = '100h_'.$hash_filename.'.gif';
-			$pic_36 = '36wh_'.$hash_filename.'.gif';
+		if($pic_hash_name){
+		        $old_pics_query = <<<EOF
+                        SELECT pic_36,pic_100 FROM groups WHERE gid = {$gid} LIMIT 1
+EOF;
+                        $old_pics_results = $this->mysqli->query($old_pics_query);
+                        while($res = $old_pics_results->fetch_assoc() ){
+                                $old_36 = $res['pic_36'];
+                                $old_100 = $res['pic_100'];
 
-			$small_pic = explode('_',$old_name);
-			$small_pic  = '36wh_'.$small_pic[1];
-			$old_name2 =  D_GROUP_PIC_PATH.'/'.$small_pic;
-			$new_name2 = D_GROUP_PIC_PATH.'/'.$pic_36;
+                                if(strpos($old_36,'default')) $default_pics = 1;
+                        }
+                        $pic_100 = $pic_hash_name;
+                        $pic_36 = $pic_hash_name;
 
-			$old_name = D_GROUP_PIC_PATH.'/'.$old_name;
-			$new_name = D_GROUP_PIC_PATH.'/'.$pic_100;
+                        $you_pic_query = "UPDATE groups SET pic_36 = '{$pic_36}', pic_100 = '{$pic_100}' WHERE gid = {$gid}";
+                        $this->mysqli->query($you_pic_query);
 
+                        if(!$default && $old_100 != '100h_default_group.gif'){
+                                unlink(D_GROUP_PIC_PATH.'/'.$old_100);
+                        }
+		}
 
+		if($fav_hash_name){
+		        $old_pics_query = <<<EOF
+                        SELECT favicon FROM groups WHERE gid = {$gid} LIMIT 1
+EOF;
+                        $old_pics_results = $this->mysqli->query($old_pics_query);
+                        while($res = $old_pics_results->fetch_assoc() ){
+                                $favicon = $res['favicon'];
+                                if(strpos($favicon,'default')) $default_pics = 1;
+                        }
+                        $pic_101 = $pic_hash_name;
 
+                        $you_pic_query = "UPDATE groups SET favicon = '{$fav_hash_name}' WHERE gid = {$gid}";
+                        $this->mysqli->query($you_pic_query);
 
-			rename($old_name,$new_name);
-			rename($old_name2,$new_name2);
-			$gr_pic_query = "UPDATE groups SET pic_36 = '{$pic_36}',pic_100 = '{$pic_100}' WHERE gid = {$gid}";
-			$this->mysqli->query($gr_pic_query);
-			return json_encode(array('success' => True,'pic' => True));
+                        if(!$default && $old_100 != '100h_default_group.gif'){
+                                unlink(D_GROUP_PIC_PATH.'/'.$old_100);
+                        }
 		}
 
 		if($this->mysqli->affected_rows)

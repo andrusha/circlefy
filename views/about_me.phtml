@@ -1,4 +1,11 @@
 ﻿<?php
+$logged = (!empty($_SESSION['uid']));
+$type = !empty($_GET['type']) ? $_GET['type'] : 'account';
+switch ($_GET['saved']){
+	case "yes": $notify = 'notify'; break;
+	case "no": $notify = 'error'; break;
+}
+
 $res = $_t['edit_profile'];
 $fname = $res['fname'];
 $lname = $res['lname'];
@@ -11,106 +18,172 @@ $region = $res['region'];
 $town = $res['town'];
 $lang = $res['lang'];
 $about = $res['about'];
+$private = $res['private'];
 
 $stat = $_t['stats'];
 $message_count = $stat['message_count'];
 $response_count = $stat['response_count'];
 $group_count = $stat['group_count'];
+
+if ($_t['settings']) {
+	foreach ($_t['settings'] as $setting) { $notifications = $setting; }
+}
+
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!doctype html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="Content-Language" content="EN" />
-<meta name="ROBOTS" content="ALL" />
-<meta name="Copyright" content="Copyright (c) 2009 TAP" />
-<meta http-equiv="imagetoolbar" content="false" />
-<meta name="description" content="TAP communication platform" />
-<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-<title>tap - alpha</title>
-<link rel="stylesheet" href="/views/style_sheets/global.css" type="text/css" />
-<link rel="stylesheet" href="/views/style_sheets/profile.css" type="text/css" />
-<link rel="shortcut icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="/images/cimages/favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="/views/javascript/mootools-1.2.3-core-yc.js"></script>
-<script type="text/javascript"src="/views/javascript/mootools-1.2.3.1-more.js"></script>
-<script type="text/javascript" src="/views/javascript/mootools-tap.js"></script>
-<script type="text/javascript" src="/views/javascript/mpmetrics.js"></script>
-<script type="text/javascript"> try { mpmetrics.init('<?= METRIC_KEY ?>');} catch(err) { alert(err) } </script>
-<script type="text/javascript">
-Tap = window.Tap || {};
-Tap.Vars = {
-	country: "<?= $country ?>",
-	region: "<?= $region ?>",
-	state: "<?= $state ?>",
-	town: "<?= $town ?>",
-	lang: "<?= $lang ?>"
-};
-</script>
-<script type="text/javascript" src="/views/javascript/tap.profile.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="uid" content="<?= $_t['pcid'] ?>" />
+	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
+	<title>tap</title>
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript">
+		window._vars = {
+			type: "<?= $type ?>",
+			email: "<?= $email ?>",
+			about: "<?= $about ?>",
+			fname: "<?= $fname ?>",
+			lname: "<?= $lname ?>",
+			lang: "<?= $lang ?>",
+			country: "<?= $country ?>"
+		};
+	</script>
+	<script type="text/javascript" src="/views/scripts/settings.js"></script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
 
+</head>
 <body>
-	
-	<? include(HEADER_CLEAN); ?>
-	
-	<div id="main">
-		
-		<div id="sidebar-left" class="sidebar">
-			<div id="groups" class="section">
-				<div class="section-head">
-					<h1>Stats</h1>
-				</div>
-				<div class="section-body user-stats">
-					<p><span><?= $message_count ?></span> taps from you.</p>
-					<p><span><?= $response_count ?></span> responses received.</p>
-					<p><span><?= $group_count ?></span> groups joined.</p>
-				</div>
-			</div>
-		</div>
-		
-		<div id="content">
-			
-			<div id="profile" class="section">
-				
-				<div class="section-head big">
-					<span class="tab" id="pass">Password</span>
-					<span class="tab on" id="account">Your Account</span>
-					<h1>
-						<span>My Profile</span>
-					</h1>
-				</div>
-				
-				<div class="section-body info">
-					<div id="youraccount" class="panel selected">
-						<h1>About Me</h1><hr class="hr2"/>
-						<h2 class="in-title">
-							About: <input type="text" name="about" value="<?=$about?>" />
-							<p>*For your public profile</p>
-							<div class="error-msg"></div>
-						</h2>
+	<div id="wrapper">
+		<?include(HEADER)?>
+		<div id="main">
 
-						<h1>Account</h1><hr class="hr2"/>
-						<h2 class="in-title">
-							Username: <input type="text" name="uname" disabled="disabled" value="<?= $uname ?>" />
-							<div class="error-msg"></div>
+			<div id="sidebar">
+
+				<?php if ($logged): ?>
+				<div id="you" class="section container">
+					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
+					<p class="special">
+						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
+					</p>
+					<p>
+						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+						<a href="/settings">settings</a>
+						<a href="/?logout=true">logout</a>
+					</p>
+				</div>
+				<?php endif; ?>	
+				
+				<div class="sideinfo section container">
+					<h2>
+						<span id="tab-name">settings</span>
+					</h2>
+					<ul class="panel">
+						<li class="panel-item <?= $type == 'account' ? 'selected' : '' ?>">
+							<span class="count"></span>
+							<a href="/settings?type=account" class="names inblock ellipsis">account</a>
+						</li>
+						<li class="panel-item <?= $type == 'picture' ? 'selected' : '' ?>">
+							<span class="count"></span>
+							<a href="/settings?type=picture" class="names inblock ellipsis">profile picture</a>
+						</li>
+						<li class="panel-item <?= $type == 'notifications' ? 'selected' : '' ?>">
+							<span class="count"></span>
+							<a href="/settings?type=notifications" class="names inblock ellipsis">notifications</a>
+						</li>
+						<li class="panel-item <?= $type == 'password' ? 'selected' : '' ?>">
+							<span class="count"></span>
+							<a href="/settings?type=password" class="names inblock ellipsis">change password</a>
+						</li>
+					</ul>
+				</div>
+						
+			</div>
+
+			<div id="content">
+				
+				<?php
+					if ($type == 'account'):
+				?>
+				<div class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">settings</span>
 						</h2>
-						<h2 class="in-title">
-							Email: <input type="text" name="email" value="<?= $email ?>" />
-							<div class="error-msg"></div>
-						</h2>
-						<h2 class="in-title">
-							Firstname: <input type="text" name="fname" value="<?= $fname ?>" />
-							<div class="error-msg"></div>
-						</h2>
-						<h2 class="in-title">
-							Lastname: <input type="text" name="lname" value="<?= $lname ?>" />
-							<div class="error-msg"></div>
-						</h2>
-						<h2 class="in-title">
-							Primary Language:
-							<select name="language" style="margin-right:140px">
+						<span class="stream-name">Account <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
+					</div>
+					<div class="body">
+						<div id="user-account" class="form <?= $notify ?>">
+							<p class="notify">Your changes have been saved</p>
+							<p class="error">Something weird happened, could you please try again?</p>
+
+			
+							<label for="username">
+								username 
+								<span class="help">this is your public username</span>
+								<span class="error"></span>
+							</label>
+							<input name="username" value="<?= $uname ?>" type="text" disabled="disabled" class="basic full" />
+							
+							<label for="email">
+								email
+								<span class="help">your email address</span>
+								<span class="error"></span>
+							</label>
+							<input name="email" value="<?= $email ?>" type="text" class="basic full" />
+							
+							<label for="about">
+								about me 
+								<span class="help">a short description of yourself for your profile page</span>
+								<span class="error"></span>
+							</label>
+							<input name="about" value="<?= $about ?>" type="text" class="basic full" />
+							
+							<label for="firstname">
+								first name
+								<span class="help">your first name</span>
+								<span class="error"></span>
+							</label>
+							<input name="firstname" value="<?= $fname ?>" type="text" class="basic full" />
+							
+							<label for="lastname">
+								last name
+								<span class="help">your last name</span>
+								<span class="error"></span>
+							</label>
+							<input name="lastname" value="<?= $lname ?>" type="text" class="basic full" />
+							
+							<label for="language">
+								country
+								<span class="help">your current location</span>
+								<span class="error"></span>
+							</label>
+							<select name="country" class="basic full">
+								<? foreach ( $_t['init_geo_data'] as $item): ?>
+								<option value="<?= $item['abbr2'] ?>">
+									<?= $item['name'] ?>
+								</option>
+								<? endforeach; ?>
+							</select>
+							
+							<label for="language">
+								language
+								<span class="help">your primary language</span>
+								<span class="error"></span>
+							</label>
+							<select name="language" class="basic full">
 								<option value="English">English</option>
 								<option value="Afrikaans">Afrikaans</option>
 								<option value="Albanian">Albanian</option>
@@ -205,85 +278,158 @@ Tap.Vars = {
 								<option value="Yoruba">Yoruba</option>
 								<option value="Zulu">Zulu</option>
 							</select>
-							<div class="error-msg"></div>
-						</h2>
-						<br /><br />
-						<h1>Location </h1><hr class="hr2"/>
-						<h2 class="in-title">Country:
-							<select name="country" style="margin-right:140px">
-								<? foreach ( $_t['init_geo_data'] as $item): ?>
-								<option
-									value="<?= $item['abbr2'] ?>"
-									style="background: url(images/geo_pics/gif/<?= strtolower($item['abbr2']) ?>.gif) no-repeat 3% center; padding: 5px; padding-left: 30px;">
-									<?= $item['name'] ?>
-								</option>
-								<? endforeach; ?>
-							</select>
-							<img id="flagger" src="images/geo_pics/gif/<?= empty($item['country']) ? $item['country'] : 'af' ?>.gif" style="float:right; margin-top: 5px" />
-						</h2>
-
-						<h1>Picture </h1><hr class="hr2"/>
-						<form enctype="multipart/form-data" action="/AJAX/profile_picture_upload.php" method="post" target="picture">
-							<h2 class="in-title">
-								<div id="pic-preview" style="display:inline; float:left; margin-right:20px">
-									<img src="/user_pics/<?= $pic ?>" />
-								</div>
-								Change: <input id="pic-uploader" type="file" name="you-pic" value="" style="height: 22px" />
-								<div class="error-msg"></div>
-							</h2>
-							<iframe
-								name="picture"
-								style="display:none;">
-							</iframe>
-						</form>
-
-						<p id="profile-btns"><a href="#" id="saveprofile" class="save-btn"></a></p><br />
-
+							<label for="private">
+								private
+								<br/>
+								<span class="help">make your tap account private ( people will not be able to follow you and your tap will not be viewable via your profile )</span>
+								<span class="error"></span>
+							</label>
+							<input id="private" name="private" value="1" <?if($private) echo "checked"?> type="checkbox" class="basic full" />
+							
+							<div class="buttons">
+								<button class="action">save changes</button> or <a href="/">cancel</a>
+							</div>
+						</div>
 					</div>
-					
-					<div id="passchange" class="panel">
-						<h1>Change your password</h1><hr class="hr1"/>
-						<h2 class="in-title">
-							Current password: <input type="password" name="current" maxlength="40" value="" />
-							<div class="error-msg"></div>
-						</h2>
-						<h2 class="in-title">
-							New password: <input type="password" name="newpass" maxlength="40" value="" />
-							<div class="error-msg"></div>
-						</h2>
-						<h2 class="in-title">
-							Repeat password: <input type="password" name="newpass_repeat" maxlength="40" value="" />
-							<div class="error-msg"></div>
-						</h2>
-
-						<p id="profile-btns"><a href="#" id="savepassword" class="save-btn"></a></p><br />
-
-					</div>
-					
-					<p id="gr-create-success" class="input-descr">Loading...</p>
-					<div class="clarity"></div>
 				</div>
-			
+				<?php
+					elseif ($type == 'picture'):
+				?>
+				<div class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">settings</span>
+						</h2>
+						<span class="stream-name">Profile Picture <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
+					</div>
+					<div class="body">
+						<div id="user-picture" class="form <?= $notify ?>">
+							<p class="notify">Your changes have been saved</p>
+							<p class="error">Something weird happened, could you please try again?</p>
+							<form name="picuploader" action="/AJAX/profile_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
+								<label for="file">
+									picture 
+									<span class="help">your profile picture</span>
+									<span class="error"></span>
+								</label>
+								<input id="pic-uploader" name="you-pic" type="file" class="basic full" />
+								<img id="preview" src="/user_pics/<?= $pic ?>" />
+								<iframe name="picture" style="display:none;"> </iframe>
+							</form>
+							
+							<div class="buttons">
+								<button class="action">change picture</button> or <a href="/">cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php
+					elseif ($type == 'notifications'):
+				?>
+				<div class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">settings</span>
+						</h2>
+						<span class="stream-name">Notifications <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
+					</div>
+					<div class="body">
+						<div id="user-notifications" class="form <?= $notify ?>">
+							<p class="notify">Your changes have been saved</p>
+							<p class="error">Something weird happened, could you please try again?</p>
+							<label>
+								notifications 
+								<span class="help">tap will send you an email for the following events</span>
+								<span class="error"></span>
+							</label>
+							<label class="inline">
+								<input name="respond" type="checkbox" value="1" <?= $notifications['respond'] ? 'checked="checked"' : '' ?> /> 
+								When someone responds to my tap.
+							</label>
+							<label class="inline">
+								<input name="track" type="checkbox" value="1" <?= $notifications['track'] ? 'checked="checked"' : '' ?> /> 
+								When someone starts tracking me.
+							</label>
+							<label class="inline">
+								<input name="group" type="checkbox" value="1" <?= $notifications['join_group'] ? 'checked="checked"' : '' ?> /> 
+								When someone joins a group I own or moderate.
+							</label>
+							
+							<div class="buttons">
+								<button class="action">save settings</button> or <a href="/">cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php
+					elseif ($type == 'password'):
+				?>
+				<div class="section">
+					<div class="header">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">settings</span>
+						</h2>
+						<span class="stream-name">Change Password <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
+					</div>
+					<div class="body">
+						<div id="user-password" class="form <?= $notify ?>">
+							<p class="notify">Your password has been changed</p>
+							<p class="error">Hmm, I don't think you entered the right passwords. Could you please try again?</p>
+							<label for="current">
+								current password 
+								<span class="help">enter your current password</span>
+								<span class="error"></span>
+							</label>
+							<input name="current" type="password" class="basic full" />
+							
+							<label for="new">
+								new password 
+								<span class="help">enter your new password</span>
+								<span class="error"></span>
+							</label>
+							<input name="new" type="password" class="basic full" />
+							
+							<label for="about">
+								repeat password 
+								<span class="help">type your new password again, just to make sure</span>
+								<span class="error"></span>
+							</label>
+							<input name="repeat" type="password" class="basic full" />
+							
+							<div class="buttons">
+								<button class="action">change password</button> or <a href="/">cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php
+					endif;
+				?>
+
 			</div>
-			
+
 		</div>
-		
-		<div id="sidebar-right" class="sidebar">
-			<div class="section">
-				<div class="section-head gray">
-					<h1>Help and Tips</h1>
-				</div>
-				<div class="section-body info">
-					<h2>Set your account info correctly.</h2>
-					<p>Your account information is not only required, but it's also useful for your friends and contacts to locate you on tap. So make sure to input correct information.</p>
-					<h2>Keep your password safe.</h2>
-					<p>Weak passwords could easily be sniffed using special tools, so make sure you use stronger passwords. Mix letters and numbers, and add a few symbols from your keyboard.</p>
-			</div>
+
+		<div class="clarity"></div>
+
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/">home</a>
+				<a href="/groups">groups</a>
+				<a href="/people">people</a>
+				<a href="/settings">settings</a>
+				<a href="/?logout=true">logout</a>
+			</span>
 		</div>
 		
 	</div>
-	
-	<? include(ANALYTICS); ?>
-	
+	<?include(JAVASCRIPT_TEMPLATES)?>
 </body>
 </html>

@@ -29,13 +29,16 @@ class public_tap extends Base{
 
 		//START get uname ( this is so that we can do tap.info/tap/id and not tap.info/user/uname/tap_id
 		$get_uname = <<<EOF
-		SELECT l.uname FROM special_chat AS sc
+		SELECT l.uname,p.about FROM special_chat AS sc
 		JOIN login AS l ON l.uid = sc.uid
+		JOIN profile AS p ON l.uid = p.uid
 		WHERE sc.mid = {$mid} LIMIT 1
 EOF;
 		$get_uname_result = $this->db_class_mysql->db->query($get_uname);
 		$res = $get_uname_result->fetch_assoc();
 		$uname = $res['uname'];
+		$about = $res['about'];
+		$this->set($about,'about');
 		if(!$uname)
 			return False;
 		//END get uname
@@ -111,7 +114,7 @@ EOF;
 			
 			
 			$my_groups_array[] = array(
-				'gid' => $gid,
+					'gid' => $gid,
 					'gname' => $gname,
 					'pic_36' => $pic_36,
 					'symbol' => $symbol,
@@ -130,18 +133,35 @@ EOF;
 
 		//START get tap
 		$users_query_bits_info = <<<EOF
-		SELECT t4.mid as good_id,TAP_ON.count AS viewer_count,
-		t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,
-		t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-		JOIN special_chat as t3
-		ON t3.uid = t2.uid
-		LEFT JOIN (
-		SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$logged_in_id}
-		) AS t4
-		ON t4.mid = t3.cid
-		LEFT JOIN TAP_ONLINE AS TAP_ON
-		ON t3.mid = TAP_ON.cid
-		WHERE t3.mid IN ( {$mid} ) ORDER BY t3.cid DESC LIMIT 10
+		SELECT
+        good.mid as good_id,
+        TEMP_ON.online AS user_online,
+        TAP_ON.count AS viewer_count,
+        sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+        l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
+        g.favicon,g.gname,g.symbol,
+        scm.gid,scm.connected
+FROM login AS l
+JOIN special_chat as sc
+ON sc.uid = l.uid
+LEFT JOIN (
+SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$logged_in_id}
+) AS good
+ON good.mid = sc.cid
+LEFT JOIN TAP_ONLINE AS TAP_ON
+ON sc.mid = TAP_ON.cid
+LEFT JOIN TEMP_ONLINE AS TEMP_ON
+ON sc.uid = TEMP_ON.uid
+
+LEFT JOIN special_chat_meta AS scm
+ON scm.mid = sc.cid
+
+JOIN groups AS g
+ON scm.gid = g.gid
+
+WHERE sc.mid IN ( {$mid} ) AND ( scm.connected = 1 OR scm.connected = 2 )
+
+ORDER BY sc.cid DESC LIMIT 10
 EOF;
 		$data_all_users_bits = $this->bit_generator($users_query_bits_info,'users_aggr');
 		$this->set($data_all_users_bits,'user_bits');
@@ -159,12 +179,57 @@ EOF;
 		//START set the session uid for Orbited
 		$this->set($_SESSION['uid'],'pcid');
 		//END set the session uid for Orbited
+
+		//START stats
+                $count_messages = <<<EOF
+                SELECT COUNT(*) AS message_count FROM special_chat WHERE uid = {$uid}
+EOF;
+                $this->db_class_mysql->set_query($count_messages,'count_messages','Counts amount of messages a user has for a stat');
+                $count_results = $this->db_class_mysql->execute_query('count_messages');
+                if($count_results->num_rows)
+                $res = $count_results->fetch_assoc();
+                        $message_count = $res['message_count'];
+
+                $count_resp = <<<EOF
+                SELECT COUNT(*) AS resp_count FROM chat WHERE uid = {$uid}
+EOF;
+
+                $this->db_class_mysql->set_query($count_resp,'count_resp','Counts amount of responses a user has for a stat');
+                $count_results = $this->db_class_mysql->execute_query('count_resp');
+                if($count_results->num_rows)
+                $res = $count_results->fetch_assoc();
+                        $resp_count = $res['resp_count'];
+
+                $count_group = <<<EOF
+                SELECT COUNT(*) AS group_count FROM group_members WHERE uid = {$uid}
+EOF;
+                $this->db_class_mysql->set_query($count_group,'count_group','Counts amount of groups a user has for a stat');
+                $count_results = $this->db_class_mysql->execute_query('count_group');
+                if($count_results->num_rows)
+                $res = $count_results->fetch_assoc();
+                        $group_count = $res['group_count'];
+
+                if(!$message_count)
+                        $message_count = 0;
+                if(!$resp_count)
+                        $resp_count = 0;
+                if(!$group_count)
+                        $group_count = 0;
+
+                $stats = array(
+                        'message_count' => $message_count,
+                        'response_count' => $resp_count,
+                        'group_count' => $group_count
+                );
+                $this->set($stats,'stats');
+                //END stats
+
 		}
 
 
 private function load_response($cid){
                 $resp_message_query = <<<EOF
-		SELECT l.uid,c.uname,c.chat_text,UNIX_TIMESTAMP(c.chat_time) AS chat_time
+		SELECT l.uid,l.pic_36,c.uname,c.chat_text,UNIX_TIMESTAMP(c.chat_time) AS chat_time
 		FROM chat AS c 
 		JOIN login AS l ON l.uid = c.uid
 		WHERE c.cid = {$cid};
@@ -174,6 +239,7 @@ EOF;
                 while($res = $responses_data->fetch_assoc()){
                         $uname = $res['uname'];
 			$uid = $res['uid'];
+			$pic_36 = $res['pic_36'];
                         $chat_text = $res['chat_text'];
                         $chat_timestamp = $res['chat_time'];
 
@@ -183,7 +249,7 @@ EOF;
 			$this->person[$uname] = array(
 			'uname' => $uname,
 			'count' => $resp_count,
-			'pic' => 'test'
+			'small_pic' => $pic_36 
 			);
 		
                         $responses[] = array(
@@ -204,7 +270,7 @@ private function bit_generator($query,$type){
 	if($m_results->num_rows)
                         while($res = $m_results->fetch_assoc()){
                                 //Setup
-                                $mid = $res['mid'];
+				 $mid = $res['mid'];
                                 $special = $res['special'];
                                 $chat_timestamp = $res['chat_timestamp'];
                                 $cid = $res['cid'];
@@ -214,8 +280,14 @@ private function bit_generator($query,$type){
                                 $lname  = $res['lname'];
                                 $pic_100 = $res['pic_100'];
                                 $pic_36 = $res['pic_36'];
-				$viewer_count = $res['viewer_count'];
+                                $viewer_count = $res['viewer_count'];
+                                $user_online = $res['user_online'];
                                 $uid = $res['uid'];
+                                $gid = $res['gid'];
+                                $favicon = $res['favicon'];
+                                $gname = $res['gname'];
+                                $symbol = $res['symbol'];
+                                $connected = $res['connected'];
 
                                 //Process
 				$chat_timestamp_raw = $chat_timestamp;
@@ -231,10 +303,10 @@ private function bit_generator($query,$type){
 
                                 //Store
                                 $messages[$cid] = array(
-                                'mid' =>           $mid,
+				 'mid' =>           $mid,
                                 'special'=>       $special,
                                 'chat_timestamp'=>$chat_timestamp,
-				'chat_timestamp_raw'=>$chat_timestamp_raw,
+                                'chat_timestamp_raw'=>$chat_timestamp_raw,
                                 'cid'=>           $cid,
                                 'chat_text'=>     $chat_text,
                                 'uname'=>         $uname,
@@ -243,10 +315,17 @@ private function bit_generator($query,$type){
                                 'pic_100'=>       $pic_100,
                                 'pic_36'=>        $pic_36,
                                 'uid'=>           $uid,
+                                'gid'=>           $gid,
+                                'favicon'=>           $favicon,
+                                'gname' =>              $gname,
+                                'symbol' =>              $symbol,
+                                'connected'=>           $connected,
+
                                 'viewer_count'=>     $viewer_count,
+                                'user_online'=>     $user_online,
                                 'last_resp'=>     null,
                                 'resp_uname'=>    null,
-				'count'=>	  0
+                                'count'=>         0
                                 );
 				$mid_list .= $cid.',';
                         }

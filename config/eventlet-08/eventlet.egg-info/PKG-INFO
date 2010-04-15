@@ -1,0 +1,23 @@
+Metadata-Version: 1.0
+Name: eventlet
+Version: 0.8.16
+Summary: Coroutine-based networking library
+Home-page: http://eventlet.net
+Author: Linden Lab
+Author-email: eventletdev@lists.secondlife.com
+License: UNKNOWN
+Description: 
+        Eventlet is a networking library written in Python. It achieves
+        high scalability by using non-blocking io while at the same time
+        retaining high programmer usability by using coroutines to make
+        the non-blocking io operations appear blocking at the source code
+        level.
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: POSIX
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 4 - Beta

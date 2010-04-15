@@ -13,6 +13,7 @@ function __autoload($className){
 
 $allowedPages = array(
 		'profile'=>true,
+		'invite'=>true,
 		'groups'=>true,
 		'help'=>true,
 		'create_group'=>true,
@@ -42,6 +43,8 @@ if (isset($allowedPages[$_GET['page']]) && $allowedPages[$_GET['page']]) {
 		$page = 'public_group';
 	if ($page == 'tap')
 		$page = 'public_tap';
+	if ($page == 'settings')
+		$page = $_GET['type'] == 'notifications' ? 'settings' : 'profile';
 } else {
 
 	// Invalid page so default to homepage

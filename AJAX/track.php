@@ -33,11 +33,12 @@ class friend_functions{
                 $fid = $this->mysqli->real_escape_string($fid);
                 $state = $this->mysqli->real_escape_string($state);
 
-		$friend_email_query = "SELECT l.email FROM login AS l WHERE l.uid = {$fid} LIMIT 1";
+		$friend_email_query = "SELECT l.email FROM login AS l WHERE l.uid = {$fid} AND l.private != 1 LIMIT 1";
 		$friend_email_result = $this->mysqli->query($friend_email_query);
 		$res = $friend_email_result->fetch_assoc();
 
-		if($state == 1){
+
+		if($state == 1 && $friend_email_result->num_rows){
 	                $friend_query = "INSERT INTO friends(uid,fuid,time_stamp) values('{$uid}','{$fid}',NOW());";
 			$to = $res['email'];
                         $subject = "{$uname} now has you on tap.";
