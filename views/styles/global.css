@@ -141,7 +141,6 @@ padding-right:2px;
 
 body {
 	background-color: #101010;
-	background-color: white;	
 	color: #F7F7F7;
 /*	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;*/
 	font-family: Arial, sans-serif;
@@ -241,7 +240,6 @@ input.basic.error, select.basic.error {
 }
 
 #nav {
-	background:gray;
 	float: right;
 	padding: 13px 10px 10px;
 }
