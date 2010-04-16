@@ -1,9 +1,22 @@
+<?php
+$r = $_SERVER['REQUEST_URI'];
+$c = 'class="current"';
+
+switch($r){
+        case '/':       $home =  $c;break;
+        case '/groups':   $groups =  $c;break;
+        case '/people':  $people=  $c;break;
+        case '/settings':   $settings =  $c;break;
+}
+?>
+
+
   <div id="header" class="container">
                         <div id="nav">
-                                <a href="/" class="current">home</a>
-                                <a href="/groups">groups</a>
-                                <a href="/people">people</a>
-                                <a href="/settings">settings</a>
+                                <a href="/"  	    <?=$home?>    >home</a>
+                                <a href="/groups"   <?=$groups?>  >groups</a>
+                                <a href="/people"   <?=$people?>  >people</a>
+                                <a href="/settings" <?=$settings?>>settings</a>
                                 <a href="/?logout=true">logout</a>
                         </div>
 

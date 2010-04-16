@@ -1,0 +1,14 @@
+<div id="you" class="section container">
+					<a href="/user/<?= $_SESSION['uname'] ?>">
+                                        <img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+                                        <span style="font-size:14px;"><p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p></span>
+					</a>	
+                                        <p class="special">
+                                                <a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
+                                        </p>
+                                        <p>
+                                                <a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+                                                <a href="/settings">settings</a>
+                                                <a href="/?logout=true">logout</a>
+                                        </p>
+                                </div>

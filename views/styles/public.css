@@ -100,7 +100,7 @@ div.form button.action:hover {
 	border-bottom: 2px solid #fffa00;
 }
 
-#login li {
+body #login li {
 	border-top: 1px solid #616161;
 	background: #101010;
 	padding: 8px 5px;

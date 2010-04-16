@@ -36,6 +36,9 @@ class loader_functions{
 
 	function create_loader($mid_list){
 		$uid = $_SESSION['uid'];
+		if(!$uid)
+			$uid = 0;
+
 		$group_query_bits_info = <<<EOF
 		  SELECT
                         good.mid as good_id,

@@ -3,6 +3,7 @@ require('../AJAX/ajaz_sign_up.php');
 class irc_freenode extends ajaz_sign_up{ 
 
 	public $uid = null;
+	public $uid2 = 99;
 
 	function __construct($irc_server,$irc_channel,$irc_nickname,$irc_pass,$finame,$lname,$email,$lang){
 		set_time_limit(0);
@@ -56,21 +57,39 @@ EOF;
 
 			while(!feof($this->sock)){
 			    $buf = fgets($this->sock, 1024); //get a line of data from the server 
-//			    echo "[RECIVE] ".$buf; //display the recived data from the server 
+			   // echo "[RECIVE] ".$buf; //display the recived data from the server 
 		//	    if(strpos($buf, "422")) //422 last thing displayed after a successful connection after MOTD
 		//		$this->SendCommand("JOIN $server_chan\n\r"); 
 
 			    if(substr($buf, 0, 6) == "PING :") 
 				$this->SendCommand("PONG :".substr($buf, 6)."\n\r"); 
 
-			    if(strpos($buf, "You are now identified")){
+			    if($emailed_checked && !$signed_up){
 				#Nick name checks happenes at the database level and the IRC level
 				#This assumes you've already checked your nickname somewhere else
-			//echo "test";
-			$this->process_sign_up($this->uname,$this->fname,$this->email,$this->password,$this->lang);
-//			$this->uid = parent::$uid;
+				//echo "test";
+				$this->process_sign_up($this->uname,$this->fname,$this->email,$this->password,$this->lang);
+				$signed_up = 1;
+				$uid2 = $this->uid;
+				$this->uid2 = $uid2;
+	//			$this->uid = parent::$uid;
 				$this->SendCommand("PRIVMSG nickserv :listchans\n\r");
 				}
+
+			    if(strpos($buf, "You are now identified") && !$emailed_checked){
+				$this->SendCommand("PRIVMSG nickserv :info $this->irc_nickname\r");
+				}	
+
+			    if(strpos($buf, "Email")){
+				$parsed_email = explode(' ',$buf);
+				$parsed_email = $parsed_email[10];
+
+				if($parsed_email == 'noemail')
+					$this->email = rand(1,999999);
+				else
+					$this->email = $parsed_email;
+				$emailed_checked = 1;
+			    }
 
 			    if(strpos($buf, "Invalid password"))
 				$this->finished('LOGIN_FAILED');
@@ -93,7 +112,7 @@ EOF;
 
 				}
 			
-			    if(strpos($buf, "channel access matches for the nickname")){
+			    if(strpos($buf, "channel access matches for the nickname") && $this->uid2){
 				$this->process_channels($channel_access,1);
 				//$listchan=True;
 				}
@@ -112,7 +131,7 @@ EOF;
 				$chan = trim($chan,'#');
 				
 				$insert_string_channels .= "'$chan',";
-				$insert_string_full .= "($type,'$chan',$this->uid),";
+				$insert_string_full .= "($type,'$chan',$this->uid2),";
 			}
 		}
 		$insert_string_full = substr($insert_string_full,0,-1);
@@ -131,14 +150,13 @@ EOF;
 
 		while($res = $get_gids_results->fetch_assoc()){
 			$gid = $res['gid'];
-			$gid_list = "(1,$gid,$this->uid),";
+			$gid_list .= " (1,$gid,$this->uid2),";
 		}
 		$gid_list = substr($gid_list,0,-1);
 
 		$link_group_query = <<<EOF
 		INSERT INTO group_members(admin,gid,uid) values $gid_list
 EOF;
-		echo $link_group_query;
 		$this->mysqli->query($link_group_query);
 		//echo $link_group_query;
 	//	if(!$type)
@@ -219,9 +237,11 @@ if($flag == 'irc'){
 	//echo "Logging in.....";
 	$nick = "Yayzyzy";
 	$password = "acid11";
+	$nick = "Gla";
+	$password = "hehehe";
 
-	$fname = "Person";
-	$lname = "Person";
+	$fname = "Change my";
+	$lname = "name";
 	$email = rand(1,999999);
 
 	$lang = "English";

@@ -19,12 +19,12 @@ if (!empty($_t['user_bits'])) {
 	<meta name="uid" content="<?= $_t['pcid'] ?>" />
 	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
 	<title>tap - convo with <?=$_t['user']?></title>
-	<link rel="shortcut icon" href="http://mark.tap.info/group_pics/<?=$tap['favicon']?>" />
+	<link rel="shortcut icon" href="http://tap.info/group_pics/<?=$tap['favicon']?>" />
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
-	<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+	<script type="text/javascript" src="http://tap.info:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
@@ -54,18 +54,7 @@ if (!empty($_t['user_bits'])) {
 			<div id="sidebar">
 
 				<?php if ($logged): ?>
-				<div id="you" class="section container">
-					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
-					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
-					<p class="special">
-						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
-					</p>
-					<p>
-						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
-						<a href="/settings">settings</a>
-						<a href="/?logout=true">logout</a>
-					</p>
-				</div>
+	                                <?include(YOU)?>
 				<?php endif; ?>
 
 				<div class="sideinfo section container">

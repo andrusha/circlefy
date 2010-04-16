@@ -1,0 +1,39 @@
+<div id="login" class="section container">
+                                        <a id="tab-people" title="contacts" class="tab selected"></a>
+                                        <h2>
+                                                <span id="tab-name">ready to tap?</span>
+                                        </h2>
+                                        <form id="taplogin" action="/" method="POST">
+                                                <ul>
+                                                        <li class="notice">
+								NOTICE: WE ARE NOT ACCEPTING NEW MEMBERS AT THIS TIME, WE WILL AGAIN SOON
+                                                        </li>
+                                                        <li>
+                                                                <label class="inblock">username</label>
+                                                                <p class="body">
+                                                                        <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
+                                                                </p>
+                                                        </li>
+                                                        <li>
+                                                                <label class="inblock">password</label>
+                                                                <p class="body">
+                                                                        <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
+                                                                </p>
+                                                        </li>
+                                                        <li class="action">
+                                                                <button type="submit">login</button>
+                                                        </li>
+
+                                                        <li id="login-status"></li>
+                                                        <li id="pics-galore" >
+                                                        <? 
+							if($_t['pics_array'])	
+							foreach($_t['pics_array'] as $pic): ?>
+                                                                <a href="/group/<?=$pic['symbol']?>" >
+                                                                <img class="small-pics-logout" style="height:16px;width:16px;margin:4px;" src="/group_pics/<?=$pic['pic_36']?>" title="<?=$pic['symbol']?>" />
+                                                                </a>
+                                                        <? endforeach; ?>
+                                                        </li>
+                                                </ul>
+                                        </form>
+                                </div>

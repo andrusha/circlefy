@@ -10,7 +10,7 @@
                                 <img class="avatar" alt="<#: tap.uname #>" src="/user_pics/<#: tap.pic_100 #>" />
                         </a>
                         <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.uname) ? '' : 'offline' #>">
-                                <a href="/user/<#: tap.uname #>"><#: [tap.fname, tap.lname].join(" ") #></a>,
+                                <a href="/user/<#: tap.uname #>"><#: tap.uname #></a>,
                                 <a href="/tap/<#: tap.cid #>" class="date" data-timestamp="<#: tap.chat_timestamp_raw #>">
                                         <#: tap.chat_timestamp #>
                                 </a>

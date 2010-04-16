@@ -37,12 +37,12 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
 	<title>tap - group <?=$_t['symbol']?></title>
 
-	<link rel="shortcut icon" href="http://mark.tap.info/group_pics/<?=$_t['favicon']?>" />
+	<link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>" />
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
-	<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+	<script type="text/javascript" src="http://tap.info:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
@@ -81,18 +81,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 			<div id="sidebar">
 
 				<?php if ($logged): ?>
-				<div id="you" class="section container">
-					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
-					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
-					<p class="special">
-						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
-					</p>
-					<p>
-						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
-						<a href="/settings">settings</a>
-						<a href="/?logout=true">logout</a>
-					</p>
-				</div>
+	                                <?include(YOU)?>
 				<?php endif; ?>
 				
 				<div id="filter" class="section">
@@ -239,7 +228,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
 								</a>
 								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['fname'] . " " . $tap['lname']) ?></a>,
+									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
 									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
 										<?= $tap['chat_timestamp'] ?>
 									</a>

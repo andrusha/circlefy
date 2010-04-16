@@ -62,6 +62,25 @@ EOF;
 		else
 			$this->set(0,'tracked');
 
+		                $track_count = <<<EOF
+                SELECT COUNT(*) AS count FROM friends AS f WHERE f.uid = {$uid}
+EOF;
+                $tracked_count = <<<EOF
+                SELECT COUNT(*) AS count FROM friends AS f WHERE f.fuid = {$uid}
+EOF;
+
+                $this->db_class_mysql->set_query($track_count,'tracked_count',"Counts # of users tracking you");
+                $tracked_count_res = $this->db_class_mysql->execute_query('tracked_count');
+                $tracked_count_res = $tracked_count_res->fetch_assoc();
+                $this->set($tracked_count_res['count'],'tracked_count');
+
+                $this->db_class_mysql->set_query($tracked_count,'track_count',"Counts # of users you are tracking");
+                $track_count_res = $this->db_class_mysql->execute_query('track_count');
+                $track_count_res = $track_count_res->fetch_assoc();
+                $this->set($track_count_res['count'],'track_count');
+
+
+
 		
 
 		//START User Prefences
@@ -92,7 +111,7 @@ EOF;
 			SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
 			FROM group_members AS t1
 			JOIN groups AS t2 ON t2.gid=t1.gid
-			JOIN special_chat_meta AS scm ON scm.gid=t1.gid
+			LEFT JOIN special_chat_meta AS scm ON scm.gid=t1.gid
 			WHERE t1.uid={$uid}
 			GROUP BY scm.gid
 EOF;
@@ -181,9 +200,11 @@ JOIN groups AS g
 ON scm.gid = g.gid
 
 WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
-
 ORDER BY sc.cid DESC LIMIT 10
 EOF;
+/*AND ( scm.connected = 1 OR scm.connected = 2 ) */
+
+
 
 /*ORDER BY sc.cid DESC LIMIT 10
 OLD

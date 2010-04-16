@@ -110,7 +110,7 @@ EOF;
                         $you_pic_query = "UPDATE groups SET favicon = '{$fav_hash_name}' WHERE gid = {$gid}";
                         $this->mysqli->query($you_pic_query);
 
-                        if(!$default && $old_100 != '100h_default_group.gif'){
+                        if(!$default_pics && $old_100 != '100h_default_group.gif'){
                                 unlink(D_GROUP_PIC_PATH.'/'.$old_100);
                         }
 		}

@@ -32,7 +32,7 @@ $private = $_t['private'];
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
-	<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+	<script type="text/javascript" src="http://tap.info:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
@@ -62,23 +62,12 @@ $private = $_t['private'];
 			<div id="sidebar">
 
 				<?php if ($logged): ?>
-				<div id="you" class="section container">
-					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
-					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
-					<p class="special">
-						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
-					</p>
-					<p>
-						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
-						<a href="/settings">settings</a>
-						<a href="/?logout=true">logout</a>
-					</p>
-				</div>
+	                                <?include(YOU)?>
 				<?php endif; ?>
 
 				<div class="sideinfo section container">
 					<h2>
-						<span id="tab-name">groups</span>
+						<span id="tab-name">groups (message stats)</span>
 					</h2>
 					<ul class="panel">
 						<?php 
@@ -89,6 +78,7 @@ $private = $_t['private'];
 							<span class="count"><? if($group['admin']) echo "<span title='Moderator'>&#10070;</span>" ?></span>
 							<img src="/group_pics/<?=$group['favicon']?>" title="<?$group['gname']?>" />&nbsp;
 							<a href="/group/<?= $group['symbol'] ?>" class="names inblock-public ellipsis"><?= $group['gname'] ?></a>
+							<span class="public-user-group-count"><?=rand(1,199)?></span>
 						</li>
 						<?php
 								endforeach;
@@ -152,6 +142,10 @@ $private = $_t['private'];
 							<span class="title">feed</span>
 						</h2>
 						<span class="stream-name"><?= $_t['user'] ?></span>
+			
+						<span id="public-following">Followers ( <?=$_t['track_count']?> )</span>
+						<span id="public-followers">Folliwing ( <?=$_t['tracked_count']?>  )</span>
+
 					</div>
 					<div class="body">
 						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
@@ -168,7 +162,7 @@ $private = $_t['private'];
 									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
 								</a>
 								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['fname'] . " " . $tap['lname']) ?></a>,
+									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
 									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
 										<?= $tap['chat_timestamp'] ?>
 									</a>

@@ -1,10 +1,25 @@
- <div id="header" class="container">
+<?php
+
+$r = $_SERVER['REQUEST_URI'];
+$c = 'class="current"';
+
+switch($r){
+	case '/':       $home =  $c;break;
+	case '/what':   $what =  $c;break;
+	case '/about':  $about=  $c;break;
+	case '/devs':  $devs =  $c;break;
+	case '/contact':$contact=$c;break;
+}
+		
+
+?>
+<div id="header" class="container">
                         <div id="nav">
-                                <a href="/">home</a>
-                                <a href="/what">what's tap?</a>
-                                <a href="/about" class="current">about us</a>
-                                <a href="/devs">developers</a>
-                                <a href="/contact">contact</a>
+                                <a href="/" 	   <?=$home?>   >home</a>
+                                <a href="/what"	   <?=$what?>   >what's tap?</a>
+                                <a href="/about"   <?=$about?>  >about us</a>
+                                <a href="/devs"    <?=$devs?>   >developers</a>
+                                <a href="/contact" <?=$contact?>>contact</a>
                         </div>
 
                         <div id="logo">

@@ -44,6 +44,22 @@ border-top:none;
 margin:4px 2px 4px 8px;
 
 }
+
+div.sideinfo .public-user-group-count{
+color:#888;
+background:#333;
+text-align:left;
+width:24px;
+height:16px;
+padding:2px;
+text-align:center;
+display:inline-block;
+	border-bottom-left-radius: 10px 10px;
+	border-bottom-right-radius: 10px 10px;
+	border-top-left-radius: 10px 10px;
+	border-top-right-radius: 10px 10px;
+}
+
 .panel-item-public-group li{
 }
 
@@ -59,6 +75,26 @@ padding-left:4px;
 
 .top-member-member{
 font-weight:bold;
+}
+
+#public-followers:hover, #public-following:hover{
+background:#222;
+cursor:pointer;
+color:yellow;
+}
+
+#public-followers, #public-following{
+font-size:13px;
+display:inline-block;
+text-align:center;
+padding-top:2px;
+vertical-align:-22%;
+height:30px;
+width:140px;
+color:#888;
+background:#333;
+margin-left:80px;
+padding-top:10px;
 }
 
 .top-member-count{
@@ -105,6 +141,7 @@ padding-right:2px;
 
 body {
 	background-color: #101010;
+	background-color: white;	
 	color: #F7F7F7;
 /*	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;*/
 	font-family: Arial, sans-serif;
@@ -204,6 +241,7 @@ input.basic.error, select.basic.error {
 }
 
 #nav {
+	background:gray;
 	float: right;
 	padding: 13px 10px 10px;
 }
@@ -706,6 +744,7 @@ ul.stream .tap-from a {
 	font-size: 12px;
 	font-weight: bold;
 	text-decoration: none;
+	color:yellow;
 }
 
 ul.stream .tap-from.offline a {
@@ -1244,14 +1283,14 @@ div.form #preview.blank {
 	float:right;
 	font-weight:bold;
 	height:10px;
-	padding:3px 3px 6px 6px;
+	padding: 3px 13px 12px 12px;
 	width:46px;
 	background:red;
+	
 	border-bottom-left-radius: 10px 10px;
 	border-bottom-right-radius: 10px 10px;
 	border-top-left-radius: 10px 10px;
 	border-top-right-radius: 10px 10px;
-	margin-top:8px;
 }
 
 .user-admin{ float:left; } 

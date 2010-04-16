@@ -85,15 +85,19 @@ EOF;
 				$old_36 = $res['pic_36'];
 				$old_100 = $res['pic_100'];
 
-				if(strpos($old_36,'default')) $default_pics = 1;
+				if(strpos($old_36,'default') || strpos($old_100,'default')) $default_pics = 1;
 			}
                         $pic_100 = 'med_'.$hash_name.'.gif';
                         $pic_36 = 'small_'.$hash_name.'.gif';
 
+				
+
                         $you_pic_query = "UPDATE login SET pic_36 = '{$pic_36}', pic_100 = '{$pic_100}' WHERE uid = {$uid}";
+
+			echo $you_pic_query;
                         $this->mysqli->query($you_pic_query);
 		
-			if(!$default){	
+			if(!$default_pics){	
 				unlink(PROFILE_PIC_PATH.'/'.$old_36);
 				unlink(PROFILE_PIC_PATH.'/'.$old_100);
 			}

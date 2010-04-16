@@ -57,9 +57,9 @@ $public_groups_topic = "Your public space";
 	<? echo $_t['your_groups']['favicon'] ?>
 	
 
-	 <link rel="shortcut icon" href="http://mark.tap.info/group_pics/default.ico" />
+	 <link rel="shortcut icon" href="http://tap.info/group_pics/default.ico" />
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="http://mark.tap.info:8000/static/Orbited.js"></script>
+	<script type="text/javascript" src="http://tap.info:8000/static/Orbited.js"></script>
 	<!-- // <script type="text/javascript" src="/assets.php?type=javascript&amp;package=mootools"></script> -->
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
@@ -88,19 +88,7 @@ $public_groups_topic = "Your public space";
 
 			<div id="sidebar">
 
-				<div id="you" class="section container">
-					<img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
-					<p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p>
-					<p class="special">
-						<a href="/invite" title="Invite your friends to tap">you have 2 invites left</a>
-					</p>
-					<p>
-						<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
-						<a href="/settings">settings</a>
-						<a href="/?logout=true">logout</a>
-					</p>
-				</div>
-				
+				<?include(YOU)?>	
 				<div id="filter" class="section">
 					<p class="inblock ellipsis">search <span class="title">all your groups</span> <a href="#" class="clear">clear</a></p>
 					<input id="filterkey" type="text" class="basic" />
@@ -228,7 +216,7 @@ $public_groups_topic = "Your public space";
 									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
 								</a>
 								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['fname'] . " " . $tap['lname']) ?></a>,
+									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
 									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
 										<?= $tap['chat_timestamp'] ?>
 									</a>

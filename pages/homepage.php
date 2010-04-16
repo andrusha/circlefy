@@ -83,7 +83,7 @@ class homepage extends Base{
 			$this->page_name = "new_logout";
 
 		$pics = <<<EOF
-		   select favicon as pic_36,symbol from groups where pic_36 != '36wh_default_group.gif' and connected = 3 order by rand() limit 77;
+		   select favicon as pic_36,symbol from groups where pic_36 != '36wh_default_group.gif' and connected = 3 order by rand() limit 42;
 EOF;
 		$pics_data = $this->db_class_mysql->db->query($pics);
 
@@ -179,7 +179,7 @@ EOF;
 		if($actives_bits_results->num_rows)
 		while($res = $actives_bits_results->fetch_assoc() ) {
 			$mid = $res['mid'];
-			$uid = $res['uid'];
+			$ac_uid = $res['uid'];
 			$small_pic = $res['small_pic'];
 			$uname = $res['uname'];
 			$chat_text = $res['chat_text'];
@@ -187,7 +187,7 @@ EOF;
 
 			$ac_output[] = array(
 			'mid'	=>	$mid,
-			'uid'	=>	$uid,
+			'uid'	=>	$ac_uid,
 			'uname'	=>	$uname,
 			'small_pic' => $small_pic,
 			'chat_text' =>	$chat_text,
@@ -404,6 +404,8 @@ WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
 
 ORDER BY sc.cid DESC LIMIT 10
 EOF;
+
+//echo $groups_query_bits_info;
 
 $data_all_groups_bits = $this->bit_generator($groups_query_bits_info,'groups_aggr');
 $this->set($data_all_groups_bits,'groups_bits');

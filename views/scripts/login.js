@@ -127,7 +127,7 @@ _login = {
                                 if(response.status == 'ADDED_ADDED'){
 					ls.removeClass('login-fail');
 					ls.addClass('login-success');
-					ls.set('html','<img src="/images/icons/accept.png" /> Welcome!  You are now a tap user AND we have added you to all your communities your moderate!  Enjoy Tap!');
+					ls.set('html','<img src="/images/icons/accept.png" /> Welcome!  You are now a tap user AND we have added you to all of your communities you moderate!  Enjoy Tap!');
                                         regStatus = 'login';
                                         successFn.delay(5000, this, regStatus);
                                 }
