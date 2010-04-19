@@ -87,7 +87,20 @@ class chat_functions{
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
+	function check_if_dupe($msg){
+		$uid = $_SESSION['uid'];
+
+		$check_channel_query = <<<EOF
+		SELECT mid FROM special_chat WHERE uid = {$uid} AND chat_text = '{$msg}';
+EOF;
+		$check_channel_results = $this->mysqli->query($check_channel_query);
+		return $check_channel_results->num_rows;
+
+	}
+	
+
 	function create_channel($msg){
+
 			
 		$uid = $_SESSION['uid'];
 		$uname = $_SESSION['uname'];
@@ -96,6 +109,11 @@ class chat_functions{
 		$uid = $this->mysqli->real_escape_string($uid);	
 		$msg = $this->mysqli->real_escape_string($msg);	
 		$uname = $this->mysqli->real_escape_string($uname);
+
+		$res = $this->check_if_dupe($msg);
+		if($res)
+			return array('dupe' => true);
+
 
 		// !!! This is where the filter code has to code, it will process the input of users and match and alert other users !!!
 	
