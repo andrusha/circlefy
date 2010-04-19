@@ -1,0 +1,169 @@
+<?php
+if ($_GET['logout'] == 'true') header('location: /');
+
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="with-errors" content="<?= (!empty($_t['errors']) && empty($_GET['logout'])) ? 'y' : 'n'?>">
+	<title>tap</title>
+	<link rel="shortcut icon" href="http://tap.info/group_pics/default.ico" />
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript" src="/views/scripts/login.js"></script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
+<script type="text/javascript">
+<?php $u = $_SERVER['REQUEST_URI']; ?>
+var server_uri = "<?=$u?>";
+var join_type = "<?=$_GET['type']?>";
+var join_value = "<?=$_GET['value']?>";
+</script>
+
+</head>
+<body>
+	<div id="wrapper">
+
+		<?include(HEADER_LOGOUT)?>
+
+		<div id="main">
+
+			<div id="sidebar">
+
+
+<div id="login" class="section container">
+                                        <a id="tab-people" title="contacts" class="tab selected"></a>
+                                        <h2>
+                                                <span id="tab-name">ready to tap?</span>
+                                        </h2>
+                                        <form id="taplogin" action="/" method="POST">
+                                                <ul>
+                                                        <li class="notice">
+							After you sign up for tap make sure you register your IRC/Freenode nickname.  We'll then link you up with all the approrpriate communities that are related to you!  ( with the proper credentials at that! )  That is the true tap expierence!
+                                                        </li>
+                                                </ul>
+                                        </form>
+                                </div>
+
+				
+
+			</div>
+
+			<div id="content">
+				
+				<div class="section">
+					<div class="header">
+						<h2 class="header-title">
+							<span class="title">tap</span>
+						</h2>
+						join the conversation!
+					</div>
+					<div class="body">
+						<div style="font-size:18px;color:white;" class="description">Tap allows you to create real-time communities that are manageable, easily accessible, scaleable and stylish.  Tap is currently open to members of Freenode only, as our focus is on real-time communities for open source and software projects. </div>	
+<div id="content"> 
+ 
+ 
+				<div id="tapstream" class="section description"> 
+						<div class="full info form">
+							<p><img src="/images/icons/error.png" /> Once you sign, you'll then be able to link up all of your credentials from Freenode to tap!</p>
+
+
+
+						 <div id="connect-signup2">
+                                <h2>Just one more thing before we log you in..</h2>
+                                <p>We're almost there <strong><span id="connect-signup-name2"></span></strong>, but first we'll need you to add a few more details to personalize your Tap experience.</p>
+
+                                <p class="forms center"><h2>Username</h2> <input type="text" name="uname"  class="basic stretch big"  /></p>
+
+                                <p class="guide">This username is already taken.</p>
+                                <p class="center"><h2>Full Name</h2><input type="text" name="name"  class="basic stretch big"  /></p>
+                                <p class="forms center"><h2>Email</h2> <input type="text" name="email"   class="basic stretch big"  /></p>
+                                <p class="guide">Enter a valid email address.</p>
+                                <p class="forms center"><h2>Password</h2> <input type="password" name="pass"   class="basic stretch big"   /></p>
+                                <p class="guide">Passwords must be at least 4 characters.</p>
+                                <p style="margin-top: 50px; text-align: right; font-size: 14px; margin-right: 20px">
+                                        <span class="indicator">
+                                                <img src="/images/spinner.gif" />
+                                                <span class="indic-msg">Signing you up...</span>
+                                        </span>
+                                        <span id="connect-signup-actions2">
+                                                <button class="action">Start Tapping!</button> <a id="connect-cancel2" href="#"></a>
+                                        </span>
+                                </p>
+                        </div>
+
+
+<!--
+
+
+							<h2>Username</h2>
+							<p class="center"><input name="uname" type="text" class="basic stretch big" /></p>
+
+							<h2>Password</h2>
+							<p class="center"><input name="pass" type="text" class="basic stretch big" /></p>
+
+							<h2>Email Address</h2>
+							<p class="center"><input name="email" type="text" class="basic stretch big" /></p>
+							
+							<h2>Full Name</h2>
+							<p class="center"><input name="fname" type="text" class="basic stretch big" /></p>
+
+							<h2>where did you hear about tap?</h2>
+							<p class="center"><input type="text" class="basic stretch big" /></p>
+							
+							<p class="buttons">
+								<button type="submit" class="action">send me an invite!</button>
+							</p>
+-->
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		
+		<div class="clarity"></div>
+		
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/" class="current">home</a>
+				<a href="/what">what's tap?</a>
+				<a href="/about">about us</a>
+				<a href="/devs">developers</a>
+				<a href="/contact">contact</a>
+			</span>
+		</div>
+	</div>
+	
+	<?include(JAVASCRIPT_TEMPLATES)?>
+
+
+
+<script type="text/javascript">
+var server_uri = '<?=$_SERVER['REQUEST_URI']?>';
+var
+
+var _gaq = _gaq || [];
+ _gaq.push(['_setAccount', 'UA-11153159-1']);
+ _gaq.push(['_trackPageview']);
+
+ (function() {
+   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+ })();
+</script>
+<script type="text/javascript" src="/views/scripts/signup.js"></script>
+
+</body>
+</html>
