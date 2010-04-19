@@ -116,6 +116,11 @@ _login = {
 					ls.set('text','Sorry, there is no IRC user with this username, please try again');
                                 }
 
+                                if(response.status == 'SORRY'){
+					ls.addClass('login-fail');
+					ls.set('text','Sorry, we are not accepting new users, please try back again shortly!');
+                                }
+
                                 if(response.status == 'ADDED_NONE'){
 					ls.removeClass('login-fail');
 					ls.addClass('login-success');

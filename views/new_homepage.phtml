@@ -117,7 +117,8 @@ $public_groups_topic = "Your public space";
 							<span class="count"></span>
 							<a href="#" class="names inblock ellipsis">all your groups</a>
 						</li>
-						<?php foreach ($_t['your_groups'] as $group): ?>
+						
+						<?php if($_t['your_groups']) foreach ($_t['your_groups'] as $group): ?>
 						<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
 							data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
 							data-symbol="<?= $group['symbol'][0] ?>"

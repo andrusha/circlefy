@@ -17,6 +17,8 @@ define("HEADER","parts/final_header.phtml");
 define("HEADER_LOGOUT","parts/final_header_logout.phtml");
 define("JAVASCRIPT_TEMPLATES","parts/javascript_templates.phtml");
 define("LOGIN","parts/login.phtml");
+define("FBCONNECT_BOTTOM","parts/fbconnect.phtml");
+define("FBCONNECT_HTML","fbconnect_html.phtml");
 define("YOU","parts/you.phtml");
 
 

@@ -29,6 +29,7 @@ $private = $_t['private'];
 	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
 	<title>tap - user <?=$_t['user']?></title>
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
@@ -46,6 +47,11 @@ $private = $_t['private'];
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
+	<?php if (!$logged): ?>
+        <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
+        <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
+        <?php endif; ?>
+
 </head>
 <body>
 	<div id="wrapper">
@@ -61,9 +67,12 @@ $private = $_t['private'];
 
 			<div id="sidebar">
 
-				<?php if ($logged): ?>
-	                                <?include(YOU)?>
-				<?php endif; ?>
+			        <?php if ($logged): ?>
+                                        <?include(YOU)?>
+                                <?php else: ?>
+                                        <?include(LOGIN)?>
+                                <?php endif; ?>
+
 
 				<div class="sideinfo section container">
 					<h2>
@@ -144,7 +153,7 @@ $private = $_t['private'];
 						<span class="stream-name"><?= $_t['user'] ?></span>
 			
 						<span id="public-following">Followers ( <?=$_t['track_count']?> )</span>
-						<span id="public-followers">Folliwing ( <?=$_t['tracked_count']?>  )</span>
+						<span id="public-followers">Following ( <?=$_t['tracked_count']?>  )</span>
 
 					</div>
 					<div class="body">
@@ -237,5 +246,10 @@ $private = $_t['private'];
 		</div>
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>	
+
+        <?php if (!$logged): ?>
+                <?include(FBCONNECT_BOTTOM)?>
+        <?php endif; ?>
+
 </body>
 </html>

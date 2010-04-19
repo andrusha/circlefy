@@ -65,7 +65,7 @@ $logged = (!empty($_SESSION['uid']));
 					</div>
 					<div class="body">
 						<ul class="bodylist">
-							<?php
+							<?php	if($_t['group_results'])
 								foreach ($_t['group_results'] as $group):
 									$gid = $group['gid'];
 									$gname = $group['gname'];

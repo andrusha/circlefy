@@ -58,6 +58,96 @@ div.form button.action:hover {
 	background: #fffa00;
 }
 
+#connect-signup {
+        display: none;
+        position: absolute;
+        width: 500px;
+        z-index: 2;
+        background: #F2F2F2;
+        top: 100px;
+        left: 200px;
+        border: 1px solid #ccc;
+        padding: 10px;
+}
+
+#connect-signup h2 {
+        border-bottom: 2px solid #ccc;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 10px;
+}
+
+#connect-signup p {
+        margin-bottom: 10px;
+        font-size: 13px;
+}
+
+#connect-signup span.indicator {
+        display: none;
+}
+
+#connect-signup2 span.indicator {
+        display: none;
+}
+
+#connect-signup p.forms {
+        margin-top: 10px;
+        padding-left: 30px;
+        clear: both;
+}
+
+#connect-signup label {
+        font-size: 16px;
+        margin-top: 20px;
+        font-weight: bold;
+        color: #3088ED;
+}
+
+#connect-signup p.guide, #connect-signup2 p.guide {
+        display: none;
+        margin-top: -5px;
+        text-align: right;
+        padding-right: 60px;
+        margin-bottom: 10px;
+        clear: both;
+        color: #F12C46;
+}
+
+#connect-signup input {
+        border: 1px solid #ccc;
+        padding: 5px;
+        float: right;
+        margin-right: 50px;
+        width: 300px;
+        font-size: 16px;
+        margin-bottom: 10px;
+}
+
+#connect-signup input.error {
+        background: #FDEBEB;
+}
+
+#connect-signup input.passed {
+        background: #EEFDEB;
+}
+
+#connect-signup2 input.error {
+        border:1px solid red;
+}
+
+#connect-signup2 input.passed {
+	border:1px solid lightgreen;
+}
+
+#connect-signup button {
+        font-size: 16px;
+}
+
+.tap-from a, #tapper-info a.tap-from {
+        color: #115E69;
+}
+       
+
 #login a.tab {
 	width: 30px;
 	height: 30px;
@@ -180,4 +270,25 @@ body #login li {
 
 #searchbar {
 	margin-left: 50px;
+}
+
+#signup-link{
+display:block;
+float:right;
+padding-top:4px;
+font-size:14px;
+font-weight:bold;
+}
+
+#signup-link a{
+padding-left:16px;
+color:yellow;
+}
+
+#fblogin{
+float:left;
+}
+
+#taplogin li{
+overflow:hidden;
 }

@@ -39,6 +39,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 
 	<link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>" />
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
@@ -64,6 +65,10 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
+	<?php if (!$logged): ?>
+	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
+        <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
+	<?php endif; ?>
 </head>
 <body>
 	<div id="wrapper">
@@ -82,6 +87,8 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 
 				<?php if ($logged): ?>
 	                                <?include(YOU)?>
+				<?php else: ?>
+					<?include(LOGIN)?>
 				<?php endif; ?>
 				
 				<div id="filter" class="section">
@@ -300,6 +307,10 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 			</span>
 		</div>
 	</div>
-	<?include(JAVASCRIPT_TEMPLATES)?>	
+	<?include(JAVASCRIPT_TEMPLATES)?>
+
+	<?php if (!$logged): ?>
+        	<?include(FBCONNECT_BOTTOM)?>
+	<?php endif; ?>
 </body>
 </html>

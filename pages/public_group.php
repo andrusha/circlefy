@@ -39,7 +39,7 @@ $this->db_class_mysql->set_query($get_gid_query,'get_gid',"This query gets a spe
 $gid_result = $this->db_class_mysql->execute_query('get_gid');
 
 if(!$gid_result->num_rows)
-	header( 'Location: http://mark.tap.info?error=no_public_group' );
+	header( 'Location: http://tap.info?error=no_public_group' );
 
 $res = $gid_result->fetch_assoc();
 $gid = $res['gid'];

@@ -16,8 +16,20 @@ $email = $_POST['email'];
 $password = $_POST['pass'];
 $lang = $_POST['lang'];
 
-if($flag == 'normal'){
-	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$email,$password,$lang);
+$join_type = $_POST['joinType'];
+
+if($join_type == 'group')
+	$group = $_POST['joinValue'];
+else
+	$group =false;
+
+if($join_type == 'user')
+	$user = $_POST['joinValue'];
+else
+	$user =false;
+
+if($flag == 'normal' || $flag == 'signup_function();'){
+	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$email,$password,$lang,$group,$user);
 	echo $sign_up_results;
 }
 
@@ -35,6 +47,8 @@ class ajaz_sign_up{
 		private $uname;
 		public $uid;
 		private $lang;
+		public $user;
+		public $group;
 	
 	function __construct(){
 				$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
@@ -44,13 +58,15 @@ class ajaz_sign_up{
 /* This is the start of the exeuction of 3 signup functions */
 	
 	/* Signup Function 1 (strips/check input, inserts user info into db, calls create_im_hash() */
-	function process_sign_up($uname,$fname,$email,$password,$lang){
+	function process_sign_up($uname,$fname,$email,$password,$lang,$group,$user){
 			
 		$uname = $this->mysqli->real_escape_string($uname);
 		$fname = $this->mysqli->real_escape_string($fname);
 		$email = $this->mysqli->real_escape_string($email);
 		$password = $this->mysqli->real_escape_string($password);
 		$lang = $this->mysqli->real_escape_string($lang);
+		$group = $this->mysqli->real_escape_string($group);
+		$user = $this->mysqli->real_escape_string($user);
 
 		list($finame,$lname) = explode(' ',$fname);
 	
@@ -68,6 +84,8 @@ class ajaz_sign_up{
 		$this->uname = $uname;
 		$this->email = $email;
 		$this->lang = $lang;
+		$this->user = $user;
+		$this->group = $group;
 	
 
 		$_SESSION['uname'] = $this->uname;	
@@ -96,10 +114,48 @@ class ajaz_sign_up{
 /*
 		$this->join_group(61022);
 */
-		$this->join_group(61033);
+//		$this->join_group(61033);
+	
+		if($this->group){
+			$gid = $this->lookup_group();
+		if($gid)
+			$this->join_group($gid);
+
+		}
+
+		if($this->user){
+			$fid = $this->lookup_user();
+		if($fid)
+			$this->tap_friend($fid);
+		}
+		
 		$this->send_welcome_mail();
-		if($_POST['fid'])
-			$this->tap_friend($_POST['fid']);
+	}
+
+	
+	public function lookup_user(){
+                $user_query = "SELECT uid AS fid FROM login WHERE uname = '$this->user'";
+                $fid_result = $this->mysqli->query($user_query);
+		if($fid_result->num_rows){
+			$res = $fid_result->fetch_assoc();
+			$fid = $res['fid'];
+		} else {
+			$fid = false;
+		}
+
+		return $fid;
+	}
+	public function lookup_group(){
+                $group_query = "SELECT gid FROM groups WHERE symbol = '$this->group'";
+                $gid_result = $this->mysqli->query($group_query);
+		if($gid_result->num_rows){
+			$res = $gid_result->fetch_assoc();
+			$gid = $res['gid'];
+		} else {
+			$gid = false;
+		}
+
+		return $gid;
 	}
 
 	function send_welcome_mail(){

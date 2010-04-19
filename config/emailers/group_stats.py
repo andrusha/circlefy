@@ -35,7 +35,7 @@ class Response_Notify(object):
 			GROUP BY scm.gid
 		) AS oscm ON gm.gid = oscm.gid
 		JOIN groups AS g ON g.gid = oscm.gid
-		WHERE l.last_login < SUBTIME(NOW(), '24:00:00')
+		WHERE l.last_login < SUBTIME(NOW(), '1:00:00')
 		ORDER BY l.uid
 		'''	
 		 
@@ -53,6 +53,9 @@ class Response_Notify(object):
                         gid = row["gid"]
                         gname = row["gname"]
                         count = row["count"]
+			if uid != 63:
+				continue
+			print uid
 
 			group_content = '''
   Group: %(gname)s  - %(count)s new messages

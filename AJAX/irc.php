@@ -37,7 +37,8 @@ EOF;
 		$this->finished('REGISTERED');
 	//	$this->connect();
 		else
-			$this->connect();
+		$this->finished('SORRY');
+		//	$this->connect();
 	}
 
 	private function connect(){

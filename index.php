@@ -19,6 +19,7 @@ $allowedPages = array(
 		'create_group'=>true,
 		'group_edit'=>true,
 		'what'=>true,
+		'signup'=>true,
 		'about'=>true,
 		'devs'=>true,
 		'contact'=>true,

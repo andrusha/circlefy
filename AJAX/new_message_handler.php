@@ -98,7 +98,10 @@ class chat_functions{
 		$uname = $this->mysqli->real_escape_string($uname);
 
 		// !!! This is where the filter code has to code, it will process the input of users and match and alert other users !!!
+	
 		$create_channel_query = "INSERT INTO channel(uid) values('{$uid}');";
+	
+		echo $create_channel_query;
 
 		$create_channel_results = $this->mysqli->query($create_channel_query);
 		$last_id = $this->mysqli->query($this->last_id);
