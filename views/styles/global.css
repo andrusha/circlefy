@@ -1035,6 +1035,9 @@ ul.bodylist li.notice {
 	text-align: center;
 	display: none;
 }
+ul.bodylist li.notice-group {
+	display: block;
+}
 
 div.form {
 	padding: 10px;
@@ -1403,7 +1406,9 @@ div.sideinfo li {
 }
 
 div.sideinfo li p {
+	width: 53px;
 	margin: 0;
+	float:left;
 }
 
 div.sideinfo li a {

@@ -153,7 +153,7 @@ public function login_user($uname,$pass,$hash,$auto_login){
 	$time = time();
 	$addr = $_SERVER['REMOTE_ADDR'];
 	
-	$this->results = $this->db_class_mysql->db->query("UPDATE login SET last_login=CURRENT_TIMESTAMP(),ip=INET_ATON('{$addr}') WHERE uname='{$uname}' AND pass='{$pass}'; ");
+	$this->results = $this->db_class_mysql->db->query("UPDATE login SET last_login=CURRENT_TIMESTAMP(),ip=INET_ATON('{$addr}') WHERE ban = 0 AND uname='{$uname}' AND pass='{$pass}'; ");
 
 
 	

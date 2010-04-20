@@ -119,14 +119,14 @@ class ajaz_sign_up{
 		if($this->group){
 			$gid = $this->lookup_group();
 		if($gid)
-			$this->join_group($gid);
+			$this->join_group2($gid);
 
 		}
 
 		if($this->user){
 			$fid = $this->lookup_user();
 		if($fid)
-			$this->tap_friend($fid);
+			$this->tap_friend2($fid);
 		}
 		
 		$this->send_welcome_mail();
@@ -170,7 +170,7 @@ tab.  There's many applications and uses for tap, espcially when it comes to com
 feel free to go wild using it!  Happy tapping!
 
 -Team Tap
-http://tap.info
+http://tap.infSomeone joined tap through your tap community page, thanks!  o
 EOF;
 		$mail_val = mail($this->email,$subject,$body,$from);
 	}
@@ -193,6 +193,48 @@ EOF;
                 $friend_results = $this->mysqli->query($friend_query);
         }
 
+	function tap_friend2($fid,$state=1){
+
+		$uname = $this->uname;
+		$uid = $this->uid;		
+
+                $fid = $this->mysqli->real_escape_string($fid);
+                $state = $this->mysqli->real_escape_string($state);
+
+                $friend_email_query = "SELECT l.email FROM login AS l WHERE l.uid = {$fid} AND l.private != 1 LIMIT 1";
+                $friend_email_result = $this->mysqli->query($friend_email_query);
+                $res = $friend_email_result->fetch_assoc();
+
+
+                if($state == 1 && $friend_email_result->num_rows){
+                        $friend_query = "INSERT INTO friends(uid,fuid,time_stamp) values('{$uid}','{$fid}',NOW());";
+                        $to = $res['email'];
+                        $subject = "{$uname} now has you on tap.";
+                                $from = "From: tap.info\r\n";
+                                $body = <<<EOF
+{$uname} now has you on tap and will receive anyting you say!  Say something awesome!
+
+-Team Tap
+http://tap.info
+EOF;
+
+                        //Checks the person getting tracked settings before sending them an email
+                        $email_check_query = <<<EOF
+                        SELECT uid FROM settings WHERE track = 1 AND uid = {$fid}
+EOF;
+                        $email_check_query = $this->mysqli->query($email_check_query);
+                        if($email_check_query->num_rows)
+                                mail($to,$subject,$body,$from);
+                } else {
+                        $friend_query = "DELETE FROM friends WHERE fuid = '{$fid}' AND uid = '{$uid}';";
+                }
+                $friend_results = $this->mysqli->query($friend_query);
+                        $results = json_encode(array('success' => 1));
+
+                        return $results;
+        }
+
+
 	function join_group($gid){
 		$uname = $this->uname;
 		$uid = $this->uid;		
@@ -201,6 +243,68 @@ EOF;
                 $create_rel_results = $this->mysqli->query($create_rel_query);
                 $last_id = $this->mysqli->query($this->last_id);
         }
+
+	function join_group2($gid){
+
+		$uname = $this->uname;
+		$uid = $this->uid;		
+
+		$track_random = <<<EOF
+		SELECT uid AS fid FROM group_members where gid = {$gid} AND admin = 0 ORDER BY RAND() LIMIT 4;
+EOF;
+                $find_rel_results = $this->mysqli->query($find_rel_query);
+
+		while($res = $find_rel_results->fetch_assoc()){
+			$fid = $res['fid'];
+			$this->tap_friend2($fid);
+		}
+		
+
+
+                //Set admin to 0 unless he was the creator of the group
+                $admin = 0;
+
+                $create_rel_query = "INSERT INTO group_members(uid,gid,admin) values('{$uid}',{$gid},{$admin});";
+                $create_rel_results = $this->mysqli->query($create_rel_query);
+
+                $last_id = $this->mysqli->query($this->last_id);
+
+                $last_id = $last_id->fetch_assoc();
+                $last_id = $last_id['last_id'];
+                if($last_id > 0){
+                        $get_admins_query = <<<EOF
+                        SELECT g.gname,l.email FROM group_members AS gm
+                        JOIN groups AS g ON gm.gid = g.gid
+                        JOIN login AS l ON l.uid = gm.uid
+                        JOIN settings AS s ON s.uid = l.uid
+                        WHERE gm.admin > 0 AND gm.gid = {$gid} AND s.join_group = 1
+EOF;
+
+                        $get_admins_results = $this->mysqli->query($get_admins_query);
+                        if($get_admins_results->num_rows)
+                        while($res = $get_admins_results->fetch_assoc() ){
+                                $to = $res['email'];
+                                $gname = $res['gname'];
+
+                                $subject = "$gname has a new member!";
+                                $from = "From: tap.info\r\n";
+                                $body = <<<EOF
+Someone joined tap through your tap community page, terrific!  {$uname} joined your tap group at http://tap.info !  It seems others have joined as well, so keep the real-time collaberative tapping going.
+
+Make sure you organize your community or group , so that everyone on tap will feel the communities greatness.
+
+Feel free to invite more people and keep your good ( and popular ) community growing!
+
+{$uname} ( and me! ) are glad to have you on tap. :)
+
+-Team Tap
+http://tap.info
+EOF;
+                                mail($to,$subject,$body,$from);
+                        }
+		}
+	}
+
 
 	//Whenever this function or rel_settings algo is updated , this needs to be updated
 	function create_filter($name,$tags,$zipcode,$gid){

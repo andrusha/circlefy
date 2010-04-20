@@ -62,6 +62,7 @@ EOF;
                                 $pic = $res['pic_36'];
                                 $rgname = $res['rgname'];
 
+
                                 $random_groups[] = array(
                                         'gid' => $rgid,
                                         'gname' => $rgname,
@@ -110,6 +111,7 @@ EOF;
 		$get_admins_result = $this->db_class_mysql->execute_query('get_admins');
 
 		$res = $get_info_result->fetch_assoc();
+		$res['descr'] = stripslashes($res['descr']);
 		$group_info_result = array(
 			'gid'  =>  $res['gid'],
 			'gname' => $res['gname'],

@@ -65,7 +65,7 @@ $logged = (!empty($_SESSION['uid']));
 					</div>
 					<div class="body">
 						<ul class="bodylist">
-							<?php	if($_t['group_results'])
+							<?php	if($_t['group_results'] != NULL):
 								foreach ($_t['group_results'] as $group):
 									$gid = $group['gid'];
 									$gname = $group['gname'];
@@ -106,7 +106,13 @@ $logged = (!empty($_SESSION['uid']));
 							</li>
 							<?
 								endforeach;
+								else:
 							?>
+							<li class="notice notice-group">
+                                                                <p>You are in no groups!  Search above to find them!</p>
+                                                        </li>
+                                                        <?php endif; ?>
+
 						</ul>
 					</div>
 				</div>

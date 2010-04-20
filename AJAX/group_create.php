@@ -113,12 +113,16 @@ EOF;
 		rename($old_name,$new_name);
 */
 
+		$splice_pic = explode('_',$old_name);
+
 		$hash_filename =  md5($gid.'CjaCXo39c0..$@)(c'.$filename);
-		$pic_100 = '100h_'.$hash_filename.'.gif';
-		$pic_36 = '36wh_'.$hash_filename.'.gif';
+		$pic_100 = 'med_'.$hash_filename.'.gif';
+		$pic_36 = 'small_'.$hash_filename.'.gif';
+		$favicon = 'fav_'.$splice_pic[1];
 
 		$small_pic = explode('_',$old_name);
 		$small_pic  = '36wh_'.$small_pic[1];
+
 		$old_name2 =  D_GROUP_PIC_PATH.'/'.$small_pic;
 		$new_name2 = D_GROUP_PIC_PATH.'/'.$pic_36;
 
@@ -126,9 +130,9 @@ EOF;
 		$new_name = D_GROUP_PIC_PATH.'/'.$pic_100;
 
 		if($gid > 0){
-                        rename($old_name,$new_name);
-                        rename($old_name2,$new_name2);
-                        $gr_pic_query = "UPDATE groups SET pic_36 = '{$pic_36}',pic_100 = '{$pic_100}' WHERE gid = {$gid}";
+                       @rename($old_name,$new_name);
+                       @rename($old_name2,$new_name2);
+                        $gr_pic_query = "UPDATE groups SET favicon = '{$favicon}', pic_36 = '{$pic_36}',pic_100 = '{$pic_100}' WHERE gid = {$gid}";
                         $this->mysqli->query($gr_pic_query);
 			return json_encode(array('success' => True));
 			}

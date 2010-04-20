@@ -1,7 +1,14 @@
 ﻿<?php
 $logged = (!empty($_SESSION['uid']));
+
+if($_SERVER['REQUEST_URI'] == '/people')
+$tracker = 0;
+else
 $tracker = empty($_GET['q'])  ? 0 : 1;
-$people = "people_$tracker";
+
+
+$people_list = "people_$tracker";
+
 ?>
 <!doctype html>
 <html>
@@ -82,10 +89,10 @@ $people = "people_$tracker";
 						</span>
 					</div>
 					<div class="body">
-						<ul class="bodylist <?= empty($_t[$people]) ? 'empty' : '' ?>">
-							<?php
-								if (!empty($_t[$people])):
-									foreach ($_t[$people] as $person):
+						<ul class="bodylist <?= empty($_t[$people_list]) ? 'empty' : '' ?>">
+							<?php 	
+								if (!empty($_t[$people_list])):
+									foreach ($_t[$people_list] as $person):
 										$uid = $n['fuid'];
 										$uname = $n['uname'];
 										$fname = $n['fname'];
@@ -120,6 +127,7 @@ $people = "people_$tracker";
 								else:
 							?>
 							<li class="notice">
+							
 								<p><?php if ($tracker): ?>
 								No one's tracking you.
 								<?php else: ?>

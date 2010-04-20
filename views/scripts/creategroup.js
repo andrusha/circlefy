@@ -170,7 +170,7 @@ var _create = _tap.register({
 		var self = this;
 		if (el.isEmpty() || !el.ofLength(20, 240)) {
 			return this.showError(el, 'write something that\'s around 20 to 240 characters.');
-		} else if (!el.get('value').match(/\s/g) || el.get('value').match(/\s/g).length < 8) {
+		} else if (!el.get('value').match(/\s/g) || el.get('value').match(/\s/g).length < 5) {
 			return this.showError(el, 'yeah, right. that\'s not a real description');
 		}
 		return this.removeError(el);
@@ -205,7 +205,7 @@ var _create = _tap.register({
 		var data = this.data;
 		if (this.sending) return false;
 		if (this.uploading) return setTimeout(function(){ submit(el, e); }, 1000);
-		if (!this.noErrors()) return this.fireErrors();
+		if (!this.noErrors()){ $$('.error')[0].style.display = 'block'; return this.fireErrors(); } 
 		this.sending = true;
 		new Request({
 			'url': '/AJAX/group_create.php',
@@ -221,7 +221,9 @@ var _create = _tap.register({
 			},
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
-				window.location = '/groups';
+				$$('.error')[0].style.display = 'none';
+                                $$('.notify')[0].style.display = 'block';
+				(function() { window.location = '/groups'}).delay(2000,this);
 			}
 		}).send();
 	}

@@ -91,11 +91,18 @@ class chat_functions{
 		$uid = $_SESSION['uid'];
 
 		$check_channel_query = <<<EOF
-		SELECT mid FROM special_chat WHERE uid = {$uid} AND chat_text = '{$msg}';
+		SELECT chat_text FROM special_chat where uid = {$uid} ORDER BY mid desc LIMIT 1;
 EOF;
 		$check_channel_results = $this->mysqli->query($check_channel_query);
-		return $check_channel_results->num_rows;
-
+		while($res = $check_channel_results->fetch_assoc()){
+			$chat_text = $res['chat_text'];
+			$chat_text = stripslashes($chat_text);
+			$msg = stripslashes(stripslashes($msg));
+			echo $msg,$chat_text;
+			if($msg == $chat_text)
+				$gtfo = true; else $gfto = false;
+		}
+		return $gtfo;
 	}
 	
 
@@ -112,15 +119,13 @@ EOF;
 
 		$res = $this->check_if_dupe($msg);
 		if($res)
-			return array('dupe' => true);
+			return json_encode(array('dupe' => true));
 
 
 		// !!! This is where the filter code has to code, it will process the input of users and match and alert other users !!!
 	
 		$create_channel_query = "INSERT INTO channel(uid) values('{$uid}');";
 	
-		echo $create_channel_query;
-
 		$create_channel_results = $this->mysqli->query($create_channel_query);
 		$last_id = $this->mysqli->query($this->last_id);
 

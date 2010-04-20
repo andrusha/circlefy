@@ -110,6 +110,7 @@ var _account = _tap.register({
 	},
 
 	emailCheck: function(el, e){
+		el.value = el.value.toLowerCase();
 		if (el.isEmpty() || !el.isEmail()) {
 			return this.showError(el, 'you\'ll need to enter a valid email address');
 		}

@@ -77,7 +77,11 @@ class group_functions{
                                 $pic_36 = 'small_'.$hash_filename.$ftype;
                                 $crop->cropThumbnailImage( 30, 30 );
                                 $crop->writeImage( $upload_dir.'/'.$pic_36 );
-	
+
+				$favicon = 'fav_'.$hash_filename.$ftype;
+                                $crop->cropThumbnailImage( 16, 16 );
+                                $crop->writeImage( $upload_dir.'/'.$favicon );
+
 				$result = 'OK';
 			}
                         elseif ($file['error'] == UPLOAD_ERR_INI_SIZE)

@@ -50,8 +50,8 @@ var _edit = _tap.register({
 	init: function(){
 		var main = this.main = $('create-group');
 		var data = this.data = {
-			focus: main.getElement('input[name="focus"]'),
-			desc: main.getElement('input[name="desc"]')
+			focus: main.getElement('input[name="focus"]').store('passed', true),
+			desc: main.getElement('input[name="desc"]').store('passed', true)
 		};
 		for (var key in data){
 			if (this[key + 'Check'] instanceof Function){
@@ -172,7 +172,7 @@ var _edit = _tap.register({
 			gid = this.main.getData('id');
 		if (this.sending) return false;
 		if (this.uploading) return setTimeout(function(){ submit(el, e); }, 1000);
-		if (!this.noErrors()) return this.fireErrors();
+		if (!this.noErrors()) { $$('.error')[0].style.display = 'block'; return this.fireErrors(); } 
 		this.sending = true;
 		var request = new Request({
 			url: '/AJAX/group_update.php',
@@ -186,7 +186,9 @@ var _edit = _tap.register({
 			},
 			onSuccess: function(){
 				var response = JSON.decode(this.response.text);
-				window.location = '/groups';
+				$$('.error')[0].style.display = 'none';
+				$$('.notify')[0].style.display = 'block';
+				(function() { window.location = '/groups'}).delay(2000,this);
 			}
 		});
 		if (this.pic) $extend(request.options.data, { pic_hash_name: this.pic });

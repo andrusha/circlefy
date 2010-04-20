@@ -56,6 +56,7 @@ var checkUname = function(el){
 };
 
 var checkEmail = function(el){
+	el.value = el.value.toLowerCase();
         if (el.isEmpty() || !el.isEmail()) {
                 return showError(el, 'Please enter a valid email.');
         } else {
