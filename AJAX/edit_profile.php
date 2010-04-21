@@ -94,7 +94,6 @@ EOF;
 
                         $you_pic_query = "UPDATE login SET pic_36 = '{$pic_36}', pic_100 = '{$pic_100}' WHERE uid = {$uid}";
 
-			echo $you_pic_query;
                         $this->mysqli->query($you_pic_query);
 		
 			if(!$default_pics){	
