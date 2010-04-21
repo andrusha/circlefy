@@ -98,7 +98,6 @@ EOF;
 			$chat_text = $res['chat_text'];
 			$chat_text = stripslashes($chat_text);
 			$msg = stripslashes(stripslashes($msg));
-			echo $msg,$chat_text;
 			if($msg == $chat_text)
 				$gtfo = true; else $gfto = false;
 		}

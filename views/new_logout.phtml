@@ -48,7 +48,7 @@ if ($_GET['logout'] == 'true') header('location: /');
 						join the conversation!
 					</div>
 					<div class="body">
-						<div style="font-size:18px;color:white;" class="description">Tap allows you to create real-time communities that are manageable, easily accessible, scaleable and stylish.  Tap is currently open to members of Freenode only, as our focus is on real-time communities for open source and software projects. </div>	
+						<div style="font-size:18px;color:white;" class="description">Tap allows you to create real-time communities that are manageable, easily accessible, scalable and stylish; by creating moderated and structured real-time streams; think Twitter meets Google Wave, for communities.  <br/><br/>Our focus is on real-time communities for open source and software projects. </div>	
 <div id="content"> 
  
  
@@ -74,12 +74,12 @@ if ($_GET['logout'] == 'true') header('location: /');
 									<a href="/user/taso">taso</a>,
 									<a href="/tap/4496" class="date" data-timestamp="1271190676"> 
 										3 hours, 10 minutes ago									</a> 
-									<a href="/group/jquery-dev " /> 
-										<img class="aggr-favicons" src="/group_pics/fav_e7da889ea2d65435cf1ccccaecfc28f1.gif" title="jquery-dev " /> 
+									<a href="/group/python" /> 
+										<img class="aggr-favicons" src="/group_pics/fav_71f0aa010272ba2f43e46e05edd5108f.gif" title="python " /> 
 									</a> 
 								</p> 
 								<p class="tap-body"> 
-									jQuery Dev, terrific :)								</p> 
+								Hey should our company move over to Python 3.0 from 2.6?
 								<p class="tap-actions"> 
 									<span class="tap-resp"> 
 										<span class="indicator" style="display:inline-block;">Someone's replying..</span> 
@@ -112,13 +112,13 @@ if ($_GET['logout'] == 'true') header('location: /');
 								<p class="tap-from offline"> 
 									<a href="/user/keeto">keeto</a>,
 									<a href="/tap/3308" class="date" data-timestamp="1255248423"> 
-										6 months ago									</a> 
-									<a href="/group/jquery-dev " /> 
-										<img class="aggr-favicons" src="/group_pics/fav_e7da889ea2d65435cf1ccccaecfc28f1.gif" title="jquery-dev " /> 
+										6 minutes ago									</a> 
+									<a href="/group/ubuntu" /> 
+										<img class="aggr-favicons" src="http://tap.info/group_pics/fav_8b724e3cf9edec12093d8dd9116288ab.gif" title="ubuntu" /> 
 									</a> 
 								</p> 
 								<p class="tap-body"> 
-									Hi MooTools and Open Source people! :D								</p> 
+									Hi Ubuntu Open Source people! :D								</p> 
 								<p class="tap-actions"> 
 									<span class="tap-resp"> 
 										<span class="indicator">Someone's replying..</span> 
@@ -230,6 +230,13 @@ var _gaq = _gaq || [];
    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
  })();
+
+(function() {
+        var new_id = $('taps').getChildren()[2].id.split('_')[1]
+	$('tid_'+new_id).fade('hide');
+	$('tid_'+new_id).inject($('taps'),'top').fade.delay(400,$('tid_'+new_id))
+}).periodical(5000);
+
 </script>
 	<?include(FBCONNECT_BOTTOM)?>
 </body>

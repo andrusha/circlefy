@@ -260,6 +260,7 @@ EOF;
 			$real_symbol[0] = $symbol;
 			$symbol = explode('.',$symbol);
 			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
+			$topic = stripslashes($topic);
 			$display_symbol = ucwords($symbol[0].$add);
 			$add = null;
 			
