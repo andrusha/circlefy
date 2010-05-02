@@ -28,7 +28,7 @@
                                         </span>
                                 </span>
                                 <a href="#" class="tap-resp-count" title="view responses">
-                                        <span class="count">
+                                        <span class="count"><b>[chat]</b>
                                                 <#: tap.count #>
                                         </span>
                                 </a>
@@ -53,7 +53,11 @@
                                 <em data-timestamp="<#: response.chat_time #>">
                                         <#: new Date((response.chat_time * 1) * 1000).format('jS M Y, h:m a') #>
                                 </em>
-                                <a href="/user/<#: response.uname #>" class="user"><#: response.uname #>:</a> <span><#: response.chat_text.linkify() #></span>
+                                <a href="/user/<#: response.uname #>" class="user">
+					<img src="/user_pics/<#: response.pic_small #>" />
+					<span class="resp-uname"><#: response.uname #>:</span>
+				</a>
+				<span class="resp-text"><#: response.chat_text.linkify() #></span>
                         </li>
                 <# end; #>
                 </ul>

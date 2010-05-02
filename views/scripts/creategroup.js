@@ -203,6 +203,7 @@ var _create = _tap.register({
 
 	submit: function submit(el, e){
 		var data = this.data;
+		this.symbol = data.symbol.get('value');
 		if (this.sending) return false;
 		if (this.uploading) return setTimeout(function(){ submit(el, e); }, 1000);
 		if (!this.noErrors()){ $$('.error')[0].style.display = 'block'; return this.fireErrors(); } 
@@ -220,11 +221,11 @@ var _create = _tap.register({
 				$$(data.name, data.symbol, data.focus, data.desc).set('disabled', 'disabled');
 			},
 			onSuccess: function(){
-				var response = JSON.decode(this.response.text);
+			//	var response = JSON.decode(this.response.text);
 				$$('.error')[0].style.display = 'none';
                                 $$('.notify')[0].style.display = 'block';
-				(function() { window.location = '/groups'}).delay(2000,this);
-			}
+				(function() { window.location = '/group/'+this.symbol}).delay(2000,this);
+			}.bind(this)
 		}).send();
 	}
 

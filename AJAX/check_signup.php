@@ -4,9 +4,15 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
 
-$type = $_POST['type'];
-$val = $_POST['val'];
+if($cb_enable){
+	$type = $_GET['type'];
+	$val = $_GET['val'];
+} else { 
+	$type = $_POST['type'];
+	$val = $_POST['val'];
+}
 
 if(isset($val)){
    	$check_function = new check_functions();
@@ -14,7 +20,7 @@ if(isset($val)){
 	        $results = $check_function->check_uname($val);
 	if($type == 2)
         	$results = $check_function->check_email($val);
-        echo $results;
+        api_json_choose($res,$cb_enable);
 }
 
 
@@ -35,9 +41,9 @@ class check_functions{
 		$check_query = "SELECT uname FROM login WHERE uname = '{$val}'";
                 $check_results = $this->mysqli->query($check_query);
 		if($check_results->fetch_assoc() > 0)
-			return json_encode(array('available' => false));
+			return array('available' => false);
 		else
-			return json_encode(array('available' => true));
+			return array('available' => true);
 	}
 
         function check_email($val){
@@ -47,9 +53,9 @@ class check_functions{
 		$check_query = "SELECT email FROM login WHERE email = '{$val}'";
                 $check_results = $this->mysqli->query($check_query);
 		if($check_results->fetch_assoc() > 0)
-			return json_encode(array('available' => false));
+			return array('available' => false);
 		else
-			return json_encode(array('available' => true));
+			return array('available' => true);
 	}
 
 }

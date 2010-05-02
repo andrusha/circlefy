@@ -4,6 +4,8 @@ session_start();
 	search_group.js
 */
 require('../config.php');
+require('../api.php');
+
 
 /* TO DO: 
 
@@ -18,8 +20,8 @@ $offset = $_POST['offset'];
 
 if(isset($_POST['gname'])){
    	$search_function = new search_functions();
-        $results = $search_function->search_group($gname,$focus,$offset);
-        echo $results;
+        $res = $search_function->search_group($gname,$focus,$offset);
+        api_json_choose($res,$cb_enable);
 }
 
 
@@ -154,9 +156,9 @@ EOF;
                 $row_count = $row_count['count'];
                 //If groups were found send them back, else send back no results
                 if($groups)
-                        return json_encode(array('group_results' => $groups, 'row_count' => $row_count));
+                        return array('group_results' => $groups, 'row_count' => $row_count);
 		else
-			return json_encode(array('group_results' => NULL));
+			return array('group_results' => NULL);
 	}
 
 }

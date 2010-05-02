@@ -554,7 +554,7 @@ private function bit_generator($query,$type){
                                 $chat_timestamp = $this->time_since($chat_timestamp);
                                 $chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
                                 $chat_text = stripslashes($chat_text);
-				$chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $chat_text);
+				$chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\" target=\"_blank\">\\0</a>", $chat_text);
 				if($viewer_count)
 					$viewer_count = $viewer_count;
 

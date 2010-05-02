@@ -4,6 +4,8 @@ session_start();
 	leave_group.js
 */
 require('../config.php');
+require('../api.php');
+
 
 $gid = $_POST['gid'];
 

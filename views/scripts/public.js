@@ -486,7 +486,7 @@ var _responses = _tap.register({
 			chattext = lastresp.getElement('span'),
 			count = parent.getElement('a.tap-resp-count span.count');
 		username.set('text', last.getElement('a').get('text'));
-		chattext.set('text', last.getElement('span').get('text'));
+		chattext.set('text', last.getChildren('span').get('text'));
 		count.set('text', items.length);
 	},
 
@@ -517,6 +517,7 @@ var _responses = _tap.register({
 			parent = chatbox.getParent('li'),
 			cid = parent.getData('id'),
 			uid = parent.getData('uid'),
+			pic = $$('#you img.avatar')[0].src.split('/')[4].split('_')[1],
 			data = {
 				user: parent.getData('user'),
 				message: parent.getElement('p.tap-body').get('html')
@@ -525,6 +526,7 @@ var _responses = _tap.register({
 			url: '/AJAX/respond.php',
 			data: {
 				cid: cid,
+				small_pic: pic,
 				response: chatbox.get('value'),
 				init_tapper: uid || 0,
 				first: !chatbox.retrieve('first') ? 1 : 0
@@ -666,6 +668,11 @@ var _infobox = _tap.register({
 					'text': 'leave group',
 					'class': 'leave'
 				});
+                                                $$('.count-one').each(function(el) { el.set('html',el.innerHTML.toInt()+1).fade('hide').fade();});
+						$$('.positive-click')[0].fade('hide');
+						$$('.positive-click')[0].fade(1).fade.delay(2000,$$('.positive-click')[0],0);
+                                         
+
 			}
 		}).send();
 	},
@@ -681,6 +688,9 @@ var _infobox = _tap.register({
 					'text': 'join group',
 					'class': 'join'
 				});
+                                $$('.count-one').each(function(el) { el.set('html',el.innerHTML.toInt()-1).fade('hide').fade();});
+				$$('.negative-click')[0].fade('hide');
+				$$('.negative-click')[0].fade(1).fade.delay(2000,$$('.negative-click')[0],0);
 			}
 		}).send();
 	},
@@ -698,9 +708,21 @@ var _infobox = _tap.register({
 				var response = JSON.decode(this.response.text);
 				if (response.success) {
 					self.button.set({
-						'text': (type) ? 'untrack' : 'track',
+						'text': (type) ? 'unfollow' : 'follow',
 						'class': (type) ? 'untrack' : 'track'
 					});
+					$$('.count-one').each(function(el){ 
+					
+					if(type){
+						$$('.count-one').each(function(el) { el.set('html',el.innerHTML.toInt()+1).fade('hide').fade();});
+						$$('.positive-click')[0].fade('hide');
+						$$('.positive-click')[0].fade(1).fade.delay(2000,$$('.positive-click')[0],0);
+					}else{
+						$$('.count-one').each(function(el) { el.set('html',el.innerHTML.toInt()-1).fade('hide').fade();});
+						$$('.negative-click')[0].fade('hide');
+						$$('.negative-click')[0].fade(1).fade.delay(2000,$$('.negative-click')[0],0);
+					}
+					 });
 				}
 			}
 		}).send();
@@ -822,12 +844,13 @@ _live.responses = _tap.register({
 		});
 	},
 
-	setResponse: function(id, user, msg){
+	setResponse: function(id, user, msg, pic){
 		var parent = $('tid_' + id);
 		if (!parent) return;
 		var box = parent.getElement('ul.chat');
 		if (box) this.publish('responses.new', [box, [{
 			uname: user,
+			pic_small: pic,
 			chat_text: msg,
 			chat_time: new Date().getTime().toString().substring(0, 10)
 		}]]);

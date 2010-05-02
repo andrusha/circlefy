@@ -6,6 +6,8 @@
 
 session_start();
 require('../config.php');
+require('../api.php');
+
 $uid = $_SESSION['uid'];
 $mid = $_POST['cid'];
 if($mid){

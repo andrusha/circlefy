@@ -5,6 +5,8 @@
 	invite.js
 */
 require('../config.php');
+require('../api.php');
+
 session_start();
 
 $fid = $_POST['fid'];

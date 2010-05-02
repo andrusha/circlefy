@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $old_pass = $_POST['old_pass'];
 $new_pass = $_POST['new_pass'];

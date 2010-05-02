@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $file = $_FILES['you-pic'];
 

@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $gid = $_POST['gid'];
 $descr = addslashes($_POST['descr']);

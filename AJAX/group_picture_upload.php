@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 echo "hfoahfoha";
 $file = $_FILES['gr-pic'];
 

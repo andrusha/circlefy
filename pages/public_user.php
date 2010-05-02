@@ -88,7 +88,7 @@ EOF;
                         SELECT t2.online,t1.pic_100,t1.pic_36,t1.uid,t1.uname,p.about,p.country,t1.help FROM login AS t1
 			LEFT JOIN profile AS p
 			ON t1.uid = p.uid
-			JOIN TEMP_ONLINE AS t2
+			LEFT JOIN TEMP_ONLINE AS t2
 			ON t2.uid = p.uid
                         WHERE t1.uid={$uid}
 EOF;
@@ -139,7 +139,9 @@ EOF;
 			$display_symbol = ucwords($symbol[0].$add);
 			$add = null;
 	*/		
-			
+			if(strlen($gname) > 25)
+				$gname = substr($gname,0,25).'..'; 
+
 			$my_groups_array[] = array(
 				'gid' => $gid,
 					'gname' => $gname,

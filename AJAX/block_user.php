@@ -6,6 +6,8 @@
 
 session_start();
 require('../config.php');
+require('../api.php');
+
 $uid = $_SESSION['uid'];
 $fuid = $_POST['fuid'];
 $status = $_POST['status'];
@@ -13,7 +15,10 @@ $status = $_POST['status'];
 if($fuid && $status){
 	$block_obj = new block_functions();
 	$res = $block_obj->block_user($uid,$fuid,$status);
-	echo $res;
+	if($cb_enable)
+		echo $cb_S.json_encode(array('bool' => $res ).$cb_E;
+	else
+		echo $res;
 }
 
 class block_functions{

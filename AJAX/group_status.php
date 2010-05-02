@@ -5,6 +5,8 @@ session_start();
 	group_status.js
 */
 require('../config.php');
+require('../api.php');
+
 
 //Used for delete and update
 $uid = $_SESSION['uid'];

@@ -4,13 +4,19 @@
 */
 session_start();
 require('../config.php');
-$id_list = $_POST['id_list'];
+require('../api.php');
+
+if($cb_enable)
+	$id_list = $_GET['id_list'];
+else
+	$id_list = $_POST['id_list'];
+	
 
 
 if(isset($id_list)){
    	$loader_function = new loader_functions();
-        $json = $loader_function->loader($id_list);
-        echo $json;
+        $res = $loader_function->loader($id_list);
+	api_json_choose($res,$cb_enable);
 }
 
 
@@ -27,9 +33,9 @@ class loader_functions{
 	function loader($id_list){
 		$data = $this->create_loader($id_list);	
 		if($data)	
-			return json_encode(array('results' => True,'data'=> $data ));
+			return array('results' => True,'data'=> $data );
 		else
-			return json_encode(array('results' => False,'data' => False));
+			return array('results' => False,'data' => False);
 	}
 
 
@@ -95,7 +101,7 @@ EOF;
                                 $chat_timestamp_raw = $chat_timestamp;
                                 $chat_timestamp = $this->time_since($chat_timestamp);
                                 $chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
-                                $chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $chat_text);
+                                $chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\" target=\"_blank\">\\0</a>", $chat_text);
                                 $chat_text = stripslashes($chat_text);
                                 if($viewer_count)
                                         $viewer_count = $viewer_count;
@@ -155,7 +161,7 @@ EOF;
 		
 
 			} else { 
-				$pmessages = json_encode("There was no data and there certainly should be.");
+				$pmessages = "There was no data and there certainly should be.";
 			}
 		return $pmessages;
 }

@@ -7,6 +7,8 @@ session_start();
 
 
 require('../config.php');
+require('../api.php');
+
 
 $name = $_POST['name'];
 $tags = $_POST['tags'];

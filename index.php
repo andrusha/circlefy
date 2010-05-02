@@ -16,6 +16,7 @@ $allowedPages = array(
 		'invite'=>true,
 		'groups'=>true,
 		'help'=>true,
+		'rss'=>true,
 		'create_group'=>true,
 		'group_edit'=>true,
 		'what'=>true,

@@ -39,7 +39,7 @@ if (is_array($_t['your_groups'])) {
 $_SESSION['upic'] = $_t['user_pic_100'];
 
 $all_your_groups_topic = "Aggregate feed of all of the groups";
-$public_groups_topic = "Your public space";
+$public_groups_topic = "This is a place where you can discover what's being said in real-time from all groups, even if you're not apart of them";
 ?>
 <!doctype html>
 <html>
@@ -60,7 +60,7 @@ $public_groups_topic = "Your public space";
 	 <link rel="shortcut icon" href="http://tap.info/group_pics/default.ico" />
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
 	<script type="text/javascript" src="http://tap.info:8000/static/Orbited.js"></script>
-	<!-- // <script type="text/javascript" src="/assets.php?type=javascript&amp;package=mootools"></script> -->
+	<!-- // <script type="text/javascript" src="/assets.php?type=javascript&amp;package=mootools"></scrip> -->
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript">
@@ -107,9 +107,9 @@ $public_groups_topic = "Your public space";
 						data-action="manage" data-action-href="/groups" data-name="groups">
 						<li id="gid_public" class="panel-item" 
 							data-topic="<?= $public_groups_topic ?>"
-							data-id="public" data-name="Public Taps">
+							data-id="public" data-name="Discover Taps">
 							<span class="count"></span>
-							<a href="#" class="names inblock ellipsis">public</a>
+							<a href="#" class="names inblock ellipsis">discover</a>
 						</li>
 						<li id="gid_all" class="selected panel-item" 
 							data-topic="<?= $all_your_groups_topic ?>"
@@ -139,6 +139,7 @@ $public_groups_topic = "Your public space";
 							</span>	
 						</li>
 						<?php endforeach; ?>
+						<li class="notify">To find and join more groups to tap, use the search bar at the top of the page</li>
 					</ul>
 					<ul id="panel-convos" class="panel" data-name="convos">
 						<?php
@@ -155,10 +156,9 @@ $public_groups_topic = "Your public space";
 								<span class="new">*</span></p>
 							<p class="body ellipsis"><?= stripslashes($convo['chat_text']); ?></p>
 						</li>
-						<?php
-								endforeach;
-							endif;
-						?>
+						<?php endforeach; else: ?>					
+							<li class="notify">You have no current conversations going on! Make some!</li>
+						<?php endif; ?>
 					</ul>
 					<ul id="panel-people" class="panel"
 						data-action="add contacts" data-action-href="/people" data-name="people">
@@ -188,10 +188,11 @@ $public_groups_topic = "Your public space";
 			<div id="content">
 
 				<form id="tapbox" action="" class="section active">
-					<div id="tapto">tap the public feed..</div>
+					<div id="tapto">choose a group to tap</div>
 					<span class="counter">240</span>
-					<input id="taptext" tabindex="1" type="text">
+					<input id="taptext" tabindex="1" type="text" disabled="true" style="background:gray;">
 					<button id="tapsend" tabindex="3" type="submit" class="">tap!</button>
+					<span id="no-group-selected">You need to tap to a group!  Tap to a group by clicking on the group tab or searching for new groups to tap</span>
 				</form>
 
 				<div id="tapstream" class="section description">
@@ -237,7 +238,7 @@ $public_groups_topic = "Your public space";
 										</span>
 									</span>
 									<a href="#" class="tap-resp-count" title="view responses">
-										<span class="count">
+										<span class="count"><b>[chat]</b>
 											<?= $tap['count'] ?>
 										</span>
 									</a>

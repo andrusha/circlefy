@@ -118,7 +118,7 @@ _login = {
 
                                 if(response.status == 'SORRY'){
 					ls.addClass('login-fail');
-					ls.set('text','Sorry, we are not accepting new users, please try back again shortly!');
+					ls.set('text','Wrong username or password!');
                                 }
 
                                 if(response.status == 'ADDED_NONE'){

@@ -2,6 +2,8 @@
 session_start();
 
 require('../config.php');
+require('../api.php');
+
 
 $msg = $_POST['msg'];
 $time = $_POST['time'];

@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $response = stripslashes($_POST['response']);
 $cid = $_POST['cid'];
@@ -24,8 +26,31 @@ class chat_functions{
 		$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
+	function check_if_dupe($msg){
+                $uid = $_SESSION['uid'];
+
+                $check_channel_query = <<<EOF
+                SELECT chat_text FROM chat where uid = {$uid} ORDER BY mid desc LIMIT 1;
+EOF;
+                $check_channel_results = $this->mysqli->query($check_channel_query);
+                while($res = $check_channel_results->fetch_assoc()){
+                        $chat_text = $res['chat_text'];
+                        $chat_text = stripslashes($chat_text);
+                        $msg = stripslashes(stripslashes($msg));
+                        if($msg == $chat_text)
+                                $gtfo = true; else $gfto = false;
+                }
+                return $gtfo;
+        }
+
+
 		
 	function send_response($msg,$cid,$init_tapper,$first){
+		$res = $this->check_if_dupe($msg);
+                if($res)
+                        return json_encode(array('dupe' => true));
+	
+	
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
 		if($first){
@@ -48,13 +73,19 @@ EOF;
 				}
 			}
 		}
-			
+		
+			$small_pic = $_POST['small_pic'];
+			$small_pic = 'small_'.$small_pic;
+
+			echo $small_pic.'HEHEHE';
+
+	
 			$action = "response";
 			$response = $msg;
 			$response = str_replace('"','\"',$response);
 
 			$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'","init_tapper":"'.$init_tapper.'"}'."\r\n";
+			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'","init_tapper":"'.$init_tapper.'","pic_small":"'.$small_pic.'"}'."\r\n";
 			fwrite($fp,$insert_string);
 			fclose($fp);
 

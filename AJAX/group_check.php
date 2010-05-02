@@ -13,6 +13,8 @@ symbol = symbol of group ( only applicable if `type == symbol` )
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $check = $_POST['group_check'];
 $type = $_POST['post'];

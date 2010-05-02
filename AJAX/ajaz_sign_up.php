@@ -3,6 +3,8 @@
 	sign_up.js
 */
 require('../config.php');
+require('../api.php');
+
 session_start();
 
 $sign_up_object = new ajaz_sign_up();

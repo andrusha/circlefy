@@ -6,6 +6,8 @@
 
 session_start();
 require('../config.php');
+require('../api.php');
+
 $gid = $_POST['gid'];
 $uid = $_SESSION['uid'];
 $fuid = $_POST['fuid'];

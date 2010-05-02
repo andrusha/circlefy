@@ -4,6 +4,8 @@
 	groups_manage.phtml
 */
 require('../config.php');
+require('../api.php');
+
 session_start();
 
 $email = $_POST['email'];

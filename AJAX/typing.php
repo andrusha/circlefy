@@ -3,6 +3,8 @@
 	homepage.phtml
 */
 session_start();
+require('../api.php');
+
 $cid = $_POST['cid'];
 $response = $_POST['response'];
 $uname = $_SESSION['uname'];

@@ -15,7 +15,6 @@ var signupData = {
 
 var showError = function(el, msg){
         el.store('passed', false).addClass('error');
-	console.log(el.getParent('p'));
         el.getPrevious('p').getNext('p.guide').set('text', msg).setStyle('display', 'block');
 };
 

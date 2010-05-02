@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $to_box = stripslashes($_POST['to_box']);
 $to_list = json_decode($to_box);

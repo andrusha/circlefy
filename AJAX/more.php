@@ -2,16 +2,29 @@
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+	PARAMS:
+
+	cid
+EOF;
+
 session_start();
 require('../config.php');
+require('../api.php');
 
-$cid = $_POST['cid'];
-$uid = $_POST['uid'];
+if($cb_enable){
+	$cid = $_GET['cid'];
+	$uid = $_GET['uid'];
+} else {
+	$cid = $_POST['cid'];
+	$uid = $_POST['uid'];
+}
 
-if(isset($_POST['cid'])){
+
+if(isset($cid)){
    	$more_function = new more_functions();
-        $results = $more_function->more($cid,$uid);
-        echo $results;
+        $res = $more_function->more($cid,$uid);
+	api_json_choose($res,$cb_enable);
 }
 
 
@@ -40,7 +53,7 @@ class more_functions{
                 $last_id = $last_id->fetch_assoc();
                 $last_id = $last_id['last_id'];
 		if($last_id > 0)
-			return json_encode(array('more' => 1));
+			return array('more' => 1);
 	}
 
 }

@@ -1,5 +1,7 @@
 <?php 
 require('../AJAX/ajaz_sign_up.php');
+require('../api.php');
+
 class irc_freenode extends ajaz_sign_up{ 
 
 	public $uid = null;

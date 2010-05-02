@@ -86,6 +86,7 @@ var _push = _tap.register({
 						cid: data.msgData[0],
 						msg: data.msgData[1],
 						user: data.msgData[2],
+						pic_small: data.msgData[4],
 						type: data.msgData[3] || data.msgData[1] || ''
 					};
 				}
@@ -100,7 +101,7 @@ var _push = _tap.register({
 					this.publish('push.data.response.typing', [parsed.cid, parsed.user]);
 					break;
 				case 'response':
-					this.publish('push.data.response', [parsed.cid, parsed.user, parsed.msg]);
+					this.publish('push.data.response', [parsed.cid, parsed.user, parsed.msg, parsed.pic_small]);
 					break;
 				case 'convo':
 					this.publish('push.data.convo', [parsed.cid, '']);
@@ -137,7 +138,7 @@ var _logger = _tap.register({
 	init: function(){
 		this.subscribe({
 			'push.sent; push.data.raw': function(){
-				console.log.apply(console, arguments);
+				//console.log.apply(console, arguments);
 			}
 		});
 	}

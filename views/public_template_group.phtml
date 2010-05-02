@@ -164,26 +164,28 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 			if($_t['topbg'] == 'dark'){
 				$color_name = '#FFFA00';
 				$color_topbg = '#3C3C3C';
+				$join = 'lightgreen';
 			} else {
 				$color_name = '#3C3C3C';
 				$color_topbg = 'white';
+				$join = 'green';
 			}
 			?>
 			<div id="content">
 				<div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
 					<?php if ($_t['joined']): ?>
-					<button data-id="<?= $_t['gid'] ?>" class="leave">leave group</button>
+					<button data-id="<?= $_t['gid'] ?>" class="leave">unfollow group</button>
 					<?php elseif ($logged): ?>
-					<button data-id="<?= $_t['gid'] ?>" class="join">join group</button>
+					<button data-id="<?= $_t['gid'] ?>" class="join">follow group</button>
 					<?php else: ?>
-					<button data-id="<?= $_t['gid'] ?>" class="login">login to join</button>
+					<button data-id="<?= $_t['gid'] ?>" class="login">login to follow</button>
 					<?php endif; ?>
 					<img src="/group_pics/<?= $_t['group_pic_med'] ?>" class="group-avatar" />
 					<h2>
 						<?= ($_t['admin'] ? '<span class="moderator-title">&#10070;</span> ' : '') ?> <span style="color:<?=$color_name?>;" ><?= $_t['gname'] ?></span> <span class="nick"><?= $_t['symbol'] ?></span>
 					</h2>
 					<p class="stats">
-						<strong><?= (!empty($_t['member_count'])) ? $_t['member_count'] : '0' ?></strong> Members joined, 
+						<strong class="count-one"><?= (!empty($_t['member_count'])) ? $_t['member_count'] : '0' ?></strong> Members joined, 
 						<? /* TODO: this values are hardcoded - find the real active ones */ ?>
 						<strong>29</strong> Taps sent, and
 						<strong>55</strong> Responses received.
@@ -192,6 +194,8 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 					<? if($_t['type'] == 3 || $_t['type'] == 1):?>
 					<img style="float:right;" src="/group_pics/official2.PNG" title="Verified Official Community"/>
 					<? endif; ?>
+					<span style="float:right;display:block;color:<?=$join?>;opacity:0;" class="positive-click">Joined!</span>
+					<span style="float:right;display:block;color:red;opacity:0;" class="negative-click">Come back! :(</span>
 				</div>
 
 				<form id="tapbox" action="" class="section active">
@@ -218,7 +222,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 						<? endif; ?>
 							<span class="viewers_online"><?=$_t['online_count']?></span> 
 							/ 
-							<span id="total-member-count"><a href="#"><?=$_t['total_count']?></a></span></span> 
+							<span id="total-member-count"><a href="#"><span class="count-one"><?=$_t['total_count']?></span></a></span></span> 
 					</div>
 					<div class="description">
 						<?=$_t['descr']?>
@@ -252,7 +256,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 										</span>
 									</span>
 									<a href="#" class="tap-resp-count" title="view responses">
-										<span class="count">
+										<span class="count"><b>[chat]</b>
 											<?= $tap['count'] ?>
 										</span>
 									</a>

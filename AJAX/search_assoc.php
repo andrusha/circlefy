@@ -3,17 +3,27 @@ session_start();
 /* CALLS:
 	homepage.phtml
 */
-require('../config.php');
+$usage = <<<EOF
+	PARAMS:
 
-$search = $_POST['search'];
+	search: this is the search term used
+EOF;
+
+require('../config.php');
+require('../api.php');
+
+if($cb_enable)
+	$search = $_GET['search'];
+else
+	$search = $_POST['search'];
 
 if(isset($_POST['search'])){
    	$assoc_function = new assoc_functions();
-        $results = $assoc_function->assoc($search);
-
-        echo $results;
+        $res = $assoc_function->assoc($search);
+	api_json_choose($res,$cb_enable);
+} else {
+	api_usage($usage);
 }
-
 
 class assoc_functions{
 
@@ -76,7 +86,7 @@ class assoc_functions{
 			$keyword_search = $search;
 			$create_assoc_query = <<<EOF
 				SELECT t1.favicon as pic_36,t1.descr,t1.gid as id,min(t2.connected) as connected,t2.symbol as symbol,t1.gname AS name,COUNT(t3.uid) AS members,t4.count FROM 
-				( SELECT * FROM groups WHERE (gname LIKE '{$full_search}' OR {$terms} symbol LIKE '{$keyterms}%' ) AND connected != 2) AS t1
+				( SELECT * FROM groups WHERE (gname LIKE '{$full_search}' OR {$terms} symbol LIKE '{$keyterms}%' ) ) AS t1
 				LEFT JOIN groups AS t2 ON t2.gid = t1.gid
 				LEFT JOIN group_members AS t3 ON t3.gid=t2.gid
 				LEFT JOIN GROUP_ONLINE AS t4 ON t4.gid=t2.gid
@@ -129,7 +139,7 @@ EOF;
 				$final_results[] .= $v;
 			//END 
 
-                        return json_encode($final_results);
+                        return $final_results;
 
                 }
 
@@ -193,7 +203,7 @@ EOF;
 			}
 
 
-			return json_encode($response);
+			return $response;
 	}
 
 }

@@ -29,7 +29,7 @@ if (!empty($_t['user_bits'])) {
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
-			stream: JSON.decode('<?= json_encode($inits) ?>'),
+			stream: JSON.decode('<?= json_encode($tap['cid']) ?>'),
 			convos: [],
 			people: JSON.decode('<?= json_encode($people) ?>'),
 			groups: JSON.decode('<?= json_encode($groups) ?>'),
@@ -160,7 +160,7 @@ if (!empty($_t['user_bits'])) {
 									</span>
 								</p>
 								<div class="responses perma">
-									<ul class="chat">
+									<ul class="chat chat-pub">
 										<?php
 											if (!empty($_t['responses'])):
 												foreach($_t['responses'] as $resp):

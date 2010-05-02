@@ -113,11 +113,11 @@ $private = $_t['private'];
 						<?php if ($_t['user'] == $_SESSION["uname"]): ?>
 						<button data-id="<?= $_t['uid'] ?>" class="you" disabled="disabled">this is you!</button>
 						<?php elseif ($_t['tracked']): ?>
-						<button data-id="<?= $_t['uid'] ?>" class="untrack">untrack</button>
+						<button data-id="<?= $_t['uid'] ?>" class="untrack">unfollow</button>
 						<?php elseif ($logged): ?>
-						<button data-id="<?= $_t['uid'] ?>" class="track">track</button>
+						<button data-id="<?= $_t['uid'] ?>" class="track">follow</button>
 						<?php else: ?>
-						<button data-id="<?= $_t['uid'] ?>" class="login">login to join</button>
+						<button data-id="<?= $_t['uid'] ?>" class="login">login to follow</button>
 						<?php endif; ?>
 					<? endif; ?>
 					<img src="/user_pics/<?= $_t['user_pic_med'] ?>" class="avatar" />
@@ -129,6 +129,9 @@ $private = $_t['private'];
 						<strong><?= $stats['response_count'] ?></strong> Responses received, and
 						<strong><?= $stats['group_count'] ?></strong> Groups joined.
 					</p>
+                                        <span style="float:right;display:block;color:lightgreen;opacity:0;" class="positive-click">Following!</span>
+                                        <span style="float:right;display:block;color:red;opacity:0;" class="negative-click">Not following anymore :(</span>
+
 				</div>
 
 				<!-- 
@@ -152,7 +155,7 @@ $private = $_t['private'];
 						</h2>
 						<span class="stream-name"><?= $_t['user'] ?></span>
 			
-						<span id="public-following">Followers ( <?=$_t['track_count']?> )</span>
+						<span id="public-following" >Followers ( <span class="count-one"><?=$_t['track_count']?></span> )</span>
 						<span id="public-followers">Following ( <?=$_t['tracked_count']?>  )</span>
 
 					</div>
@@ -189,7 +192,7 @@ $private = $_t['private'];
 										</span>
 									</span>
 									<a href="#" class="tap-resp-count" title="view responses">
-										<span class="count">
+										<span class="count"><b>[chat]</b>
 											<?= $tap['count'] ?>
 										</span>
 									</a>

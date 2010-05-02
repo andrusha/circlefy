@@ -2,9 +2,39 @@
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+PARAMS
+
+type - 
+	Types:
+	1 = IND Group
+	11 = AGGR Groups
+	2 = IND People
+	22 = AGGR Peoples
+	3 = IND Filter
+	33 = AGGR Filters
+search - 
+	optional if you provide a search term for the feed
+outside - 
+	Can be : 0,1,2 
+flag  -
+	flag to show personal responses you've tapped in a personal feed ( not used )
+more -
+	the more offset if you want a different set of the feed rather then the latest ( i.e. pagiation )
+id -
+	the id of the group you want to call
+EOF;
+	
 session_start();
 require('../config.php');
-$o_filter = stripslashes($_POST['o_filter']);
+require('../api.php');
+
+if($cb_enable)
+	$o_filter = $_GET['o_filter'];
+else
+	$o_filter = $_POST['o_filter'];
+
+$o_filter = stripslashes($o_filter);
 $o_filter_list = json_decode($o_filter);
 
 $group_o_filter = array();
@@ -35,18 +65,32 @@ Types:
 3 = IND Filter
 33 = AGGR Filters
 */
-$type = $_POST['type'];
-$search = $_POST['search'];
-$outside = $_POST['outside'];
-$flag = $_POST['flag'];
-$more = $_POST['more'];
-$id = $_POST['id'];
+if($cb_enable){
+	$type = $_GET['type'];
+	$search = $_GET['search'];
+	$outside = $_GET['outside'];
+	$flag = $_GET['flag'];
+	$more = $_GET['more'];
+	$id = $_GET['id'];
+} else {
+	$type = $_POST['type'];
+	$search = $_POST['search'];
+	$outside = $_POST['outside'];
+	$flag = $_POST['flag'];
+	$more = $_POST['more'];
+	$id = $_POST['id'];
+}
 
 if(isset($type)){
    	$filter_function = new filter_functions();
-        $json = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag,$more);
-        echo $json;
+        $res = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag,$more);
+	api_json_choose($res,$cb_enable);
+} else {
+	api_usage($usage);
 }
+
+
+
 
 
 class filter_functions{
@@ -91,9 +135,9 @@ class filter_functions{
 		if($mysql_obj->num_rows > 0)
 			$data = $this->create_filter($mysql_obj);	
 		else
-			return json_encode(array('results' => False,'data' => False));
+			return array('results' => False,'data' => False);
 	
-		return json_encode(array('results' => True,'data'=> $data ));
+		return array('results' => True,'data'=> $data );
 	}
 	
 	private function direct_filter($outside,$search,$o_filter){
@@ -272,7 +316,7 @@ EOF;
 		JOIN special_chat as sc
 			ON sc.uid = l.uid
 		LEFT JOIN (
-			SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$_SESSION['uid']}
+			SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$uid}
 		) AS good
 			ON good.mid = sc.cid
 		LEFT JOIN TAP_ONLINE AS TAP_ON
@@ -316,7 +360,7 @@ EOF;
 				$chat_timestamp_raw = $chat_timestamp;
 				$chat_timestamp = $this->time_since($chat_timestamp);
 				$chat_timestamp = ($chat_timestamp == "0 minutes") ? "Seconds ago" : $chat_timestamp." ago";
-                                $chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $chat_text);
+                                $chat_text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\" target=\"_blank\">\\0</a>", $chat_text);
 				$chat_text = stripslashes($chat_text);
 				if($viewer_count)
                                         $viewer_count = $viewer_count;

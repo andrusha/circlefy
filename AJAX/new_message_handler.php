@@ -9,6 +9,8 @@ format:
 
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $to_box = stripslashes($_POST['to_box']);
 $to_list = json_decode($to_box);
@@ -185,14 +187,16 @@ EOF;
 	private function insert_meta_data($mid){
 		if($this->meta_groups)
 		foreach($this->meta_groups as $gid => $perm)
+			if($gid)
 			$rows .= "($mid,$gid,$perm,NULL),";
+			else continue;
 		if($this->meta_people)
 		foreach($this->meta_people as $uid)
 			$rows .= "($mid,NULL,NULL,$uid),";
 		$rows = substr($rows,0,-1);
 
 		$init_meta_query = "INSERT INTO special_chat_meta(mid,gid,connected,uid) values $rows";
-		
+
                 $this->mysqli->query($init_meta_query);
 	}
 

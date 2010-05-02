@@ -4,6 +4,8 @@
 */
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 $gname = addslashes($_POST['gname']);
 $symbol = addslashes($_POST['symbol']);

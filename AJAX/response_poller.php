@@ -1,6 +1,8 @@
 <?php
 session_start();
 require('../config.php');
+require('../api.php');
+
 
 
 $chat_obj = new chat_functions; //might want to shield this so if people hammer this object does not instancieate

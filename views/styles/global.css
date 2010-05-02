@@ -2,7 +2,28 @@ html {
 	background-color: #101010;	
 }
 
+.resp-uname{
+vertical-align:50%;
+margin-left:4px;
+}
 
+.resp-text{
+vertical-align:50%;
+}
+
+#no-group-selected{
+color:#700;
+font-size:11px;
+display:none;
+opacity:0;
+}
+
+.negative-click{
+font-size:12px;
+}
+.positive-click{
+font-size:12px;
+}
 
 .login-success{
 color:lightgreen;
@@ -719,6 +740,7 @@ ul.stream.empty li.notice {
 }
 
 ul.stream img.avatar {
+	text-decoration:none;
 	width: 60px;
 	height: 60px;
 	float: left;
@@ -832,6 +854,11 @@ div.responses ul.chat {
 	width: 600px;
 }
 
+body div.responses ul.chat-pub {
+height:350px;
+}
+
+
 ul.chat li {
 	border-bottom: 1px solid #5C5D57;
 	padding: 8px 5px;
@@ -901,6 +928,8 @@ div.responses .chatbox {
 }
 
 #you .avatar {
+	text-decoration:none;
+	border:none;
 	width: 50px;
 	height: 50px;
 	float: left;

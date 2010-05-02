@@ -4,6 +4,8 @@ session_start();
 	homepage.phtml
 */
 require('../config.php');
+require('../api.php');
+
 
 $search = $_POST['search'];
 

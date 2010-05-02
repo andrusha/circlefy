@@ -12,6 +12,7 @@ script: home.js
 local: _template
 	The templater object.
 */
+var a='';
 var _template = {
 
 	templater: new Template(),
@@ -491,7 +492,7 @@ var _stream = _tap.register({
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
 	*/
 	changeFeed: function(id, feed, keyword, more){
-		console.log(id, feed, keyword, more);
+		//console.log(id, feed, keyword, more);
 
 		var self = this,
 			data = {type: null};
@@ -500,6 +501,16 @@ var _stream = _tap.register({
 			case 'public': data.type = 100; break;
 			default: data.type = 1; data.id = id;
 		}
+
+		if(id == 'public' || id == 'all'){
+			$('taptext').disabled = true;
+			$('taptext').style.background = 'gray';
+		}else{
+			$('taptext').disabled = false;
+			$('taptext').style.background = 'white';
+		}
+
+		
 		if(!more) {
 			more=false;
 			data.more = 0;
@@ -545,7 +556,7 @@ var _stream = _tap.register({
 
 	setLoadMore: function( gid, feed, keyword) {
 		var self = this;
-		console.log(gid, feed, keyword);
+		//console.log(gid, feed, keyword);
 		self.loadmore_gid = gid;
 		self.loadmore_feed = feed;
 		self.loadmore_keyword = keyword;
@@ -890,9 +901,9 @@ var _responses = _tap.register({
 		items.setStyles({opacity:0});
 		items.fade(1);
 		items.inject(box);
-		this.updateStatus(box);
 		box.scrollTo(0, box.getScrollSize().y);
 		this.publish('responses.updated');
+		this.updateStatus(box);
 		return this;
 	},
 
@@ -911,8 +922,9 @@ var _responses = _tap.register({
 			username = lastresp.getElement('strong'),
 			chattext = lastresp.getElement('span'),
 			count = parent.getElement('a.tap-resp-count span.count');
+			a= last;
 		username.set('text', last.getElement('a').get('text'));
-		chattext.set('text', last.getElement('span').get('text'));
+		chattext.set('text', last.getChildren('span').get('text'));
 		count.set('text', items.length);
 	},
 
@@ -960,6 +972,7 @@ var _responses = _tap.register({
 			parent = chatbox.getParent('li'),
 			cid = parent.getData('id'),
 			uid = parent.getData('uid'),
+			pic = $$('#you img.avatar')[0].src.split('/')[4].split('_')[1],
 			data = {
 				user: parent.getData('user'),
 				message: parent.getElement('p.tap-body').get('html')
@@ -968,6 +981,7 @@ var _responses = _tap.register({
 			url: '/AJAX/respond.php',
 			data: {
 				cid: cid,
+				small_pic: pic,
 				response: chatbox.get('value'),
 				init_tapper: uid || 0,
 				first: !chatbox.retrieve('first') ? 1 : 0
@@ -1012,11 +1026,25 @@ var _tapbox = _tap.register({
 		this.tapbox = $('tapbox');
 		this.overlayMsg = $('tapto');
 		this.msg = $('taptext');
+		
 		this.counter = this.tapbox.getElement('span.counter');
 		this.overlay = new TextOverlay('taptext', 'tapto');
 		this.setupTapBox();
 		this.tapbox.addEvent('submit', this.send.toHandler(this));
-		this.subscribe({'list.item': this.handleTapBox.bind(this)});
+		this.tapbox.addEvent('click', function(el){
+			var tt = $('tapto').innerHTML;
+			var ngs = $('no-group-selected');
+			if(tt == 'choose a group to tap'){
+				ngs.style.display = 'block';
+				ngs.fade('hide');
+                                ngs.fade(1).fade.delay(4000,ngs,0);
+				ngs.setStyles.delay(4700,ngs,{'display':'none'});
+			}
+		});
+
+		this.subscribe({
+		'list.item': this.handleTapBox.bind(this)
+		});
 	},
 
 	/*
@@ -1078,7 +1106,7 @@ var _tapbox = _tap.register({
 		var msg = "";
 		switch (id){
 			case 'all':
-			case 'public': msg = 'tap the public feed..'; break;
+			case 'public': msg = 'chose a group to tap'; break;
 			default: msg = 'tap ' + name + '...';
 		}
 		this.overlayMsg.set('text', msg.toLowerCase());
@@ -1451,13 +1479,16 @@ _live.responses = _tap.register({
 		});
 	},
 
-	setResponse: function(id, user, msg){
+	setResponse: function(id, user, msg, pic){
 		var parent = $('tid_' + id);
 		if (!parent) return;
 		var box = parent.getElement('ul.chat');
+
+		console.log(pic);
 		
 		if (box) this.publish('responses.new', [box, [{
 			uname: user,
+			pic_small: pic,
 			chat_text: msg,
 			chat_time: new Date().getTime().toString().substring(0, 10)
 		}]]);
