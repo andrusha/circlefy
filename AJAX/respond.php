@@ -2,19 +2,40 @@
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+cid: channel id
+
+first: is this the first time a user has responded?
+
+init_tapper: the person who intially tapped
+
+response: the text of the response
+EOF;
+
 session_start();
 require('../config.php');
 require('../api.php');
 
+if($cb_enable){
+	$response = stripslashes($_GET['response']);
+	$cid = $_GET['cid'];
+	$first = $_GET['first'];
+	$init_tapper = $_GET['init_tapper'];
+} else {
+	$response = stripslashes($_POST['response']);
+	$cid = $_POST['cid'];
+	$first = $_POST['first'];
+	$init_tapper = $_POST['init_tapper'];
+}
 
-$response = stripslashes($_POST['response']);
-$cid = $_POST['cid'];
-$first = $_POST['first'];
-$init_tapper = $_POST['init_tapper'];
-
+if($cid){
 	$chat_obj = new chat_functions();
-		$results = $chat_obj->send_response($response,$cid,$init_tapper,$first);
-		echo $results;
+	$res = $chat_obj->send_response($response,$cid,$init_tapper,$first);
+	api_json_choose($res,$cb_enable);
+} else {
+        api_usage($usage);
+}
+
 
 class chat_functions{
 
@@ -26,11 +47,11 @@ class chat_functions{
 		$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
 
-	function check_if_dupe($msg){
+	function check_if_dupe($msg,$cid){
                 $uid = $_SESSION['uid'];
 
                 $check_channel_query = <<<EOF
-                SELECT chat_text FROM chat where uid = {$uid} ORDER BY mid desc LIMIT 1;
+                SELECT chat_text FROM chat WHERE cid = {$cid} AND uid = {$uid} ORDER BY mid desc LIMIT 1;
 EOF;
                 $check_channel_results = $this->mysqli->query($check_channel_query);
                 while($res = $check_channel_results->fetch_assoc()){
@@ -46,20 +67,20 @@ EOF;
 
 		
 	function send_response($msg,$cid,$init_tapper,$first){
-		$res = $this->check_if_dupe($msg);
+		$res = $this->check_if_dupe($msg,$cid);
                 if($res)
-                        return json_encode(array('dupe' => true));
+                        return array('dupe' => true);
 	
 	
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
-		if($first){
+		if($first || true){
 			//This query can be moved to client-side once real-time presence of users is taken care of
 			$user_online_query = <<<EOF
 			SELECT uid FROM TEMP_ONLINE WHERE uid = {$init_tapper} AND online = 1
 EOF;
 			$user_online_reults = $this->mysqli->query($user_online_query);
-			if(!$user_online_reults->num_rows){
+			if(!$user_online_reults->num_rows || true){
 				$user_settings_query = <<<EOF
 				SELECT s.email_on_response,l.email FROM settings AS s 
 				JOIN login AS l ON s.uid = l.uid 
@@ -77,9 +98,6 @@ EOF;
 			$small_pic = $_POST['small_pic'];
 			$small_pic = 'small_'.$small_pic;
 
-			echo $small_pic.'HEHEHE';
-
-	
 			$action = "response";
 			$response = $msg;
 			$response = str_replace('"','\"',$response);
@@ -96,14 +114,14 @@ EOF;
                 $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$cid}','{$uid}','{$uname}','{$msg}')";
                 $this->mysqli->query($resp_message_query);
 
-			$update_active = "UPDATE active_convo SET active = 1 WHERE mid ={$cid} AND uid={$init_tapper}";
+			$update_active = "UPDATE active_convo SET active = 1 WHERE mid = {$cid} AND uid={$init_tapper}";
 			$this->mysqli->query($update_active);
 
-		return json_encode(array('success' => 1));
+		return array('success' => 1);
 	}
 
 	private function notify_user($init_tapper,$msg,$uname,$cid,$email){
-		$update_noftify_query = "UPDATE notifications SET email_on_response = NOW() WHERE email_on_response < SUBTIME(NOW(),'1:00:00') AND uid = {$init_tapper}";
+		$update_noftify_query = "UPDATE notifications SET email_on_response = NOW() WHERE email_on_response < SUBTIME(NOW(),'0:01:00') AND uid = {$init_tapper}";
 		$this->mysqli->query($update_noftify_query);
 		if($this->mysqli->affected_rows){
 				$to = $email;
