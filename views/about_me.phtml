@@ -305,7 +305,7 @@ if ($_t['settings']) {
 								</label>
 								<input id="pic-uploader" name="you-pic" type="file" class="basic full" />
 								<img id="preview" src="/user_pics/<?= $pic ?>" />
-								<iframe name="picture" style="display:none;"> </iframe>
+								<iframe name="picture" style="display:block;"> </iframe>
 							</form>
 							
 							<div class="buttons">
@@ -346,6 +346,11 @@ if ($_t['settings']) {
 							<label class="inline">
 								<input name="group" type="checkbox" value="1" <?= $notifications['join_group'] ? 'checked="checked"' : '' ?> /> 
 								When someone joins a group I own or moderate.
+							</label>
+
+							<label class="inline">
+								<input name="autotrack" type="checkbox" value="1" <?= $notifications['autotrack'] ? 'checked="checked"' : '' ?> /> 
+								Auto track convos I respond to ( when you track things, you get notifications about them )
 							</label>
 							
 							<div class="buttons">

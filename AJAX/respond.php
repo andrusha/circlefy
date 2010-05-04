@@ -64,8 +64,16 @@ EOF;
                 return $gtfo;
         }
 
+	 function add_active($mid,$uid){
+                $add_active_query = "UPDATE active_convo SET active = 0 WHERE uid = $uid AND mid = $mid";
+                $results = $this->mysqli->query($add_active_query);
 
-		
+                if($results->affected_rows != 1){
+                        $init_active_convo = "INSERT INTO active_convo(mid,uid,active) values({$mid},{$uid},1)";
+                        $this->mysqli->query($init_active_convo);
+                }
+        }
+
 	function send_response($msg,$cid,$init_tapper,$first){
 		$res = $this->check_if_dupe($msg,$cid);
                 if($res)
@@ -74,6 +82,9 @@ EOF;
 	
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
+
+		$this->add_active($mid,$uid);
+	
 		if($first || true){
 			//This query can be moved to client-side once real-time presence of users is taken care of
 			$user_online_query = <<<EOF
@@ -118,6 +129,46 @@ EOF;
 			$this->mysqli->query($update_active);
 
 		return array('success' => 1);
+	}
+	
+	private function notify_all($mid){
+
+		/*
+		NOTE: NEED TO ADD IN THE JOIN FOR settings, to see if they actually are tracking it
+		*/
+		$notify_all_query = <<<EOF
+		SELECT 
+		ac.uid ,	
+		l.uname,l.fname,l.lname,l.email
+		FROM active_convo AS ac
+		JOIN login AS l
+		ON ac.uid = l.uid
+		WHERE ac.mid = {$mid} AND ac.active = 1 AND ac.uid != {$init_tapper}
+EOF;
+		$nofiy_all_res = $this->mysqli->query($notify_all_query);
+
+		//For each person who is apart of the message or has the message active, send them an email
+		while($res = $nofiy_all_res->fetch_assoc()){
+			$uname = $res['uname'];
+			$fname = $res['fname'];
+			$lname = $res['lname'];
+			$email = $res['email'];
+		
+				$to = $email;
+				$subject = "{$uname} has replied to your tap.";
+					$from = "From: tap.info\r\n";
+					$body = <<<EOF
+{$uname} has responded to a tap you're tracking:
+
+{$uname}: {$msg}
+
+You can respond back in real-time at http://tap.info/tap/{$mid}
+
+-Team Tap
+http://tap.info
+EOF;
+					mail($to,$subject,$body,$from);
+		}
 	}
 
 	private function notify_user($init_tapper,$msg,$uname,$cid,$email){

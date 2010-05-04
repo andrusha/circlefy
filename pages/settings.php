@@ -30,10 +30,11 @@ class settings extends Base{
 			if($submit){
 				$join_group = $_POST['join_group'];
 				$track = $_POST['track'];
+				$autotrack = $_POST['autotrack'];
 				$respond = $_POST['respond'];
 
 				$update_settings_query = <<<EOF
-				UPDATE settings AS s SET s.join_group = {$join_group}, s.track = {$track},s.email_on_response = {$respond} WHERE s.uid = {$uid}
+				UPDATE settings AS s SET s.autotrack = {$autotrack}, s.join_group = {$join_group}, s.track = {$track},s.email_on_response = {$respond} WHERE s.uid = {$uid}
 EOF;
 				$this->db_class_mysql->set_query($update_settings_query,'update_settings','This query updates thes users settings');
 				$update_settings_results = $this->db_class_mysql->execute_query('update_settings');
@@ -41,7 +42,7 @@ EOF;
 			}
 			//START get settings
 			$users_settings_query = <<<EOF
-			SELECT s.join_group,s.track,s.email_on_response FROM settings AS s WHERE s.uid = {$uid}
+			SELECT s.autotrack,s.join_group,s.track,s.email_on_response FROM settings AS s WHERE s.uid = {$uid}
 EOF;
 			$this->db_class_mysql->set_query($users_settings_query,'user_settings','Counts amount of messages a user has for a stat');
                         $users_settings_results = $this->db_class_mysql->execute_query('user_settings');
@@ -49,10 +50,12 @@ EOF;
 			while($res = $users_settings_results->fetch_assoc()){
 				$email_on_response = $res['email_on_response'];
 				$track = $res['track'];
+				$autotrack = $res['autotrack'];
 				$join_group = $res['join_group'];
 				$settings_data[] = array(
 					'respond' => $email_on_response,
 					'track' => $track,
+					'autotrack' => $autotrack,
 					'join_group' => $join_group
 				);
 			} 

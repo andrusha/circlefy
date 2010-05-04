@@ -1484,8 +1484,6 @@ _live.responses = _tap.register({
 		if (!parent) return;
 		var box = parent.getElement('ul.chat');
 
-		console.log(pic);
-		
 		if (box) this.publish('responses.new', [box, [{
 			uname: user,
 			pic_small: pic,

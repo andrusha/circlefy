@@ -592,6 +592,13 @@ float:right;
 	font-size: 14px;
 	color: #101010;
 }
+#aa {
+	position: absolute;
+	margin-top:34px;
+	margin-left:2px;
+	font-size: 12px;
+	color: #eee;
+}
 
 #tapbox .counter {
 	color: #898B84;
@@ -954,6 +961,45 @@ div.responses .chatbox {
 	text-decoration: underline;
 	color: #fffa00;
 }
+#freenode-link {
+	background:red;
+	padding: 10px;
+}
+
+#freenode-link.off {
+	display: none;
+}
+
+#freenode-link p {
+	color: #fffa00;
+	margin: 0;
+	margin-bottom: 5px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+#freenode-link input {
+	width: 194px;
+}
+
+#freenode-link a.clear {
+	display:inline;
+	font-weight:bold;
+	margin-left: 5px;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#freenode-link a.clear:hover {
+	font-weight:bold;
+	text-decoration: underline;
+}
+
+#freenode-link a.clear.active {
+	font-weight:bold;
+	display: inline;
+}
+
 
 #filter {
 	background: #3C3C3C;
@@ -1414,6 +1460,18 @@ div.sideinfo h2 {
 	padding: 5px;
 	font-size: 14px;
 	width: 220px;
+}
+div.sideinfo h3 {
+background:#333;
+border:1px solid black;
+padding:3px;
+padding-left:9px;
+cursor:pointer;
+color:#EEE;
+}
+
+div.sideinfo h3:hover {
+color: #fffa00;
 }
 
 div.sideinfo ul {

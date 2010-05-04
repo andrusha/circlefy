@@ -320,6 +320,7 @@ var _notifications = _tap.register({
 			data: {
 				respond: data.respond.get('checked') ? 1 : 0,
 				track: data.track.get('checked') ? 1 :  0,
+				autotrack: data.autotrack.get('checked') ? 1 :  0,
 				join_group: data.group.get('checked') ? 1 : 0,
 				submit: 'submit'
 			},

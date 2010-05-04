@@ -45,7 +45,7 @@ class MySQL_Pinger(object):
 			time.sleep(6)
 	
 	def ping(self):	
-		print "MySQL Ping"
+		#print "MySQL Ping"
 		self.root.user_server.mysql_cursor.execute("SELECT 'ping'")
 
 class Pinger(object):
@@ -58,7 +58,7 @@ class Pinger(object):
 			time.sleep(60)
 	
 	def ping(self):
-		print "normal ping"
+		#print "normal ping"
 		for uid in self.root.user_server.users:
 			for uniq_conn in self.root.user_server.users[uid]:
 					print uniq_conn
@@ -137,11 +137,18 @@ class MessageConnection(object):
 
 	def receivedFrame(self, frame):
 		if 'action' in frame and 'cid' in frame and 'response' in frame and 'uname' in frame:
+			print "%r" % frame
 			type = frame['action']
 			cid = frame['cid']
 			data = frame['response']
 			uname = frame['uname']
-			response = self.response_generator(cid,data,uname,type)
+
+			if 'pic_small' in frame:
+				pic = frame['pic_small']
+			else:
+				pic = ''
+
+			response = self.response_generator(cid,data,uname,type,pic)
 
 			if type == 'response' and 'init_tapper' in frame:
 				init_tapper = frame['init_tapper']
@@ -161,8 +168,8 @@ class MessageConnection(object):
 		print "BAD PACKET!!! WARNING!!"
 		return False
 
-	def response_generator(self,cid,data,uname,type):
-		response = [cid,data,uname,type]
+	def response_generator(self,cid,data,uname,type,pic):
+		response = [cid,data,uname,type,pic]
 		return response
 
 	
@@ -321,9 +328,9 @@ class UserConnection(object):
 				print self.server.g_dicts['user']
 				print self.server.g_dicts['channel']
 				print self.server.g_dicts['group']
+
 				for type in types:
 					#this should be removed once code is updated to support groups
-					print type,self.uid
 					self.remove_cids(self.server.g_dicts[type][self.uid],type)
 					del self.server.g_dicts[type][self.uid]
 				del self.server.users[self.uid]
@@ -403,19 +410,22 @@ class UserConnection(object):
 			self.server.users[self.uid].append(self)
 
 		if self.state == "connected":
-			if 'cids' in frame:
+			if 'cids' in frame and frame['cids']:
 				cids = self.make_unique(frame['cids'].split(',')).keys()
 			else:
-				return False
+				cids = []
+				#return False
 
-			if 'gids' in frame:
+			if 'gids' in frame and frame['gids']:
 				gids = self.make_unique(frame['gids'].split(',')).keys()
 			else:
-				gids = '1' 
+#				gids = '1' 
+				gids = []
 
-			if 'uids' in frame:
+			if 'uids' in frame and frame['uids']:
 				uids = self.make_unique(frame['uids'].split(',')).keys()
 			else:
+				print "BAM"
 				uids = [self.uid]
 		
 			##This is a temp fix
@@ -426,7 +436,7 @@ class UserConnection(object):
 				'user' :    uids
 			}
 			for type in new_lists.keys():
-				if not new_lists[type]: continue
+#				if not new_lists[type]: continue
 				#typecast
 #				new_lists[type] = [ unicode(x) for x  in new_lists[type] ]
 				if not self.server.g_dicts[type].has_key(self.uid):
@@ -476,6 +486,8 @@ class UserConnection(object):
 				self.g_functions_add[type](channel_map_string)
 
 	def remove_cids(self,channel_map_diff,type):
+
+
 		uid_list_minus = set()
 		update = 0
 		for channel in channel_map_diff:

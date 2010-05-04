@@ -83,7 +83,6 @@ class profile_functions{
 
                 $pic_path = PROFILE_PIC_REL;
 		$image =  $pic_100;
-		echo $image;
                     // This is a PHP code outputing Javascript code.
                     // Do not be so confused ;) 
                     $output = <<<EOF
