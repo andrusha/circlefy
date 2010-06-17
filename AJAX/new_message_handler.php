@@ -72,7 +72,13 @@ class chat_functions{
 		//END variables used to store meta-data
 
 		public $counter_data;
+		public $msg;
+		public $mid;
+		public $uname;
 		
+	
+		public $irc_send;
+		public $chan;
 
         function __construct($groups,$friends,$keywords,$my_gids,$my_zip){
 				$this->group_to = $groups;
@@ -122,7 +128,6 @@ EOF;
 		if($res)
 			return json_encode(array('dupe' => true));
 
-
 		// !!! This is where the filter code has to code, it will process the input of users and match and alert other users !!!
 	
 		$create_channel_query = "INSERT INTO channel(uid) values('{$uid}');";
@@ -132,6 +137,10 @@ EOF;
 
 		$last_id = $last_id->fetch_assoc();
 		$last_id = $last_id['last_id'];
+
+		$this->msg = $msg;
+		$this->uname = $uname;
+		$this->mid = $last_id;
 
 		$create_tap_online_query = "INSERT INTO TAP_ONLINE(cid) values('{$last_id}');";
 		$this->mysqli->query($create_tap_online_query);
@@ -261,6 +270,13 @@ EOF;
 			fwrite($fp,$insert_string);
 			fclose($fp);
 
+		if($this->irc_send){
+			$fp = fsockopen("localhost", 9999, $errno, $errstr, 30);
+				$insert_string = '{"msg":"'.$this->uname.': '.stripslashes(stripslashes($this->msg)).' [ http://tap.info/tap/'.$this->mid.' ]","chan":"'.$this->chan.'"}'."\r\n";
+				fwrite($fp,$insert_string);
+				fclose($fp);
+		}
+
 		$cache_myself = "SELECT t2.cid,t2.chat_text,t1.uname,t1.pic_100,t1.fname,t1.lname,t1.uid AS fuid FROM login AS t1 JOIN special_chat AS t2 ON t1.uid = t2.uid WHERE t1.uid = {$fuid} AND t2.cid = {$cid} LIMIT 1";
 		$res_to_cache = $this->mysqli->query($cache_myself);
 		/*
@@ -340,7 +356,7 @@ EOF;
 		$groups = rtrim($group_list,',');
 	
 		$permission_query = <<<EOF
-		SELECT t1.gname as gname,t1.gid AS gid,t1.symbol FROM groups AS t1
+		SELECT t1.gname as gname,t1.gid AS gid,t1.symbol,t1.irc_bot,t1.irc_chan FROM groups AS t1
 		WHERE symbol IN ( $groups ) GROUP BY symbol
 EOF;
 
@@ -354,18 +370,29 @@ EOF;
 		if($group_perm_matches->num_rows > 0)	
 		while($res = $group_perm_matches->fetch_assoc()){
 			$gid = $res['gid'];
-	
+			$symbol = $res['symbol'];
+			$irc_chan = $res['irc_chan'];
 			
 			$sc =  strpos('x,'.$this->my_groups.',',','.$gid.',');
 			if($sc != false){
 					$this->meta_groups[$gid] = 2;
 					$this->permissions[$gid] = "0,1,2,3";
 					$in_groups .= $gid.',';
+					if($res['irc_bot']){
+						$this->irc_send = $gid;
+						$this->chan = $irc_chan;
+					}
+					//This is enabled for only 1 group atm, hence it's not an array
 			} else { 
 					$this->meta_groups[$gid] = 1;
 					$this->permissions[$gid] = "1,3";
 					$out_groups .= $gid.',';
+					if($res['irc_bot']){
+						$this->irc_send = $gid;
+						$this->chan = $irc_chan;
+					}
 			}
+
 					$key = array_search($gid,$group_list);
 					if($key !== false)
 						unset($group_list[$key]);
