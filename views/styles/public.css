@@ -6,24 +6,27 @@
 
 div.info {
 	line-height: 1.3;
-	color: #D8DEC2;
+	color: #627AAD;
 }
 
 div.info h2 {
-	color: #fffa00;
+
+	color:#627AAD;
 	font-size: 14px;
 	margin-top: 20px;
 	margin-bottom: 5px;
 }
 
 div.info p {
+	color:black;
 	font-size: 12px;
 	margin-top: 0;
 	margin-bottom: 10px;
 }
 
 div.info p.callout {
-	color: #fffa00;
+	font-weight:bold;
+	color:#627AAD;
 	font-size: 16px;
 	line-height: 1.2;
 	margin: 0 0 20px 0;
@@ -145,7 +148,7 @@ div.form button.action:hover {
 }
 
 .tap-from a, #tapper-info a.tap-from {
-        color: #115E69;
+        color: #627AAD;
 }
        
 
@@ -193,14 +196,13 @@ div.form button.action:hover {
 
 body #login li {
 	border-top: 1px solid #616161;
-	background: #101010;
 	padding: 8px 5px;
 	margin: 0;
 }
 
 #login li.notice {
 	font-size: 11px;
-	color: #D8DEC2;
+	color: #627AAD;
 }
 
 #login li.action {
@@ -208,9 +210,9 @@ body #login li {
 }
 
 #login li label {
+	color:#627AAD;
 	margin-bottom: 3px;
 	font-weight: bold;
-	color: #fffa00;
 }
 
 #login li p {
@@ -274,6 +276,7 @@ body #login li {
 }
 
 #signup-link{
+color:#627AAD;
 display:block;
 float:right;
 padding-top:4px;
@@ -283,7 +286,7 @@ font-weight:bold;
 
 #signup-link a{
 padding-left:16px;
-color:yellow;
+color:#627AAD;
 }
 
 #fblogin{

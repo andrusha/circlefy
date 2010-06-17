@@ -27,13 +27,14 @@ var _search = _tap.register({
 				});
 			}
 		});
+		search.focus();	
 	},
 
 	start: function(){
 		var els = this.suggest.getElements('li');
 		this.on = true;
 		this.suggest.addClass('on');
-		if (els.length == 0) new Element('li', {'text': 'what are you looking for?', 'class': 'notice'}).inject(this.list);
+		if (els.length == 0) new Element('li', {'text': 'Start or Join a conversation', 'class': 'notice'}).inject(this.list);
 	},
 
 	end: function(el){

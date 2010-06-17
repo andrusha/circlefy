@@ -20,10 +20,9 @@ if ($_GET['logout'] == 'true') header('location: /');
 	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/login.js"></script>
+	<script type="text/javascript" src="/views/scripts/public.js"></script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
-	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-        <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
 </head>
 <body>
 	<div id="wrapper">
@@ -32,190 +31,14 @@ if ($_GET['logout'] == 'true') header('location: /');
 
 		<div id="main">
 
-			<div id="sidebar">
-				
-			<?include(LOGIN);?>
-
-			</div>
 
 			<div id="content">
 				
-				<div class="section">
-					<div class="header">
-						<h2 class="header-title">
-							<span class="title">tap</span>
-						</h2>
-						join the conversation!
-					</div>
-					<div class="body">
-						<div style="font-size:18px;color:white;" class="description">Tap allows you to create real-time communities that are manageable, easily accessible, scalable and stylish; by creating moderated and structured real-time streams.  <br/><br/>Our focus is on communities for open source and software projects. </div>	
-<div id="content"> 
- 
- 
-				<div id="tapstream" class="section description"> 
-					<div class="header"> 
-						<a href="#" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a> 
-						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a> 
-						<h2 class="header-title"> 
-							<img src="/images/flat/loader.gif" /> 
-							<span class="title">feed</span> 
-						</h2> 
-						<span class="stream-name">Tap Demo - Join today and start tap'ing!</span> 
-					</div> 
-					<div class="description">Below is a demo of tap in action!</div> 
-					<div class="body">
-						<ul id="taps" class="stream"> 
-														<li id="tid_4496" class="container" 
-								data-id="4496" data-uid="63" data-user=""> 
-								<a href="/user/taso"> 
-									<img class="avatar" alt="taso" src="/user_pics/med_bc42066667df4574522808493783794a.gif" /> 
-								</a> 
-								<p class="tap-from "> 
-									<a href="/user/taso">taso</a>,
-									<a href="/tap/4496" class="date" data-timestamp="1271190676"> 
-										3 hours, 10 minutes ago									</a> 
-									<a href="/group/python" /> 
-										<img class="aggr-favicons" src="/group_pics/fav_71f0aa010272ba2f43e46e05edd5108f.gif" title="python " /> 
-									</a> 
-								</p> 
-								<p class="tap-body"> 
-								Hey should our company move over to Python 3.0 from 2.6?
-								<p class="tap-actions"> 
-									<span class="tap-resp"> 
-										<span class="indicator" style="display:inline-block;">Someone's replying..</span> 
-										<span class="last-resp"> 
-											<strong></strong> 
-											<span class="body ellipsis inblock"></span> 
-										</span> 
-									</span> 
-									<a href="#" class="tap-resp-count" title="view responses"> 
-										<span class="count"> 
-											0										</span> 
-									</a> 
-									<span class="tap-view-count count" title="viewers"> 
-										1									</span> 
-								</p> 
-								<div class="responses"> 
-									<ul class="chat"> 
-									</ul> 
-									<input class="chatbox" type="text" /> 
-									<div class="counter">240</div> 
-									<div class="overlay">type in your response and press enter.</div> 
-								</div> 
-							</li>
-
-<li id="tid_3308" class="container" 
-								data-id="3308" data-uid="144" data-user=""> 
-								<a href="/user/keeto"> 
-									<img class="avatar" alt="keeto" src="/user_pics/100h_f17cafc5e608ab96dde32def155dcf53.gif" /> 
-								</a> 
-								<p class="tap-from offline"> 
-									<a href="/user/keeto">keeto</a>,
-									<a href="/tap/3308" class="date" data-timestamp="1255248423"> 
-										6 minutes ago									</a> 
-									<a href="/group/ubuntu" /> 
-										<img class="aggr-favicons" src="http://tap.info/group_pics/fav_8b724e3cf9edec12093d8dd9116288ab.gif" title="ubuntu" /> 
-									</a> 
-								</p> 
-								<p class="tap-body"> 
-									Hi Ubuntu Open Source people! :D								</p> 
-								<p class="tap-actions"> 
-									<span class="tap-resp"> 
-										<span class="indicator">Someone's replying..</span> 
-										<span class="last-resp"> 
-											<strong></strong> 
-											<span class="body ellipsis inblock"></span> 
-										</span> 
-									</span> 
-									<a href="#" class="tap-resp-count" title="view responses"> 
-										<span class="count"> 
-											0										</span> 
-									</a> 
-									<span class="tap-view-count count" title="viewers"> 
-										0									</span> 
-								</p> 
-								<div class="responses"> 
-									<ul class="chat"> 
-									</ul> 
-									<input class="chatbox" type="text" /> 
-									<div class="counter">240</div> 
-									<div class="overlay">type in your response and press enter.</div> 
-								</div> 
-							</li>
-							<li id="tid_4588" class="container" 
-								data-id="4588" data-uid="1473" data-user=""> 
-								<a href="/user/paul_irish"> 
-									<img class="avatar" alt="paul_irish" src="/user_pics/100h_default.jpg" /> 
-								</a> 
-								<p class="tap-from offline"> 
-									<a href="/user/paul_irish">paul_irish</a>,
-									<a href="/tap/4588" class="date" data-timestamp="1271305408"> 
-										17 hours, 18 minutes ago									</a> 
-									<a href="/group/jquery-dev " /> 
-										<img class="aggr-favicons" src="/group_pics/fav_e7da889ea2d65435cf1ccccaecfc28f1.gif" title="jquery-dev " /> 
-									</a> 
-								</p> 
-								<p class="tap-body"> 
-									hiiiiiiii								</p> 
-								<p class="tap-actions"> 
-									<span class="tap-resp"> 
-										<span class="indicator">Someone's replying..</span> 
-										<span class="last-resp"> 
-											<strong>taso:</strong> 
-											<span class="body ellipsis inblock">how's it going</span> 
-										</span> 
-									</span> 
-									<a href="#" class="tap-resp-count" title="view responses"> 
-										<span class="count"> 
-											2										</span> 
-									</a> 
-									<span class="tap-view-count count" title="viewers"> 
-										0									</span> 
-								</p> 
-								<div class="responses"> 
-									<ul class="chat"> 
-									</ul> 
-									<input class="chatbox" type="text" /> 
-									<div class="counter">240</div> 
-									<div class="overlay">type in your response and press enter.</div> 
-								</div> 
-							</li> 	
-						<!-- <div class="full info form">
-							<p>Tap is invite-only for now. If you want to be one of our early beta testers, you can fill up the form below and we'll send you an exclusive invite.</p>
-
-							<h2>email address</h2>
-							<p class="center"><input type="text" class="basic stretch big" /></p>
-							
-							<h2>full name</h2>
-							<p class="center"><input type="text" class="basic stretch big" /></p>
-
-							<h2>where did you hear about tap?</h2>
-							<p class="center"><input type="text" class="basic stretch big" /></p>
-							
-							<p class="buttons">
-								<button type="submit" class="action">send me an invite!</button>
-							</p>
-						</div>
-						-->
-
-					</div>
-				</div>
 			</div>
 
-		</div>
 		
 		<div class="clarity"></div>
 		
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<a href="/" class="current">home</a>
-				<a href="/what">what's tap?</a>
-				<a href="/about">about us</a>
-				<a href="/devs">developers</a>
-				<a href="/contact">contact</a>
-			</span>
-		</div>
 	</div>
 	
 	<?include(JAVASCRIPT_TEMPLATES)?>
@@ -231,13 +54,6 @@ var _gaq = _gaq || [];
    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
  })();
 
-(function() {
-        var new_id = $('taps').getChildren()[2].id.split('_')[1]
-	$('tid_'+new_id).fade('hide');
-	$('tid_'+new_id).inject($('taps'),'top').fade.delay(400,$('tid_'+new_id))
-}).periodical(5000);
-
 </script>
-	<?include(FBCONNECT_BOTTOM)?>
 </body>
 </html>

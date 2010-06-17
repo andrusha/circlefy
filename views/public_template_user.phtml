@@ -146,7 +146,7 @@ $private = $_t['private'];
 				 -->
 
 				<div id="tapstream" class="section">
-					<div class="header">
+					<div class="header header-non">
 						<a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
 						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 						<h2 class="header-title">
@@ -192,13 +192,9 @@ $private = $_t['private'];
 										</span>
 									</span>
 									<a href="#" class="tap-resp-count" title="view responses">
-										<span class="count"><b>[chat]</b>
-											<?= $tap['count'] ?>
-										</span>
+											<span class="show-resp-count"><?= $tap['count'] ?></span>
+                                                                                        <span class="follow_button">Chat</span>
 									</a>
-									<span class="tap-view-count count" title="viewers">
-										<?= (!empty($tap['viewer_count'])) ? $tap['viewer_count'] : '0' ?>
-									</span>
 								</p>
 								<div class="responses">
 									<ul class="chat">
