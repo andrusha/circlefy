@@ -43,7 +43,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
-	<script type="text/javascript" src="http://tap.info:8000/static/Orbited.js"></script>
+	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",

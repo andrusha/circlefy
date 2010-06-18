@@ -383,15 +383,29 @@ var _members = _tap.register({
 
 });
 
+var x;
 var _convos = _tap.register({
 
 	init: function(){
 		this.subscribe({
-			'responses.sent': this.addConvo.bind(this)
+			'responses.sent': this.addConvo.bind(this),
+			'responses.track': this.addTrack.bind(this),
+			'responses.untrack': this.removeTrack.bind(this)
+		});
+
+		_body.addEvents({
+			'click:relay(.track-convo)': function(obj,e){
+				this.publish('responses.track',[e.get('cid'),false])
+				e.className = 'untrack-convo';
+			}.bind(this),
+			'click:relay(.untrack-convo)': function(obj,e){
+				this.publish('responses.untrack',[e.get('cid'),false])
+				e.className = 'track-convo';
+			}.bind(this),
 		});
 	},
 
-	addConvo: function(cid, uid, data){
+	addConvo: function(cid, uid, data){	
 		var self = this,
 			parent = $('tid_' + cid);
 		if (!parent) return;
@@ -399,15 +413,30 @@ var _convos = _tap.register({
 			return item.get('text').replace(/:/, '');
 		});
 		if (users.length > 0 && users.contains(_vars.uname)) return;
+		self.publish('responses.track',[cid,false]);
+	},
+	
+	addTrack: function(cid,addConvo){
 		new Request({
 			url: '/AJAX/add_active.php',
 			data: {cid: cid},
 			onSuccess: function(){
-				self.publish('convos.new', [cid, uid, data]);
+				if(addConvo)
+					self.publish('convos.new', [cid, uid, data]);
+			}
+		}).send();
+	},
+
+	removeTrack: function(cid,addConvo){
+		new Request({
+			url: '/AJAX/remove_active.php',
+			data: {cid: cid},
+			onSuccess: function(){
+				if(addConvo)
+					self.publish('convos.new', [cid, uid, data]);
 			}
 		}).send();
 	}
-
 });
 
 var _responses = _tap.register({
