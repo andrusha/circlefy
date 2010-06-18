@@ -6,6 +6,7 @@
 
 session_start();
 require('../config.php');
+require('../sql.php');
 require('../api.php');
 
 $uid = $_SESSION['uid'];

@@ -18,7 +18,7 @@ if($fuid && $status){
 	if($cb_enable)
 		echo $cb_S.json_encode(array('bool' => $res ).$cb_E;
 	else
-		echo $res;
+		echo json_encode(array('bool' => $res )
 }
 
 class block_functions{
@@ -43,7 +43,6 @@ class block_functions{
 		else
 			$res = $this->mysqli->affected_row;
 	
-			
 		if($res){
 			$status = $status ? 0 : 1;
 			$clean_up_query = "UPDATE friends SET block = $status WHERE fuid = $buid AND uid = $uid";
