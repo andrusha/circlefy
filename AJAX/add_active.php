@@ -27,7 +27,7 @@ class add_functions{
         }
 
 	function add_active($mid,$uid){
-		$add_active_query = "UPDATE active_convo SET active = 0 WHERE uid = $uid AND mid = $mid";
+		$add_active_query = "UPDATE active_convo SET active = 1 WHERE uid = $uid AND mid = $mid";
 		$results = $this->mysqli->query($add_active_query);
 	
 		if($results->affected_rows != 1){

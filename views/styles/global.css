@@ -218,6 +218,10 @@ a {
 	color: #F7F7F7;
 }
 
+ul.stream a {
+	color:blue;
+}
+
 input.basic {
 	background: #616161;
 	border-top: 1px solid #2C2C2C;
@@ -1530,12 +1534,17 @@ div.sideinfo h2 {
 	width: 220px;
 }
 div.sideinfo h3 {
-background:#333;
-border:1px solid black;
+font-size:12px;
 padding:3px;
 padding-left:9px;
 cursor:pointer;
 color:#EEE;
+}
+div.sideinfo h3 .follow_button{
+margin:4px 2px 0 0;
+display:block;
+color:#111;
+font-size:13px;
 }
 
 div.sideinfo h3:hover {

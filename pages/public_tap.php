@@ -131,6 +131,23 @@ EOF;
                 else
                         $logged_in_id = 0;
 
+		//START get if active convo
+		$is_active = <<<EOF
+		SELECT * FROM active_convo WHERE uid = {$logged_in_id} AND mid = {$mid} AND active=1
+EOF;
+                $this->db_class_mysql->set_query($is_active,'is_active','Checks if the users convo is tracked/followed');
+                $active_convo_res = $this->db_class_mysql->execute_query('is_active');
+	
+		if($active_convo_res->num_rows)
+			$active=1;
+		else
+			$active=0;
+		$this->set($active,'active_convo');
+	
+	
+		
+		
+
 		//START get tap
 		$users_query_bits_info = <<<EOF
 		SELECT

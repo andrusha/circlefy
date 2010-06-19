@@ -394,13 +394,19 @@ var _convos = _tap.register({
 		});
 
 		_body.addEvents({
-			'click:relay(.track-convo)': function(obj,e){
-				this.publish('responses.track',[e.get('cid'),false])
-				e.className = 'untrack-convo';
+			'mouseup:relay(.track-convo)': function(obj,e){
+				this.publish('responses.track',[e.get('cid'),false]);
+				e.setStyles({opacity:0});
+				e.fade(1);
+				e.innerHTML = 'You are following this convo';
+				(function(){e.className = 'untrack-convo follow_button'}).delay(1000);
 			}.bind(this),
-			'click:relay(.untrack-convo)': function(obj,e){
+			'mouseup:relay(.untrack-convo)': function(obj,e){
 				this.publish('responses.untrack',[e.get('cid'),false])
-				e.className = 'track-convo';
+				e.setStyles({opacity:0});
+				e.fade(1);
+				e.innerHTML = 'Follow this convo';
+				(function(){e.className = 'track-convo follow_button'}).delay(1000);
 			}.bind(this),
 		});
 	},

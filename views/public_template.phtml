@@ -59,8 +59,12 @@ if (!empty($_t['user_bits'])) {
 
 				<div class="sideinfo section container">
 						
-					<h3>
-						<span id="tab-name" class="track-convo" cid="<?= $tap['cid'] ?>">track this convo</span>
+					<h3>	
+						<?php if($_t['active_convo']):?>
+						<span id="tab-name" class="untrack-convo follow_button" cid="<?= $tap['cid'] ?>">You are following this convo</span>
+						<?php else: ?>
+						<span id="tab-name" class="track-convo follow_button" cid="<?= $tap['cid'] ?>">Follow this convo</span>
+						<?php endif;?>
 					</h3>
 
 					<h2>
