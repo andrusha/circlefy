@@ -12,13 +12,14 @@ $sign_up_object = new ajaz_sign_up();
 $flag = $_POST['signup_flag'];
 
 /* These are the sign up variables that are associate 1:1 to the HTML form names and JavaScript variables */
+
 $uname = $_POST['uname'];
 $fname = $_POST['fname'];
 $email = $_POST['email'];
 $password = $_POST['pass'];
 $lang = $_POST['lang'];
-
 $join_type = $_POST['joinType'];
+
 
 if($join_type == 'group')
 	$group = $_POST['joinValue'];

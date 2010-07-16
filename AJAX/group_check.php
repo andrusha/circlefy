@@ -1,33 +1,38 @@
 <?php
 /* CALLS:
 	group_add.js
-*/
 
-/* PARAMS 
-
+    PARAMS 
 group_check = init flag to initiate the script
 type = type of check you're doing ( name,symbol )
 gname = name of group ( only applicable if `type == name` )
 symbol = symbol of group ( only applicable if `type == symbol` )
-
 */
+$usage = <<<EOF
+Usage:
+gname: name of the group to check
+group_check:   true if we are checking group (always true in this case)
+EOF;
+
 session_start();
 require('../config.php');
 require('../api.php');
 
 
-$check = $_POST['group_check'];
-$type = $_POST['post'];
-$gname = $_POST['gname'];
-$symbol = $_POST['symbol'];
+$check = $_REQUEST['group_check'];
+$type = $_REQUEST['post'];
+$gname = $_REQUEST['gname'];
+$symbol = $_REQUEST['symbol'];
 
 if($check){
 	$instance = new group_functions();
 		if($type == 'name')
-		$res = $instance->check_name($gname);
+		    $res = $instance->check_name($gname);
 		if($type == 'symbol')
-		$res = $instance->check_symbol($symbol);
-	echo $res;
+		    $res = $instance->check_symbol($symbol);
+	    api_json_choose($res,$cb_enable);
+}else{
+    api_usage($usage);
 }
 
 class group_functions{
@@ -54,9 +59,9 @@ class group_functions{
 				'gid' => $gid,
 				'gname' => $gname
 			);
-			$results = json_encode(array("dupe" => True,"results" => $array_result));
+			$results = array("dupe" => True,"results" => $array_result);
 		} else { 
-			$results = json_encode(array("dupe" => False));
+			$results = array("dupe" => False);
 		}
 		return $results;
 	}	
@@ -74,7 +79,7 @@ class group_functions{
 			//If the exact name matches, return the exact name
 			if($dupe_res->num_rows > 0){
 				$results = 'This group name has been taken';
-			$results = json_encode(array('dupe' => True, 'results' => $results));
+			$results = array('dupe' => True, 'results' => $results);
 			return $results;
 			}
 			//else show similar groups
@@ -89,9 +94,9 @@ class group_functions{
 					'gname' => $gname
 				);
 			}
-			$results = json_encode(array('dupe' => False, 'results' => $array_result));
+			$results = array('dupe' => False, 'results' => $array_result);
 		} else {
-			$results = json_encode(array('dupe' => False, 'results' => null));
+			$results = array('dupe' => False, 'results' => null);
 		}
 		return $results;
 	}

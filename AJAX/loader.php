@@ -2,23 +2,24 @@
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+Usage:
+scid: id of the subcategory to remove
+EOF;
+
 session_start();
 require('../config.php');
 require('../api.php');
 
-if($cb_enable)
-	$id_list = $_GET['id_list'];
-else
-	$id_list = $_POST['id_list'];
-	
-
-
+$id_list = $_REQUEST['id_list'];
+	     
 if(isset($id_list)){
-   	$loader_function = new loader_functions();
-        $res = $loader_function->loader($id_list);
-	api_json_choose($res,$cb_enable);
+    $loader_function = new loader_functions();
+    $res = $loader_function->loader($id_list);
+    api_json_choose($res,$cb_enable);
+}else{
+    api_usage($usage);
 }
-
 
 class loader_functions{
 

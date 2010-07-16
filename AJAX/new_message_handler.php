@@ -96,8 +96,7 @@ class chat_functions{
         }
 
 	function check_if_dupe($msg){
-		$uid = $_SESSION['uid'];
-
+        $uid = $_SESSION['uid'];	
 		$check_channel_query = <<<EOF
 		SELECT chat_text FROM special_chat where uid = {$uid} ORDER BY mid desc LIMIT 1;
 EOF;
@@ -114,9 +113,8 @@ EOF;
 	
 
 	function create_channel($msg){
-
-			
 		$uid = $_SESSION['uid'];
+
 		$uname = $_SESSION['uname'];
 		$addr = $_SERVER['REMOTE_ADDR'];
 
@@ -150,7 +148,7 @@ EOF;
 		$last_id2 = $this->mysqli->query($this->last_id);
 		$init_message_query_ft = "INSERT INTO special_chat_fulltext(cid,uid,uname,chat_text,ip) values('{$last_id}','{$uid}','{$uname}','{$msg}',INET_ATON('{$addr}'))";
 		$this->mysqli->query($init_message_query_ft);
-	
+
 		$html_msg = $this->bit_generator($last_id);
 		$time = time();
 

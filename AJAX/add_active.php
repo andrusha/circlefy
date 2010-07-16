@@ -1,8 +1,11 @@
 <?php
-
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+Usage:
+cid: id of the active combo
+EOF;
 
 session_start();
 require('../config.php');
@@ -10,7 +13,7 @@ require('../sql.php');
 require('../api.php');
 
 $uid = $_SESSION['uid'];
-$mid = $_POST['cid'];
+$mid = $_REQUEST['cid'];
 if($mid){
 	$add_obj = new add_functions();
 	$add_obj->add_active($mid,$uid);

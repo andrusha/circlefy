@@ -1,4 +1,7 @@
-<?php 
+<?php
+/* CALLS:
+    login.js
+*/ 
 require('../AJAX/ajaz_sign_up.php');
 require('../api.php');
 
@@ -35,12 +38,13 @@ class irc_freenode extends ajaz_sign_up{
 EOF;
 		$check_users_exists_results = $this->mysqli->query($check_users_exists_query);
 
-		if($check_users_exists_results->num_rows)
-		$this->finished('REGISTERED');
-	//	$this->connect();
-		else
-		$this->finished('SORRY');
-		//	$this->connect();
+		if($check_users_exists_results->num_rows){
+            $this->finished('REGISTERED');
+            //    $this->connect();
+        }else{
+            $this->finished('SORRY');
+		    //	$this->connect();
+        }
 	}
 
 	private function connect(){
@@ -237,6 +241,7 @@ EOF;
 
 $flag = 'irc';
 if($flag == 'irc'){
+    
 	//echo "Logging in.....";
 	$nick = "Yayzyzy";
 	$password = "acid11";

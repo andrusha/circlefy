@@ -2,6 +2,16 @@
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+Usage:
+
+gname: name of the group
+symbol: symbol of the group
+focus: focus of the group
+descr: description of the group
+old_name: user uploaded picture path
+EOF;
+
 session_start();
 require('../config.php');
 require('../api.php');
@@ -23,8 +33,10 @@ $town = $_POST['town'];
 
 if(isset($gname)){
    	$group_function = new group_functions();
-        $results = $group_function->create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town);
-        echo $results;
+        $res = $group_function->create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town);
+        api_json_choose($res,$cb_enable);
+}else{
+    api_usage($usage);
 }
 
 
@@ -40,20 +52,26 @@ class group_functions{
 
         function create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town){
 
-                $uid = $_SESSION["uid"];
-                $uname = $_SESSION["uname"];
-
+            $uid = $_SESSION["uid"];
+            $uname = $_SESSION["uname"];
+            
+		    if(!empty($uid)){
                 $uid = $this->mysqli->real_escape_string($uid);
+                //this line dont have sense
                 $gid = $this->mysqli->real_escape_string($gid);
+		        $gadmin = $uid;
+            }
+            
+		    if(!$gadmin){
+			    $gadmin = 0;
+			    $descr = 'This is the default topic for a new group, click on manage group to change it!';
+		    }
 
-		$gadmin = $uid;
-
-		//All form settings     
-		$gadmin = $uid;
-		if($email_suffix != '')
-		$email_suffix = addslashes($email_suffix);
-		else 
-		$email_suffix = 0;
+		    //All form settings     
+		    if($email_suffix != '')
+		    $email_suffix = addslashes($email_suffix);
+		    else 
+		    $email_suffix = 0;
 		
 
 		if(isset($private))
@@ -67,53 +85,28 @@ class group_functions{
 		else
 		$invite_only = 0;
 
-/*
-
-		//The pather where the users picture is stored
-		if($_FILES['picture_path'] != ''){
-			$file_name = $gname.'_'.$_FILES['picture_path']['name'];
-			$root = ROOT;
-			$new_path = '/htdocs'.$root.'pictures/'.$file_name;
-			move_uploaded_file($_FILES['picture_path']['tmp_name'],$new_path);
-			$new_path = addslashes($new_path);
-		} else {
-			$picture_path = D_GROUP_PIC_PATH;
-		}
-*/
-
 		$create_group_query = <<<EOF
 		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town,created) 
 		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town",NOW())
 EOF;
-
-                $create_group_results = $this->mysqli->query($create_group_query);
-		
-		
-
+        
+        $create_group_results = $this->mysqli->query($create_group_query);
 		$last_id = $this->mysqli->query($this->last_id);
-
-                $last_id = $last_id->fetch_assoc();
-                $last_id = $last_id['last_id'];
-
+        $last_id = $last_id->fetch_assoc();
+        $last_id = $last_id['last_id'];
 		$gid = $last_id;
 
 		$GROUP_ONLINE_query = <<<EOF
 		INSERT INTO GROUP_ONLINE(gid) values($gid)
 EOF;
                 $this->mysqli->query($GROUP_ONLINE_query);
-		
-		$create_my_group_query = <<<EOF
-		INSERT INTO group_members(uid,gid,admin) values({$uid},{$gid},1)
+	
+		if($gadmin != 0){	
+			$add_me_as_admin_query = <<<EOF
+			INSERT INTO group_members(uid,gid,admin) values({$gadmin},{$gid},1)
 EOF;
-                $this->mysqli->query($create_my_group_query);
-/*	
-		$hash_filename =  md5($gid.'CjaCXo39c0..$@)(c'.$filename);
-		$pic_100 = '100h_'.$hash_filename.'.gif';
-
-		$old_name = D_GROUP_PIC_PATH.'/'.$old_name;
-		$new_name = D_GROUP_PIC_PATH.'/'.$pic_100;
-		rename($old_name,$new_name);
-*/
+            $this->mysqli->query($add_me_as_admin_query);
+		}
 
 		$splice_pic = explode('_',$old_name);
 
@@ -131,15 +124,19 @@ EOF;
 		$old_name = D_GROUP_PIC_PATH.'/'.$old_name;
 		$new_name = D_GROUP_PIC_PATH.'/'.$pic_100;
 
+		if($gadmin !== 0){
 		if($gid > 0){
                        @rename($old_name,$new_name);
                        @rename($old_name2,$new_name2);
                         $gr_pic_query = "UPDATE groups SET favicon = '{$favicon}', pic_36 = '{$pic_36}',pic_100 = '{$pic_100}' WHERE gid = {$gid}";
                         $this->mysqli->query($gr_pic_query);
-			return json_encode(array('success' => True));
+			return array('success' => True);
 			}
 		else
-			return json_encode(array('success' => False));
+			return array('success' => False);
+		} else {	
+			return array('success' => True);
+		}
 			
 	}
 

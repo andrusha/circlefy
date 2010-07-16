@@ -2,6 +2,13 @@
 /* CALLS:
 	homepage.phtml
 */
+$usage = <<<EOF
+Usage:
+    gid: id of the group
+    focus: new focus of the group value
+    descr: new group description value
+EOF;
+
 session_start();
 require('../config.php');
 require('../api.php');
@@ -17,9 +24,11 @@ $old_pic_name = $_POST['pic_hash_name'];
 $old_fav_name = $_POST['fav_hash_name'];
 
 if(isset($gid)){
-   	$group_function = new group_functions();
-        $results = $group_function->create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$old_pic_name,$old_fav_name);
-        echo $results;
+    $group_function = new group_functions();
+    $res = $group_function->create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$old_pic_name,$old_fav_name);
+    api_json_choose($res,$cb_enable);
+}else{
+    api_usage($usage);
 }
 
 
@@ -29,9 +38,23 @@ class group_functions{
                 private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
                 private $results;
 
+
         function __construct(){
                                 $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
         }
+
+	function check_if_admin($gid,$uid){
+                $check_if_admin_query = <<<EOF
+                SELECT uid FROM group_members WHERE gid = {$gid} AND uid = {$uid} AND admin > 0
+EOF;
+                $check_if_admin_results = $this->mysqli->query($check_if_admin_query);
+                if($check_if_admin_results->num_rows){
+                        return 1;
+                }else{
+                        return 0;
+                }
+        }
+
 
         function create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$pic_hash_name,$fav_hash_name){
 
@@ -40,6 +63,11 @@ class group_functions{
 
                 $uid = $this->mysqli->real_escape_string($uid);
                 $gid = $this->mysqli->real_escape_string($gid);
+
+		        $is_admin = $this->check_if_admin($gid,$uid);
+                if(!$is_admin){
+                    return false;
+                }
 
 		$gadmin = $uid;
 
@@ -118,9 +146,9 @@ EOF;
 		}
 
 		if($this->mysqli->affected_rows)
-			return json_encode(array('success' => True,'pic' => False));
+			return array('success' => True,'pic' => False);
 
-		return json_encode(array('success' => False));
+		return array('success' => False);
 
 			
 	}

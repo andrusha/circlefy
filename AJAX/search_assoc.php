@@ -92,7 +92,7 @@ class assoc_functions{
 				LEFT JOIN GROUP_ONLINE AS t4 ON t4.gid=t2.gid
 				GROUP BY t2.gid
 				ORDER BY name ASC
-			LIMIT 10
+			LIMIT 5
 EOF;
 	//echo $create_assoc_query;
 		} 
@@ -103,7 +103,7 @@ EOF;
 				JOIN login as t2
 				ON t2.uid = t1.fuid
 				WHERE t1.uid = {$uid} AND t2.uname LIKE '{$search}%'
-				GROUP BY t2.uname LIMIT 10;
+				GROUP BY t2.uname LIMIT 5;
 EOF;
 
 		}
@@ -113,7 +113,7 @@ EOF;
                                 SELECT tags AS name FROM rel_settings_query
                                 WHERE tags LIKE '%{$search}%'
 				GROUP BY tags
-                                LIMIT 10;
+                                LIMIT 5
 EOF;
 	
 		$create_assoc_results = $this->mysqli->query($create_assoc_query);
