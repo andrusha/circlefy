@@ -5,7 +5,7 @@ $c = 'class="current"';
 
 switch($r){
 	case '/':       $home =  $c;break;
-	case '/what':   $what =  $c;break;
+	case '/what':   $login =  $c;break;
 	case '/about':  $about=  $c;break;
 	case '/devs':  $devs =  $c;break;
 	case '/contact':$contact=$c;break;
@@ -16,6 +16,7 @@ switch($r){
 <div id="header" class="container">
                         <div id="nav">
                                 <a href="/" 	   <?=$home?>   >home</a>
+                                <a href="/login"       <?=$login?>   >login</a>
                                 <a href="/what"	   <?=$what?>   >what's tap?</a>
                                 <a href="/about"   <?=$about?>  >about us</a>
                                 <a href="/devs"    <?=$devs?>   >developers</a>

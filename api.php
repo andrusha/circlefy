@@ -22,6 +22,8 @@ $allowedModules = array(
 		'query_assoc' => false,
 		'check_signup' => false,
 		'search_assoc' => false,
+		'group_create' => false,
+	      	'new_message_handler' => false,
 
 		//These are modules which must have a session to be accessed
 		'connected_group_add'=>true,
@@ -32,9 +34,7 @@ $allowedModules = array(
 		'join_group' => true,
 		'remove_active' => true,
 		'admin_change' => true,
-		'group_create' => true,
 		'leave_group' => true,
-	      	'new_message_handler' => true,
 		'respond' => true,
 		'edit_group' => true,
 		'group_favicon_upload' => true,
@@ -55,7 +55,9 @@ $allowedModules = array(
 		'message_handler' => true,
 		'typing' => true,
 		'good' => true,
-		'rel_settings' => true
+		'rel_settings' => true,
+		'add_catagory' => true,
+        'remove_catagory' => true
         );
 
 //Check if user has a session

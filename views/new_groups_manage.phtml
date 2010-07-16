@@ -89,9 +89,9 @@ $logged = (!empty($_SESSION['uid']));
 									<a href="/group/<?= $group['symbol'] ?>" title="<?= $group['gname'] ?>"><?= $group['gname'] ?></a>
 									<span class="nick">
 										<? if ($group['admin']): ?>
-										<a href="/group_edit?group=<?= $group['symbol'] ?>">Manage</a> 
+										<a href="/group_edit?group=<?= $group['symbol'] ?>" class="follow_button gm">Manage</a> 
 										<? endif; ?>
-										<a href="#" class="leave">Leave</a>
+										<a href="#" class="leave follow_button gm">Leave</a>
 									</span>
 								</h2>
 								<p class="headline">&#8220;<?= $group['descr'] ?>&#8221;</p>

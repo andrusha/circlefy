@@ -12,8 +12,7 @@ class public_group extends Base{
 		return "Public User Object";
 	}
 	
-	function __construct(){
-				
+	function __construct(){				
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
 		$this->need_login = 1;

@@ -20,6 +20,7 @@ class homepage extends Base{
 		$this->need_db = 1;
 		$this->need_filter = 1;
 		$this->input_debug_flag = 0;
+		$this->autoCreateUser = 1;
 	
 		parent::__construct();
 		
@@ -113,16 +114,19 @@ EOF;
 		//which groups he'll be able to filter off of
 	
 		//SECURITY ... I SHOULD at t2.status = 1 so that only members who are confirmed get updates	
-		$get_user_id_query = "SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
-					LEFT JOIN group_members AS t2
-					ON t1.uid = t2.uid
-					LEFT JOIN profile AS t3
-					ON t1.uid = t3.uid
-					WHERE t1.uname='{$uname}'";
+		$get_user_id_query = <<<EOF
+		SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
+		LEFT JOIN group_members AS t2
+		ON t1.uid = t2.uid
+		LEFT JOIN profile AS t3
+		ON t1.uid = t3.uid
+		WHERE t1.uname='{$uname}'";
+EOF;
 	
 		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
 
 			//This creates the array that holds all the users gids
+			if($get_user_id_result->num_rows)
 			while($res = $get_user_id_result->fetch_assoc()){
 				$uid = $res['uid'];
 				$uname = $res['uname'];
@@ -150,7 +154,7 @@ EOF;
 EOF;
 
                  $this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
-                                $user = $this->db_class_mysql->execute_query('get_user');
+                        $user = $this->db_class_mysql->execute_query('get_user');
 			while($res = $user->fetch_assoc() ){
 			$global_uname = $res['uname'];
                         $this->set($res['uname'],'user');
@@ -162,7 +166,6 @@ EOF;
 
 
 		//START get active conversations
-
 		$ac_query = <<<EOF
 		SELECT t1.mid,t3.uname,t2.uid,t2.uname,t2.chat_text,t3.pic_36 AS small_pic, count(chat.cid) AS resp_count FROM active_convo as t1
 		JOIN chat ON t1.mid = chat.cid
@@ -195,11 +198,9 @@ EOF;
 			);
 		}
 		$this->set($ac_output,'active_convos');
-
 		//END get active conversations	
 	
 		//START get last tap
-
 		$last_tap_query = <<<EOF
 		SELECT
 
@@ -252,11 +253,6 @@ EOF;
 			$favicon = $res['favicon'];
 			$message_count = $res['message_count'];
 
-			//Process
-/* server side linkify homepage
-			$string = $topic;
-                        $topic = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $string);
-*/
 			$real_symbol[0] = $symbol;
 			$symbol = explode('.',$symbol);
 			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
@@ -343,7 +339,7 @@ foreach($my_groups_array as $res){
                 $gid_query_list.= $gid.',';
 
         $group_search_data[$gid] = $symbol;
-        //STIP ONE LINE BELOW
+
         $html_group_list[$gid] = array(
 		'gid' => $gid,
 		'symbol' => $symbol,
@@ -375,38 +371,36 @@ if($groups_bits_results->num_rows > 0){
 	$mid_list = $return_list['mid_list'];
 
 	$groups_query_bits_info = <<<EOF
-SELECT 
-	good.mid as good_id,
-	TEMP_ON.online AS user_online,
-	TAP_ON.count AS viewer_count,
-	sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
-	l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
-	g.favicon,g.gname,g.symbol,
-	scm.gid,scm.connected
-FROM login AS l
-JOIN special_chat as sc
-ON sc.uid = l.uid
-LEFT JOIN (
-SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$_SESSION['uid']}
-) AS good
-ON good.mid = sc.cid
-LEFT JOIN TAP_ONLINE AS TAP_ON
-ON sc.mid = TAP_ON.cid
-LEFT JOIN TEMP_ONLINE AS TEMP_ON
-ON sc.uid = TEMP_ON.uid
+	SELECT 
+		good.mid as good_id,
+		TEMP_ON.online AS user_online,
+		TAP_ON.count AS viewer_count,
+		sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+		l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
+		g.favicon,g.gname,g.symbol,
+		scm.gid,scm.connected
+	FROM login AS l
+	JOIN special_chat as sc
+	ON sc.uid = l.uid
+	LEFT JOIN (
+	SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$_SESSION['uid']}
+	) AS good
+	ON good.mid = sc.cid
+	LEFT JOIN TAP_ONLINE AS TAP_ON
+	ON sc.mid = TAP_ON.cid
+	LEFT JOIN TEMP_ONLINE AS TEMP_ON
+	ON sc.uid = TEMP_ON.uid
 
-LEFT JOIN special_chat_meta AS scm
-ON scm.mid = sc.cid
+	LEFT JOIN special_chat_meta AS scm
+	ON scm.mid = sc.cid
 
-JOIN groups AS g
-ON scm.gid = g.gid
+	JOIN groups AS g
+	ON scm.gid = g.gid
 
-WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
+	WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
 
-ORDER BY sc.cid DESC LIMIT 10
+	ORDER BY sc.cid DESC LIMIT 10
 EOF;
-
-//echo $groups_query_bits_info;
 
 $data_all_groups_bits = $this->bit_generator($groups_query_bits_info,'groups_aggr');
 $this->set($data_all_groups_bits,'groups_bits');
@@ -423,7 +417,12 @@ $groups_you_are_in->data_seek(0);
 $this->set($_SESSION['uid'],'pcid');
 //END set the session uid for Orbited
 
-$this->db_class_mysql->set_query('UPDATE TEMP_ONLINE SET timeout = 0,cid = "'.$push_channel_id.'" WHERE uid = '.$uid.';','TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
+
+$update_temp_online_query = <<<EOF
+	UPDATE TEMP_ONLINE SET timeout = 0,cid = "$push_channel_id" WHERE uid = $uid
+EOF;
+
+$this->db_class_mysql->set_query($update_temp_online_query,'TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
 $TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');
 
 if(!$this->db_class_mysql->db->affected_rows){
@@ -434,7 +433,10 @@ if(!$this->db_class_mysql->db->affected_rows){
 	}
 	$gid_string = substr($gid_string,0,-1);
 
-	$this->db_class_mysql->set_query('INSERT INTO TEMP_ONLINE(uid,cid,gids) values('.$uid.',"'.$push_channel_id.'","'.$gid_string.'");','TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
+	$insert_temp_online_query = <<<EOF
+	INSERT INTO TEMP_ONLINE(uid,cid,gids) values($uid,"$push_channel_id","$gid_string");
+EOF;
+	$this->db_class_mysql->set_query($insert_temp_online_query,'TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
 	$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
 
 	//START gid presence updateding
@@ -459,7 +461,7 @@ $groups_you_are_in->data_seek(0);
 //START initial user stuff
 			if($_COOKIE['profile_edit'])
                         $init_notifications[] .=  <<<EOF
-<li><img src="images/icons/error.png" /> <a href="profile_edit">Update your profile !</a></li>
+			<li><img src="images/icons/error.png" /> <a href="profile_edit">Update your profile !</a></li>
 EOF;
                         if($_COOKIE['rel_settings'])
                         $init_notifications[] .=  <<<EOF
@@ -591,7 +593,7 @@ private function bit_generator($query,$type){
                         }
 			//Don't do further processing for last tap
 			$mid_list = substr($mid_list,0,-1);
-		// START + Getting response data
+			// START + Getting response data
 
                         $response_count = <<<EOF
 			SELECT COUNT(oc.cid) AS count,c.cid AS cid,oc.chat_text,c.uname FROM

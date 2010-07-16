@@ -23,34 +23,38 @@ class public_user extends Base{
 		$this->page_name = "public_user";
 	
 		parent::__construct();
-		
-		$uname = $_GET['public_uid'];;	
+	
+
+		//Security flaw, I need to change this, GET param should be in request object
+		$uname = $_GET['public_uid'];
+
 		//This gets all users initial settings such as the groups he's in etc...
 		//SECURITY ... I SHOULD at t2.status = 1 so that only members who are confirmed get updates	
-		$get_user_id_query = "SELECT t1.uname,t1.uid,t1.private,t2.gid,t3.country,t3.zip FROM login AS t1
-					LEFT JOIN group_members AS t2
-					ON t1.uid = t2.uid
-					LEFT JOIN profile AS t3
-					ON t1.uid = t3.uid
-					WHERE t1.uname='{$uname}' LIMIT 1";
+		$get_user_id_query = <<<EOF
+		SELECT t1.uname,t1.uid,t1.private,t2.gid,t3.country,t3.zip FROM login AS t1
+		LEFT JOIN group_members AS t2
+		ON t1.uid = t2.uid
+		LEFT JOIN profile AS t3
+		ON t1.uid = t3.uid
+		WHERE t1.uname='{$uname}' LIMIT 1";
+EOF;
 	
 		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
-
-			//This creates the array that holds all the users gids
-			if($get_user_id_result->num_rows){
-				while($res = $get_user_id_result->fetch_assoc()){
-					$uid = $res['uid'];
-					$private = $res['private'];
-					$public_uid = $res['uid'];
-					$uname = $res['uname'];
-					$country = $res['country'];
-					$zip = $res['zip'];
-				}
-			}else{
-				$this->set('no_user','no_user');
-				return false;
+		//This creates the array that holds all the users gids
+		if($get_user_id_result->num_rows){
+			while($res = $get_user_id_result->fetch_assoc()){
+				$uid = $res['uid'];
+				$private = $res['private'];
+				$public_uid = $res['uid'];
+				$uname = $res['uname'];
+				$country = $res['country'];
+				$zip = $res['zip'];
 			}
-				$this->set($private,'private');
+		}else{
+			$this->set('no_user','no_user');
+			return false;
+		}
+			$this->set($private,'private');
 
 		$tracked_query = <<<EOF
 		SELECT fuid FROM friends WHERE fuid = {$uid} and uid = {$_SESSION['uid']} LIMIT 1
@@ -62,7 +66,7 @@ EOF;
 		else
 			$this->set(0,'tracked');
 
-		                $track_count = <<<EOF
+		$track_count = <<<EOF
                 SELECT COUNT(*) AS count FROM friends AS f WHERE f.uid = {$uid}
 EOF;
                 $tracked_count = <<<EOF
@@ -78,45 +82,40 @@ EOF;
                 $track_count_res = $this->db_class_mysql->execute_query('track_count');
                 $track_count_res = $track_count_res->fetch_assoc();
                 $this->set($track_count_res['count'],'track_count');
-
-
-
 		
 
 		//START User Prefences
 		$user_query = <<<EOF
-                        SELECT t2.online,t1.pic_100,t1.pic_36,t1.uid,t1.uname,p.about,p.country,t1.help FROM login AS t1
-			LEFT JOIN profile AS p
-			ON t1.uid = p.uid
-			LEFT JOIN TEMP_ONLINE AS t2
-			ON t2.uid = p.uid
-                        WHERE t1.uid={$uid}
+		SELECT t2.online,t1.pic_100,t1.pic_36,t1.uid,t1.uname,p.about,p.country,t1.help FROM login AS t1
+		LEFT JOIN profile AS p
+		ON t1.uid = p.uid
+		LEFT JOIN TEMP_ONLINE AS t2
+		ON t2.uid = p.uid
+		WHERE t1.uid={$uid}
 EOF;
-	                $this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
-                        $user = $this->db_class_mysql->execute_query('get_user');
-			while($res = $user->fetch_assoc() ){
-				$global_uname = $res['uname'];
-				$this->set($res['uname'],'user');
-				$this->set($res['about'],'about');
-				$this->set($res['uid'],'uid');
-				$this->set($res['pic_36'],'user_pic_small');
-				$this->set($res['pic_100'],'user_pic_med');
-				$this->set($res['help'],'help');
-				$this->set($res['country'],'country');
-				$this->set($res['online'],'user_online');
-			}
+		$this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
+		$user = $this->db_class_mysql->execute_query('get_user');
+		while($res = $user->fetch_assoc() ){
+			$global_uname = $res['uname'];
+			$this->set($res['uname'],'user');
+			$this->set($res['about'],'about');
+			$this->set($res['uid'],'uid');
+			$this->set($res['pic_36'],'user_pic_small');
+			$this->set($res['pic_100'],'user_pic_med');
+			$this->set($res['help'],'help');
+			$this->set($res['country'],'country');
+			$this->set($res['online'],'user_online');
+		}
 	
 		//START group setting creation
 		$group_list_query = <<<EOF
-			SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
-			FROM group_members AS t1
-			LEFT JOIN groups AS t2 ON t2.gid=t1.gid
-			LEFT JOIN special_chat_meta AS scm ON scm.gid=t1.gid
-			WHERE t1.uid={$uid}
-			GROUP BY t2.gid
+		SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
+		FROM group_members AS t1
+		LEFT JOIN groups AS t2 ON t2.gid=t1.gid
+		LEFT JOIN special_chat_meta AS scm ON scm.gid=t1.gid
+		WHERE t1.uid={$uid}
+		GROUP BY t2.gid
 EOF;
-//	echo $group_list_query;
-
                 $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                                 $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
 
@@ -133,17 +132,11 @@ EOF;
 			$message_count = $res['message_count'];
 
 			//Process
-	/*	
-			$symbol = explode('.',$symbol);
-			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
-			$display_symbol = ucwords($symbol[0].$add);
-			$add = null;
-	*/		
 			if(strlen($gname) > 25)
 				$gname = substr($gname,0,25).'..'; 
 
 			$my_groups_array[] = array(
-				'gid' => $gid,
+					'gid' => $gid,
 					'gname' => $gname,
 					'pic_36' => $pic_36,
 					'favicon' => $favicon,
@@ -176,55 +169,36 @@ EOF;
 			$logged_in_id = 0;
 			
 		$users_query_bits_info = <<<EOF
-SELECT
-        good.mid as good_id,
-        TEMP_ON.online AS user_online,
-        TAP_ON.count AS viewer_count,
-        sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
-        l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
-        g.favicon,g.gname,g.symbol,
-        scm.gid,scm.connected
-FROM login AS l
-JOIN special_chat as sc
-ON sc.uid = l.uid
-LEFT JOIN (
-SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$logged_in_id}
-) AS good
-ON good.mid = sc.cid
-LEFT JOIN TAP_ONLINE AS TAP_ON
-ON sc.mid = TAP_ON.cid
-LEFT JOIN TEMP_ONLINE AS TEMP_ON
-ON sc.uid = TEMP_ON.uid
-
-LEFT JOIN special_chat_meta AS scm
-ON scm.mid = sc.cid
-
-JOIN groups AS g
-ON scm.gid = g.gid
-
-WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
-ORDER BY sc.cid DESC LIMIT 10
-EOF;
-/*AND ( scm.connected = 1 OR scm.connected = 2 ) */
-
-
-
-/*ORDER BY sc.cid DESC LIMIT 10
-OLD
-		SELECT t4.mid as good_id,TAP_ON.count AS viewer_count,
-		t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,
-		t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-		JOIN special_chat as t3
-		ON t3.uid = t2.uid
+		SELECT
+			good.mid as good_id,
+			TEMP_ON.online AS user_online,
+			TAP_ON.count AS viewer_count,
+			sc.special,UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp,sc.cid,sc.chat_text,
+			l.uname,l.fname,l.lname,l.pic_100,l.pic_36,l.uid,
+			g.favicon,g.gname,g.symbol,
+			scm.gid,scm.connected
+		FROM login AS l
+		JOIN special_chat as sc
+		ON sc.uid = l.uid
 		LEFT JOIN (
-		SELECT t4_inner.mid,t4_inner.fuid FROM good AS t4_inner WHERE t4_inner.fuid = {$logged_in_id}
-		) AS t4
-		ON t4.mid = t3.cid
+		SELECT good_inner.mid,good_inner.fuid FROM good AS good_inner WHERE good_inner.fuid = {$logged_in_id}
+		) AS good
+		ON good.mid = sc.cid
 		LEFT JOIN TAP_ONLINE AS TAP_ON
-		ON t3.mid = TAP_ON.cid
-		WHERE t3.mid IN ( {$mid_list} ) ORDER BY t3.cid DESC LIMIT 10
+		ON sc.mid = TAP_ON.cid
+		LEFT JOIN TEMP_ONLINE AS TEMP_ON
+		ON sc.uid = TEMP_ON.uid
 
-*/
+		LEFT JOIN special_chat_meta AS scm
+		ON scm.mid = sc.cid
+
+		JOIN groups AS g
+		ON scm.gid = g.gid
+
+		WHERE sc.mid IN ( {$mid_list} ) AND ( scm.connected = 1 OR scm.connected = 2 )
+		ORDER BY sc.cid DESC LIMIT 10
+EOF;
+
 		$data_all_users_bits = $this->bit_generator($users_query_bits_info,'users_aggr');
 		$this->set($data_all_users_bits,'user_bits');
 		}
@@ -373,8 +347,8 @@ private function bit_generator($query,$type){
                         }
 			//Don't do further processing for last tap
 			$mid_list = substr($mid_list,0,-1);
-		// START + Getting response data
 
+    		        // START + Getting response data
                         $response_count = <<<EOF
 			SELECT COUNT(oc.cid) AS count,c.cid AS cid,oc.chat_text,c.uname FROM
                         ( SELECT  MAX(mid) AS mmid,chat_text,cid FROM chat WHERE cid IN ( {$mid_list}  )

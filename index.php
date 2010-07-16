@@ -1,6 +1,8 @@
 <?php
 require_once('config.php');
+require_once('modules/autoCreateUser.php');
 //echo "These are the classes that are dynamically loaded:<br/>";
+
 
 function __autoload($className){
 	//echo '-'.$className.'<br/>';
@@ -12,6 +14,7 @@ function __autoload($className){
 }
 
 $allowedPages = array(
+		'catagory_add'=>true,
 		'profile'=>true,
 		'invite'=>true,
 		'groups'=>true,
@@ -20,6 +23,7 @@ $allowedPages = array(
 		'create_group'=>true,
 		'group_edit'=>true,
 		'what'=>true,
+        'login'=>true,
 		'signup'=>true,
 		'about'=>true,
 		'devs'=>true,
@@ -71,8 +75,6 @@ $newpage->$event();
 $_t = $newpage->get();
 
 switch($_t['output']){
-
-
 	case 'HTML':
 	//	var_dump($_t);
 		$view_page = $newpage->page();

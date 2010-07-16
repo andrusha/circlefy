@@ -13,10 +13,10 @@ class group extends Base{
 	}
 	
 	function __construct(){
-				
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
 		$this->page_name = "group";
+		$this->autoCreateUser = 1;
 		$this->need_auth = 1;
 		$this->need_db = 1;
 		
@@ -24,7 +24,6 @@ class group extends Base{
 		parent::__construct();
 		
 		$uid = $_SESSION['uid'];
-	
 		$gid = $_GET['group'];
 		
 //Create all of the queries for every task

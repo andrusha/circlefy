@@ -559,6 +559,14 @@ float:right;
 	color: #ACB19B;
 }
 
+.nick .follow_button{
+	background: #D8D8D8 url(http://d1vgw4v7ja2ido.cloudfront.net/-b44d0948a4b53532.gif) repeat-x 0% 0%;
+	color:blue;
+	float:right;
+	margin-right:12px;
+	margin-bottom:4px;
+}
+
 .useronline, .viewers_online{
 	color:lightgreen;
 	}
@@ -1109,7 +1117,7 @@ ul.bodylist h2 a:hover {
 
 ul.bodylist h2 .nick, ul.bodylist h2 .nick a {
 	color:black;
-	font-size: 12px;
+	font-size: 10px;
 }
 
 ul.bodylist p.stats {
@@ -1215,6 +1223,71 @@ div.form label span {
 	color:black;
 	font-weight:bold;
 	font-size:16px;
+}
+#catagory-manage-link a{
+	font-weight:bold;
+	color:blue;
+	text-decoration:none;
+}
+#catagory-manage-link a:hover{
+	text-decoration:underline;
+}
+
+#catagory-list{
+	color:#627AAD;
+	list-style:none;
+	margin:0px auto;
+}
+
+#catagory-descr{
+	font-weight:bold;
+	font-size:16px;
+	color:#777;
+}
+
+body .add-catagory-button{
+	margin-bottom:4px;
+	margin-left:4px;
+	border:1px solid gray;
+}
+.add-catagory-button a{
+	font-size:14px;
+	margin-left:8px;
+	text-decoration:none;
+	color:#333;
+}
+
+.add-catagory-button a:hover{
+}
+
+#catagory-add-input{
+	margin-left:40px;
+	margin-top:2px;
+	padding-top:10px;
+	margin-top:20px;
+	margin-bottom:20px;
+	border:solid #627AAD 2px;
+}
+
+#catagory-list li {
+	margin-top:8px;
+}
+
+#catagory-list li a{
+	margin-right:15px;
+	color:blue;
+	font-size:10px;
+	float:right;
+	text-decoration:none;
+}
+
+#catagory-list li a:hover{
+	text-decoration:underline;
+}
+
+.catagory-name{
+	margin-right:10px;
+	font-weight:bold;
 }
 
 div.form label span.error {
@@ -1590,7 +1663,8 @@ div.sideinfo li a.names {
 
 div.sideinfo li span.count {
 	float: right;
-	color: #fffa00;
+	color: #555;
+	font-weight:bold;
 }
 
 div.sideinfo li span.new {

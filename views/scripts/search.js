@@ -1,3 +1,4 @@
+
 var _search = _tap.register({
 
 	init: function(){
@@ -6,6 +7,8 @@ var _search = _tap.register({
 		this.suggest = $('searchsuggest');
 		this.list = this.suggest.getElement('ul');
 		this.selected = null;
+		this.keyword = null;
+		this.new_keyword = null;
 		this.on = false;
 		this.overlay = new TextOverlay(search, 'searchover');
 		search.addEvents({
@@ -75,14 +78,34 @@ var _search = _tap.register({
 
 	itemClicked: function(el, e){
 		var type = el.getData('type');
-		if (type == 'group'){
+		var id = el.getData('id');
+
+		if (type == 'group' && id != 0){
 			window.location = ['/group/', el.getData('symbol')].join('');
+		}
+
+		if(id==0){
+			this.request = new Request({
+					url: '/AJAX/group_create.php',
+					link: 'cancel',
+					onSuccess: function() {
+						window.location = '/group/'+this.new_keyword;
+					}.bind(this)
+				});
+				this.request.send({data: 
+					{
+					gname: this.keyword,
+					symbol: this.keyword
+					}
+				}
+				);
 		}
 	},
 
 	goSearch: function(e){
 		var el = $(e.target),
 			keyword = el.get('value');
+			this.keyword = keyword;
 		if (!keyword.isEmpty() && keyword.length){
 			if (!this.request) this.request = new Request({
 				url: '/AJAX/search_assoc.php',
@@ -100,9 +123,25 @@ var _search = _tap.register({
 		var resp = JSON.decode(txt),
 			list = this.list.empty();
 		this.selected = null;
+		var exact_match = false;
+		var keyword = this.keyword;
 		if (!resp){
 			this.list.empty();
-			new Element('li', {'text': 'hmm, nothing found..', 'class': 'notice'}).inject(this.list);
+			var no_res_el = new Element('li', {'text': 'hmm, nothing found..', 'class': 'notice'}).inject(this.list);
+			this.new_keyword = this.keyword.replace(/ /g,'-');
+			var data = [
+				{
+					id: 0,
+					symbol: 'search',
+					name: 'Create New Conversation Channel <span style="color:blue;">'+this.new_keyword+'</span>',
+					online: '',
+					total: '',
+					img: false,
+					desc: 'Click here to great this group on the fly!',
+					joined: 'no',
+				}
+			      ];
+			$$(Elements.from(_template.parse('suggest.group', data)).slice(0, 6)).inject(list);
 			return this;
 		}
 		var data = resp.map(function(item){
@@ -110,6 +149,11 @@ var _search = _tap.register({
 				info = item[1].split(':');
 			var a = info[4],b = info[5];
 			info.shift();
+	
+			if(item[0].rtrim(' ').toLowerCase() == keyword.rtrim(' ').toLowerCase() || exact_match != false ){
+				exact_match = true;
+			}
+
 			return {
 				id: info.pop(),
 				symbol: info.shift(),
@@ -121,7 +165,26 @@ var _search = _tap.register({
 				joined: item[4]
 			};
 		});
-		$$(Elements.from(_template.parse('suggest.group', data)).slice(0, 5)).inject(list);
+
+		
+
+		this.new_keyword = this.keyword.replace(/ /g,'-');
+		if(!exact_match){
+			data.push(
+				{
+					id: 0,
+					symbol: 'search',
+					name: 'Create New Conversation Channel <span style="color:blue;">'+this.new_keyword+'</span>',
+					online: '',
+					total: '',
+					img: false,
+					desc: 'Click here to great this group on the fly!',
+					joined: 'no',
+				}
+			);
+		}
+		
+		$$(Elements.from(_template.parse('suggest.group', data)).slice(0, 6)).inject(list);
 		this.suggest.addClass('on');
 	}
 

@@ -71,6 +71,13 @@ class DB{
 		$this->query_list[$name] = $query;
 		$this->query_list[$comment_name] = $comment;
 	}
+
+	public function last_insert_id(){
+		// Added by Hookdump 15 Jul 10 @ 15:00
+		$result = $this->db->query("SELECT LAST_INSERT_ID() as LAST_ID");
+		$last_id_row = $result->fetch_assoc();
+		return $last_id_row['LAST_ID'];
+	}
 	
 	public function execute_query($query_name){
 		

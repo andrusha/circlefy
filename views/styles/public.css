@@ -3,6 +3,29 @@
 	padding: 15px;
 }
 
+body .new-group{
+	background:white;
+}
+body .new-group .search-group-descr{
+	font-weight:bold;
+	color:black;
+}
+body #searchsuggest .new-group .search-group-name{
+	
+	font-weight:bold;
+	color:black;
+}
+
+#logout-list{
+	color:black;
+	font-size:28px;
+	list-style:none;
+	width:700px;
+}
+
+.logout-item{
+	margin-top:50px;
+}
 
 div.info {
 	line-height: 1.3;

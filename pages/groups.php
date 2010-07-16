@@ -23,11 +23,11 @@ class groups extends Base{
 		parent::__construct();
 		
 		$uid = $_SESSION['uid'];
-
+     
 		$get_group_query = <<<EOF
 			SELECT
 			ogm.admin,ogm.gid,
-			g.descr,g.gid,g.symbol,g.gname,g.connected,g.focus,g.pic_100,count(t1.uid) AS size
+			g.descr,g.gid,g.symbol,g.gname,g.connected,g.focus,g.favicon as pic_100,count(t1.uid) AS size
 			FROM (
 			  SELECT DISTINCT gid,admin
 			  FROM group_members

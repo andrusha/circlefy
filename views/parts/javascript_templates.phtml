@@ -69,13 +69,16 @@
                 </ul>
                 <ul id="template-suggest-group">
                 <# for (var group from this): #>
-                        <li class="container" data-id="<#: group.id #>"
+			<# if(group.img == false){ new_group = 'new-group' } else { new_group = '' }#>
+                        <li class="container <#: new_group #>" data-id="<#: group.id #>"
                                 data-type="group" data-joined="<#: group.joined #>" data-symbol="<#: group.symbol #>" >
+				<# if( group.img != false ) { #>
                                 <img src="/<#: group.img #>" alt="<#: group.name #>" class="avatar" />
-                                <h2><#: group.name #></h2>
-                                <p>
+				<# } #>
+                                <h2 class="search-group-name"><#: group.name #></h2>
+                                <p class="search-group-descr">
 					<#: group.desc #>
-					<span class="search-count-container">
+					<span class="search-count-container ">
 						<span class="search-users-online" title="number of users online"><#: group.online #></span> / 
 						<span class="search-users-total" title="number of users total"><#: group.total #></span>
 					</span>
@@ -134,6 +137,21 @@
 				<# } #>
 				</li>
 			</a>
+			<# end; #>
+		</ul>
+
+		 <ul id="template-list-catagories">
+			<# for (var catagory from this): #>
+			<li class="catagory-item" catagoryID="<#: catagory.scid #>">
+				<span class="catagory-name"><#: catagory.cname #></span>
+				<span class="remove-catagory"><a href="#">Remove</a></span>
+				<span class="change-catagory"><a href="#">Change</a></span>
+			</li>
+
+			<# if (!catagory){ #>
+				<li id="no-results"> No catagories found </li>
+			<# } #>
+
 			<# end; #>
 		</ul>
 

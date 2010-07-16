@@ -47,7 +47,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
-			uname: "<?= $_SESSION['uname'] ?>",
+			uname: "<?= $_SESSION['uname'] ?>Anon",
 			stream: JSON.decode('<?= json_encode($inits) ?>'),
 			convos: [],
 			people: JSON.decode('<?= json_encode($people) ?>'),
@@ -65,7 +65,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
-	<?php if (!$logged): ?>
+	<?php if (!$logged && false): ?>
 	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
         <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
 	<?php endif; ?>
@@ -199,11 +199,11 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 
 				<form id="tapbox" action="" class="section active">
 					<div id="tapto">
-						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($_t['gname']) ?>..
+						tap <?= strtolower($_t['gname']) ?>..
 					</div>
 					<span class="counter">240</span>
 					<input id="taptext" tabindex="1" type="text">
-					<button id="tapsend" tabindex="3" type="submit" <?= (!$logged) ? 'disabled="disabled" ' : '' ?>>tap!</button>
+					<button id="tapsend" tabindex="3" type="submit" >tap!</button>
 				</form>
 
 				<div id="tapstream" class="section description">
@@ -309,7 +309,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>
 
-	<?php if (!$logged): ?>
+	<?php if (!$logged && false): ?>
         	<?include(FBCONNECT_BOTTOM)?>
 	<?php endif; ?>
 </body>

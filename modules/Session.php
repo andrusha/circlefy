@@ -1,5 +1,7 @@
 <?php
 class Session {
+
+	
 	
 	static private $session = NULL ;
 	
