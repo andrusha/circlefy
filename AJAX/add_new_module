@@ -1,0 +1,2 @@
+#simply change the name of the module name on the replace side to the name of the new module
+sed -i "s/require('..\/api.php');/require\('\.\.\/sql.php'\);\nrequire('..\/api.php');/g" add_active.php

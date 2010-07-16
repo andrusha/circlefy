@@ -1,0 +1,103 @@
+<?php
+$logged = (!empty($_SESSION['uid']));
+?>
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="robots" content="noodp" />
+	<meta name="image-toolbar" content="no" />
+	<meta name="copyright" content="Copyright (c) 2009 TAP" />
+	<meta name="description" content="TAP communication platform" />
+	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
+	<meta name="uid" content="<?= $_t['pcid'] ?>" />
+	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
+	<title>tap</title>
+	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
+	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript" src="/views/scripts/add_catagory.js"></script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
+</head>
+<body>
+	<div id="wrapper">
+
+		<?include(HEADER)?>
+
+		<div id="main">
+
+			<div id="sidebar">
+
+				<?php if ($logged): ?>
+	                                <?include(YOU)?>
+				<?php endif; ?>				
+			</div>
+
+			<div id="content">
+				
+				<div class="section">
+					<div class="header header-non">
+						<a id="newtaps" href="" class="floater"></a>
+						<h2 class="header-title">
+							<img src="/images/flat/loader.gif" />
+							<span class="title">edit group</span>
+						</h2>
+						<span class="stream-name">Add Catagories <a href="/groups">back to your groups</a></span>
+					</div>
+					<div class="body">
+						<div id="create-group" class="form">
+							<p class="notify">Group Created!  You will now be directed to your groups page!</p>
+                                                        <p class="error">Something weird happened, you probably didn't fill in the form correctly, could you please try again?</p>
+
+							<p id="catagory-descr">
+							Catagories allow you to organize your taps and makes them easily searchable.
+							Create catagories that are relevant for your forum.  For example, if you have a "Soccer" tap group, you might
+							want to create a "goal","offtopic",German Soccer","Italian Soccer" catagories, similar to how you would with a 
+							forum.
+							</p>
+
+							<input type="text" id="catagory-add-input"></input>
+							<input type="hidden" id="symbol" value="<?=$_GET['group']?>" />
+							<span class="add-catagory-button follow_button"><a href="#">Add Catagory</a></span>
+
+							<ul id="catagory-list">
+								<?php if($_t['my_categories']) foreach ($_t['my_categories'] as $catagory): ?>
+                                <li class="catagory-item" catagoryid="<?php echo $catagory['scid']; ?>" gid="<?php echo $catagory['gid']; ?>">
+									<span class="catagory-name"><?php echo $catagory['catagory']; ?></span>
+									<span class="remove-catagory"><a href="#">Remove</a></span>
+									<span class="change-catagory"><a href="#">Change</a></span>
+								</li>
+                                <?php endforeach; ?>
+							</ul>
+	
+
+							<div class="buttons">
+								<button class="action save-button">save changes</button> or <a href="/groups">cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="clarity"></div>
+
+		<div id="footer">
+			<strong>tap &copy; 2010.</strong>
+			<span class="nav">
+				<a href="/">home</a>
+				<a href="/groups">groups</a>
+				<a href="/people">people</a>
+				<a href="/settings">settings</a>
+				<a href="/?logout=true">logout</a>
+			</span>
+		</div>
+		
+	</div>
+	<?include(JAVASCRIPT_TEMPLATES)?>	
+</body>
+</html>
