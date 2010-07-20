@@ -36,11 +36,14 @@ class public_user extends Base{
 		ON t1.uid = t2.uid
 		LEFT JOIN profile AS t3
 		ON t1.uid = t3.uid
-		WHERE t1.uname='{$uname}' LIMIT 1";
+		WHERE t1.uname='{$uname}' LIMIT 1;
 EOF;
-	
+		
 		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
+
 		//This creates the array that holds all the users gids
+		//echo "Query: " . $get_user_id_query . "<br />Rows: " . ($get_user_id_result->num_rows);
+		//echo "<br />RES: ".$get_user_id_result;
 		if($get_user_id_result->num_rows){
 			while($res = $get_user_id_result->fetch_assoc()){
 				$uid = $res['uid'];
@@ -50,8 +53,11 @@ EOF;
 				$country = $res['country'];
 				$zip = $res['zip'];
 			}
+
+			//echo "OKIS";
 		}else{
-			$this->set('no_user','no_user');
+			//echo "<br /><br />MAL MAL MAL<br />";
+			//$this->set('no_user','no_user');
 			return false;
 		}
 			$this->set($private,'private');

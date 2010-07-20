@@ -20,7 +20,7 @@ class homepage extends Base{
 		$this->need_db = 1;
 		$this->need_filter = 1;
 		$this->input_debug_flag = 0;
-		$this->autoCreateUser = 1;
+		//$this->autoCreateUser = 1;
 	
 		parent::__construct();
 		

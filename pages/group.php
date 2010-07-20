@@ -16,7 +16,7 @@ class group extends Base{
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
 		$this->page_name = "group";
-		$this->autoCreateUser = 1;
+		//$this->autoCreateUser = 1;
 		$this->need_auth = 1;
 		$this->need_db = 1;
 		

@@ -19,7 +19,7 @@ class create_group extends Base{
 		$this->page_name = "create_group";
 		$this->need_login = 1;
 		$this->need_db = 1;
-		$this->autoCreateUser = 1;
+		//$this->autoCreateUser = 1;
 
 		parent::__construct();
 

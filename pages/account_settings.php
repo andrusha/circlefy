@@ -33,7 +33,7 @@ class account_settings extends Base{
 
 
 		if($_GET['a'] && !$_POST['uname']){
-		$this->login_class->log_out($_SESSION['uname']);
+		$this->login_class->log_out($_SESSION['uid']);	// uid, not uname!!!
 		}
 
 		//if($_COOKIE['auto_login'])

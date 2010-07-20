@@ -73,6 +73,7 @@ are included in this centralized function in order to instill encapsulation.
 				$this->db_filter();
 			}
 
+			$this->autoCreateUser = 1;	// We'll use autoCreate everywhere.
 			if($this->autoCreateUser == 1){
 				$this->auto_create();
 			}

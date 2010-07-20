@@ -241,6 +241,7 @@ EOF;
                 $this->set($stats,'stats');
                 //END stats
 
+
 		}
 
 
