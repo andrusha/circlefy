@@ -24,18 +24,18 @@ $repass = $_REQUEST['repass'];
 $hash = $_REQUEST['hash'];
 
 
-
+$pr_function = new password_recovery_functions();
 if($email){
-    $pr_function = new password_recovery_functions();
     $res = $pr_function->send_password($email);
     api_json_choose($res,$cb_enable);
 }else{
 	if($pass and $repass and $hash){
-		//
+		$res = $pr_function->changePass($pass, $repass, $hash);
+		api_json_choose($res,$cb_enable);
 	}else{
 		api_usage($usage);
 	}
-    
+
 }
 
 class password_recovery_functions{
@@ -59,7 +59,6 @@ class password_recovery_functions{
 
 	function send_instructions($email){
 		$hash = md5(microtime() . "TAP-RULZ");
-		
 		$hash_query = <<<EOF
 			UPDATE login SET email_hash = '{$hash}' WHERE email = '{$email}'
 EOF;
@@ -80,6 +79,18 @@ EOF;
 EOF;
 		$check_if_mail_exist_results = $this->mysqli->query($check_if_mail_exist_query);
 		return $check_if_mail_exist_results->num_rows;
+	}
+
+	function changePass($pass, $repass, $hash){
+		if($pass == $repass){
+			$update_query = <<<EOF
+			UPDATE login SET pass = md5('{$pass}') WHERE hash = '{$hash}'
+EOF;
+			$this->mysqli->query($update_query);
+			return array('status' => 1, 'error' => 'Password Updated');
+		}else{
+			return array('status' => 0, 'error' => 'Password not match');
+		}
 	}
 }
 ?>
