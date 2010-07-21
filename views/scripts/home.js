@@ -1134,7 +1134,7 @@ var _tapbox = _tap.register({
 	*/
 	send: function(el, e){
 		e.stop();
-		if (this.msg.isEmpty()) return this.msg.focus();
+		if (this.msg == "") return this.msg.focus();
 		new Request({
 			url: '/AJAX/new_message_handler.php',
 			data: {

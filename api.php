@@ -23,6 +23,7 @@ $allowedModules = array(
 		'check_signup' => false,
 		'search_assoc' => false,
 		'group_create' => false,
+		'password_recovery' => false,
 	      	'new_message_handler' => false,
 
 		//These are modules which must have a session to be accessed

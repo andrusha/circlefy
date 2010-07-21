@@ -187,6 +187,8 @@ div.form button.action:hover {
 	font-size: 12px;
 }
 
+
+
 #login a.selected {
 	background-color: #fffa00 !important;
 }
@@ -235,6 +237,31 @@ body #login li {
 	color:#627AAD;
 	margin-bottom: 3px;
 	font-weight: bold;
+}
+
+#pwrecovery li label {
+	color:#627AAD;
+	margin-bottom: 3px;
+	font-weight: bold;
+}
+
+#pwrecovery ul {
+	margin: 0;
+	float: left;
+	width: 230px;
+	padding: 0;
+	list-style: none;
+	font-size: 12px;
+	border-bottom: 2px solid #fffa00;
+}
+
+#pwrecovery li button {
+	cursor: pointer;
+	font-size: 14px;
+	padding: 3px;
+	background: #fffa00;
+	width: 60px;
+	border: 1px solid #fffa00;
 }
 
 #login li p {

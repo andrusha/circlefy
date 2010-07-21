@@ -1,4 +1,5 @@
 <?php
+
 require_once('config.php');
 require_once('modules/autoCreateUser.php');
 //echo "These are the classes that are dynamically loaded:<br/>";
@@ -23,7 +24,8 @@ $allowedPages = array(
 		'create_group'=>true,
 		'group_edit'=>true,
 		'what'=>true,
-        'login'=>true,
+		'login'=>true,
+		'password_recovery'=>true,
 		'signup'=>true,
 		'about'=>true,
 		'devs'=>true,
@@ -82,6 +84,9 @@ switch($_t['output']){
 			print 'You forgot to set $this->page_name in your pages/xxxx.php file, please do this in order to set the proper view template';
 			exit();
 		}
+        //echo "<!--" . $view_page . "-->";
+        
+        //echo "<!--" . print_r($_SESSION, true)  . "-->";
 		include_once($file.'/views/'.$view_page.'.phtml');	
 	break;
 	
