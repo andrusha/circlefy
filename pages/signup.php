@@ -23,6 +23,7 @@ class signup extends Base{
 		parent::__construct();
 
 		$uid = $_SESSION['uid'];
+		$this->set($uid,'uid');
 		//Takes awayfist settings flag
 		setcookie('profile_edit','',time()-360000);
 				

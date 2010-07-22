@@ -105,6 +105,7 @@ function sign_up(){
  }
  
  function check_uname(text_box){
+	 alert("asdasd");
  	var uname_insert = document.getElementById('uname_insert');	
  	var errors = document.getElementById('uname_error_count');
  	if(text_box.value.length < 4){

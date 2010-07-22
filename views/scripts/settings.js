@@ -96,6 +96,7 @@ var _account = _tap.register({
 			fname: main.getElement('input[name="firstname"]').store('passed', true),
 			lname: main.getElement('input[name="lastname"]').store('passed', true),
 			lang: main.getElement('select[name="language"]').store('passed', true),
+			uname: main.getElement('input[name="username"]').store('passed', true),
 			country: main.getElement('select[name="country"]').store('passed', true)
 		};
 		for (var key in data){
@@ -155,6 +156,7 @@ var _account = _tap.register({
 				about: data.about.get('value'),
 				fname: data.fname.get('value'),
 				lname: data.lname.get('value'),
+				uname: data.uname.get('value'),
 				email: data.email.get('value'),
 				private: privateValue,
 				lang: data.lang.get('value'),

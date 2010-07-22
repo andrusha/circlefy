@@ -104,7 +104,7 @@ Class written by Taso Du Val
 			$stamp = time();
 			//$micons = "INSERT INTO temp_users (`hash`,`uname`,`timestamp`, `ip`)";
 			$micons = "INSERT INTO login (`hash`,`uname`,`last_login`, `ip`, `anon`, `email`)";		// I'll fill "email" with the hash
-			$micons .= " VALUES ('$NLIrand_hash', '$NLIuname', CURRENT_TIMESTAMP, '$NLIipaddr', '1', '$NLIrand_hash');";
+			$micons .= " VALUES ('$NLIrand_hash', '$NLIuname', CURRENT_TIMESTAMP, '$NLIipaddr', '1', '@');";
 			$this->debu("SQL: ".$micons);
 			
 			$this->results = $this->db_class_mysql->db->query($micons);

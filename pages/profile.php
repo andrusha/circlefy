@@ -16,6 +16,7 @@ class profile extends Base{
 
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
+		//$this->page_name = "signup"; 
 		$this->page_name = "about_me";
 		$this->need_login = 1;
 		$this->need_db = 1;
@@ -50,7 +51,7 @@ EOF;
 			$get_profile_query = <<<EOF
 				SELECT 
 				t1.about,t1.metric,t1.rs_status,t1.dob,t1.gender,t1.country,t1.region,t1.town,t1.state,t1.education,t1.language,t1.zip,t1.occupation,
-				t5.email,t5.pic_100,t5.fname,t5.lname,t5.private
+				t5.email,t5.pic_100,t5.fname,t5.lname,t5.private,t5.anon
 				FROM profile AS t1
 				JOIN login AS t5
 				ON t1.uid = t5.uid
@@ -76,6 +77,7 @@ EOF;
 				$town = $res['town'];
 				$state = $res['state'];
 				$zip = $res['zip'];
+				$anon = $res['anon'];
 				
 	
 				$edit_profile_results = array(
@@ -91,7 +93,8 @@ EOF;
 					'country' => $country,
 					'region' => $region,
 					'state' => $state,
-					'town' => $town
+					'town' => $town,
+					'anon' => $anon
 				);
 
 			$this->set($edit_profile_results,'edit_profile');

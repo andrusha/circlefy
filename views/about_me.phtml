@@ -19,6 +19,7 @@ $town = $res['town'];
 $lang = $res['lang'];
 $about = $res['about'];
 $private = $res['private'];
+$is_guest = $res['anon'];
 
 $stat = $_t['stats'];
 $message_count = $stat['message_count'];
@@ -124,7 +125,7 @@ if ($_t['settings']) {
 								<span class="help">this is your public username</span>
 								<span class="error"></span>
 							</label>
-							<input name="username" value="<?= $uname ?>" type="text" disabled="disabled" class="basic full" />
+							<input name="username" value="<?= $uname ?>" type="text" <? if ($is_guest != "1") { ?> disabled="disabled" <? } ?> class="basic full" />
 							
 							<label for="email">
 								email

@@ -86,6 +86,7 @@ function send_update(type){
 		param += '&lname='+document.getElementById('lname').value;
 		param += '&email='+document.getElementById('email').value;
 		param += '&zip='+document.getElementById('zip').value;
+		param += '&username='+document.getElementById('username').value;
 		param += '&state='+document.getElementById('state').value;
 		country = document.getElementById('country');
 			param += '&country='+country.options[country.selectedIndex].value;

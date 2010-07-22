@@ -47,6 +47,7 @@ EOF;
 			$this->db_class_mysql->set_query($users_settings_query,'user_settings','Counts amount of messages a user has for a stat');
                         $users_settings_results = $this->db_class_mysql->execute_query('user_settings');
 	
+			// FIXME: Why is this While here? We should have 1 settings row per user! (Ignacio.-)
 			while($res = $users_settings_results->fetch_assoc()){
 				$email_on_response = $res['email_on_response'];
 				$track = $res['track'];
@@ -60,7 +61,6 @@ EOF;
 				);
 			} 
 			$this->set($settings_data,'settings');
-		
 
 			$count_messages = <<<EOF
 			SELECT COUNT(*) AS message_count FROM special_chat WHERE uid = {$uid}

@@ -97,7 +97,7 @@ connectForm.getElement('button').addEvent('click', function(e){
                         connectForm.metricked = true;
                 }
                 new Request({
-                        url: 'AJAX/ajaz_sign_up.php',
+                        url: 'AJAX/ajaz_new_sign_up.php',
                         data: {
                                 uname: signupData.uname.get('value'),
                                 fname: signupData.name.get('value'),
