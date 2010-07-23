@@ -1,11 +1,11 @@
 <?php
-
+// This header will be shown to the GUEST USERS.
 $r = $_SERVER['REQUEST_URI'];
 $c = 'class="current"';
 
 switch($r){
 	case '/':       $home =  $c;break;
-	case '/what':   $login =  $c;break;
+	case '/what':   $what =  $c;break;
 	case '/about':  $about=  $c;break;
 	case '/devs':  $devs =  $c;break;
 	case '/contact':$contact=$c;break;
@@ -19,7 +19,7 @@ switch($r){
                                 <a href="/login"       <?=$login?>   >login</a>
                                 <a href="/what"	   <?=$what?>   >what's tap?</a>
                                 <a href="/about"   <?=$about?>  >about us</a>
-                                <a href="/devs"    <?=$devs?>   >developers</a>
+								<? /* <a href="/devs"    <?=$devs?>   >developers</a> */ ?>
                                 <a href="/contact" <?=$contact?>>contact</a>
                         </div>
 

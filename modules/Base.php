@@ -77,6 +77,10 @@ are included in this centralized function in order to instill encapsulation.
 			if($this->autoCreateUser == 1){
 				$this->auto_create();
 			}
+
+			// TPL variable ok_user -> "I am a registered user (not guest)"
+			$logged = ((!empty($_SESSION['uid'])) && ($_SESSION['guest']!="1"));
+			$this->set($logged,'ok_user');
 		}
 
 		protected function db_conn(){
@@ -137,5 +141,6 @@ are included in this centralized function in order to instill encapsulation.
 		public function page(){
 			return $this->page_name;
 		}
+		
 
-	}
+}

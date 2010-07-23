@@ -7,7 +7,7 @@
                                                 <a href="/invite" title="Invite your friends to tap">- invite people -</a>
                                         </p>
 										<p>
-											<? if ($_SESSION['anon'] == 1) { ?>
+											<? if ($_SESSION['guest'] == 1) { ?>
                                                 <a href="/signup">sign up</a>
 												<a href="/?logout=true">log in</a>
 											<? } else { ?>

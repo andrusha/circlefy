@@ -44,25 +44,12 @@ $public_groups_topic = "This is a place where you can discover what's being said
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap - home</title>
-	<? echo $_t['your_groups']['favicon'] ?>
-	
-
-	 <link rel="shortcut icon" href="http://<?=DOMAIN?>/group_pics/default.ico" />
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
-	<!-- // <script type="text/javascript" src="/assets.php?type=javascript&amp;package=mootools"></scrip> -->
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<? 
+	$tpl_title = "Home";
+	include(OK_HEADER);
+	?>
+	<script type="text/javascript" src="/views/scripts/push.js"></script>
+	<script type="text/javascript" src="/views/scripts/home.js"></script>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
@@ -74,117 +61,15 @@ $public_groups_topic = "This is a place where you can discover what's being said
 			groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>')
 		};
 	</script>
-	<!-- <script type="text/javascript" src="/assets.php?type=javascript&amp;package=home"></script> -->
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
-	<script type="text/javascript" src="/views/scripts/push.js"></script>
-	<script type="text/javascript" src="/views/scripts/home.js"></script>
 </head>
 <body>
-	<div id="wrapper">
+<div id="wrapper">
 
-		<?include(HEADER)?>
+	<? include(OK_TOPBAR); ?> 
 
-		<div id="main">
+	<div id="main">
 
-
-			<div id="sidebar">
-
-				<?include(YOU)?>	
-				<div id="filter" class="section">
-					<p class="inblock ellipsis">search <span class="title">all your groups</span> <a href="#" class="clear">clear</a></p>
-					<input id="filterkey" type="text" class="basic" />
-				</div>
-
-				<div id="lists" class="section container">
-					<a id="tab-groups" data-name="groups" title="groups" class="tab selected" href=""></a>
-					<a id="tab-convos" data-name="convos" title="convos" class="tab" href=""></a>
-					<a id="tab-people" data-name="people" title="contacts" class="tab" href=""></a>
-					<a id="tab-direct" data-name="direct" title="messages" class="tab" href=""></a>
-					<h2>
-						<a id="list-action" href="/groups">create new</a>
-						<span id="tab-name">groups</span>
-					</h2>
-					<ul id="panel-groups" class="panel selected"
-						data-action="manage" data-action-href="/groups" data-name="groups">
-						<li id="gid_public" class="panel-item" 
-							data-topic="<?= $public_groups_topic ?>"
-							data-id="public" data-name="Discover Taps">
-							<span class="count"></span>
-							<a href="#" class="names inblock ellipsis">discover</a>
-						</li>
-						<li id="gid_all" class="selected panel-item" 
-							data-topic="<?= $all_your_groups_topic ?>"
-							data-id="all" data-name="All Your Groups">
-							<span class="count"></span>
-							<a href="#" class="names inblock ellipsis">all your groups</a>
-						</li>
-						
-						<?php if($_t['your_groups']) foreach ($_t['your_groups'] as $group): ?>
-						<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
-							data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
-							data-symbol="<?= $group['symbol'][0] ?>"
-							data-topic="<?= $group['topic']?>"
-							data-online_count="<?= $group['online_count'] ?>"
-							data-total_count="<?= $group['total_count'] ?>"
-							<?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
-							<span class="count"></span>
-							<a href="#" class="names inblock ellipsis" 
-								alt="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>"
-								title="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>">
-								<?= ($group['admin'] ? '&#10070; ' : '') ?>
-								<?= strtolower($group['display_symbol']) ?>
-							</a>
-							<span class="favicon">
-								<span class="online-group-count" title="number of users online"><?=$group['online_count']?></span>
-								<img class="favicon-img" src="/group_pics/<?=$group['favicon'];?>" />
-							</span>	
-						</li>
-						<?php endforeach; ?>
-						<li class="notify">To find and join more groups to tap, use the search bar at the top of the page</li>
-					</ul>
-					<ul id="panel-convos" class="panel" data-name="convos">
-						<?php
-							if (!empty($_t['active_convos'])):
-								$active_convos = array_reverse($_t['active_convos']);
-								foreach ($active_convos as $convo):
-						?>
-						<li id="cid_<?= $convo['mid'] ?>" class="new panel-item" 
-							data-id="<?= $convo['mid'] ?>" data-user="<?= $convo['uname'] ?>">
-							<span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
-							<p class="from inblock">
-								<img class="active-convo-pic" src="/user_pics/<?=$convo['small_pic']?>" /> 
-									<span class="active-convo-uname"><?= $convo['uname'] ?></span>
-								<span class="new">*</span></p>
-							<p class="body ellipsis"><?= stripslashes($convo['chat_text']); ?></p>
-						</li>
-						<?php endforeach; else: ?>					
-							<li class="notify">You have no current conversations going on! Make some!</li>
-						<?php endif; ?>
-					</ul>
-					<ul id="panel-people" class="panel"
-						data-action="add contacts" data-action-href="/people" data-name="people">
-						<li>All your people</li>
-						<?php if($_t['your_friends']) : ?>
-						<?php foreach ($_t['your_friends'] as $person): ?>
-							<a href="/user/<?=$person['friend_uname']?>" />
-							<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
-								title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">
-							</li>
-							</a>
-						<?php
-								endforeach;
-							else:
-						?>
-							<li class="notify">You have no contacts</li>
-						<? endif; ?>
-						
-					</ul>
-					<ul id="panel-direct" class="panel" data-name="direct">
-						<li class="notify">You have no messages</li>
-					</ul>
-				</div>
-
-			</div>
+			<? include(OK_SIDEBAR); ?>
 
 			<div id="content">
 
@@ -267,17 +152,8 @@ $public_groups_topic = "This is a place where you can discover what's being said
 		</div>
 
 		<div class="clarity"></div>
+		<?include(OK_FOOTER)?>
 
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<a href="/">home</a>
-				<a href="/groups">groups</a>
-				<a href="/people">people</a>
-				<a href="/settings">settings</a>
-				<a href="/?logout=true">logout</a>
-			</span>
-		</div>
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>
 </body>

@@ -1,26 +1,4 @@
 <?php
-/*
-Usage:
-
-The following would log you out if $_GET['a'] was set:
-
-		if($_GET['logout']){
-		$this->auth_class->login_class->log_out($_SESSION['uname']);
-		}
-
-The Following would allow the user to automatically login if his automatic login flag was set:
-
-		if($_COOKIE['auto_login'])
-		$bypass = $this->auth_class->login_class->bypass_login();
-
-
-The following will allow a user to authenticate as long as no logout or automatic login is detected:
-		if(!$bypass && !$_GET['logout']){
-			$this->auth_class->login_class->validate_user();
-
-Class written by Taso Du Val
-}*/
-
 
 	class autoCreateUser extends Auth{
 		private $db_test;
@@ -56,8 +34,11 @@ Class written by Taso Du Val
 
 			//START CHECK 	
 			//Use a special hash that will take the users IP address
-			$myhash = $_COOKIE['NLIhash'];
-			$this->debu("Loading cookies: " . $_COOKIE['NLIuname'] . " (" . $_COOKIE['NLItmpuid'] . ") Hash: " .$_COOKIE['NLIhash']);
+			$myhash = $_COOKIE['GUEST_hash'];
+			$myuid	= $_COOKIE['GUEST_uid'];
+			if (isset($_COOKIE['GUEST_uname'])) $this->debu("uname: ".$_COOKIE['GUEST_uname']);
+			if (isset($_COOKIE['GUEST_uid'])) $this->debu("uid: ".$_COOKIE['GUEST_uid']);
+			$this->debu("Loading cookies: " . $_COOKIE['GUEST_uname'] . " (" . $_COOKIE['GUEST_uid'] . ") Hash: " .$_COOKIE['GUEST_hash']);
 
 			if(strlen($myhash) < 2){
 				$this->debu(" - Inserting cookie...");
@@ -72,46 +53,43 @@ Class written by Taso Du Val
 				$this->debu(" - HASH: $RAWrand_hash      /      $NLIrand_hash");
 				$this->debu(" - UNAME: $NLIuname");
 
-				setcookie('NLIuname',$NLIuname,time()+36000);
-				setcookie('NLIhash',$NLIrand_hash,time()+36000);
+				setcookie('GUEST_uname',$NLIuname,time()+36000);
+				setcookie('GUEST_hash',$NLIrand_hash,time()+36000);
 
 				$new_uid = $this->insertTempUser($NLIuname,$NLIrand_hash,$NLIipaddr);
 				if ($new_uid != -1) {
-					setcookie('NLItmpuid',$new_uid,time()+36000);					
+					setcookie('GUEST_uid',$new_uid,time()+36000);					
 				}
 				$this->debu("Inserting cookies: $NLIuname ($new_uid) Hash: $NLIuname$NLIrand_hash");
 				$_SESSION['uid'] = $new_uid;
 				$_SESSION['uname'] = $NLIuname;
 				$_SESSION['hash'] = $NLIrand_hash;
-				$_SESSION['anon'] = 1;
+				$_SESSION['guest'] = 1;
 			} else {
 				// My tempuser already exists!
-				$this->debu("Loading cookies: " . $_COOKIE['NLIuname'] . " (" . $_COOKIE['NLItmpuid'] . ") Hash: " .$_COOKIE['NLIhash']);
-				$_SESSION['uid'] = $_COOKIE['NLItmpuid'];
-				$_SESSION['uname'] = $_COOKIE['NLIuname'];
-				$_SESSION['hash'] = $_COOKIE['NLIhash'];
-				$_SESSION['anon'] = 1;
+				$this->debu("Loading cookies: " . $_COOKIE['GUEST_uname'] . " (" . $_COOKIE['GUEST_uid'] . ") Hash: " .$_COOKIE['GUEST_hash']);
+				$_SESSION['uid'] = $_COOKIE['GUEST_uid'];
+				$_SESSION['uname'] = $_COOKIE['GUEST_uname'];
+				$_SESSION['hash'] = $_COOKIE['GUEST_hash'];
+				$_SESSION['guest'] = 1;
 
 				return 0;
 			}
 		}
 
 		public function insertTempUser($NLIuname,$NLIrand_hash,$NLIipaddr){
-			$this->debu("Inserting new TempUser....");
 
-			// Perhaps we should store the user IP
 			// TODO: Put this SQL Logic in sql.php
 			$stamp = time();
-			//$micons = "INSERT INTO temp_users (`hash`,`uname`,`timestamp`, `ip`)";
-			$micons = "INSERT INTO login (`hash`,`uname`,`last_login`, `ip`, `anon`, `email`)";		// I'll fill "email" with the hash
-			$micons .= " VALUES ('$NLIrand_hash', '$NLIuname', CURRENT_TIMESTAMP, '$NLIipaddr', '1', '@');";
-			$this->debu("SQL: ".$micons);
+			
+			// I'll fill the email field with the hash, so we can insert the user without email, despite the indexes.
+			$micons = "INSERT INTO login (`hash`,`uname`,`last_login`, `ip`, `anon`, `email`)";
+			$micons .= " VALUES ('$NLIrand_hash', '$NLIuname', CURRENT_TIMESTAMP, '$NLIipaddr', '1', '$NLIrand_hash');";
 			
 			$this->results = $this->db_class_mysql->db->query($micons);
 
 			if ($this->db_class_mysql->db->affected_rows == 1) {
 				$uid = $this->db_class_mysql->last_insert_id();
-				$this->debu("*** TempUser inserted successfully! UID: [$uid]");
 				
 				// BUGFIX: Analog to Populate User in AJAX/ ajaz_sign_up.php
 				$profile_query = "INSERT INTO profile(uid,language) values($uid,'English');";

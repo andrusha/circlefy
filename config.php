@@ -12,6 +12,11 @@ define("D_PASS","root");
 define("D_USER","root");
 define("D_DATABASE","rewrite2");
 
+define("OK_HEADER","parts/ok_header.phtml");
+define("OK_SIDEBAR","parts/ok_sidebar.phtml");
+define("OK_TOPBAR","parts/ok_topbar.phtml");
+define("OK_FOOTER","parts/ok_footer.phtml");
+	
 define("FOOTER","parts/footer.phtml");
 define("HEADER","parts/final_header.phtml");
 define("HEADER_LOGOUT","parts/final_header_logout.phtml");
@@ -20,8 +25,6 @@ define("LOGIN","parts/login.phtml");
 define("FBCONNECT_BOTTOM","parts/fbconnect.phtml");
 define("FBCONNECT_HTML","fbconnect_html.phtml");
 define("YOU","parts/you.phtml");
-
-
 
 define("NEW_HEADER","parts/new_header_2.phtml");
 define("HEADER_CLEAN","parts/header_clean.phtml");

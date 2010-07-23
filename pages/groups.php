@@ -23,7 +23,7 @@ class groups extends Base{
 		parent::__construct();
 		
 		$uid = $_SESSION['uid'];
-     
+
 		$get_group_query = <<<EOF
 			SELECT
 			ogm.admin,ogm.gid,

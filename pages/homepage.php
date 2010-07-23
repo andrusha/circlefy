@@ -76,38 +76,11 @@ class homepage extends Base{
 			$this->set('Sign Up!','signup');
 			$this->set('onclick="check_all(this,1); return false;">&nbsp; Sign Up! &nbsp;','step_one'); 
 		}
-		
-		if($_SESSION['uid']){
+
+		// We'll always use this view:
 			$this->page_name = "new_homepage";
 			$uid = $_SESSION['uid'];
-			} else {
-			$this->page_name = "new_logout";
-
-		$pics = <<<EOF
-		   select favicon as pic_36,symbol from groups where pic_36 != '36wh_default_group.gif' and connected = 3 order by rand() limit 42;
-EOF;
-		$pics_data = $this->db_class_mysql->db->query($pics);
-
-		while($res = $pics_data->fetch_assoc()){
-			$pic_36 = $res['pic_36'];
-			$symbol = $res['symbol'];
-
-			$pics_array[] = array(
-				'pic_36' => $pic_36,
-				'symbol' => $symbol
-			);
-		}
-		$this->set($pics_array,'pics_array');
 	
-	
-
-			if($_GET['q'] == 'swineflu')
-			$this->page_name = "swineflu";
-		}
-
-	
-
-		if($uid){
 		$uname = $_SESSION['uname'];	
 		//This gets all users initial settings such as the groups he's in etc...
 		//this is used for message_handle to check what groups he's in and also says
@@ -115,12 +88,12 @@ EOF;
 	
 		//SECURITY ... I SHOULD at t2.status = 1 so that only members who are confirmed get updates	
 		$get_user_id_query = <<<EOF
-		SELECT t1.uname,t1.uid,t2.gid,t3.zip FROM login AS t1
-		LEFT JOIN group_members AS t2
-		ON t1.uid = t2.uid
-		LEFT JOIN profile AS t3
-		ON t1.uid = t3.uid
-		WHERE t1.uname='{$uname}'";
+		SELECT lo.uname,lo.uid,gMembers.gid,Prof.zip FROM login AS lo
+		LEFT JOIN group_members AS gMembers
+		ON lo.uid = gMembers.uid
+		LEFT JOIN profile AS Prof
+		ON lo.uid = Prof.uid
+		WHERE lo.uname='{$uname}'";
 EOF;
 	
 		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
@@ -149,8 +122,8 @@ EOF;
 
 		//START User Prefences
 		$user_query = <<<EOF
-                        SELECT t1.pic_100,t1.pic_36,t1.uname,t1.help FROM login AS t1
-                        WHERE t1.uid={$uid}
+                        SELECT lo.pic_100,lo.pic_36,lo.uname,lo.help FROM login AS lo
+                        WHERE lo.uid={$uid}
 EOF;
 
                  $this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
@@ -473,26 +446,9 @@ EOF;
 EOF;
 
 			$this->set($init_notifications,'init_notifications');
-//END misc tasks - Including, getting max file id, spnning off process, etc
-		} else { 
-
-$search = $_GET['q'];
-if($search)
-	$search_sql =  "AND chat_text LIKE '%{$search}%'";
-
-$logout_feed = <<<EOF
-	SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-	JOIN special_chat as t3
-	ON t3.uid = t2.uid AND t2.uid NOT IN ( 63,75,175 )
-	{$search_sql}
-	ORDER BY t3.cid DESC LIMIT 10
-EOF;
-$data_all_logout_bits = $this->bit_generator($logout_feed,'logout_aggr');
-$this->set($data_all_logout_bits,'logout_bits');
+			//END misc tasks - Including, getting max file id, spnning off process, etc
 
 
-
-}
 	$trending_groups_query = <<<EOF
 	SELECT ugm.gid,t2.symbol,t2.gname,t2.pic_36,count(t1.uid) AS count FROM  
 	( SELECT DISTINCT gid FROM group_members ORDER BY gid )

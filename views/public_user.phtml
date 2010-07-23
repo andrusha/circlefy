@@ -1,6 +1,6 @@
 <?php
-$logged = (!empty($_SESSION['uid']));
-if ($_t['no_user']) header('location:/');
+	$logged = $_t['ok_user'];
+	if ($_t['no_user']) header('location:/');
 
 function map_clean($func, $arr) {
 	return array_filter(array_map($func, $arr));
