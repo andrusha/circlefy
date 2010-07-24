@@ -179,7 +179,8 @@ var _edit = _tap.register({
 			data: {
 				gid: gid,
 				focus: data.focus.get('value').trim().rtrim(','),
-				descr: data.desc.get('value')
+				descr: data.desc.get('value'),
+                'private': ($('create-group').getElement('input[name="private"]').checked ? 1 : 0)
 			},
 			onRequest: function(){
 				$$(data.name, data.symbol, data.focus, data.desc).set('disabled', 'disabled');
