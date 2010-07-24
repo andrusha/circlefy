@@ -215,7 +215,8 @@ var _create = _tap.register({
 				symbol: data.symbol.get('value'),
 				focus: data.focus.get('value').trim().rtrim(','),
 				descr: data.desc.get('value'),
-				old_name: this.pic
+				old_name: this.pic,
+                'private': ($('create-group').getElement('input[name="private"]').checked ? 1 : 0)
 			},
 			onRequest: function(){
 				$$(data.name, data.symbol, data.focus, data.desc).set('disabled', 'disabled');

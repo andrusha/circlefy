@@ -64,7 +64,14 @@ $logged = (!empty($_SESSION['uid']));
 								<span class="error"></span>
 							</label>
 							<input name="desc" type="text" class="basic full" />
-							
+                            
+                            <label for="private">
+								Private?
+								<span class="help">NEED more info here and styles</span>
+								<span class="error"></span>
+							</label>
+							<input name="private" type="checkbox" class="basic" />
+                            
 							<form name="picuploader" action="/AJAX/group_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
 								<label for="file">
 									picture 
@@ -75,7 +82,7 @@ $logged = (!empty($_SESSION['uid']));
 								<img id="preview" src="" class="blank" />
 								<iframe name="picture" style="display:none;"> </iframe>
 							</form>
-							
+                            
 							<div class="buttons">
 								<button class="action">create your group</button> or <a href="/groups">cancel</a>
 							</div>
