@@ -583,8 +583,8 @@ float:right;
 #infobox img.avatar {
 	float: left;
 	margin-right: 10px;
-	width: 60px;
-	height: 60px;
+	width: 30px;
+	height: 30px;
 }
 
 #infobox img.group-avatar {
@@ -821,8 +821,8 @@ ul.stream.empty li.notice {
 
 ul.stream img.avatar {
 	text-decoration:none;
-	width: 60px;
-	height: 60px;
+	width: 30px;
+	height: 30px;
 	float: left;
 	margin-right: 10px;
 	border: none;
@@ -1147,8 +1147,8 @@ ul.bodylist li {
 ul.bodylist img.avatar {
 	float: left;
 	margin-right: 10px;
-	width: 60px;
-	height: 60px;
+	width: 30px;
+	height: 30px;
 }
 
 ul.bodylist h2, ul.bodylist p {
