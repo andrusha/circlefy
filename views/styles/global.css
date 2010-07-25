@@ -61,9 +61,9 @@ background:blue;
 }
 
 div.sideinfo li.panel-item-public-group{ 
-float:left;
+float:none;
 height:36px;
-width:52px;
+/*width:%;*/
 border-top:none;
 margin:4px 2px 4px 8px;
 color:#627AAD;
@@ -259,11 +259,30 @@ input.basic.error, select.basic.error {
 	width: 950px;
 }
 
+#slim-background {
+    display: block;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 35px;
+    background: #3C3C3C;
+}
+
 #logo {
 	background: url("/images/flat/tap_block.png") bottom #fffa00;
 	float: left;
 	height: 80px;
 	width: 80px;
+}
+
+.logo-slim {
+    width: 55px !important;
+    height: 55px !important;
+    background: url("/images/flat/tap_block_small.png") bottom #fffa00 !important;
+    position: relative;
 }
 
 #logo a {
@@ -272,9 +291,22 @@ input.basic.error, select.basic.error {
 	width: 80px;
 }
 
+.nav-slim {
+    position: relative;
+}
+
 #nav {
 	float: right;
 	padding: 13px 10px 10px;
+}
+
+.nav-slim {
+    padding: 6px !important;
+}
+
+.nav-slim a {
+    color: white !important;
+    font-size: 1333 !important;
 }
 
 #nav a {
@@ -302,6 +334,14 @@ input.basic.error, select.basic.error {
 	display: inline;
 }
 
+/* FIXME: dirty hack with !important style override */
+.searchbar-slim {
+    position: relative;
+    margin-left: 20px !important;
+    padding: 4px !important;
+
+}
+
 #searchover {
 	position: absolute;
 	width: 395px;
@@ -311,11 +351,18 @@ input.basic.error, select.basic.error {
 	color: #fff;
 }
 
+.searchover-slim {
+    width: 300px !important;
+    padding: 4px !important;
+    margin-top: 2px !important;
+    font-size: 12px !important;
+}
 
 .search-count-container{
 float:right;
 font-size:10px;
 }
+
 .search-users-online{
 color:lightgreen;
 }
@@ -452,12 +499,13 @@ color:white;
 }
 
 #content .section .description {
-	background: #4e4e4e;
-	padding: 15px 10px;
-	font-size: 12px;
-	border-bottom:40px gray solid;
-	color: #ACB19B;
-	display: block;
+	display: inline;
+    font-size: 12px;
+	color: #3C3C3C;
+}
+
+#content .section .description a {
+	color: #3C3C3C;
 }
 
 #content .section.description .description {
@@ -599,10 +647,10 @@ float:right;
 }
 
 #tapbox {
-	border-bottom-left-radius: 6px 6px;
+/*	border-bottom-left-radius: 6px 6px;
 	border-bottom-right-radius: 6px 6px;
 	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
+	border-top-right-radius: 6px 6px;*/
 	background: lightgray;
 	padding: 15px;
 }
@@ -637,7 +685,7 @@ float:right;
 }
 
 #taptext, #tapfrom, #tapbox .textboxlist {
-	background: #D2D5CA;
+	background: white;
 	border-top: 1px solid #898B84;
 	border-left: 1px solid #898B84;
 	border-right: 1px solid #EAEEE1;
@@ -820,6 +868,7 @@ ul.stream .tap-body {
 	font-weight:bold;
 	line-height: 1.5;
 	padding-left: 70px;
+    text-decoration: none;
 }
 
 ul.stream .tap-actions {
@@ -854,7 +903,7 @@ ul.stream .tap-resp.typing .last-resp {
 	display: none;
 }
 
-ul.stream .tap-actions .tap-resp-count {
+ul.stream .tap-resp-count {
 	text-decoration: none;
 }
 
@@ -871,6 +920,7 @@ ul.stream .tap-actions .count {
 ul.stream .tap-resp-count:hover .count {
 	background-position: right bottom;
 	color: #fffa00;
+    text-decoration: none;
 }
 
 ul.stream .tap-actions .tap-view-count {
@@ -1037,7 +1087,7 @@ div.responses .chatbox {
 
 
 #filter {
-	background: #3C3C3C;
+	background: lightgrey;
 	padding: 10px;
 }
 
@@ -1046,7 +1096,7 @@ div.responses .chatbox {
 }
 
 #filter p {
-	color: #fffa00;
+	color: #3C3C3C;
 	margin: 0;
 	margin-bottom: 5px;
 	font-size: 12px;
@@ -1055,11 +1105,12 @@ div.responses .chatbox {
 
 #filter input {
 	width: 194px;
+    border: 0 white;
 }
 
 #filterkey{
-	background: #fff;
-	color:black;
+	background: white;
+	color: black;
 }
 
 #filter a.clear {
@@ -1598,7 +1649,7 @@ div.sideinfo a.selected {
 div.sideinfo h2 {
 	margin: 0;
 	margin-top: 0;
-	background: #fffa00;
+	background: lightgrey;
 	color: #101010;
 	clear: both;
 	float: left;
@@ -1631,7 +1682,7 @@ div.sideinfo ul {
 	padding: 0;
 	list-style: none;
 	font-size: 12px;
-	border-bottom: 2px solid #fffa00;
+	border-bottom: 2px solid lightgrey;
 }
 
 div.sideinfo li {

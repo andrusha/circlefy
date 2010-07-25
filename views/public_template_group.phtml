@@ -74,7 +74,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<div id="wrapper">
 
 				<?php if ($logged): ?>
-					<?include(HEADER)?>
+					<?include(HEADER_SLIM)?>
 				<?php else: ?>
 					<?include(HEADER_LOGOUT)?>
 				<?php endif; ?>
@@ -190,21 +190,16 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 						<strong>55</strong> Responses received.
 					</p>
 
+					<div class="description">
+						<?=$_t['descr']?>
+					</div>
+
 					<? if($_t['type'] == 3 || $_t['type'] == 1):?>
 					<img style="float:right;" src="/group_pics/official2.PNG" title="Verified Official Community"/>
 					<? endif; ?>
 					<span style="float:right;display:block;color:<?=$join?>;opacity:0;" class="positive-click">Joined!</span>
 					<span style="float:right;display:block;color:red;opacity:0;" class="negative-click">Come back! :(</span>
 				</div>
-
-				<form id="tapbox" action="" class="section active">
-					<div id="tapto">
-						tap <?= strtolower($_t['gname']) ?>..
-					</div>
-					<span class="counter">240</span>
-					<input id="taptext" tabindex="1" type="text">
-					<button id="tapsend" tabindex="3" type="submit" >tap!</button>
-				</form>
 
 				<div id="tapstream" class="section description">
 					<div class="header">
@@ -223,18 +218,21 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 							/ 
 							<span id="total-member-count"><a href="#"><span class="count-one"><?=$_t['total_count']?></span></a></span></span> 
 					
-                    <!-- AddThis Button BEGIN -->
-<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4c40ca132ba5c7bb"><img src="/images/addthis.gif" width="153" height="16" alt="Bookmark and Share" style="border:0"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4c40ca132ba5c7bb"></script>
-<!-- AddThis Button END -->
+<iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode("http://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]);?>&amp;layout=button_count&amp;show_faces=true&amp;width=100&amp;action=like&amp;font=arial&amp;colorscheme=dark&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; margin: 2px 15px 0px; display:inline; position:absolute;" allowTransparency="true"></iframe>
 
-                    </div>
-                    
-                    
+</div>
+                        
+                        
+                    <form id="tapbox" action=""> 
+                        <div id="tapto">
+                            tap <?= strtolower($_t['gname']) ?>..
+                        </div>
+                        <span class="counter">240</span>
+                        <input id="taptext" tabindex="1" type="text">
+                        <button id="tapsend" tabindex="3" type="submit" >tap!</button>
+                    </form>
 
                     
-					<div class="description">
-						<?=$_t['descr']?>
-					</div>
 					<div class="body">
 						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
 							<?php
@@ -252,16 +250,14 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 										<?= $tap['chat_timestamp'] ?>
 									</a>
 								</p>
-								<p class="tap-body">
-									<?= $tap['chat_text'] ?>
-								</p>
+                                <a href="#" class="tap-resp-count" title="view responses">
+                                    <p class="tap-body">
+									    <?= $tap['chat_text'] ?>
+								    </p>
+                                </a>
 								<p class="tap-actions">
 									<span class="tap-resp">
 										<span class="indicator">Someone's replying..</span>
-										<span class="last-resp">
-											<strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
-											<span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
-										</span>
 									</span>
 									<a href="#" class="tap-resp-count" title="view responses">
 											<span class="show-resp-count"><?= $tap['count'] ?></span>

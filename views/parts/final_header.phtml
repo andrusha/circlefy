@@ -17,7 +17,11 @@ switch($r){
                                 <a href="/groups"   <?=$groups?>  >groups</a>
                                 <a href="/people"   <?=$people?>  >people</a>
                                 <a href="/settings" <?=$settings?>>settings</a>
+                                <?php if ($logged): ?>
 								<a href="/?logout=true">logout</a> <? echo $_t['ok_user']; ?>
+                                <?php else: ?>
+                                <a href="/signup">create account</a>
+                                <?php endif; ?>
                         </div>
 
                         <div id="logo">

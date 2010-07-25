@@ -19,6 +19,7 @@ define("OK_FOOTER","parts/ok_footer.phtml");
 	
 define("FOOTER","parts/footer.phtml");
 define("HEADER","parts/final_header.phtml");
+define("HEADER_SLIM","parts/slim_header.phtml");
 define("HEADER_LOGOUT","parts/final_header_logout.phtml");
 define("JAVASCRIPT_TEMPLATES","parts/javascript_templates.phtml");
 define("LOGIN","parts/login.phtml");
