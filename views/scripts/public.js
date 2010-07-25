@@ -42,25 +42,30 @@ var _dater = _tap.register({
 	},
 
 	changeDates: function(){
-		var now = new Date().getTime(),
-			items = _body.getElements("[data-timestamp]");
-		items.each(function(el){
-			var timestamp = el.getData('timestamp') * 1,
-				orig = new Date(timestamp * 1000),
-				diff = ((now - orig) / 1000),
-				day_diff = Math.floor(diff / 86400);
-			if (isNaN(timestamp)) return el.set('text', orig.format('jS M Y'));
-			if ($type(diff) == false || day_diff < 0 || day_diff >= 31) return el.set('text', orig.format('jS M Y'));
-			el.set('text', day_diff == 0 && (
-					diff < 120 && "Just Now" ||
-					diff < 3600 && Math.floor( diff / 60 ) + "min ago" ||
-					diff < 7200 && "An hour ago" ||
-					diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-				day_diff == 1 && "Yesterday" ||
-				day_diff < 7 && day_diff + " days ago" ||
-				day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago");
+		var items = _body.getElements("[data-timestamp]");
+		items.each(function(el) {
+			var timestamp = el.getData('timestamp') * 1;
+            el.set('text', _dater.timestampToStr(timestamp));
 		});
-	}
+    },
+
+    timestampToStr: function(timestamp) {
+            var now = new Date().getTime(),
+                orig = new Date(timestamp * 1000),
+                diff = ((now - orig) / 1000),
+                day_diff = Math.floor(diff / 86400);
+
+			if (isNaN(timestamp) || $type(diff) == false || day_diff < 0 || day_diff >= 31)
+                return orig.format('jS M Y');
+
+			return day_diff == 0 && (
+				       diff < 120 && "Just Now" ||
+					   diff < 3600 && Math.floor( diff / 60 ) + "min ago" ||
+					   diff < 7200 && "An hour ago" ||
+					   diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+				   day_diff == 1 && "Yesterday" ||
+				   day_diff < 7 && day_diff + " days ago";
+    }
 
 });
 
@@ -495,7 +500,7 @@ var _responses = _tap.register({
 				var data = JSON.decode(this.response.text);
 				if (!data.responses) return;
 				self.addResponses(box.empty(), data.responses);
-				self.publish('responses.loaded', id);
+				//self.publish('responses.loaded', id);
 				box.store('loaded', true);
 			}
 		}).send();
@@ -517,11 +522,11 @@ var _responses = _tap.register({
 			last = items.getLast(),
 			parent = box.getParent('li'),
 			lastresp = parent.getElement('span.last-resp'),
-			username = lastresp.getElement('strong'),
-			chattext = lastresp.getElement('span'),
-			count = parent.getElement('a.tap-resp-count span.count');
-		username.set('text', last.getElement('a').get('text'));
-		chattext.set('text', last.getChildren('span').get('text'));
+			//username = lastresp.getElement('strong'),
+			//chattext = lastresp.getElement('span'),
+			count = parent.getElement('a.tap-resp-count span.show-resp-count');
+		//username.set('text', last.getElement('a').get('text'));
+		//chattext.set('text', last.getChildren('span').get('text'));
 		count.set('text', items.length);
 	},
 
