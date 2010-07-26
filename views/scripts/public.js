@@ -413,7 +413,7 @@ var _convos = _tap.register({
 				e.fade(1);
 				e.innerHTML = 'Follow this convo';
 				(function(){e.className = 'track-convo follow_button'}).delay(1000);
-			}.bind(this),
+			}.bind(this)
 		});
 	},
 
@@ -690,10 +690,34 @@ var _infobox = _tap.register({
 	groupAction: function(el, e){
 		if (el.hasClass('login')) return window.location = '/';
 		if (el.hasClass('join')) return this.joinGroup();
+        if (el.hasClass('request')) return this.requestJoinGroup();
 		if (el.hasClass('leave')) return this.leaveGroup();
 		if (el.hasClass('track')) return this.track(true);
 		if (el.hasClass('untrack')) return this.track(false);
 	},
+
+    requestJoinGroup: function(){
+        var self = this,
+			id = this.button.getData('id');
+		new Request({
+			url: '/AJAX/request_join_group.php',
+			method: 'post',
+			data: {gid: id},
+			onSuccess: function(){
+				var response = JSON.decode(this.response.text);
+				if (!response.good) return;
+				self.button.set({
+					'text': 'leave group',
+					'class': 'leave'
+				});
+                                                $$('.count-one').each(function(el) { el.set('html',el.innerHTML.toInt()+1).fade('hide').fade();});
+						$$('.positive-click')[0].fade('hide');
+						$$('.positive-click')[0].fade(1).fade.delay(2000,$$('.positive-click')[0],0);
+
+
+			}
+		}).send();
+    },
 
 	joinGroup: function(){
 		var self = this,

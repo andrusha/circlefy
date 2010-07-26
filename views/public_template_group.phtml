@@ -3,21 +3,28 @@ $logged = (!empty($_SESSION['uid']));
 if ($_t['no_group']) header('location:/');
 
 function map_clean($func, $arr) {
-	return array_filter(array_map($func, $arr));
+    return array_filter(array_map($func, $arr));
 }
+
 $inits = array();
 $people = array();
 if (is_array($_t['user_bits'])) {
-	function get_cids($bit) { return $bit['cid']; }
-	$inits = map_clean("get_cids", $_t['user_bits']);
-	function get_uids($bit) { return $bit['uid']; }
-	$people = map_clean("get_uids", $_t['user_bits']);
+    function get_cids($bit) {
+        return $bit['cid'];
+    }
+
+    $inits = map_clean("get_cids", $_t['user_bits']);
+    function get_uids($bit) {
+        return $bit['uid'];
+    }
+
+    $people = map_clean("get_uids", $_t['user_bits']);
 }
 
-$groups =  $_t['gid'];
+$groups = $_t['gid'];
 
 function map_admins($admin) {
-	return $admin['uname'];
+    return $admin['uname'];
 }
 
 $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['admins']) ? $_t['admins'] : array()));
@@ -26,251 +33,285 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 <!doctype html>
 <html>
 <head>
-	<? $tpl_title = "Group ".$_t['symbol']; ?>
-	<?include(OK_HEADER)?>	
-	<link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>" />
-	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
-	<script type="text/javascript">
-		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
-			uname: "<?= $_SESSION['uname'] ?>Anon",
-			stream: JSON.decode('<?= json_encode($inits) ?>'),
-			convos: [],
-			people: JSON.decode('<?= json_encode($people) ?>'),
-			groups: JSON.decode('<?= json_encode($groups) ?>'),
-			sendTo: "<?= $_t['gname'] ?>:<?= $_t['symbol'] ?>:0:<?= $_t['gid'] ?>",
-			filter: {
-				gid: "<?= $_t['gid'] ?>",
-				info: {
-					name: "<?= $_t['gname'] ?>",
-					symbol: "<?= $_t['symbol'] ?>"
-				}
-			}
-		};
-	</script>
-	<script type="text/javascript" src="/views/scripts/push.js"></script>
-	<!--<script type="text/javascript" src="/views/scripts/home.js"></script>-->
-	<script type="text/javascript" src="/views/scripts/public.js"></script>
+<? $tpl_title = "Group " . $_t['symbol']; ?>
+<?include(OK_HEADER)?>
+    <link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>"/>
+    <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
+    <script type="text/javascript">
+        window._vars = {
+            uid: "<?= $_t['pcid'] ?>",
+            uname: "<?= $_SESSION['uname'] ?>Anon",
+            stream: JSON.decode('<?= json_encode($inits) ?>'),
+            convos: [],
+            people: JSON.decode('<?= json_encode($people) ?>'),
+            groups: JSON.decode('<?= json_encode($groups) ?>'),
+            sendTo: "<?= $_t['gname'] ?>:<?= $_t['symbol'] ?>:0:<?= $_t['gid'] ?>",
+            filter: {
+                gid: "<?= $_t['gid'] ?>",
+                info: {
+                    name: "<?= $_t['gname'] ?>",
+                    symbol: "<?= $_t['symbol'] ?>"
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" src="/views/scripts/push.js"></script>
+    <!--<script type="text/javascript" src="/views/scripts/home.js"></script>-->
+    <script type="text/javascript" src="/views/scripts/public.js"></script>
 <? /*	<script type="text/javascript" src="/views/scripts/search.js"></script> */ ?>
-	<?php if (!$logged && false): ?>
-	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-        <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
-	<?php endif; ?>
+<?php if (!$logged && false): ?>
+    <script type="text/javascript"
+            src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
+    <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js"
+            type="text/javascript"></script>
+<?php endif; ?>
 </head>
 <body>
-	<div id="wrapper">
+<div id="wrapper">
 
-	<? include(OK_TOPBAR); ?> 
+<? include(OK_TOPBAR); ?>
 
-		<div id="main">
+<div id="main">
 
-				<? ob_start(); ?>
-				<div class="sideinfo section container">
-					<h2>
-						<span id="tab-name">admins</span>
-					</h2>
-					<ul class="panel">
-						<?php 
-							if($_t['admins']): 
-								foreach($_t['admins'] as $admin): 
-						?>
-						<a href="/user/<?=$admin['uname']?>">
-						<li class="panel-item-public-admin" title="<?=$admin['uname']?>" >
-							<span class="count"></span>
-								<img class="online-img" src="/user_pics/<?=$admin['small_pic']?>"  />&nbsp; 
-						</li>
-						</a>
-						<?php
-								endforeach;
-							else:
-						?>
-						<li class="notify">
-							This group has no admins.
-						</li>
-						<?php
-							endif;
-						?>
-					</ul>
-				</div>
-				
-				<div class="sideinfo section container">
-					<h2>
-						<a id="list-action" href="#" class="all">all members</a>
-						<span id="tab-name">top members</span>
-					</h2>
-						<li id="online-only-checkbox"><label>Online Only</label><input id="online-checked" type="checkbox" checked></li>
-					<ul id="member-panel" class="panel selected">
-						<?php
-							if (!empty($_t['popular_members'])):
-								foreach ($_t['popular_members'] as $member):
-						?>
-						<a href="/user/<?=$member['member']?>" />
-						<li class="panel-item-public-group" >
-							<img class="online-img" src="/user_pics/<?=$member['small_pic']?>" />
-							<span class="top-member-count"/><?=$member['count']?></span>
-						<? if(strlen($member['member']) > 7) $member_name = substr($member['member'],0,7).'..'; else $member_name = $member['member'] ?>
+<? ob_start(); ?>
+    <div class="sideinfo section container">
+        <h2>
+            <span id="tab-name">admins</span>
+        </h2>
+        <ul class="panel">
+        <?php
+        if ($_t['admins']):
+            foreach ($_t['admins'] as $admin):
+                ?>
+                    <a href="/user/<?=$admin['uname']?>">
+                        <li class="panel-item-public-admin" title="<?=$admin['uname']?>">
+                            <span class="count"></span>
+                            <img class="online-img" src="/user_pics/<?=$admin['small_pic']?>"/>&nbsp;
+                        </li>
+                    </a>
+                <?php
+                                                endforeach;
+        else:
+            ?>
+                <li class="notify">
+                    This group has no admins.
+                </li>
+            <?php
+                                        endif;
+        ?>
+        </ul>
+    </div>
 
-							<p class="top-member-member" /><?=$member_name?></p>
-						</li>
-						</a>
-						<?php
-								endforeach;
-							else:
-						?>
-						<li class="notify">
-							This group has no top members.
-						</li>
-						<?php
-							endif;
-						?>
-					</ul>
-				</div>
-			<? $add_sidebar = ob_get_clean(); ?>
-			<? $show_lists = true; ?>
-			<? include(OK_SIDEBAR); ?>
+    <div class="sideinfo section container">
+        <h2>
+            <a id="list-action" href="#" class="all">all members</a>
+            <span id="tab-name">top members</span>
+        </h2>
+        <li id="online-only-checkbox"><label>Online Only</label><input id="online-checked" type="checkbox" checked></li>
+        <ul id="member-panel" class="panel selected">
+        <?php
+                                    if (!empty($_t['popular_members'])):
+            foreach ($_t['popular_members'] as $member):
+                ?>
+                    <a href="/user/<?=$member['member']?>"/>
+                    <li class="panel-item-public-group">
+                        <img class="online-img" src="/user_pics/<?=$member['small_pic']?>"/>
+                        <span class="top-member-count"/><?=$member['count']?></span>
+                    <? if (strlen($member['member']) > 7) $member_name = substr($member['member'], 0, 7) . '..'; else $member_name = $member['member'] ?>
+
+                        <p class="top-member-member"/><?=$member_name?></p>
+                    </li>
+                    </a>
+                <?php
+                                                endforeach;
+        else:
+            ?>
+                <li class="notify">
+                    This group has no top members.
+                </li>
+            <?php
+                                        endif;
+        ?>
+        </ul>
+    </div>
+<? $add_sidebar = ob_get_clean(); ?>
+<? $show_lists = true; ?>
+<? include(OK_SIDEBAR); ?>
 
 
-			<?php
-			/* DYNAMIC STYLES */
-			if($_t['topbg'] == 'dark'){
-				$color_name = '#FFFA00';
-				$color_topbg = '#3C3C3C';
-				$join = 'lightgreen';
-			} else {
-				$color_name = '#3C3C3C';
-				$color_topbg = 'white';
-				$join = 'green';
-			}
-			?>
-			<div id="content">
-				<div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
-					<?php if ($_t['joined']): ?>
-					<button data-id="<?= $_t['gid'] ?>" class="leave">unfollow group</button>
-					<?php elseif ($logged): ?>
-					<button data-id="<?= $_t['gid'] ?>" class="join">follow group</button>
-					<?php else: ?>
-					<button data-id="<?= $_t['gid'] ?>" class="login">login to follow</button>
-					<?php endif; ?>
-					<img src="/group_pics/<?= $_t['group_pic_med'] ?>" class="group-avatar" />
-					<h2>
-						<?= ($_t['admin'] ? '<span class="moderator-title">&#10070;</span> ' : '') ?> <span style="color:<?=$color_name?>;" ><?= $_t['gname'] ?></span> <span class="nick"><?= $_t['symbol'] ?></span>
-					</h2>
-					<p class="stats">
-						<strong class="count-one"><?= (!empty($_t['member_count'])) ? $_t['member_count'] : '0' ?></strong> Members joined, 
-						<? /* TODO: this values are hardcoded - find the real active ones */ ?>
-						<strong>29</strong> Taps sent, and
-						<strong>55</strong> Responses received.
-					</p>
+<?php
+            /* DYNAMIC STYLES */
+if ($_t['topbg'] == 'dark') {
+    $color_name = '#FFFA00';
+    $color_topbg = '#3C3C3C';
+    $join = 'lightgreen';
+} else {
+    $color_name = '#3C3C3C';
+    $color_topbg = 'white';
+    $join = 'green';
+}
+?>
+    <div id="content">
+        <div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
 
-					<div class="description">
-						<?=$_t['descr']?>
-					</div>
+        <?php if ($_t['joined']): ?>
+            <button data-id="<?= $_t['gid'] ?>" class="leave">unfollow group</button>
+        <?php elseif ($logged): ?>
+            <?php if ($_t['private']): ?>
+                <?php if ($_t['requested']): ?>
+                    <button data-id="<?= $_t['gid'] ?>" class="waiting">waiting accept</button>
+                <?php  else: ?>
+                    <button data-id="<?= $_t['gid'] ?>" class="request">request to follow group</button>
+                <?php  endif; ?>
+            <?php  else: ?>
+                <button data-id="<?= $_t['gid'] ?>" class="join">follow group</button>
+            <?php endif; ?>
+        <?php  else: ?>
+            <button data-id="<?= $_t['gid'] ?>" class="login">login to follow</button>
+        <?php endif; ?>
 
-					<? if($_t['type'] == 3 || $_t['type'] == 1):?>
-					<img style="float:right;" src="/group_pics/official2.PNG" title="Verified Official Community"/>
-					<? endif; ?>
-					<span style="float:right;display:block;color:<?=$join?>;opacity:0;" class="positive-click">Joined!</span>
-					<span style="float:right;display:block;color:red;opacity:0;" class="negative-click">Come back! :(</span>
-				</div>
+            <img src="/group_pics/<?= $_t['group_pic_med'] ?>" class="group-avatar"/>
 
-				<div id="tapstream" class="section description">
-					<div class="header">
-						<a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
-						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
-						<h2 class="header-title">
-							<img src="/images/flat/loader.gif" />
-							<span class="title">feed</span>
-						</h2>
-						<span class="stream-name"><img class="favicon-stream-title" src="/group_pics/<?=$_t['favicon']?>" /> &nbsp;<?= $_t['gname'] ?></span>
+            <h2>
+            <?= ($_t['admin'] ? '<span class="moderator-title">&#10070;</span> ' : '') ?> <span
+                    style="color:<?=$color_name?>;"><?= $_t['gname'] ?></span> <span
+                    class="nick"><?= $_t['symbol'] ?></span>
+            </h2>
+
+            <p class="stats">
+                <strong class="count-one"><?= (!empty($_t['member_count'])) ? $_t['member_count'] : '0' ?></strong>
+                Members joined,
+            <? /* TODO: this values are hardcoded - find the real active ones */ ?>
+                <strong>29</strong> Taps sent, and
+                <strong>55</strong> Responses received.
+            </p>
+
+            <div class="description">
+            <?=$_t['descr']?>
+            </div>
+
+        <? if ($_t['type'] == 3 || $_t['type'] == 1): ?>
+            <img style="float:right;" src="/group_pics/official2.PNG" title="Verified Official Community"/>
+        <? endif; ?>
+            <span style="float:right;display:block;color:<?=$join?>;opacity:0;" class="positive-click">Joined!</span>
+            <span style="float:right;display:block;color:red;opacity:0;" class="negative-click">Come back! :(</span>
+        </div>
+
+        <div id="tapstream" class="section description">
+            <div class="header">
+                <a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
+                <a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
+
+                <h2 class="header-title">
+                    <img src="/images/flat/loader.gif"/>
+                    <span class="title">feed</span>
+                </h2>
+                <span class="stream-name"><img class="favicon-stream-title" src="/group_pics/<?=$_t['favicon']?>"/> &nbsp;<?= $_t['gname'] ?></span>
 						 <span class="visitor_count" title="viewers online/total">
-						<? if(ADMIN_GLOBAL || $_t['enable_admin']): ?>
-						<span class="admin"><a href="/group_edit?group=<?=$_t['symbol']?>" >Manage Group</a></span>
-						<? endif; ?>
-							<span class="viewers_online"><?=$_t['online_count']?></span> 
+						<? if (ADMIN_GLOBAL || $_t['enable_admin']): ?>
+                            <span class="admin"><a href="/group_edit?group=<?=$_t['symbol']?>">Manage Group</a></span>
+                        <? endif; ?>
+                            <span class="viewers_online"><?=$_t['online_count']?></span>
 							/ 
-							<span id="total-member-count"><a href="#"><span class="count-one"><?=$_t['total_count']?></span></a></span></span> 
-					
-<iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode("http://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]);?>&amp;layout=button_count&amp;show_faces=true&amp;width=100&amp;action=like&amp;font=arial&amp;colorscheme=dark&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; margin: 2px 15px 0px; display:inline; position:absolute;" allowTransparency="true"></iframe>
+							<span id="total-member-count"><a href="#"><span
+                                    class="count-one"><?=$_t['total_count']?></span></a></span></span>
 
-</div>
-                        
-                        
-                    <form id="tapbox" action=""> 
-                        <div id="tapto">
-                            tap <?= strtolower($_t['gname']) ?>..
-                        </div>
-                        <span class="counter">240</span>
-                        <input id="taptext" tabindex="1" type="text">
-                        <button id="tapsend" tabindex="3" type="submit" >tap!</button>
-                    </form>
+                <iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode("http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);?>&amp;layout=button_count&amp;show_faces=true&amp;width=100&amp;action=like&amp;font=arial&amp;colorscheme=dark&amp;height=21"
+                        scrolling="no" frameborder="0"
+                        style="border:none; overflow:hidden; height:21px; margin: 2px 15px 0px; display:inline; position:absolute;"
+                        allowTransparency="true"></iframe>
 
-                    
-					<div class="body">
-						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
-							<?php
-								if (!empty($_t['user_bits'])):
-									foreach($_t['user_bits'] as $tap):
-							?>
-							<li id="tid_<?= $tap['cid'] ?>" class="container" 
-								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $tap['user'] ?>">
-								<a href="/user/<?= $tap['uname'] ?>">
-									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
-								</a>
-								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '" title="online"' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
-									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
-										<?= $tap['chat_timestamp'] ?>
-									</a>
-								</p>
+            </div>
+
+
+            <form id="tapbox" action="">
+                <div id="tapto">
+                    tap <?= strtolower($_t['gname']) ?>..
+                </div>
+                <span class="counter">240</span>
+                <input id="taptext" tabindex="1" type="text">
+                <button id="tapsend" tabindex="3" type="submit">tap!</button>
+
+                <?php if ($_t['private']): ?>
+                    <div style="color:red;margin-top:20px;">This group is private, you can request to join a conversation.
+                    </div>
+                <?php endif; ?>
+            </form>
+
+
+            <div class="body">
+                <ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
+                <?php
+                                                if (!empty($_t['user_bits'])):
+                    foreach ($_t['user_bits'] as $tap):
+                        ?>
+                            <li id="tid_<?= $tap['cid'] ?>" class="container"
+                                data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>"
+                                data-user="<?= $tap['user'] ?>">
+                                <a href="/user/<?= $tap['uname'] ?>">
+                                    <img class="avatar" alt="<?= $tap['uname'] ?>"
+                                         src="/user_pics/<?= $tap['pic_100'] ?>"/>
+                                </a>
+
+                                <p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '" title="online"' : 'offline' ?>">
+                                    <a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
+                                    <a href="/tap/<?= $tap['cid'] ?>" class="date"
+                                       data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
+                                    <?= $tap['chat_timestamp'] ?>
+                                    </a>
+                                </p>
                                 <a href="#" class="tap-resp-count" title="view responses">
                                     <p class="tap-body">
-									    <?= $tap['chat_text'] ?>
-								    </p>
+                                    <?= $tap['chat_text'] ?>
+                                    </p>
                                 </a>
-								<p class="tap-actions">
+
+                                <p class="tap-actions">
 									<span class="tap-resp">
 										<span class="indicator">Someone's replying..</span>
 									</span>
-									<a href="#" class="tap-resp-count" title="view responses">
-											<span class="show-resp-count"><?= $tap['count'] ?></span>
-                                                                                        <span class="follow_button">Reply</span>
+                                    <a href="#" class="tap-resp-count" title="view responses">
+                                        <span class="show-resp-count"><?= $tap['count'] ?></span>
+                                        <span class="follow_button">Reply</span>
 
-									</a>
-								</p>
-								<div class="responses">
-									<ul class="chat">
-									</ul>
-									<input class="chatbox" type="text" />
-									<div class="counter">240</div>
-									<div class="overlay">type in your response and press enter.</div>
-								</div>
-							</li>
-							<?php
-									endforeach;
-								else:
-							?>
-							<li id="no-taps-yet" class="notice">
-								<p>Nothing yet! Try tapping this feed...</p>
-							</li>
-							<?php
-								endif;
-							?>
-						</ul>
-					</div>
-				</div>
+                                    </a>
+                                </p>
 
-			</div>
+                                <div class="responses">
+                                    <ul class="chat">
+                                    </ul>
+                                    <input class="chatbox" type="text"/>
 
-		</div>
+                                    <div class="counter">240</div>
+                                    <div class="overlay">type in your response and press enter.</div>
+                                </div>
+                            </li>
+                        <?php
+                                                            endforeach;
+                else:
+                    ?>
+                        <li id="no-taps-yet" class="notice">
+                            <p>Nothing yet! Try tapping this feed...</p>
+                        </li>
+                    <?php
+                                                    endif;
+                ?>
+                </ul>
+            </div>
+        </div>
 
-		<div class="clarity"></div>
-		<?include(OK_FOOTER)?>
+    </div>
 
-	</div>
-	<?include(JAVASCRIPT_TEMPLATES)?>
+</div>
 
-	<?php if (!$logged && false): ?>
-        	<?include(FBCONNECT_BOTTOM)?>
-	<?php endif; ?>
+<div class="clarity"></div>
+<?include(OK_FOOTER)?>
+
+</div>
+<?include(JAVASCRIPT_TEMPLATES)?>
+
+<?php if (!$logged && false): ?>
+<? include(FBCONNECT_BOTTOM) ?>
+<?php endif; ?>
 </body>
 </html>
