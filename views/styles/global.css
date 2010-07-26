@@ -287,8 +287,9 @@ input.basic.error, select.basic.error {
 
 #logo a {
 	float: left;
-	height: 80px;
-	width: 80px;
+	height: 53px;
+	width: 54px;
+	border:1px solid #222;
 }
 
 .nav-slim {
@@ -468,6 +469,7 @@ color:white;
 }
 
 #content .section .header h2 {
+	border:1px solid #222;
 	background: #fffa00;
 	color: #101010;
 	float: left;
@@ -1087,7 +1089,6 @@ div.responses .chatbox {
 
 
 #filter {
-	background: lightgrey;
 	padding: 10px;
 }
 
@@ -1105,7 +1106,7 @@ div.responses .chatbox {
 
 #filter input {
 	width: 194px;
-    border: 0 white;
+	border:1px solid black;
 }
 
 #filterkey{
@@ -1649,7 +1650,6 @@ div.sideinfo a.selected {
 div.sideinfo h2 {
 	margin: 0;
 	margin-top: 0;
-	background: lightgrey;
 	color: #101010;
 	clear: both;
 	float: left;
