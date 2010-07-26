@@ -387,6 +387,8 @@ color:white;
 	height: auto;
 	display: none;
 	z-index: 1;
+    top: 27px;
+    margin-left: 79px;
 }
 
 #searchsuggest.on {
@@ -501,10 +503,7 @@ color:white;
 }
 
 #content .section .description { 
-	background: #4e4e4e; 
-	padding: 15px 10px; 
 	font-size: 12px; 
-	border-bottom:40px gray solid; 
 	color: #ACB19B; 
 	display: block; 
 } 
@@ -845,6 +844,9 @@ ul.stream p {
 	padding: 0;
 }
 
+ul.stream p:hover {
+	text-decoration: underline;
+}
 ul.stream .tap-from, ul.stream .tap-actions {
 	color: #ACB19B;
 	font-size: 11px;
@@ -1488,8 +1490,8 @@ div.form #preview.blank {
 
 .follow_button{
 background-color: #C3DD82;
-background: #D8D8D8 url(http://d1vgw4v7ja2ido.cloudfront.net/-b44d0948a4b53532.gif) repeat-x 0% 0%;
-background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-a31fc8b100788bfd.gif);
+background: #dee url(http://d1vgw4v7ja2ido.cloudfront.net/-b44d0948a4b53532.gif) repeat-x 0% 0%;
+/*background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-a31fc8b100788bfd.gif);*/
 border-bottom: 1px solid #648517;
 border-color: #8CB332 #8CB332 #648517;
 color: blue;

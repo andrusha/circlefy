@@ -64,7 +64,8 @@ var _dater = _tap.register({
 					   diff < 7200 && "An hour ago" ||
 					   diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
 				   day_diff == 1 && "Yesterday" ||
-				   day_diff < 7 && day_diff + " days ago";
+				   day_diff < 7 && day_diff + " days ago" ||
+                   day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
     }
 
 });
@@ -500,7 +501,7 @@ var _responses = _tap.register({
 				var data = JSON.decode(this.response.text);
 				if (!data.responses) return;
 				self.addResponses(box.empty(), data.responses);
-				//self.publish('responses.loaded', id);
+				self.publish('responses.loaded', id);
 				box.store('loaded', true);
 			}
 		}).send();

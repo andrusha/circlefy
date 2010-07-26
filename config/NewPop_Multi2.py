@@ -46,7 +46,8 @@ class MySQL_Pinger(object):
 	
 	def ping(self):	
 		#print "MySQL Ping"
-		self.root.user_server.mysql_cursor.execute("SELECT 'ping'")
+		#self.root.user_server.mysql_cursor.execute("SELECT 'ping'")
+		self.root.user_server.mysql_conn.ping()
 
 class Pinger(object):
 	def __init__(self, root):

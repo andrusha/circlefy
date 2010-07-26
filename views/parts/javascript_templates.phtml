@@ -47,12 +47,12 @@
 		<# for (var response from this): #>
                         <li>
                                 <em data-timestamp="<#: response.chat_time #>">
-                                    OH SHI~!
                                     <#: _dater.timestampToStr(response.chat_time*1)  #>
                                 </em>
                                 <a href="/user/<#: response.uname #>" class="user">
 					<img src="/user_pics/<#: response.pic_small #>" />
 					<span class="resp-uname"><#: response.uname #>:</span>
+
 				</a>
 				<span class="resp-text"><#: response.chat_text.linkify() #></span>
                         </li>
