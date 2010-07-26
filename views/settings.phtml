@@ -1,5 +1,4 @@
 ﻿<?php
-$logged = (!empty($_SESSION['uid']));
 $type = !empty($_GET['type']) ? $_GET['type'] : 'account';
 switch ($_GET['saved']){
 	case "yes": $notify = 'notify'; break;
@@ -27,20 +26,10 @@ $group_count = $stat['group_count'];
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap</title>
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<? 
+	$tpl_title = "Sign Up";
+	include(OK_HEADER);
+	?>
 	<script type="text/javascript">
 		window._vars = {
 			type: "<?= $type ?>",
@@ -58,59 +47,12 @@ $group_count = $stat['group_count'];
 <body>
 	<div id="wrapper">
 
-			<?php if ($logged): ?>
-				<?include(HEADER)?>
-			<?php else: ?>
-				<?include(HEADER_LOGOUT)?>
-			<?php endif; ?>
+	<? include(OK_TOPBAR); ?> 
 
-			<div id="logo">
-				<a href="/"></a>
-			</div>
+	<div id="main">
 
-			<div id="searchbar">
-				<div id="searchover">what are you looking for?</div>
-				<input id="search" type="text" class="basic" autocomplete="off">
-				<div id="searchsuggest">
-					<ul>
-					</ul>
-				</div>
-			</div>
-		</div>
+		<? include(OK_SIDEBAR); ?>
 
-		<div id="main">
-
-			<div id="sidebar">
-
-				<?php if ($logged): ?>
-	                                <?include(YOU)?>
-				<?php endif; ?>	
-				
-				<div class="sideinfo section container">
-					<h2>
-						<span id="tab-name">settings</span>
-					</h2>
-					<ul class="panel">
-						<li class="panel-item <?= $type == 'account' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=account" class="names inblock ellipsis">account</a>
-						</li>
-						<li class="panel-item <?= $type == 'picture' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=picture" class="names inblock ellipsis">profile picture</a>
-						</li>
-						<li class="panel-item">
-							<span class="count"></span>
-							<a href="/settings?type=notifications" class="names inblock ellipsis">notifications</a>
-						</li>
-						<li class="panel-item <?= $type == 'password' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=password" class="names inblock ellipsis">change password</a>
-						</li>
-					</ul>
-				</div>
-						
-			</div>
 
 			<div id="content">
 				
@@ -370,10 +312,8 @@ $group_count = $stat['group_count'];
 		</div>
 
 		<div class="clarity"></div>
+		<?include(OK_FOOTER)?>
 
-		<div id="footer">
-			Copyright 2010, Tap.
-		</div>
 	</div>
 
 	<?include(JAVASCRIPT_TEMPLATES)?>	

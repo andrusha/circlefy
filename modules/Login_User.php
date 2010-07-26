@@ -182,7 +182,8 @@ public function login_user($uname,$pass,$hash,$auto_login){
 		// END SESSION UPDATE BASED ON HASH
 			
 		$_SESSION['uid'] = $uid;
-		$_SESSION['uname'] = $uname;
+				$_SESSION['uname'] = $uname;
+				$_SESSION['guest'] = 0;
 		
 			return 1;
 	} else{
@@ -217,12 +218,18 @@ public function log_out($uid){
 		//START LOG OUT
 	    $_SESSION['uid'] = "";
 		$_SESSION['gid'] = "";
+		$_SESSION['guest'] = 1;
 	    
 	    //When you log out destroy the cookie so that it does not enter the if statement on line 14
-	    setcookie("uid",'',time()-36000);
+		setcookie("uid",'',time()-36000);
 	    setcookie("uname",'',time()-36000);
-	    setcookie("rand_hash",'',time()-3600);
-	    	return  'goodbye';
+		setcookie("rand_hash",'',time()-3600);
+
+			setcookie('GUEST_uname','',time()+36000);
+			setcookie('GUEST_hash','',time()+36000);
+			setcookie('GUEST_uid','',time()+36000);					
+
+	    return  'goodbye';
 	    
 	//END LOG OUT
 	}

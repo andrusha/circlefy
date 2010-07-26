@@ -18,22 +18,8 @@ $private = $_t['private'];
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap - user <?=$_t['user']?></title>
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
-	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
+	<? $tpl_title="profile: ".$_t['gname']; ?>
+	<? include(OK_HEADER); ?>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
@@ -45,8 +31,9 @@ $private = $_t['private'];
 		};
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
-	<script type="text/javascript" src="/views/scripts/public.js"></script>
-	<script type="text/javascript" src="/views/scripts/search.js"></script>
+	<script type="text/javascript" src="/views/scripts/home.js"></script> 
+	<script type="text/javascript" src="/views/scripts/public.js"></script>  
+<? /*	<script type="text/javascript" src="/views/scripts/people.js"></script> */ ?>
 	<?php if (!$logged): ?>
         <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
         <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
@@ -56,15 +43,14 @@ $private = $_t['private'];
 <body>
 	<div id="wrapper">
 
-			<?php if ($logged): ?>
-				<?include(HEADER)?>
-			<?php else: ?>
-				<?include(HEADER_LOGOUT)?>
-			<?php endif; ?>
-
+	<? include(OK_TOPBAR) ?>
 
 		<div id="main">
 
+<? $show_lists = true; ?>
+<? include(OK_SIDEBAR); ?>
+<?
+/*
 			<div id="sidebar">
 
 			        <?php if ($logged): ?>
@@ -102,7 +88,8 @@ $private = $_t['private'];
 					</ul>
 				</div>
 				
-			</div>
+				</div>
+ */ ?>
 
 			<div id="content">
 				
@@ -114,10 +101,8 @@ $private = $_t['private'];
 						<button data-id="<?= $_t['uid'] ?>" class="you" disabled="disabled">this is you!</button>
 						<?php elseif ($_t['tracked']): ?>
 						<button data-id="<?= $_t['uid'] ?>" class="untrack">unfollow</button>
-						<?php elseif ($logged): ?>
-						<button data-id="<?= $_t['uid'] ?>" class="track">follow</button>
 						<?php else: ?>
-						<button data-id="<?= $_t['uid'] ?>" class="login">login to follow</button>
+						<button data-id="<?= $_t['uid'] ?>" class="track">follow</button>
 						<?php endif; ?>
 					<? endif; ?>
 					<img src="/user_pics/<?= $_t['user_pic_med'] ?>" class="avatar" />
@@ -134,16 +119,16 @@ $private = $_t['private'];
 
 				</div>
 
-				<!-- 
+<? /*
 				<form id="tapbox" action="" class="section active">
 					<div id="tapto">
-						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($_t['gname']) ?>..
+					tap <?= strtolower($_t['gname']) ?>...
 					</div>
 					<span class="counter">240</span>
 					<input id="taptext" tabindex="1" type="text">
-					<button id="tapsend" tabindex="3" type="submit" <?= (!$logged) ? 'disabled="disabled" ' : '' ?>>tap!</button>
-				</form>
-				 -->
+					<button id="tapsend" tabindex="3" type="submit">tap!</button>
+					</form>
+ */ ?>
 
 				<div id="tapstream" class="section">
 					<div class="header header-non">

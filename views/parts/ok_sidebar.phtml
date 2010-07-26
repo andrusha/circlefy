@@ -1,99 +1,127 @@
 <div id="sidebar">
 
-<?include( "../" . YOU )?>	
+<!-- */*/*/*/*/*/ YOU BLOCK /*/*/*/*/*/* -->
+<div id="you" class="section container">
 
-<div id="filter" class="section">
-	<p class="inblock ellipsis">search <span class="title">all your groups</span> <a href="#" class="clear">clear</a></p>
-	<input id="filterkey" type="text" class="basic" />
+	<a href="/user/<?= $_SESSION['uname'] ?>"><img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
+	<span style="font-size:14px;"><p>hello <strong><?= $_SESSION['uname'] ?></strong>!</p></span>
+	</a>
+
+	<p class="special">
+		<a href="/invite" title="Invite your friends to tap">- invite people -</a>
+	</p>
+
+	<p>
+	<? if ($_SESSION['guest'] == 1) { ?>
+		<a href="/signup">sign up</a>
+		<a href="/login">log in</a>
+	<? } else { ?>
+		<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>
+		<a href="/settings">settings</a>
+		<a href="/?logout=true">logout</a>
+	<? } ?>
+</p>
 </div>
+<!-- */*/*/*/*/*/ YOU BLOCK /*/*/*/*/*/* -->
 
-<div id="lists" class="section container">
-	<a id="tab-groups" data-name="groups" title="groups" class="tab selected" href=""></a>
-	<a id="tab-convos" data-name="convos" title="convos" class="tab" href=""></a>
-	<a id="tab-people" data-name="people" title="contacts" class="tab" href=""></a>
-	<a id="tab-direct" data-name="direct" title="messages" class="tab" href=""></a>
-	
-	<h2><a id="list-action" href="/groups">create new</a><span id="tab-name">groups</span></h2>
+<? echo $add_sidebar; ?>
 
-	<ul id="panel-groups" class="panel selected" 
-	data-action="manage" data-action-href="/groups" data-name="groups">
 
-	<li id="gid_public" class="panel-item" data-topic="<?= $public_groups_topic ?>"
-	data-id="public" data-name="Discover Taps">
-		<span class="count"></span>
-		<a href="#" class="names inblock ellipsis">discover</a>
+<? if ($show_lists): ?>
+
+	<div id="filter" class="section">
+		<p class="inblock ellipsis">search <span class="title">all your groups</span> <a href="#" class="clear">clear</a></p>
+		<input id="filterkey" type="text" class="basic" />
+	</div>
+
+	<div id="lists" class="section container">
+		<a id="tab-groups" data-name="groups" title="groups" class="tab selected" href=""></a>
+		<a id="tab-convos" data-name="convos" title="convos" class="tab" href=""></a>
+		<a id="tab-people" data-name="people" title="contacts" class="tab" href=""></a>
+		<a id="tab-direct" data-name="direct" title="messages" class="tab" href=""></a>
+		
+		<h2><a id="list-action" href="/groups">create new</a><span id="tab-name">groups</span></h2>
+
+		<ul id="panel-groups" class="panel selected" 
+		data-action="manage" data-action-href="/groups" data-name="groups">
+
+		<li id="gid_public" class="panel-item" data-topic="<?= $public_groups_topic ?>"
+		data-id="public" data-name="Discover Taps">
+			<span class="count"></span>
+			<a href="#" class="names inblock ellipsis">discover</a>
+		</li>
+
+		<li id="gid_all" class="selected panel-item" data-topic="<?= $all_your_groups_topic ?>"
+		 data-id="all" data-name="All Your Groups">
+			<span class="count"></span>
+			<a href="#" class="names inblock ellipsis">all your groups</a>
+		</li>
+
+	<?php if($_t['your_groups']) foreach ($_t['your_groups'] as $group): ?>
+	<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
+	data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
+	data-symbol="<?= $group['symbol'][0] ?>"
+	data-topic="<?= $group['topic']?>"
+	data-online_count="<?= $group['online_count'] ?>"
+	data-total_count="<?= $group['total_count'] ?>"
+	<?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
+	<span class="count"></span>
+	<a href="#" class="names inblock ellipsis" 
+	alt="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>"
+	title="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>">
+	<?= ($group['admin'] ? '&#10070; ' : '') ?>
+	<?= strtolower($group['display_symbol']) ?>
+	</a>
+	<span class="favicon">
+	<span class="online-group-count" title="number of users online"><?=$group['online_count']?></span>
+	<img class="favicon-img" src="/group_pics/<?=$group['favicon'];?>" />
+	</span>	
 	</li>
-
-	<li id="gid_all" class="selected panel-item" data-topic="<?= $all_your_groups_topic ?>"
-	 data-id="all" data-name="All Your Groups">
-		<span class="count"></span>
-		<a href="#" class="names inblock ellipsis">all your groups</a>
+	<?php endforeach; ?>
+	<li class="notify">To find and join more groups to tap, use the search bar at the top of the page</li>
+	</ul>
+	<ul id="panel-convos" class="panel" data-name="convos">
+	<?php
+		if (!empty($_t['active_convos'])):
+			$active_convos = array_reverse($_t['active_convos']);
+		foreach ($active_convos as $convo):
+	?>
+	<li id="cid_<?= $convo['mid'] ?>" class="new panel-item" 
+	data-id="<?= $convo['mid'] ?>" data-user="<?= $convo['uname'] ?>">
+	<span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
+	<p class="from inblock">
+	<img class="active-convo-pic" src="/user_pics/<?=$convo['small_pic']?>" /> 
+	<span class="active-convo-uname"><?= $convo['uname'] ?></span>
+	<span class="new">*</span></p>
+	<p class="body ellipsis"><?= stripslashes($convo['chat_text']); ?></p>
 	</li>
+	<?php endforeach; else: ?>					
+	<li class="notify">You have no current conversations going on! Make some!</li>
+	<?php endif; ?>
+	</ul>
+	<ul id="panel-people" class="panel"
+	data-action="add contacts" data-action-href="/people" data-name="people">
+	<li>All your people</li>
+	<?php if($_t['your_friends']) : ?>
+	<?php foreach ($_t['your_friends'] as $person): ?>
+	<a href="/user/<?=$person['friend_uname']?>" />
+	<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
+	title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">
+	</li>
+	</a>
+	<?php
+	endforeach;
+		else:
+	?>
+	<li class="notify">You have no contacts</li>
+	<? endif; ?>
 
-<?php if($_t['your_groups']) foreach ($_t['your_groups'] as $group): ?>
-<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
-data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
-data-symbol="<?= $group['symbol'][0] ?>"
-data-topic="<?= $group['topic']?>"
-data-online_count="<?= $group['online_count'] ?>"
-data-total_count="<?= $group['total_count'] ?>"
-<?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
-<span class="count"></span>
-<a href="#" class="names inblock ellipsis" 
-alt="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>"
-title="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>">
-<?= ($group['admin'] ? '&#10070; ' : '') ?>
-<?= strtolower($group['display_symbol']) ?>
-</a>
-<span class="favicon">
-<span class="online-group-count" title="number of users online"><?=$group['online_count']?></span>
-<img class="favicon-img" src="/group_pics/<?=$group['favicon'];?>" />
-</span>	
-</li>
-<?php endforeach; ?>
-<li class="notify">To find and join more groups to tap, use the search bar at the top of the page</li>
-</ul>
-<ul id="panel-convos" class="panel" data-name="convos">
-<?php
-	if (!empty($_t['active_convos'])):
-		$active_convos = array_reverse($_t['active_convos']);
-	foreach ($active_convos as $convo):
-?>
-<li id="cid_<?= $convo['mid'] ?>" class="new panel-item" 
-data-id="<?= $convo['mid'] ?>" data-user="<?= $convo['uname'] ?>">
-<span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
-<p class="from inblock">
-<img class="active-convo-pic" src="/user_pics/<?=$convo['small_pic']?>" /> 
-<span class="active-convo-uname"><?= $convo['uname'] ?></span>
-<span class="new">*</span></p>
-<p class="body ellipsis"><?= stripslashes($convo['chat_text']); ?></p>
-</li>
-<?php endforeach; else: ?>					
-<li class="notify">You have no current conversations going on! Make some!</li>
-<?php endif; ?>
-</ul>
-<ul id="panel-people" class="panel"
-data-action="add contacts" data-action-href="/people" data-name="people">
-<li>All your people</li>
-<?php if($_t['your_friends']) : ?>
-<?php foreach ($_t['your_friends'] as $person): ?>
-<a href="/user/<?=$person['friend_uname']?>" />
-<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
-title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">
-</li>
-</a>
-<?php
-endforeach;
-	else:
-?>
-<li class="notify">You have no contacts</li>
-<? endif; ?>
+	</ul>
+	<ul id="panel-direct" class="panel" data-name="direct">
+	<li class="notify">You have no messages</li>
+	</ul>
+	</div>
+<? endif; // if show_lists ?>
 
-</ul>
-<ul id="panel-direct" class="panel" data-name="direct">
-<li class="notify">You have no messages</li>
-</ul>
-</div>
 
 </div>
-

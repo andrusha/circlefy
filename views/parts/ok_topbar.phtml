@@ -1,8 +1,100 @@
-<? 
-	if ($_t['ok_user']) {
-		include("../".HEADER);
-	} else {
-		include("../".HEADER_LOGOUT);
-	}
+<?php
+$r = $_SERVER['REQUEST_URI'];
+$c = 'class="current"';
+
+switch($r){
+        case '/':       $home =  $c;break;
+        case '/groups':   $groups =  $c;break;
+        case '/people':  $people=  $c;break;
+        case '/settings':   $settings =  $c;break;
+}
 ?>
 
+
+  <div id="header" class="container">
+                        <div id="slim-background"></div>
+
+                        <div id="nav" class="nav-slim">
+                                <a href="/"  	    <?=$home?>    >home</a>
+                                <a href="/groups"   <?=$groups?>  >groups</a>
+                                <a href="/people"   <?=$people?>  >people</a>
+                                <a href="/settings" <?=$settings?>>settings</a>
+                                <?php if ($logged): ?>
+								<a href="/?logout=true">logout</a> <? echo $_t['ok_user']; ?>
+                                <?php else: ?>
+                                <a href="/signup">create account</a>
+                                <?php endif; ?>
+                        </div>
+
+                        <div id="logo" class="logo-slim">
+                                <a href="/"></a>
+                        </div>
+
+                        <div id="searchbar" class="searchbar-slim"> 
+                                <div id="searchover" class="searchover-slim">Start or Join a conversation</div>
+                                <input id="search" type="text" class="basic" style="padding: 3px; font-size: 10px; width: 250px;" autocomplete="off">
+                                <div id="searchsuggest">
+                                        <ul>
+                                        </ul>
+                                </div>
+                        </div>
+                </div>
+<? /*
+
+
+
+
+
+<?php
+	// This file replaces final_header and final_header_logout
+
+$r = $_SERVER['REQUEST_URI'];
+$c = 'class="current"';
+
+// Logged in
+switch($r){
+	case '/':			$home	= $c; break;
+	case '/groups':		$groups	= $c; break;
+	case '/people':		$people	= $c; break;
+	case '/settings': $settings = $c; break;
+}
+
+// Logged out
+switch($r){
+	case '/':       	$home	= $c; break;
+	case '/login':		$login	= $c; break;
+	case '/signup': 	$signup	= $c; break;
+}
+?>
+
+<div id="header" class="container">
+	<div id="nav">
+
+	<?php 
+	if ($_t['ok_user']) { ?>
+		<a href="/"  	    <?=$home?>    >home</a>
+		<a href="/groups"   <?=$groups?>  >groups</a>
+		<a href="/people"   <?=$people?>  >people</a>
+		<a href="/settings" <?=$settings?>>settings</a>
+		<a href="/?logout=true">logout</a> <? echo $_t['ok_user']; ?>
+	<? } else { ?>
+		<a href="/" 	   <?=$home?>   >home</a>
+		<a href="/login"       <?=$login?>   >login</a>
+		<a href="/signup"	   <?=$signup?>   >sign up</a>
+	<? } ?>
+
+	</div>
+
+	<div id="logo"> <a href="/"></a> </div>
+
+	<div id="searchbar">
+		<div id="searchover">Start or Join a conversation</div>
+		<input id="search" type="text" class="basic" autocomplete="off">
+		<div id="searchsuggest">
+			<ul> </ul>
+		</div>
+	</div>
+
+	</div>
+
+ */ ?>

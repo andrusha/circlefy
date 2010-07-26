@@ -1,23 +1,10 @@
-﻿<?php
-$logged = (!empty($_SESSION['uid']));
-?>
-<!doctype html>
+﻿<!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap</title>
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<? 
+	$tpl_title = "Invite Friends";
+	include(OK_HEADER);
+	?>
 	<script type="text/javascript">
 		window._vars = {type: null};
 	</script>
@@ -26,17 +13,11 @@ $logged = (!empty($_SESSION['uid']));
 </head>
 <body>
 	<div id="wrapper">
-		<?include(HEADER)?>
+	<? include(OK_TOPBAR); ?> 
 
-		<div id="main">
+	<div id="main">
 
-			<div id="sidebar">
-
-				<?php if ($logged): ?>
-	                                <?include(YOU)?>
-				<?php endif; ?>	
-				
-			</div>
+		<? include(OK_SIDEBAR); ?>
 
 			<div id="content">
 				
@@ -85,17 +66,8 @@ $logged = (!empty($_SESSION['uid']));
 		</div>
 
 		<div class="clarity"></div>
+		<?include(OK_FOOTER)?>
 
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<a href="/">home</a>
-				<a href="/groups">groups</a>
-				<a href="/people">people</a>
-				<a href="/settings">settings</a>
-				<a href="/?logout=true">logout</a>
-			</span>
-		</div>
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>	
 </body>

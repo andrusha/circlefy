@@ -500,13 +500,22 @@ color:white;
 	float: right;
 }
 
-#content .section .description {
+#content .section .description { 
+	background: #4e4e4e; 
+	padding: 15px 10px; 
+	font-size: 12px; 
+	border-bottom:40px gray solid; 
+	color: #ACB19B; 
+	display: block; 
+} 
+
+#content .section .descriptionANDREW {
 	display: inline;
     font-size: 12px;
 	color: #3C3C3C;
 }
 
-#content .section .description a {
+#content .section .descriptionANDREW a {
 	color: #3C3C3C;
 }
 

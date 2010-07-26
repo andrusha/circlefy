@@ -19,8 +19,8 @@
 		}
 
 		public function __construct($db_class='') {
-			$this->debu("Loading autoCreateUser module...");
-			if($this->session_started){
+			if ($_SESSION['guest']==0 && $_SESSION['uid']!="") {
+				//if($this->session_started){
 				$this->debu("You are logged in! :)");
 				return 0;
 			}
@@ -30,7 +30,6 @@
 		}
 
 		public function bypass_login(){
-			$this->debu("Bypassing login...");
 
 			//START CHECK 	
 			//Use a special hash that will take the users IP address

@@ -79,7 +79,7 @@ are included in this centralized function in order to instill encapsulation.
 			}
 
 			// TPL variable ok_user -> "I am a registered user (not guest)"
-			$logged = ((!empty($_SESSION['uid'])) && ($_SESSION['guest']!="1"));
+			$logged = ((!empty($_SESSION['uid'])) && ($_SESSION['guest']!="1")) ? 1 : 0;
 			$this->set($logged,'ok_user');
 		}
 

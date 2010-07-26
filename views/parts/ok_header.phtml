@@ -7,13 +7,18 @@
 	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
 	<meta name="uid" content="<?= $_t['pcid'] ?>" />
 	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap | <?=$tpl_title?></title>
+	<title>tap - <?=$tpl_title?></title>
 	<? // echo $_t['your_groups']['favicon'] ?>
 
 	<link rel="shortcut icon" href="http://<?=DOMAIN?>/group_pics/default.ico" />
 	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
+	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
+	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script> 
 	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
 	
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript" src="/views/scripts/search.js"></script>
+	
+	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
+	<script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>

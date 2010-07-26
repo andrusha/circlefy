@@ -9,21 +9,10 @@ if (!empty($_t['user_bits'])) {
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap - convo with <?=$_t['user']?></title>
-	<link rel="shortcut icon" href="http://tap.info/group_pics/<?=$tap['favicon']?>" />
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<? 
+	$tpl_title = "Convo with ".$_t['user'];
+	include(OK_HEADER);
+	?>
 	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
@@ -42,66 +31,59 @@ if (!empty($_t['user_bits'])) {
 <body>
 	<div id="wrapper">
 
-			 <?php if ($logged): ?>
-				<?include(HEADER)?>
-			<?php else: ?>
-				<?include(HEADER_LOGOUT)?>
-			<?php endif; ?>
-
+	<? include(OK_TOPBAR); ?> 
 
 		<div id="main">
 
-			<div id="sidebar">
+		<? ob_start(); ?>
 
-				<?php if ($logged): ?>
-	                                <?include(YOU)?>
-				<?php endif; ?>
+			<div class="sideinfo section container">
 
-				<div class="sideinfo section container">
-						
-					<h3>	
-						<?php if($_t['active_convo']):?>
-						<span id="tab-name" class="untrack-convo follow_button" cid="<?= $tap['cid'] ?>">You are following this convo</span>
-						<?php else: ?>
-						<span id="tab-name" class="track-convo follow_button" cid="<?= $tap['cid'] ?>">Follow this convo</span>
-						<?php endif;?>
-					</h3>
+			<h3>	
+			<?php if($_t['active_convo']):?>
+				<span id="tab-name" class="untrack-convo follow_button" cid="<?= $tap['cid'] ?>">You are following this convo</span>
+			<?php else: ?>
+				<span id="tab-name" class="track-convo follow_button" cid="<?= $tap['cid'] ?>">Follow this convo</span>
+			<?php endif;?>
+			</h3>
 
-					<h2>
-						<span id="tab-name">in this convo<?php if (isset($_['debug'])) echo " >> ".$_t['debug']; ?></span>
-					</h2>
-					<ul class="panel">
-						<?php 
-							if (!empty($_t['invovled'])):
-								foreach ($_t['invovled'] as $person):
-						?>
-						<li class="panel-item" >
-							<span class="count"><?= $person['count'] ?></span>	
-							<img class="small-pic" src="/user_pics/<?= $person['small_pic'] ?>" />
-							&nbsp;
-							<a href="/user/<?= $person['uname'] ?>" class="names inblock-public ellipsis"><?= $person['uname'] ?></a>
-						</li>
-						<?php
-								endforeach;
-							else:
-						?>
-						<li class="notify">
-							no one's responded yet
-						</li>
-						<?php
-							endif;
-						?>
-					</ul>
-				</div>
-				
-			</div>
+			<h2>
+				<span id="tab-name">in this convo<?php if (isset($_['debug'])) echo " >> ".$_t['debug']; ?></span>
+			</h2>
+
+			<ul class="panel">
+			<?php 
+			if (!empty($_t['invovled'])):
+				foreach ($_t['invovled'] as $person):
+					?>
+					<li class="panel-item" >
+					<span class="count"><?= $person['count'] ?></span>	
+					<img class="small-pic" src="/user_pics/<?= $person['small_pic'] ?>" />
+					&nbsp;
+					<a href="/user/<?= $person['uname'] ?>" class="names inblock-public ellipsis"><?= $person['uname'] ?></a>
+					</li>
+					<?php
+				endforeach;
+			else:
+				?>
+				<li class="notify">
+				no one's responded yet
+				</li>
+				<?php
+			endif;
+			?>
+			</ul>
+		</div>
+
+		<? $add_sidebar = ob_get_clean(); ?>
+		<? include(OK_SIDEBAR); ?>
 
 			<div id="content">
 				
 				<div id="infobox" class="pubgroup section container">
-					<?php if (!$logged): ?>
+					<?php /* if (!$logged): ?>
 					<button class="login">login to respond</button>
-					<?php endif; ?>
+					<?php endif;*/  ?>
 					<img src="/user_pics/<?= $_t['user_pic_med'] ?>" class="avatar" />
 					<h2><?= $_t['user'] ?> <span class="nick"></span></h2>
 					<p class="headline">&#8220;<?=$_t['about']?>&#8221;</p>
@@ -113,16 +95,14 @@ if (!empty($_t['user_bits'])) {
 					</p>
 				</div>
 
-				<!-- 
 				<form id="tapbox" action="" class="section active">
 					<div id="tapto">
 						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($_t['gname']) ?>..
 					</div>
 					<span class="counter">240</span>
 					<input id="taptext" tabindex="1" type="text">
-					<button id="tapsend" tabindex="3" type="submit" <?= (!$logged) ? 'disabled="disabled" ' : '' ?>>tap!</button>
+					<button id="tapsend" tabindex="3" type="submit">tap!</button>
 				</form>
-				 -->
 
 				<div id="tapstream" class="section">
 					<div class="header header-non">
@@ -199,25 +179,8 @@ if (!empty($_t['user_bits'])) {
 		</div>
 
 		<div class="clarity"></div>
+		<?include(OK_FOOTER)?>
 
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<?php if ($logged): ?>
-				<a href="/">home</a>
-				<a href="/groups">groups</a>
-				<a href="/people">people</a>
-				<a href="/settings">settings</a>
-				<a href="/?logout=true">logout</a>
-				<?php else: ?>
-				<a href="/">home</a>
-				<a href="/what">what's tap?</a>
-				<a href="/about">about us</a>
-				<a href="/devs">developers</a>
-				<a href="/contact">contact</a>
-				<?php endif; ?>
-			</span>
-		</div>
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>	
 </body>

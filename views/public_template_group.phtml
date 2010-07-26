@@ -26,23 +26,9 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap - group <?=$_t['symbol']?></title>
-
+	<? $tpl_title = "Group ".$_t['symbol']; ?>
+	<?include(OK_HEADER)?>	
 	<link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>" />
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
@@ -63,8 +49,9 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 		};
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
+	<script type="text/javascript" src="/views/scripts/home.js"></script> 
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
-	<script type="text/javascript" src="/views/scripts/search.js"></script>
+<? /*	<script type="text/javascript" src="/views/scripts/search.js"></script> */ ?>
 	<?php if (!$logged && false): ?>
 	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
         <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
@@ -73,28 +60,11 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 <body>
 	<div id="wrapper">
 
-				<?php if ($logged): ?>
-					<?include(HEADER_SLIM)?>
-				<?php else: ?>
-					<?include(HEADER_LOGOUT)?>
-				<?php endif; ?>
-				
-
+	<? include(OK_TOPBAR); ?> 
 
 		<div id="main">
 
-			<div id="sidebar">
-
-				<?php if ($logged): ?>
-	                                <?include(YOU)?>
-				<?php else: ?>
-				<?php endif; ?>
-				
-				<div id="filter" class="section">
-					<p class="inblock ellipsis">search <span class="title"><?= $_t['symbol'] ?></span> <a href="#" class="clear">clear</a></p>
-					<input id="filterkey" type="text" class="basic" />
-				</div>
-
+				<? ob_start(); ?>
 				<div class="sideinfo section container">
 					<h2>
 						<span id="tab-name">admins</span>
@@ -155,8 +125,10 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 						?>
 					</ul>
 				</div>
+			<? $add_sidebar = ob_get_clean(); ?>
+			<? $show_lists = true; ?>
+			<? include(OK_SIDEBAR); ?>
 
-			</div>
 
 			<?php
 			/* DYNAMIC STYLES */
@@ -292,25 +264,8 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 		</div>
 
 		<div class="clarity"></div>
+		<?include(OK_FOOTER)?>
 
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<?php if ($logged): ?>
-				<a href="/">home</a>
-				<a href="/groups">groups</a>
-				<a href="/people">people</a>
-				<a href="/settings">settings</a>
-				<a href="/?logout=true">logout</a>
-				<?php else: ?>
-				<a href="/">home</a>
-				<a href="/what">what's tap?</a>
-				<a href="/about">about us</a>
-				<a href="/devs">developers</a>
-				<a href="/contact">contact</a>
-				<?php endif; ?>
-			</span>
-		</div>
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>
 

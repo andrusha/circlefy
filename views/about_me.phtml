@@ -34,20 +34,11 @@ if ($_t['settings']) {
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<meta name="uid" content="<?= $_t['pcid'] ?>" />
-	<meta name="uname" content="<?= $_SESSION['uname'] ?>" />
-	<title>tap</title>
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
-	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<? 
+	$tpl_title = "About Me";
+	include(OK_HEADER);
+	?>
+	
 	<script type="text/javascript">
 		window._vars = {
 			type: "<?= $type ?>",
@@ -65,40 +56,12 @@ if ($_t['settings']) {
 </head>
 <body>
 	<div id="wrapper">
-		<?include(HEADER)?>
-		<div id="main">
 
-			<div id="sidebar">
+	<? include(OK_TOPBAR); ?> 
 
-				<?php if ($logged): ?>
-				                                <?include(YOU)?>
-				<?php endif; ?>	
-				
-				<div class="sideinfo section container">
-					<h2>
-						<span id="tab-name">settings</span>
-					</h2>
-					<ul class="panel">
-						<li class="panel-item <?= $type == 'account' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=account" class="names inblock ellipsis">account</a>
-						</li>
-						<li class="panel-item <?= $type == 'picture' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=picture" class="names inblock ellipsis">profile picture</a>
-						</li>
-						<li class="panel-item <?= $type == 'notifications' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=notifications" class="names inblock ellipsis">notifications</a>
-						</li>
-						<li class="panel-item <?= $type == 'password' ? 'selected' : '' ?>">
-							<span class="count"></span>
-							<a href="/settings?type=password" class="names inblock ellipsis">change password</a>
-						</li>
-					</ul>
-				</div>
-						
-			</div>
+	<div id="main">
+
+		<? include(OK_SIDEBAR); ?>
 
 			<div id="content">
 				
@@ -412,17 +375,7 @@ if ($_t['settings']) {
 		</div>
 
 		<div class="clarity"></div>
-
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<a href="/">home</a>
-				<a href="/groups">groups</a>
-				<a href="/people">people</a>
-				<a href="/settings">settings</a>
-				<a href="/?logout=true">logout</a>
-			</span>
-		</div>
+		<?include(OK_FOOTER)?>
 		
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>

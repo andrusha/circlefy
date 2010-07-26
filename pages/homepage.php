@@ -31,7 +31,8 @@ class homepage extends Base{
 		
 			switch($logout_status){
 				case 'goodbye':
-					$this->set('<font color="red">You are now logged out</font>','errors');
+					// $this->set('<font color="red">You are now logged out</font>','errors');
+					header("location: /");
 					break;		
 			}
 		}

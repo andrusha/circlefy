@@ -1,25 +1,14 @@
 <?php
 if ($_GET['logout'] == 'true') header('location: /');
-
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
 	<meta name="with-errors" content="<?= (!empty($_t['errors']) && empty($_GET['logout'])) ? 'y' : 'n'?>">
-	<title>tap</title>
-	<link rel="shortcut icon" href="http://tap.info/group_pics/default.ico" />
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<? 
+	$tpl_title = "Sign Up";
+	include(OK_HEADER);
+	?>
 	<script type="text/javascript" src="/views/scripts/login.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 <script type="text/javascript">
@@ -32,33 +21,15 @@ var join_value = "<?=$_GET['value']?>";
 </head>
 <body>
 	<div id="wrapper">
+			
+	<? include(OK_TOPBAR); ?> 
 
-		<?include(HEADER_LOGOUT)?>
+	<div id="main">
 
-		<div id="main">
-
-			<div id="sidebar">
+		<? include(OK_SIDEBAR); ?>
 
 
-<div id="login" class="section container">
-                                        <a id="tab-people" title="contacts" class="tab selected"></a>
-                                        <h2>
-                                                <span id="tab-name">ready to tap?</span>
-                                        </h2>
-                                        <form id="taplogin" action="/" method="POST">
-                                                <ul>
-                                                        <li class="notice">
-							After you sign up for tap make sure you register your IRC/Freenode nickname.  We'll then link you up with all the approrpriate communities that are related to you!  ( with the proper credentials at that! )  That is the true tap expierence!
-                                                        </li>
-                                                </ul>
-                                        </form>
-                                </div>
-
-				
-
-			</div>
-
-			<div id="content">
+		<div id="content">
 				
 				<div class="section">
 					<div class="header">
@@ -131,17 +102,8 @@ var join_value = "<?=$_GET['value']?>";
 		</div>
 		
 		<div class="clarity"></div>
+		<?include(OK_FOOTER)?>
 		
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<a href="/" class="current">home</a>
-				<a href="/what">what's tap?</a>
-				<a href="/about">about us</a>
-				<a href="/devs">developers</a>
-				<a href="/contact">contact</a>
-			</span>
-		</div>
 	</div>
 	
 	<?include(JAVASCRIPT_TEMPLATES)?>

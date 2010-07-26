@@ -1,18 +1,8 @@
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta name="robots" content="noodp" />
-	<meta name="image-toolbar" content="no" />
-	<meta name="copyright" content="Copyright (c) 2009 TAP" />
-	<meta name="description" content="TAP communication platform" />
-	<meta name="keywords" content="real-time, search, TAP, microblogging, communication platform" />
-	<title>tap</title>
-	<link rel="stylesheet" href="/views/styles/global.css" type="text/css" />
-	<link rel="stylesheet" href="/views/styles/public.css" type="text/css" />
-	<script type="text/javascript" src="/views/scripts/mootools-core.js"></script>
-	<script type="text/javascript" src="/views/scripts/mootools-more.js"></script>
+	<? $tpl_title = "Developers";
+	include(OK_HEADER); ?>
 	<script type="text/javascript" src="/views/scripts/login.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 	<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
@@ -21,18 +11,11 @@
 <body>
 	<div id="wrapper">
 
-		<?include(HEADER_LOGOUT)?>
+		<?include(OK_TOPBAR)?>
 
 		<div id="main">
 
-			<div id="sidebar">
-				
-				<div id="inviter" class="section container">
-					<h2>Want to start tapping?</h2>
-					<p>Tap is invite only right now. If you want to be one of our early tappers, <a href="/">signup for an invite</a>.</p>
-				</div>
-				<?include(LOGIN);?>	
-			</div>
+			<?include(OK_SIDEBAR)?>
 
 			<div id="content">
 				
@@ -58,16 +41,9 @@
 		
 		<div class="clarity"></div>
 		
-		<div id="footer">
-			<strong>tap &copy; 2010.</strong>
-			<span class="nav">
-				<a href="/" class="current">home</a>
-				<a href="/what">what's tap?</a>
-				<a href="/about">about us</a>
-				<a href="/devs">developers</a>
-				<a href="/contact">contact</a>
-			</span>
-		</div>
+		<?include(OK_FOOTER)?>	
+	
+
 	</div>
 	
 	<?include(JAVASCRIPT_TEMPLATES)?>

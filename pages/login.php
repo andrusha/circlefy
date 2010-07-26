@@ -23,6 +23,7 @@ class login extends Base{
 		parent::__construct();
 
 		$uid = $_SESSION['uid'];
+		//$_SESSION['guest']=0;
 		//Takes awayfist settings flag
 		setcookie('profile_edit','',time()-360000);
 				
