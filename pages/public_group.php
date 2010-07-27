@@ -60,11 +60,22 @@ EOF;
         $this->db_class_mysql->set_query($q, 'get_status', "status = 1");
         $request_results = $this->db_class_mysql->execute_query('get_status');
         $res = $request_results->fetch_assoc();
-        if ($res['status'] == '0'){
-            $requested = true;
+
+        //-1 - empty
+        //0 - requested
+        //1 - joined
+        $status = -1;
+        if ($res){
+            $status = $res['status'];
+            if ($res['status'] == '0'){
+                $requested = true;
+            }
         }
+
+
         $this->set($requested, 'requested');
-        
+        $this->set($status, 'status');
+
 
 //Part of group?
         $sc = strpos('x,' . $_SESSION['gid'] . ',', ',' . $gid . ',');
@@ -200,57 +211,10 @@ EOF;
         $this->set($member_count, 'member_count');
 //END member count
 
-//START most popular members
-        $popular_members_query = <<<EOF
-SELECT l.uname,l.pic_36,COUNT(sc.mid) as count FROM special_chat AS sc
-JOIN special_chat_meta AS scm ON sc.mid = scm.mid
-JOIN login AS l ON l.uid = sc.uid
-WHERE scm.gid = {$gid}
-GROUP BY sc.uid ORDER BY count DESC LIMIT 9;
-EOF;
-        $this->db_class_mysql->set_query($popular_members_query, 'popular_members', "This query gets a groups active members");
-        $popular_members_results = $this->db_class_mysql->execute_query('popular_members');
-        while ($res = $popular_members_results->fetch_assoc()) {
-            $member = $res['uname'];
-            $pic_36 = $res['pic_36'];
-            $count = $res['count'];
 
-            $popular_members_data[] = array(
-                'member' => $member,
-                'small_pic' => $pic_36,
-                'count' => $count
-            );
-        }
-        $this->set($popular_members_data, 'popular_members');
-//END most popular members
+        $this->set($this->get_popular_members($gid), 'popular_members');
+        $this->set($this->get_popular_tags($gid), 'popular_taps');
 
-//START get popular taps
-        $popular_taps_query = <<<EOF
-SELECT sc.chat_text,COUNT(c.cid) AS count,scm.mid FROM chat AS c
-JOIN special_chat_meta AS scm ON scm.mid = c.cid
-JOIN special_chat AS sc ON sc.mid = scm.mid
-WHERE scm.gid = {$gid}
-GROUP BY c.cid ORDER BY count DESC LIMIT 5;
-EOF;
-
-        $this->db_class_mysql->set_query($popular_taps_query, 'popular_taps', "This query gets a groups popular taps");
-        $popular_taps_results = $this->db_class_mysql->execute_query('popular_taps');
-        if ($popular_taps_results->num_rows)
-            while ($res = $popular_taps_results->fetch_assoc()) {
-                $tap = $res['chat_text'];
-                $cid = $res['mid'];
-                $count = $res['count'];
-
-                $tap = stripslashes($tap);
-
-                $popular_taps_data[] = array(
-                    'tap' => $tap,
-                    'cid' => $cid,
-                    'count' => $count
-                );
-            }
-        $this->set($popular_taps_data, 'popular_taps');
-//END get popular taps
 
 //START set the session uid for Orbited
         $this->set($_SESSION['uid'], 'pcid');
@@ -469,6 +433,65 @@ EOF;
                     'mid_list' => $mid_list,
                     'uid_list' => $uid_list
                 );
+    }
+
+    private function get_popular_members($gid){
+        //START most popular members
+        $popular_members_query = <<<EOF
+SELECT l.uname,l.pic_36,COUNT(sc.mid) as count FROM special_chat AS sc
+JOIN special_chat_meta AS scm ON sc.mid = scm.mid
+JOIN login AS l ON l.uid = sc.uid
+WHERE scm.gid = {$gid}
+GROUP BY sc.uid ORDER BY count DESC LIMIT 9;
+EOF;
+        $this->db_class_mysql->set_query($popular_members_query, 'popular_members', "This query gets a groups active members");
+        $popular_members_results = $this->db_class_mysql->execute_query('popular_members');
+        while ($res = $popular_members_results->fetch_assoc()) {
+            $member = $res['uname'];
+            $pic_36 = $res['pic_36'];
+            $count = $res['count'];
+
+            $popular_members_data[] = array(
+                'member' => $member,
+                'small_pic' => $pic_36,
+                'count' => $count
+            );
+        }
+//        $this->set($popular_members_data, 'popular_members');
+//END most popular members
+        return $popular_members_data;
+    }
+
+
+    private function get_popular_tags($gid){
+        //START get popular taps
+        $popular_taps_query = <<<EOF
+SELECT sc.chat_text,COUNT(c.cid) AS count,scm.mid FROM chat AS c
+JOIN special_chat_meta AS scm ON scm.mid = c.cid
+JOIN special_chat AS sc ON sc.mid = scm.mid
+WHERE scm.gid = {$gid}
+GROUP BY c.cid ORDER BY count DESC LIMIT 5;
+EOF;
+
+        $this->db_class_mysql->set_query($popular_taps_query, 'popular_taps', "This query gets a groups popular taps");
+        $popular_taps_results = $this->db_class_mysql->execute_query('popular_taps');
+        if ($popular_taps_results->num_rows)
+            while ($res = $popular_taps_results->fetch_assoc()) {
+                $tap = $res['chat_text'];
+                $cid = $res['mid'];
+                $count = $res['count'];
+
+                $tap = stripslashes($tap);
+
+                $popular_taps_data[] = array(
+                    'tap' => $tap,
+                    'cid' => $cid,
+                    'count' => $count
+                );
+            }
+//        $this->set($popular_taps_data, 'popular_taps');
+//END get popular taps
+        return $popular_taps_data;
     }
 
 }

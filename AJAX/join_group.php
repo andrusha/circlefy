@@ -47,7 +47,7 @@ EOF;
                     $admin = 1;
             }
 
-        $create_rel_query = "INSERT INTO group_members(uid,gid,admin,status) values('{$uid}',{$gid},{$admin},1);";
+        $create_rel_query = "INSERT INTO group_members(uid,gid,admin,status) values('{$uid}',{$gid},{$admin},'1');";
         $create_rel_results = $this->mysqli->query($create_rel_query);
         $last_id = $this->mysqli->query($this->last_id);
 
@@ -55,6 +55,7 @@ EOF;
         $last_id = $last_id['last_id'];
         if ($last_id > 0) {
             $this->send_email($gid, $uname);
+            return json_encode(array('good' => 1));
         }
         return json_encode(array('good' => 0));
     }
@@ -90,7 +91,6 @@ http://tap.info
 EOF;
                 mail($to, $subject, $body, $from);
             }
-        return json_encode(array('good' => 1));
     }
 
 }

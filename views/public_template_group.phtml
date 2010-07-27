@@ -149,7 +149,7 @@ if ($_t['topbg'] == 'dark') {
     <div id="content">
         <div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
 
-        <?php if ($_t['joined']): ?>
+        <?php if ($_t['status'] == 1): ?>
             <button data-id="<?= $_t['gid'] ?>" class="leave">unfollow group</button>
         <?php elseif ($logged): ?>
             <?php if ($_t['private']): ?>
@@ -189,6 +189,7 @@ if ($_t['topbg'] == 'dark') {
             <img style="float:right;" src="/group_pics/official2.PNG" title="Verified Official Community"/>
         <? endif; ?>
             <span style="float:right;display:block;color:<?=$join?>;opacity:0;" class="positive-click">Joined!</span>
+            <span style="float:right;display:block;color:red;opacity:0;" class="waiting-click">Waiting!</span>
             <span style="float:right;display:block;color:red;opacity:0;" class="negative-click">Come back! :(</span>
         </div>
 
