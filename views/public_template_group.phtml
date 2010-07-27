@@ -33,9 +33,10 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 <!doctype html>
 <html>
 <head>
-<? $tpl_title = "Group " . $_t['symbol']; ?>
-<?include(OK_HEADER)?>
+	<? $tpl_title = "Group " . $_t['symbol']; ?>
+	<?include(OK_HEADER)?>
     <link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>"/>
+    <script type="text/javascript" src="/views/scripts/tap.js"></script>
     <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
     <script type="text/javascript">
         window._vars = {
@@ -56,15 +57,9 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
         };
     </script>
     <script type="text/javascript" src="/views/scripts/push.js"></script>
-    <!--<script type="text/javascript" src="/views/scripts/home.js"></script>-->
     <script type="text/javascript" src="/views/scripts/public.js"></script>
-<? /*	<script type="text/javascript" src="/views/scripts/search.js"></script> */ ?>
-<?php if (!$logged && false): ?>
-    <script type="text/javascript"
-            src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-    <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js"
-            type="text/javascript"></script>
-<?php endif; ?>
+	<script type="text/javascript" src="/views/scripts/search.js"></script> 
+
 </head>
 <body>
 <div id="wrapper">

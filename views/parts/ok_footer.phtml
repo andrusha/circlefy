@@ -10,3 +10,10 @@
 	</span>
 </div>
 
+<script type="text/javascript">
+<?php $u = $_SERVER['REQUEST_URI']; ?>
+var server_uri = "<?=$u?>";
+var join_type = "<?$g = explode('/',$u); $g = $g[1]; echo $g;?>";
+var join_value = "<?$g = explode('/',$u); $g = $g[2]; echo $g;?>";
+</script>
+<script type="text/javascript" src="/views/scripts/fbconnect.js"></script>

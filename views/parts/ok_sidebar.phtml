@@ -24,6 +24,73 @@
 </div>
 <!-- */*/*/*/*/*/ YOU BLOCK /*/*/*/*/*/* -->
 
+
+<?
+// ----------------------- LOGIN BLOCK -------------------------
+$u = $_SERVER['REQUEST_URI'];
+$u = explode('/',$u);
+
+if($u[1] == 'group')
+$type = '?type=group';
+
+if($u[1] == 'user')
+$type = '?type=user';
+
+if($type)
+$value = '&value='.$u[2];
+?>
+
+<div id="login" class="section container">
+<? // include(SIGNUP_HTML)?>
+<?include(FBCONNECT_HTML)?>
+<a id="tab-people" title="contacts" class="tab selected"></a>
+	<h2>
+	<span id="tab-name">ready to tap?</span>
+	</h2>
+	<form id="taplogin" action="/" method="POST">
+	<ul>
+		<li class="notice">
+			Join the conversation!
+		</li>
+		<li>
+			<label class="inblock">username</label>
+			<p class="body">
+			<input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
+			</p>
+		</li>
+		<li>
+			<label class="inblock">password</label>
+			<p class="body">
+			<input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
+			</p>
+		</li>
+		<li class="action">
+			<button type="submit">login</button>
+		</li>
+
+		<li id="login-status"></li>
+		<li>
+			<fb:login-button id="fblogin" onlogin="on_connect()" onclick="click_connect()"></fb:login-button>
+			<span id="signup-link">or <a href="/signup<?=$type,$value?>">Sign Up!</a></span>
+		</li>
+		<li id="pics-galore" >
+		<? 
+		if($_t['pics_array'])	
+		foreach($_t['pics_array'] as $pic): ?>
+		<a href="/group/<?=$pic['symbol']?>" >
+		<img class="small-pics-logout" style="height:16px;width:16px;margin:4px;" src="/group_pics/<?=$pic['pic_36']?>" title="<?=$pic['symbol']?>" />
+		</a>
+		<? endforeach; ?>
+		</li>
+	</ul>
+	</form>
+</div>
+
+<? // ----------------------- LOGIN BLOCK ------------------------- ?>
+
+
+
+
 <? echo $add_sidebar; ?>
 
 

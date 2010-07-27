@@ -24,8 +24,8 @@ switch($r){
                                 <a href="/groups"   <?=$groups?>  >groups</a>
                                 <a href="/people"   <?=$people?>  >people</a>
                                 <a href="/settings" <?=$settings?>>settings</a>
-                                <?php if ($logged): ?>
-								<a href="/?logout=true">logout</a> <? echo $_t['ok_user']; ?>
+                                <?php if ($_t['ok_user']): ?>
+								<a href="/?logout=true">logout</a>
                                 <?php else: ?>
                                 <a href="/signup">create account</a>
                                 <?php endif; ?>
@@ -37,7 +37,7 @@ switch($r){
 
                         <div id="searchbar" class="searchbar-slim"> 
                                 <div id="searchover" class="searchover-slim">Start or Join a conversation</div>
-                                <input id="search" type="text" class="basic" style="padding: 3px; font-size: 10px; width: 250px;" autocomplete="off">
+                                <input id="search" type="text" class="basic" style="padding: 10px; font-size: 18px; width: 400px;" autocomplete="off">
                         </div>
                 </div>
 <? /*
