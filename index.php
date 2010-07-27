@@ -19,6 +19,7 @@ $allowedPages = array(
 		'profile'=>true,
 		'invite'=>true,
 		'groups'=>true,
+		'pending_members'=>true,
 		'help'=>true,
 		'rss'=>true,
 		'create_group'=>true,

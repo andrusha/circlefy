@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <?
+    $tpl_title = "Home"; // this will be in <title>HERE</title>
+    include(OK_HEADER);
+    ?>
+
+    <!-- Insert here any JS that you need to include or initialization scripts -->
+</head>
+<body>
+<div id="wrapper">
+
+    <? include(OK_TOPBAR); ?>
+
+    <div id="main">
+
+            <? include(OK_SIDEBAR); // if you set $add_sidebar, that HTML will be added inside the sidebar. TODO: make this in a nicer way. ?>
+
+            <div id="content">
+                Hello <?php echo $_t['test'] ?>!!!
+                <br>Here will be list with pending users...
+            </div>
+
+        <div class="clarity"></div>
+        <?include(OK_FOOTER)?>
+
+    </div>
+    <?include(JAVASCRIPT_TEMPLATES)?>
+</body>
+</html>
