@@ -43,6 +43,7 @@ class MySQL_Pinger(object):
 		while True:
 			self.ping()
 			time.sleep(6)
+			# Didn't you mean 60 instead of 6??? (Ignacio)
 	
 	def ping(self):	
 		#print "MySQL Ping"

@@ -1,3 +1,25 @@
+var _template = {
+
+	templater: new Template(),
+	prepared: {},
+	map: {
+		'taps': 'template-taps',
+		'responses': 'template-responses',
+		'list.convo': 'template-list-convo',
+		'suggest.group': 'template-suggest-group'
+	},
+
+	parse: function(type, data){
+		var template = this.prepared[type];
+		if (!template){
+			template = this.map[type];
+			if (!template) return '';
+			template = this.prepared[type] = $(template).innerHTML.cleanup();
+		}
+		return this.templater.parse(template, data);
+	}
+
+};
 
 var _search = _tap.register({
 

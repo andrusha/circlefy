@@ -108,15 +108,14 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
                                     if (!empty($_t['popular_members'])):
             foreach ($_t['popular_members'] as $member):
                 ?>
-                    <a href="/user/<?=$member['member']?>"/>
-                    <li class="panel-item-public-group">
-                        <img class="online-img" src="/user_pics/<?=$member['small_pic']?>"/>
-                        <span class="top-member-count"/><?=$member['count']?></span>
-                    <? if (strlen($member['member']) > 7) $member_name = substr($member['member'], 0, 7) . '..'; else $member_name = $member['member'] ?>
-
-                        <p class="top-member-member"/><?=$member_name?></p>
-                    </li>
-                    </a>
+<a href="/user/<?=$member['member']?>"/>
+<li class="panel-item-public-group">
+<img class="online-img" src="/user_pics/<?=$member['small_pic']?>"/>
+<? /* <span class="top-member-count"/><?=$member['count']?></span> */ ?>
+<? /* if (strlen($member['member']) > 7) $member_name = substr($member['member'], 0, 7) . '..'; else $member_name = $member['member'] */ ?>
+<? /* <p class="top-member-member"/><?=$member_name?></p> */ ?>
+</li>
+</a>
                 <?php
                                                 endforeach;
         else:

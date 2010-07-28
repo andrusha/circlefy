@@ -61,11 +61,11 @@ background:blue;
 }
 
 div.sideinfo li.panel-item-public-group{ 
-float:none;
-height:36px;
+float: left;
+/*height:36px;*/
 /*width:%;*/
 border-top:none;
-margin:4px 2px 4px 8px;
+/*margin:4px 2px 4px 8px;*/
 color:#627AAD;
 
 }

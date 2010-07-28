@@ -3,8 +3,21 @@
 <head>
 	<? $tpl_title = "Developers";
 	include(OK_HEADER); ?>
-	<script type="text/javascript" src="/views/scripts/login.js"></script>
-	<script type="text/javascript" src="/views/scripts/search.js"></script>
+<? /*
+	<script type="text/javascript">
+		window._vars = {
+			uid: "<?= $_t['pcid'] ?>",
+			uname: "<?= $_SESSION['uname'] ?>",
+			stream: [],
+			convos: [],
+			people: [],
+			groups: [],
+			groupsOnline: []
+		};
+	</script>
+*/ ?>
+<script type="text/javascript" src="/views/scripts/tap.js"></script> 
+<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
 <body>
 	<div id="wrapper">
@@ -45,17 +58,6 @@
 	</div>
 	
 	<?include(JAVASCRIPT_TEMPLATES)?>
-<script type="text/javascript">
-var _gaq = _gaq || [];
- _gaq.push(['_setAccount', 'UA-11153159-1']);
- _gaq.push(['_trackPageview']);
 
- (function() {
-   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
- })();
-</script>
-		<?include(FBCONNECT_BOTTOM)?>
 </body>
 </html>
