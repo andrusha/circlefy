@@ -142,7 +142,6 @@ border-top:none;
 }
 
 div.sideinfo .online-img {
-border:1px solid yellow;
 float:left;
 padding:1px;
 }
@@ -1693,12 +1692,10 @@ div.sideinfo ul {
 	padding: 0;
 	list-style: none;
 	font-size: 12px;
-	border-bottom: 2px solid lightgrey;
 }
 
 div.sideinfo li {
 	color: #627AAD;
-	border-top: 1px solid #fffa00;
 	/* background: #101010; */
 	cursor: pointer;
 	padding: 8px 5px;
