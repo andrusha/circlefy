@@ -228,8 +228,11 @@ if ($_t['topbg'] == 'dark') {
                 <button id="tapsend" tabindex="3" type="submit">tap!</button>
 
                 <?php if ($_t['private']): ?>
-                    <div style="color:red;margin-top:20px;">This group is private, you can request to join a conversation.
-                    </div>
+                    <?php if ($_t['status'] == -1): ?>
+                        <div style="color:red;margin-top:20px;">This group is private, you can request to join a conversation.</div>
+                    <?php elseif ($_t['status'] == 0): ?>
+                        <div style="color:red;margin-top:20px;">Please wait for the group owner to accept your request.</div>
+                    <?php endif; ?>
                 <?php endif; ?>
             </form>
 
