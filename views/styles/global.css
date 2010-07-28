@@ -1207,6 +1207,18 @@ ul.bodylist button:hover {
 	background: #fffa00;
 }
 
+.button {
+    cursor: pointer;
+	font-size: 12px;
+	padding: 5px;
+	background: #fffc66;
+	border: none;
+	margin-left: 10px;
+}
+button:hover {
+	background: #fffa00;
+}
+
 ul.bodylist li.notice {
 	font-size: 14px;
 	color: #ACB19B;

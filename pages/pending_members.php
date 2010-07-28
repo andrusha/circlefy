@@ -5,6 +5,8 @@ class pending_members extends Base {
     protected $text;
     protected $top;
 
+    private $mysqli;
+
     public function __default() {
     }
 
@@ -22,6 +24,8 @@ class pending_members extends Base {
 
         parent::__construct();
 
+        $this->mysqli = $this->db_class_mysql->db;
+
         $uid = $_SESSION['uid'];
         $foo_var = $_GET['foo_var'];
 
@@ -30,7 +34,27 @@ class pending_members extends Base {
 
         $this->set('Test', 'test');
 
+        $this->set($this->get_requested_members($uid), 'members');
     }
 
+    private function get_requested_members($uid){
+        $q = "SELECT u.uid, u.uname, u.pic_36, m.gid, g.gname
+            FROM group_members m
+            INNER JOIN login u ON u.uid = m.uid
+            INNER JOIN groups g ON m.gid = g.gid
+            WHERE
+                g.gid = (SELECT gm.gid FROM group_members gm WHERE gm.uid = {$uid})
+                AND admin != 1
+                AND m.status = 0
+            LIMIT 0, 20";
 
+        $result = $this->mysqli->query($q);
+
+        $rows = array();
+        while ($row = $result->fetch_assoc()){
+                $rows[] = $row;
+        }
+
+        return $rows;
+    }
 }

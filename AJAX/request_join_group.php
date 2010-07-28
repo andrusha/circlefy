@@ -10,7 +10,7 @@ require('../api.php');
 $gid = $_POST['gid'];
 
 if (isset($_POST['gid'])) {
-    $join_function = new join_functions();
+    $join_function = new request_join_functions();
     $results = $join_function->request_join_group($gid);
     echo $results;
 }
@@ -55,6 +55,7 @@ EOF;
         $last_id = $last_id['last_id'];
         if ($last_id > 0) {
             $this->send_email($gid, $uname);
+            return json_encode(array('good' => 1));
         }
         return json_encode(array('good' => 0));
     }
@@ -90,7 +91,6 @@ http://tap.info
 EOF;
                 mail($to, $subject, $body, $from);
             }
-        return json_encode(array('good' => 1));
     }
 
 }

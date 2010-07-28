@@ -1,31 +1,59 @@
 <!doctype html>
 <html>
 <head>
-    <?
-    $tpl_title = "Home"; // this will be in <title>HERE</title>
-    include(OK_HEADER);
-    ?>
+<?
+$tpl_title = "Home"; // this will be in <title>HERE</title>
+include(OK_HEADER);
+?>
 
     <!-- Insert here any JS that you need to include or initialization scripts -->
+    <script type="text/javascript" src="/views/scripts/tap.js"></script>
+    <script type="text/javascript" src="/views/scripts/pending_members.js"></script>
 </head>
 <body>
 <div id="wrapper">
 
-    <? include(OK_TOPBAR); ?>
+<? include(OK_TOPBAR); ?>
 
     <div id="main">
 
-            <? include(OK_SIDEBAR); // if you set $add_sidebar, that HTML will be added inside the sidebar. TODO: make this in a nicer way. ?>
+    <? include(OK_SIDEBAR); // if you set $add_sidebar, that HTML will be added inside the sidebar. TODO: make this in a nicer way. ?>
 
-            <div id="content">
-                Hello <?php echo $_t['test'] ?>!!!
-                <br>Here will be list with pending users...
+        <div id="content">
+            <div class="section">
+
+                <div class="header header-non">
+                    <h2 class="header-title">
+                        <span class="title">!</span>
+                    </h2>
+                    Pending members
+                </div>
+
+                <div class="body">
+                    <div class="full info">
+                    <?php if ($_t['members']): ?>
+                        <ul id="pending-members">
+                        <?php foreach ($_t['members'] as $k => $m): ?>
+                            <li>
+                                <?=$m['gname']?> -
+                                <img src="/user_pics/<?=$m['pic_36']?>"/>
+                                <?=$m['uname']?> <span class="buttons"><button data-uid="<?= $m['uid'] ?>" data-gid="<?= $m['gid'] ?>" class="button accept">Accept</button>
+                                <button data-uid="<?= $m['uid'] ?>" data-gid="<?= $m['gid'] ?>" class="button decline">Decline</button></span>
+                            </li>
+                        <?php endforeach;?>
+                        </ul>
+                    <?php else:?>
+                            Have no requested users.
+                    <?php endif;?>
+                    </div>
+                </div>
             </div>
+        </div>
 
         <div class="clarity"></div>
-        <?include(OK_FOOTER)?>
+    <?include(OK_FOOTER)?>
 
     </div>
-    <?include(JAVASCRIPT_TEMPLATES)?>
+<?include(JAVASCRIPT_TEMPLATES)?>
 </body>
 </html>

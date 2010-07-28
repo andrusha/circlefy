@@ -34,6 +34,7 @@ $allowedModules = array(
     'profile' => true,
     'join_group' => true,
     'request_join_group' => true,
+    'accept_member' => true,
     'remove_active' => true,
     'admin_change' => true,
     'leave_group' => true,

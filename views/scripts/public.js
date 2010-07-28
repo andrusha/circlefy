@@ -720,7 +720,7 @@ var _infobox = _tap.register({
                     el.set('html', el.innerHTML.toInt() + 1).fade('hide').fade();
                 });
                 $$('.waiting-click')[0].fade('hide');
-                $$('.waiting-click')[0].fade(1).fade.delay(2000, $$('.positive-click')[0], 0);
+                $$('.waiting-click')[0].fade(1).fade.delay(2000, $$('.waiting-click')[0], 0);
 
 
             }
