@@ -77,14 +77,18 @@ public function bypass_login(){
 	    
 	    //If there is a match, set the session to what the cookie is
 	        if($num_rows == 1){
-			$_SESSION['uid'] = $uid;
-			$_SESSION['uname'] = $_COOKIE['uname']; //SLOPPY, needs to be fixed
+				$_SESSION['uid'] = $uid;
+				$_SESSION['uname'] = $_COOKIE['uname']; //SLOPPY, needs to be fixed
+				setcookie("GUEST_hash", "", time()-3600);
+				setcookie("GUEST_uid", "", time()-3600);
+				setcookie("GUEST_uname", "", time()-3600);
+
 	            return 'bypassed';
 	        } else {
-	    setcookie("auto_login",'',time()-36000);
-	    setcookie("uid",'',time()-36000);
-	    setcookie("rand_hash",'',time()-3600);
-            setcookie("uname",'',time()-36000);
+			    setcookie("auto_login",'',time()-36000);
+			    setcookie("uid",'',time()-36000);	
+			    setcookie("rand_hash",'',time()-3600);
+	            setcookie("uname",'',time()-36000);
 	            return 'fraud';
 	        }  
 	} //END CHECKss
@@ -122,6 +126,9 @@ header('Cache-Control: no-store, no-cache, must-revalidate');
 		    setcookie("uid",$uid,time()+36000000);
 		    setcookie("rand_hash",$rand_hash,time()+36000000);
 		    setcookie("uname",$uname,time()+36000000);
+				setcookie("GUEST_hash", "", time()-3600);
+				setcookie("GUEST_uid", "", time()-3600);
+				setcookie("GUEST_uname", "", time()-3600);
  
 		    if ($_POST['auto_login'] == 'on') {
 		    	setcookie("auto_login",$auto_login,time()+36000000);

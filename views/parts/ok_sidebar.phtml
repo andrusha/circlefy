@@ -13,7 +13,8 @@
 
 	<p>
 	<? if ($_SESSION['guest'] == 1) { ?>
-		<a href="/signup">sign up</a>
+		<? /* <a href="/signup">sign up</a> */ ?>
+		<a href="#" onclick="show_signup();">sign up</a>
 		<a href="/login">log in</a>
 	<? } else { ?>
 		<a href="/user/<?= $_SESSION['uname'] ?>">profile</a>

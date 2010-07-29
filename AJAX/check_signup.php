@@ -20,7 +20,8 @@ if(isset($val)){
 	        $results = $check_function->check_uname($val);
 	if($type == 2)
         	$results = $check_function->check_email($val);
-        api_json_choose($res,$cb_enable);
+	
+	api_json_choose($results,$cb_enable);
 }
 
 

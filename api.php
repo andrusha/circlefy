@@ -26,7 +26,8 @@ $allowedModules = array(
     'password_recovery' => false,
     'new_message_handler' => false,
 
-    //These are modules which must have a session to be accessed
+	//These are modules which must have a session to be accessed
+	'ajaz_new_sign_up' => true,
     'connected_group_add' => true,
     'group_check' => true,
     'add_active' => true,

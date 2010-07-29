@@ -18,7 +18,8 @@ $fname = $_POST['fname'];
 $email = $_POST['email'];
 $password = $_POST['pass'];
 $lang = $_POST['lang'];
-$join_type = $_POST['joinType'];
+	$join_type = $_POST['joinType'];
+	//$guest_uid = $_POST['guest_uid'];	// I already have a user, and a UID.
 
 /*
 if($join_type == 'group')
@@ -40,7 +41,6 @@ if($flag == 'normal' || $flag == 'signup_function();'){
 class ajaz_new_sign_up{
 	
 		public $mysqli;
-		private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
 		private $results;
 		private $uname;
 		public $uid;
@@ -49,13 +49,13 @@ class ajaz_new_sign_up{
 		public $group;
 	
 	function __construct(){
-				$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+		$this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
 	}
 	
 	
 /* This is the start of the exeuction of 3 signup functions */
 	
-	/* Signup Function 1 (strips/check input, inserts user info into db, calls create_im_hash() */
+	/* Signup Function 1 (strips/check input, updates user info in db, calls create_im_hash() */
 	function process_sign_up($uname,$fname,$email,$password,$lang,$group,$user){
 			
 		$uname = $this->mysqli->real_escape_string($uname);
@@ -70,31 +70,34 @@ class ajaz_new_sign_up{
 	
 		$password = md5($password);
 		
-		$sign_up_query = "INSERT INTO login(uname,fname,lname,email,pass) values('{$uname}','{$finame}','{$lname}','{$email}','{$password}');";
+		$this->uid = $_SESSION['uid'];
+		$sign_up_query = "UPDATE login SET uname='{$uname}', email='{$email}', pass='{$password}', anon=0 WHERE uid='{$this->uid}';";
 		$sign_up_results = $this->mysqli->query($sign_up_query);
 		
-		$last_id = $this->mysqli->query($this->last_id);
-		$last_id = $last_id->fetch_assoc();
-		$last_id = $last_id['last_id'];
 		$this->fname = $fname;
-	
-		$this->uid = $last_id;
 		$this->uname = $uname;
 		$this->email = $email;
 		$this->lang = $lang;
 		$this->user = $user;
 		$this->group = $group;
-	
 
 		$_SESSION['uname'] = $this->uname;	
-		$_SESSION['uid'] = $this->uid;
+		$_SESSION['guest'] = 0;	
+		//$_SESSION['uid'] = $this->uid;
+		
+		setcookie("GUEST_hash", "", time()-3600);
+		setcookie("GUEST_uid", "", time()-3600);
+		setcookie("GUEST_uname", "", time()-3600);
 
 		$this->create_default_settings();
-		$this->results = json_encode($this->results);
+        $this->results = json_encode(array('success' => 1));
+		//$this->results = json_encode($this->results);
 		return $this->results;
 	}
 	
 	private function create_default_settings(){
+		// This is done in autoCreateUser now :)
+
 		$fname = $this->fname;
 		list($finame,$lname) = explode(' ',$fname);
 		$comb1 = $fname;
@@ -113,12 +116,11 @@ class ajaz_new_sign_up{
 		$this->join_group(61022);
 */
 //		$this->join_group(61033);
-	
+
+/*	
 		if($this->group){
 			$gid = $this->lookup_group();
-		if($gid)
-			$this->join_group2($gid);
-
+			if($gid) $this->join_group2($gid);
 		}
 
 		if($this->user){
@@ -126,6 +128,7 @@ class ajaz_new_sign_up{
 		if($fid)
 			$this->tap_friend2($fid);
 		}
+*/
 		
 		$this->send_welcome_mail();
 	}
@@ -168,7 +171,7 @@ tab.  There's many applications and uses for tap, espcially when it comes to com
 feel free to go wild using it!  Happy tapping!
 
 -Team Tap
-http://tap.infSomeone joined tap through your tap community page, thanks!  o
+http://tap.info
 EOF;
 		$mail_val = mail($this->email,$subject,$body,$from);
 	}

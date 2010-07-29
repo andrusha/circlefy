@@ -64,11 +64,15 @@ $public_groups_topic = "This is a place where you can discover what's being said
 	<script type="text/javascript" src="/views/scripts/home.js"></script>
 </head>
 <body>
+		<? include(MODAL_SIGNUP); ?>
+		<script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
+				
 <div id="wrapper">
-
+		
 	<? include(OK_TOPBAR); ?> 
 
 	<div id="main">
+
 			<? $show_lists = true; ?>
 			<? include(OK_SIDEBAR); ?>
 
@@ -147,8 +151,11 @@ $public_groups_topic = "This is a place where you can discover what's being said
 						</ul>
 					</div>
 				</div>
-
 			</div>
+
+
+
+
 
 		</div>
 
