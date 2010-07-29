@@ -103,7 +103,7 @@ EOF;
 	
 		if($gadmin != 0){	
 			$add_me_as_admin_query = <<<EOF
-			INSERT INTO group_members(uid,gid,admin) values({$gadmin},{$gid},1)
+			INSERT INTO group_members(uid,gid,admin,status) values({$gadmin},{$gid},1,1)
 EOF;
             $this->mysqli->query($add_me_as_admin_query);
 		}
