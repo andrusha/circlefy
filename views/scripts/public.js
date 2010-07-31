@@ -132,7 +132,7 @@ _tap.mixin({
                 admin = options.admin;
         this.feedType.set('text', type);
         title = (!url) ? title : '{t} <a href="{u}">view profile</a>'.substitute({t: title, u: url});
-        if (!!admin) title = ['&#10070; ', title, '<a href="{u}">manage group</a>'.substitute({u: admin})].join('');
+        if (!!admin) title = ['&#10070; ', title, '<a href="{u}">manage channel</a>'.substitute({u: admin})].join('');
         this.title.set('html', title);
         if (desc) {
             this.topic.set('text', desc);
@@ -190,7 +190,7 @@ var _stream = _tap.register({
     },
 
     setStream: function(type, id, info) {
-        if (type == 'groups') return this.changeFeed(id, info);
+        if (type == 'channels') return this.changeFeed(id, info);
         return this;
     },
 
@@ -211,10 +211,10 @@ var _stream = _tap.register({
                 var response = JSON.decode(this.response.text);
                 self.setTitle({
                     title: keyword ? ['"', keyword, '" in ', feed.name].join('') : feed.name,
-                    url: feed.symbol ? '/group/' + feed.symbol : null,
+                    url: feed.symbol ? '/channel/' + feed.symbol : null,
                     type: keyword ? 'search' : 'feed',
                     desc: feed.topic,
-                    admin: feed.admin ? '/group_edit?group=' + feed.symbol : null
+                    admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null
                 });
                 if (response) self.parseFeed(response);
                 self.hideLoader();
@@ -225,7 +225,7 @@ var _stream = _tap.register({
 
     parsePushed: function(type, items, stream) {
         var self = this;
-        if ((type == 'groups' && this.streamType == 'all') || this.streamType == type) {
+        if ((type == 'channels' && this.streamType == 'all') || this.streamType == type) {
             items = items.filter(function(id) {
                 var item = self.stream.getElement('li[data-id="' + id + '"]');
                 return !item;
@@ -275,7 +275,7 @@ var _filter = _tap.register({
 
     change: function(type, id, info) {
         var box = this.box;
-        if (type == 'groups') {
+        if (type == 'channels') {
             this.group = id;
             this.info = info;
             box.slide('in');
@@ -638,7 +638,7 @@ var _tapbox = _tap.register({
     },
 
     handleTapBox: function(type, id, data) {
-        if (type !== 'groups') return;
+        if (type !== 'channels') return;
         this.changeOverlay(id, data.name);
         this.changeSendTo(data.name, data.symbol, id);
     },
@@ -738,7 +738,7 @@ var _infobox = _tap.register({
                 var response = JSON.decode(this.response.text);
                 if (!response.good) return;
                 self.button.set({
-                    'text': 'leave group',
+                    'text': 'leave channel',
                     'class': 'leave'
                 });
                 $$('.count-one').each(function(el) {
@@ -760,7 +760,7 @@ var _infobox = _tap.register({
             data: {gid: id},
             onSuccess: function() {
                 self.button.set({
-                    'text': 'join group',
+                    'text': 'join channel',
                     'class': 'join'
                 });
                 $$('.count-one').each(function(el) {

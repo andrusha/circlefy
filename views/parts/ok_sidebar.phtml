@@ -32,8 +32,8 @@
 $u = $_SERVER['REQUEST_URI'];
 $u = explode('/',$u);
 
-if($u[1] == 'group')
-$type = '?type=group';
+if($u[1] == 'channel')
+$type = '?type=channel';
 
 if($u[1] == 'user')
 $type = '?type=user';
@@ -79,7 +79,7 @@ $value = '&value='.$u[2];
 		<? 
 		if($_t['pics_array'])	
 		foreach($_t['pics_array'] as $pic): ?>
-		<a href="/group/<?=$pic['symbol']?>" >
+		<a href="/channel/<?=$pic['symbol']?>" >
 		<img class="small-pics-logout" style="height:16px;width:16px;margin:4px;" src="/group_pics/<?=$pic['pic_36']?>" title="<?=$pic['symbol']?>" />
 		</a>
 		<? endforeach; ?>
@@ -100,7 +100,7 @@ $value = '&value='.$u[2];
 <? if ($show_lists): ?>
 
 	<div id="filter" class="section">
-		<p class="inblock ellipsis">search <span class="title">all your groups</span> <a href="#" class="clear">clear</a></p>
+		<p class="inblock ellipsis">search <span class="title">all your channels</span> <a href="#" class="clear">clear</a></p>
 		<input id="filterkey" type="text" class="basic" />
 	</div>
 
@@ -110,10 +110,10 @@ $value = '&value='.$u[2];
 		<a id="tab-people" data-name="people" title="contacts" class="tab" href=""></a>
 		<a id="tab-direct" data-name="direct" title="messages" class="tab" href=""></a>
 		
-		<h2><a id="list-action" href="/groups">create new</a><span id="tab-name">groups</span></h2>
+		<h2><a id="list-action" href="/channels">create new</a><span id="tab-name">channels</span></h2>
 
 		<ul id="panel-groups" class="panel selected" 
-		data-action="manage" data-action-href="/groups" data-name="groups">
+		data-action="manage" data-action-href="/channels" data-name="groups">
 
 		<li id="gid_public" class="panel-item" data-topic="<?= $public_groups_topic ?>"
 		data-id="public" data-name="Discover Taps">
@@ -122,9 +122,9 @@ $value = '&value='.$u[2];
 		</li>
 
 		<li id="gid_all" class="selected panel-item" data-topic="<?= $all_your_groups_topic ?>"
-		 data-id="all" data-name="All Your Groups">
+		 data-id="all" data-name="All Your Channels">
 			<span class="count"></span>
-			<a href="#" class="names inblock ellipsis">all your groups</a>
+			<a href="#" class="names inblock ellipsis">all your channels</a>
 		</li>
 
 	<?php if($_t['your_groups']) foreach ($_t['your_groups'] as $group): ?>
@@ -137,8 +137,8 @@ $value = '&value='.$u[2];
 	<?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
 	<span class="count"></span>
 	<a href="#" class="names inblock ellipsis" 
-	alt="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>"
-	title="<?= ($group['admin'] ? 'You are a moderator of this group.' : '') ?>">
+	alt="<?= ($group['admin'] ? 'You are a moderator of this channel.' : '') ?>"
+	title="<?= ($group['admin'] ? 'You are a moderator of this channel.' : '') ?>">
 	<?= ($group['admin'] ? '&#10070; ' : '') ?>
 	<?= strtolower($group['display_symbol']) ?>
 	</a>
@@ -148,7 +148,7 @@ $value = '&value='.$u[2];
 	</span>	
 	</li>
 	<?php endforeach; ?>
-	<li class="notify">To find and join more groups to tap, use the search bar at the top of the page</li>
+	<li class="notify">To find and join more channels to tap, use the search bar at the top of the page</li>
 	</ul>
 	<ul id="panel-convos" class="panel" data-name="convos">
 	<?php

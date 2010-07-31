@@ -71,11 +71,11 @@ class join_functions{
 			if($last_id > 0){
 				$domain = DOMAIN;
 				$this->body = <<<EOF
-				You've tried to join the connected group for {$school}.  Please click click the link below to active your connection:
+				You've tried to join the connected channel for {$school}.  Please click click the link below to active your connection:
 					\n\n
 				http://$domain/confirm?code={$hash}
 EOF;
-				$this->subject = "Request to Confirm Your Connected Group for {$school}";
+				$this->subject = "Request to Confirm Your Connected Channel for {$school}";
 				$this->to = $email;
 				$taso = "tasoduv@gmail.com";
 	

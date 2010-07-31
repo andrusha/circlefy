@@ -177,7 +177,7 @@ var _list = _tap.register({
 		this.items.removeClass('selected');
 		el.addClass('selected');
 		switch (type){
-			case 'groups':
+			case 'channels':
 				data = {
 					name: el.getData('name'),
 					online_count: el.getData('online_count'),
@@ -340,7 +340,7 @@ _tap.mixin({
 					? title 
 					: '<img class="favicon-stream-title" src="{fav}" /> {t} <span class="visitor_count" title="viewers online/total"><span class="viewers_online">{oc}</span> / {tc}</span> <a href="{u}">view profile</a>'
 							.substitute({fav: favicon, t: title, u: url, oc: online_count, tc: total_count});
-		if (!!admin) title = ['<span title="Moderator" class="moderator-title">&#10070;</span> ', title, '<a href="{u}">manage group</a>'.substitute({u: admin})].join('');
+		if (!!admin) title = ['<span title="Moderator" class="moderator-title">&#10070;</span> ', title, '<a href="{u}">manage channel</a>'.substitute({u: admin})].join('');
 		this.title.set('html', title);
 
 		if (desc){
@@ -477,7 +477,7 @@ var _stream = _tap.register({
 		3. info (obj) additional group/feedtype data
 	*/
 	setStream: function(type, id, info){
-		if (type == 'groups') return this.changeFeed(id, info);
+		if (type == 'channels') return this.changeFeed(id, info);
 		return this;
 	},
 
@@ -529,10 +529,10 @@ var _stream = _tap.register({
 				self.setTitle({
 					title: keyword ? ['"', keyword, '" in ', feed.name].join('') : feed.name,
 					favicon: data.type == 1 ? $$('#gid_'+id+' img.favicon-img')[0].src : '',
-					url: feed.symbol ? '/group/' + feed.symbol : null,
+					url: feed.symbol ? '/channel/' + feed.symbol : null,
 					type: keyword ? 'search' : 'feed',
 					desc: feed.topic,
-					admin: feed.admin ? '/group_edit?group=' + feed.symbol : null,
+					admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
 					online_count: feed.online_count,
 					total_count: feed.total_count
 				});
@@ -573,7 +573,7 @@ var _stream = _tap.register({
 	*/
 	parsePushed: function(type, items, stream){
 		var self = this;
-		if ((type == 'groups' && this.streamType == 'all') || this.streamType == type){
+		if ((type == 'channels' && this.streamType == 'all') || this.streamType == type){
 			items = items.filter(function(id){
 				var item = self.stream.getElement('li[data-id="'+id+'"]');
 				return !item;
@@ -618,7 +618,7 @@ var _filter = _tap.register({
 
 	init: function(){
 		this.group = 'all';
-		this.info = {name: 'All Your Groups'};
+		this.info = {name: 'All Your Channels'};
 		this.box = $('filter');
 		this.title = this.box.getElement('span.title');
 		this.clearer = this.box.getElement('a.clear');
@@ -643,7 +643,7 @@ var _filter = _tap.register({
 	*/
 	change: function(type, id, info){
 		var box = this.box;
-		if (type == 'groups'){
+		if (type == 'channels'){
 			this.group = id;
 			this.info = info;
 			box.slide('in');
@@ -1034,7 +1034,7 @@ var _tapbox = _tap.register({
 		this.tapbox.addEvent('click', function(el){
 			var tt = $('tapto').innerHTML;
 			var ngs = $('no-group-selected');
-			if(tt == 'choose a group to tap'){
+			if(tt == 'choose a channel to tap'){
 				ngs.style.display = 'block';
 				ngs.fade('hide');
                                 ngs.fade(1).fade.delay(4000,ngs,0);
@@ -1089,7 +1089,7 @@ var _tapbox = _tap.register({
 		3. data (obj) additional data for the item
 	*/
 	handleTapBox: function(type, id, data){
-		if (type !== 'groups') return;
+		if (type !== 'channels') return;
 		this.changeOverlay(id, data.name);
 		this.changeSendTo(data.name, data.symbol, id);
 	},
@@ -1106,7 +1106,7 @@ var _tapbox = _tap.register({
 		var msg = "";
 		switch (id){
 			case 'all':
-			case 'public': msg = 'chose a group to tap'; break;
+			case 'public': msg = 'chose a channel to tap'; break;
 			default: msg = 'tap ' + name + '...';
 		}
 		this.overlayMsg.set('text', msg.toLowerCase());
@@ -1267,9 +1267,9 @@ var _search = _tap.register({
 	*/
 	itemClicked: function(el, e){
 		var type = el.getData('type');
-		if (type == 'group'){
+		if (type == 'channel'){
 			if (el.getData('joined') == "1") this.publish('search.selected', 'gid_' + el.getData('id'));
-			else window.location = ['/group/', el.getData('symbol')].join('');
+			else window.location = ['/channel/', el.getData('symbol')].join('');
 		}
 	},
 
@@ -1546,13 +1546,13 @@ _live.list = _tap.register({
 	},
 
 	parsePushed: function(type, items, stream){
-		var key = (type == 'groups') ? 'gid_all' : type.replace(/group/, 'gid');
+		var key = (type == 'channels') ? 'gid_all' : type.replace(/channel/, 'gid');
 		this.setCount(key, items.length);
 	},
 	
 	addCount: function(_, type){
 		if (type == 'public') return;
-		var key = (type == 'all') ? 'gid_all' : type.replace(/group/, 'gid');
+		var key = (type == 'all') ? 'gid_all' : type.replace(/channel/, 'gid');
 		var item = $(key);
 		if (!item) return;
 		var counter = item.getElement('span.count');
@@ -1568,7 +1568,7 @@ _live.list = _tap.register({
 	},
 
 	clearCount: function(type){
-		var key = $((type == 'all') ? 'gid_all' : type.replace(/group/, 'gid'));
+		var key = $((type == 'all') ? 'gid_all' : type.replace(/channel/, 'gid'));
 		if (!key) return;
 		if (type == 'all'){
 			this.groups.getElements('li.panel-item').each(function(item){
@@ -1633,7 +1633,7 @@ _live.taps = _tap.register({
 		len = data.reverse().length;
 		while (len--){
 			item = data[len];
-			if (!item.type.test(/^group/)) continue;
+			if (!item.type.test(/^channel/)) continue;
 			if (!pushed[item.type]) pushed[item.type] = [];
 			ids = pushed[item.type];
 			ids.include(item.cid);

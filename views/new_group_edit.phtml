@@ -22,7 +22,7 @@ $private = $res['private'];
 <html>
 <head>
 	<? 
-	$tpl_title = "Group Management";
+	$tpl_title = "Channel Management";
 	include(OK_HEADER);
 	?>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
@@ -45,46 +45,46 @@ $private = $res['private'];
 						<a id="newtaps" href="" class="floater"></a>
 						<h2 class="header-title">
 							<img src="/images/flat/loader.gif" />
-							<span class="title">groups</span>
+							<span class="title">channels</span>
 						</h2>
-						<span class="stream-name">Manage Group <a href="/groups">back to your groups</a></span>
+						<span class="stream-name">Manage Channel <a href="/channels">back to your channels</a></span>
 					</div>
 					<div class="body">
 						<div id="create-group" class="form" data-id="<?= $gid ?>">
 							<p class="notify">Your changes have been saved</p>
-                                                        <p class="error">You have errors you need to fix before you can create the group, could you please try again?</p>
+                                                        <p class="error">You have errors you need to fix before you can create the channel, could you please try again?</p>
 
-							<p>Fill in all the details below and then hit save to edit your group.</p>
+							<p>Fill in all the details below and then hit save to edit your channel.</p>
 							<span id="catagory-manage-link">
 								<label class="nick">
 								<a style="float:left" class="follow_button" href='/catagory_add?group=<?=$symbol?>'>Manage Catagories</a>
-								<span class="help">Manage sub-catagories for your tap group</span>
+								<span class="help">Manage sub-catagories for your tap channel</span>
 								</label>
 							</span>
 							<label for="name">
 								name 
-								<span class="help">the name of your group</span>
+								<span class="help">the name of your channel</span>
 								<span class="error"></span>
 							</label>
 							<input name="name" value="<?= $gname ?>" type="text" disabled="disabled" class="basic full" />
 							
 							<label for="symbol">
 								symbol 
-								<span class="help">this will be used to identify your group</span>
+								<span class="help">this will be used to identify your channel</span>
 								<span class="error"></span>
 							</label>
 							<input name="symbol" value="<?= $symbol ?>" type="text" disabled="disabled" class="basic full" />
 							
 							<label for="focus">
 								focus 
-								<span class="help">the areas of interest of your group; at least 3, separated by commas</span>
+								<span class="help">the areas of interest of your channel; at least 3, separated by commas</span>
 								<span class="error"></span>
 							</label>
 							<input name="focus" value="<?= $focus ?>" type="text" class="basic full" />
 							
 							<label for="desc">
 								description 
-								<span class="help">what's your group about? describe it in 20 to 240 characters</span>
+								<span class="help">what's your channel about? describe it in 20 to 240 characters</span>
 								<span class="error"></span>
 							</label>
 							<input name="desc" value="<?= $desc ?>" type="text" class="basic full" />
@@ -99,7 +99,7 @@ $private = $res['private'];
 							<form id="picuploader" name="picuploader" action="/AJAX/group_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
 								<label for="file">
 									picture 
-									<span class="help">upload a picture for your group</span>
+									<span class="help">upload a picture for your channel</span>
 									<span class="error"></span>
 								</label>
 								<input id="group-pic" name="gr-pic" type="file" class="basic full"/>
@@ -110,7 +110,7 @@ $private = $res['private'];
 							<form id="picuploader-fav" name="picuploader-fav" action="/AJAX/group_favicon_upload.php" enctype="multipart/form-data" method="post" target="picture-fav">
 								<label for="file">
 									favicon
-									<span class="help">upload an icon for your group ( use a fav.ico from your website )</span>
+									<span class="help">upload an icon for your channel ( use a fav.ico from your website )</span>
 									<span class="error"></span>
 								</label>
 								<input id="group-pic-fav" name="gr-pic-fav" type="file" class="basic full"/>
@@ -119,7 +119,7 @@ $private = $res['private'];
 							</form>
 							
 							<div class="buttons">
-								<button class="action">save changes</button> or <a href="/groups">cancel</a>
+								<button class="action">save changes</button> or <a href="/channels">cancel</a>
 							</div>
 						</div>
 					</div>

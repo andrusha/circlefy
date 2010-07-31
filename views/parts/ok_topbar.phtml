@@ -21,7 +21,7 @@ switch($r){
 
                         <div id="nav" class="nav-slim">
                                 <a href="/"  	    <?=$home?>    >home</a>
-                                <a href="/groups"   <?=$groups?>  >groups</a>
+                                <a href="/channels"   <?=$groups?>  >channels</a>
                                 <a href="/people"   <?=$people?>  >people</a>
                                 <a href="/settings" <?=$settings?>>settings</a>
                                 <?php if ($_t['ok_user']): ?>
@@ -74,7 +74,7 @@ switch($r){
 	<?php 
 	if ($_t['ok_user']) { ?>
 		<a href="/"  	    <?=$home?>    >home</a>
-		<a href="/groups"   <?=$groups?>  >groups</a>
+		<a href="/channels"   <?=$groups?>  >channels</a>
 		<a href="/people"   <?=$people?>  >people</a>
 		<a href="/settings" <?=$settings?>>settings</a>
 		<a href="/?logout=true">logout</a> <? echo $_t['ok_user']; ?>

@@ -7,8 +7,8 @@ PARAMS
 
 type - 
 	Types:
-	1 = IND Group
-	11 = AGGR Groups
+	1 = IND Channel
+	11 = AGGR Channels
 	2 = IND People
 	22 = AGGR Peoples
 	3 = IND Filter
@@ -22,7 +22,7 @@ flag  -
 more -
 	the more offset if you want a different set of the feed rather then the latest ( i.e. pagiation )
 id -
-	the id of the group you want to call
+	the id of the channel you want to call
 EOF;
 	
 session_start();

@@ -196,7 +196,7 @@ EOF;
 
 			} elseif($search != '') { 
 				$string = trim("<span id='no_results'><b>$symbol$search</b> returned no results
-				You must specificy wither you're searching for a Group,Person or Popular Tag.
+				You must specificy wither you're searching for a Channel, Person or Popular Tag.
 				Example, #nyu would search for NYU, @dave would search for your friend dave, and *Pizza would do x
 				</span>");
 				$results = array($string);

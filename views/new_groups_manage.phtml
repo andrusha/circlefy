@@ -1,8 +1,8 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 <head>
 	<? 
-	$tpl_title = "Group Management";
+	$tpl_title = "Channel Management";
 	include(OK_HEADER);
 	?>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
@@ -20,12 +20,12 @@
 
 				<div class="sideinfo section container">
 					<h2>
-						<span id="tab-name">groups</span>
+						<span id="tab-name">channels</span>
 					</h2>
 					<ul class="panel">
 						<li class="panel-item" >
 							<span class="count"></span>
-							<a href="/create_group" class="names inblock ellipsis">create new group</a>
+							<a href="/create_channel" class="names inblock ellipsis">create new channel</a>
 						</li>
 						<li class="panel-item" >
 							<span class="count"></span>
@@ -44,9 +44,9 @@
 						<a id="newtaps" href="" class="floater"></a>
 						<h2 class="header-title">
 							<img src="/images/flat/loader.gif" />
-							<span class="title">groups</span>
+							<span class="title">channels</span>
 						</h2>
-						<span class="stream-name">Your Groups <a href="/create_group">create group</a></span>
+						<span class="stream-name">Your Channels <a href="/create_channel">create channel</a></span>
 					</div>
 					<div class="body">
 						<ul class="bodylist">
@@ -71,10 +71,10 @@
 								<button class="invite">invite</button>
 								<img src="/group_pics/<?= $group['pic'] ?>" class="avatar" />
 								<h2>
-									<a href="/group/<?= $group['symbol'] ?>" title="<?= $group['gname'] ?>"><?= $group['gname'] ?></a>
+									<a href="/channel/<?= $group['symbol'] ?>" title="<?= $group['gname'] ?>"><?= $group['gname'] ?></a>
 									<span class="nick">
 										<? if ($group['admin']): ?>
-										<a href="/group_edit?group=<?= $group['symbol'] ?>" class="follow_button gm">Manage</a> 
+										<a href="/group_edit?channel=<?= $group['symbol'] ?>" class="follow_button gm">Manage</a>
 										<? endif; ?>
 										<a href="#" class="leave follow_button gm">Leave</a>
 									</span>
@@ -82,7 +82,7 @@
 								<p class="headline">&#8220;<?= $group['descr'] ?>&#8221;</p>
 								<p class="stats">
 									<? if ($official == "*"): ?>
-									<strong>Official Group.</strong> 
+									<strong>Official Channel.</strong>
 									<? endif; ?>
 									<strong><?= $group['size'] ?></strong> Members joined, 
 									<strong><?= $group['count'] ?></strong> Taps sent, and
@@ -94,7 +94,7 @@
 								else:
 							?>
 							<li class="notice notice-group">
-                                                                <p>You are in no groups!  Search above to find them!</p>
+                                                                <p>You are in no channels!  Search above to find them!</p>
                                                         </li>
                                                         <?php endif; ?>
 

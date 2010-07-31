@@ -25,10 +25,10 @@ class confirm extends Base{
 		$uid = $_SESSION['uid'];
 		$hash = $_GET['code'];
 		if(!$hash)
-			header( 'Location: http://tap.info/groups?error=no_hash' );
+			header( 'Location: http://tap.info/channels?error=no_hash' );
 
 		$check_update_query = 'UPDATE join_group_status SET status=1 WHERE hash="'.$hash.'" AND uid='.$uid;
-		$this->db_class_mysql->set_query($check_update_query,'check_hash','This query updates the users status for his connected group');
+		$this->db_class_mysql->set_query($check_update_query,'check_hash','This query updates the users status for his connected channel');
 		$result1 = $this->db_class_mysql->execute_query('check_hash');
 		if($this->db_class_mysql->db->affected_rows){
 			$this->set('Accepted','status');

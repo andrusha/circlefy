@@ -99,7 +99,7 @@ class rel_functions{
                                 <td class="rel_name_number">New!. {$name}</td>
                                 <td class="active_rel">{$tags}</td>
                                 <td class="active_loc">{$zip}</td>
-                                <td class="active_group">This Group!</td>
+                                <td class="active_group">This Channel!</td>
                                 <td class="enable_green 1" id="state_{$rid}" onclick="update_enable({$rid},this.className[this.className.length-1]);">Enabled</td>
                                 <td class="delete_rel"><a href="#" onclick='del_rel({$rid});'>Delete</a></td>
         </tr>

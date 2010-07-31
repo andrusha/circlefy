@@ -23,7 +23,7 @@ class catagory_add extends Base{
 		parent::__construct();
 
 		$uid = $_SESSION['uid'];
-        $symbol = $_GET['group'];
+        $symbol = $_GET['channel'];
         
         
         $get_categories_by_group = <<<EOF

@@ -75,12 +75,12 @@ EOF;
                 $to = $res['email'];
                 $gname = $res['gname'];
 
-                $subject = "Your tap group $gname has a requesting member! Request to join.";
+                $subject = "Your tap channel $gname has a requesting member! Request to join.";
                 $from = "From: tap.info\r\n";
                 $body = <<<EOF
-{$uname} joined your tap group at http://tap.info !  It seems others have joined as well, so keep the real-time collaberative tapping going.
+{$uname} joined your tap channel at http://tap.info !  It seems others have joined as well, so keep the real-time collaberative tapping going.
 
-Make sure you organize your community or group , so that everyone on tap will feel the communities greatness.
+Make sure you organize your community or channel, so that everyone on tap will feel the communities greatness.
 
 Feel free to invite more people and keep your good ( and popular ) community growing!
 

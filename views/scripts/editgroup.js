@@ -189,7 +189,7 @@ var _edit = _tap.register({
 				var response = JSON.decode(this.response.text);
 				$$('.error')[0].style.display = 'none';
 				$$('.notify')[0].style.display = 'block';
-				(function() { window.location = '/groups'}).delay(2000,this);
+				(function() { window.location = '/channels'}).delay(2000,this);
 			}
 		});
 		if (this.pic) $extend(request.options.data, { pic_hash_name: this.pic });

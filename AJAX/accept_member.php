@@ -74,10 +74,10 @@ class accept_functions {
 
         $gname = $this->getGroupName($gid);
 
-        $subject = "Your requst to join group $gname accepted!";
+        $subject = "Your requst to join channel $gname accepted!";
         $from = "From: tap.info\r\n";
         $body = <<<EOF
-Your requst to join group $gname accepted!
+Your requst to join channel $gname accepted!
 
 -Team Tap
 http://tap.info
@@ -94,10 +94,10 @@ EOF;
 
         $gname = $this->getGroupName($gid);
 
-        $subject = "Your requst to join group $gname declined.";
+        $subject = "Your requst to join channel $gname declined.";
         $from = "From: tap.info\r\n";
         $body = <<<EOF
-Your requst to join group $gname declined.
+Your requst to join channel $gname declined.
 
 -Team Tap
 http://tap.info

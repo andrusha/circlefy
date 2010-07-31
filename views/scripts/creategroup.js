@@ -118,7 +118,7 @@ var _create = _tap.register({
 					var response = JSON.decode(this.response.text);
 					if (response.dupe) {
 						return self.showError(el, 'this name is already taken! \
-							you can join the group for <a href="/groups?search={name}">{name}</a> instead'.substitute({name:name}));
+							you can join the channel for <a href="/channels?search={name}">{name}</a> instead'.substitute({name:name}));
 					} else {
 						return self.removeError(el);
 					}
@@ -147,7 +147,7 @@ var _create = _tap.register({
 					var response = JSON.decode(this.response.text);
 					if (response.dupe) {
 						return self.showError(el, 'this symbol is already taken! \
-							you can join the group for <a href="/group/{symbol}">{symbol}</a> instead'.substitute({symbol:symbol}));
+							you can join the channel for <a href="/channel/{symbol}">{symbol}</a> instead'.substitute({symbol:symbol}));
 					} else {
 						self.removeError(el);
 					}
@@ -225,7 +225,7 @@ var _create = _tap.register({
 			//	var response = JSON.decode(this.response.text);
 				$$('.error')[0].style.display = 'none';
                                 $$('.notify')[0].style.display = 'block';
-				(function() { window.location = '/group/'+this.symbol}).delay(2000,this);
+				(function() { window.location = '/channel/'+this.symbol}).delay(2000,this);
 			}.bind(this)
 		}).send();
 	}

@@ -24,7 +24,7 @@ class group_edit extends Base{
 
 		$uid = $_SESSION['uid'];
 		
-		$symbol = $_GET['group'];
+		$symbol = $_GET['channel'];
 
 		$get_gid_query = <<<EOF
 		SELECT gid FROM groups WHERE symbol = "$symbol" LIMIT 1
@@ -37,15 +37,15 @@ EOF;
 		$this->set($gid,'gid');
 
 		if(!$gid)	
-			header( 'Location: http://mark.tap.info/groups?error=no_group' );
+			header( 'Location: http://tap.info/channels?error=no_group' );
 		$access_granted_query = <<<EOF
 		SELECT admin FROM group_members WHERE gid = {$gid} AND uid = {$uid} AND admin > 0 LIMIT 1
 EOF;
-		$this->db_class_mysql->set_query($access_granted_query,'access_granted',"Says if the user has permission to edit gthe group or not");
+		$this->db_class_mysql->set_query($access_granted_query,'access_granted',"Says if the user has permission to edit gthe channel or not");
 		$access_granted_result = $this->db_class_mysql->execute_query('access_granted');
 		$granted = $access_granted_result->num_rows;
 		if( ($granted != 1) && (!ADMIN_GLOBAL) )
-			header( "Location: http://mark.tap.info/groups?error=denied?$gid:$granted:".ADMIN_GLOBAL );
+			header( "Location: http://tap.info/channels?error=denied?$gid:$granted:".ADMIN_GLOBAL );
 
 	
 		$group_random_pick = <<<EOF
@@ -141,10 +141,10 @@ EOF;
 		
                 switch($status){
                         case 1:
-                                $status = "Group Owner";
+                                $status = "Channel Owner";
                                 break;
                         case 2:
-                                $status = "Group Admin";
+                                $status = "Channel Admin";
                                 break;
                         default:
                                 $status = "";

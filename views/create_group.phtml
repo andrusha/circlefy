@@ -2,7 +2,7 @@
 <html>
 <head>
 	<?
-	$tpl_title = "Create Group";
+	$tpl_title = "Create Channel";
 	include(OK_HEADER);
 	?>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
@@ -25,40 +25,40 @@
 						<a id="newtaps" href="" class="floater"></a>
 						<h2 class="header-title">
 							<img src="/images/flat/loader.gif" />
-							<span class="title">groups</span>
+							<span class="title">channels</span>
 						</h2>
-						<span class="stream-name">Create a Group <a href="/groups">back to your groups</a></span>
+						<span class="stream-name">Create a Channel <a href="/channels">back to your channels</a></span>
 					</div>
 					<div class="body">
 						<div id="create-group" class="form">
-							<p class="notify">Group Created!  You will now be directed to your groups page!</p>
+							<p class="notify">Channel Created!  You will now be directed to your channels page!</p>
                                                         <p class="error">Something weird happened, you probably didn't fill in the form correctly, could you please try again?</p>
 
-							<p>Fill in all the details below and then hit done to create a new group. Don't forget to invite your contacts after creating your group!</p>
+							<p>Fill in all the details below and then hit done to create a new channel. Don't forget to invite your contacts after creating your channel!</p>
 							<label for="name">
 								name 
-								<span class="help">the name of your group</span>
+								<span class="help">the name of your channel</span>
 								<span class="error"></span>
 							</label>
 							<input name="name" type="text" class="basic full" />
 							
 							<label for="symbol">
 								symbol 
-								<span class="help">this will be used to identify your group</span>
+								<span class="help">this will be used to identify your channel</span>
 								<span class="error"></span>
 							</label>
 							<input name="symbol" type="text" class="basic full" />
 							
 							<label for="focus">
 								focus 
-								<span class="help">the areas of interest of your group; at least 3, separated by commas</span>
+								<span class="help">the areas of interest of your channel; at least 3, separated by commas</span>
 								<span class="error"></span>
 							</label>
 							<input name="focus" type="text" class="basic full" />
 							
 							<label for="desc">
 								description 
-								<span class="help">what's your group about? describe it in 20 to 240 characters</span>
+								<span class="help">what's your channel about? describe it in 20 to 240 characters</span>
 								<span class="error"></span>
 							</label>
 							<input name="desc" type="text" class="basic full" />
@@ -73,7 +73,7 @@
 							<form name="picuploader" action="/AJAX/group_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
 								<label for="file">
 									picture 
-									<span class="help">upload a picture for your group</span>
+									<span class="help">upload a picture for your channel</span>
 									<span class="error"></span>
 								</label>
 								<input id="group-pic" name="gr-pic" type="file" class="basic full"/>
@@ -82,7 +82,7 @@
 							</form>
                             
 							<div class="buttons">
-								<button class="action">create your group</button> or <a href="/groups">cancel</a>
+								<button class="action">create your channel</button> or <a href="/channels">cancel</a>
 							</div>
 						</div>
 					</div>

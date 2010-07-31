@@ -4,7 +4,7 @@ $c = 'class="current"';
 
 switch($r){
         case '/':       $home =  $c;break;
-        case '/groups':   $groups =  $c;break;
+        case '/channels':   $groups =  $c;break;
         case '/people':  $people=  $c;break;
         case '/settings':   $settings =  $c;break;
 }
@@ -16,7 +16,7 @@ switch($r){
 
                         <div id="nav" class="nav-slim">
                                 <a href="/"  	    <?=$home?>    >home</a>
-                                <a href="/groups"   <?=$groups?>  >groups</a>
+                                <a href="/channels"   <?=$groups?>  >channels</a>
                                 <a href="/people"   <?=$people?>  >people</a>
                                 <a href="/settings" <?=$settings?>>settings</a>
                                 <?php if ($logged): ?>

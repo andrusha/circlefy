@@ -18,12 +18,12 @@ $allowedPages = array(
 		'catagory_add'=>true,
 		'profile'=>true,
 		'invite'=>true,
-		'groups'=>true,
+		'channels'=>true,
 		'pending_members'=>true,
 		'help'=>true,
 		'rss'=>true,
-		'create_group'=>true,
-		'group_edit'=>true,
+		'create_channel'=>true,
+		'channel_edit'=>true,
 		'what'=>true,
 		'login'=>true,
 		'password_recovery'=>true,
@@ -31,7 +31,7 @@ $allowedPages = array(
 		'about'=>true,
 		'devs'=>true,
 		'contact'=>true,
-		'group'=>true,
+		'channel'=>true,
 		'company'=>true,
 		'school'=>true,
 		'tap'=>true,
@@ -48,8 +48,14 @@ if (isset($allowedPages[$_GET['page']]) && $allowedPages[$_GET['page']]) {
 	$page = $_GET['page'];
 	if ($page == 'user')
 		$page = 'public_user';
-	if ($page == 'group' || $page == 'school' || $page == 'company')
+	if ($page == 'channel' || $page == 'school' || $page == 'company')
 		$page = 'public_group';
+    if ($page == 'channels')
+		$page = 'groups';
+    if ($page == 'create_channel')
+		$page = 'create_group';
+    if ($page == 'channel_edit')
+		$page = 'group_edit';
 	if ($page == 'tap')
 		$page = 'public_tap';
 	if ($page == 'settings')

@@ -102,8 +102,8 @@ var _search = _tap.register({
 		var type = el.getData('type');
 		var id = el.getData('id');
 
-		if (type == 'group' && id != 0){
-			window.location = ['/group/', el.getData('symbol')].join('');
+		if (type == 'channel' && id != 0){
+			window.location = ['/channel/', el.getData('symbol')].join('');
 		}
 
 		if(id==0){
@@ -111,7 +111,7 @@ var _search = _tap.register({
 					url: '/AJAX/group_create.php',
 					link: 'cancel',
 					onSuccess: function() {
-						window.location = '/group/'+this.new_keyword;
+						window.location = '/channel/'+this.new_keyword;
 					}.bind(this)
 				});
 				this.request.send({data: 
@@ -159,8 +159,8 @@ var _search = _tap.register({
 					online: '',
 					total: '',
 					img: false,
-					desc: 'Click here to great this group on the fly!',
-					joined: 'no',
+					desc: 'Click here to great this channel on the fly!',
+					joined: 'no'
 				}
 			      ];
 			$$(Elements.from(_template.parse('suggest.group', data)).slice(0, 6)).inject(list);
@@ -200,8 +200,8 @@ var _search = _tap.register({
 					online: '',
 					total: '',
 					img: false,
-					desc: 'Click here to great this group on the fly!',
-					joined: 'no',
+					desc: 'Click here to great this channel on the fly!',
+					joined: 'no'
 				}
 			);
 		}

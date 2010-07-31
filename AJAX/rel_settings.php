@@ -129,7 +129,7 @@ class rel_functions{
 			if($res['gid'] == 0){
 				$gid = 'All';
 			} else {
-				$gid = 'Tied to a group!';
+				$gid = 'Tied to a channel!';
 			}
 
 			$name = $res['name'];

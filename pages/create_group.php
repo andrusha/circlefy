@@ -73,12 +73,12 @@ EOF;
                 //matching the groups_members table with the groups table based off gid, you need to return the name
                         $this->db_class_mysql->set_query('SELECT t2.gname,t1.gid FROM group_members AS t1 
 							  JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid='.$uid,
-		                                        'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
+		                                        'get_users_groups',"This gets the initial lists of users channels so he can search within his channels");
                                         $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
 					if($groups_you_are_in->num_rows > 0){
                                         $this->set($groups_you_are_in,'your_groups');
 					} else {
-					$this->set('YOU ARE IN NO GROUPS','your_groups');
+					$this->set('YOU ARE IN NO CHANNELS','your_groups');
 					}
 	
 		if(isset($_POST['submit_create'])){

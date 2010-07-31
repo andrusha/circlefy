@@ -10,8 +10,8 @@ symbol = symbol of group ( only applicable if `type == symbol` )
 */
 $usage = <<<EOF
 Usage:
-gname: name of the group to check
-group_check:   true if we are checking group (always true in this case)
+gname: name of the channel to check
+group_check:   true if we are checking channel (always true in this case)
 EOF;
 
 session_start();
@@ -78,7 +78,7 @@ class group_functions{
 			$dupe_res = $this->mysqli->query($dupe_query);
 			//If the exact name matches, return the exact name
 			if($dupe_res->num_rows > 0){
-				$results = 'This group name has been taken';
+				$results = 'This channel name has been taken';
 			$results = array('dupe' => True, 'results' => $results);
 			return $results;
 			}

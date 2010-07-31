@@ -166,7 +166,7 @@ EOF;
 						<td class="rel_name_number">{$counter}. {$name}</td>
 						<td class="active_rel">{$tags}</td>
 						<td class="active_loc">{$zip}</td>
-						<td class="active_group">This Group!</td>
+						<td class="active_group">This Channel!</td>
 						{$enable}
 						{$delete}
 			</tr>
@@ -188,10 +188,10 @@ EOF;
 		$status = $res['admin'];
 		switch($status){
 			case 1:
-				$status = "Group Owner";
+				$status = "Channel Owner";
 				break;
 			case 2:
-				$status = "Group Admin";
+				$status = "Channel Admin";
 				break;
 			default:
 				$status = "";
@@ -229,28 +229,28 @@ EOF;
 
 		switch($priv){
 			case 0:
-				$priv="Anyone can invite to this group";
+				$priv="Anyone can invite to this channel";
 				break;
 			case 1:
-				$priv="Only owners/admins can invite to this group";
+				$priv="Only owners/admins can invite to this channel";
 				break;
 		}
 	
 		switch($invite){
 			case 0:
-				$invite = "This group is not invite only";
+				$invite = "This channel is not invite only";
 				break;
 			case 1:
-				$invite = "This group is invite only";
+				$invite = "This channel is invite only";
 				break;
 		}
 
 		switch($private){
 			case 0:
-				$private = "This group is not private";
+				$private = "This channel is not private";
 				break;
 			case 1:
-				$private = "This group is private and will not show up in searches and/or the web";
+				$private = "This channel is private and will not show up in searches and/or the web";
 				break;
 		}
 

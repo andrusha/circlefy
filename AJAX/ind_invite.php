@@ -8,7 +8,7 @@ name: persons name
 
 email: the email of the person you're emailing
 
-type: 0 for direct, pass it 1 for couldn't find person in searc, 2 is group invites which have been removed
+type: 0 for direct, pass it 1 for couldn't find person in searc, 2 is channel invites which have been removed
 
 msg : the message of the email
 
@@ -144,7 +144,7 @@ EOF;
 {$name} , $fname $lname ( $uname ) has invited you to tap!
 EOF;
 		$this->body = <<<EOF
-	{$fname} invited you to tap.info to join the group {$gname} so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.
+	{$fname} invited you to tap.info to join the channel {$gname} so you can help influence what people are getting information about in a subject releavant to something you care about..  Check out tap.info allows for something very useful and unique.
 -
 -Team Tap
 EOF;

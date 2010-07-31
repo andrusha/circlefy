@@ -33,7 +33,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 <!doctype html>
 <html>
 <head>
-	<? $tpl_title = "Group " . $_t['symbol']; ?>
+	<? $tpl_title = "Channel " . $_t['symbol']; ?>
 	<?include(OK_HEADER)?>
     <link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>"/>
     <script type="text/javascript" src="/views/scripts/tap.js"></script>
@@ -89,7 +89,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
         else:
             ?>
                 <li class="notify">
-                    This group has no admins.
+                    This channel has no admins.
                 </li>
             <?php
                                         endif;
@@ -121,7 +121,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
         else:
             ?>
                 <li class="notify">
-                    This group has no top members.
+                    This channel has no top members.
                 </li>
             <?php
                                         endif;
@@ -149,16 +149,16 @@ if ($_t['topbg'] == 'dark') {
         <div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
 
         <?php if ($_t['status'] == 1): ?>
-            <button data-id="<?= $_t['gid'] ?>" class="leave">unfollow group</button>
+            <button data-id="<?= $_t['gid'] ?>" class="leave">unfollow channel</button>
         <?php elseif ($logged): ?>
             <?php if ($_t['private']): ?>
                 <?php if ($_t['requested']): ?>
                     <button data-id="<?= $_t['gid'] ?>" class="waiting">waiting accept</button>
                 <?php  else: ?>
-                    <button data-id="<?= $_t['gid'] ?>" class="request">request to follow group</button>
+                    <button data-id="<?= $_t['gid'] ?>" class="request">request to follow channel</button>
                 <?php  endif; ?>
             <?php  else: ?>
-                <button data-id="<?= $_t['gid'] ?>" class="join">follow group</button>
+                <button data-id="<?= $_t['gid'] ?>" class="join">follow channel</button>
             <?php endif; ?>
         <?php  else: ?>
             <button data-id="<?= $_t['gid'] ?>" class="login">login to follow</button>
@@ -204,7 +204,7 @@ if ($_t['topbg'] == 'dark') {
                 <span class="stream-name"><img class="favicon-stream-title" src="/group_pics/<?=$_t['favicon']?>"/> &nbsp;<?= $_t['gname'] ?></span>
 						 <span class="visitor_count" title="viewers online/total">
 						<? if (ADMIN_GLOBAL || $_t['enable_admin']): ?>
-                            <span class="admin"><a href="/group_edit?group=<?=$_t['symbol']?>">Manage Group</a></span>
+                            <span class="admin"><a href="/group_edit?channel=<?=$_t['symbol']?>">Manage Channel</a></span>
                         <? endif; ?>
                             <span class="viewers_online"><?=$_t['online_count']?></span>
 							/ 
@@ -229,9 +229,9 @@ if ($_t['topbg'] == 'dark') {
 
                 <?php if ($_t['private']): ?>
                     <?php if ($_t['status'] == -1): ?>
-                        <div style="color:red;margin-top:20px;">This group is private, you can request to join a conversation.</div>
+                        <div style="color:red;margin-top:20px;">This channel is private, you can request to join a conversation.</div>
                     <?php elseif ($_t['status'] == 0): ?>
-                        <div style="color:red;margin-top:20px;">Please wait for the group owner to accept your request.</div>
+                        <div style="color:red;margin-top:20px;">Please wait for the channel owner to accept your request.</div>
                     <?php endif; ?>
                 <?php endif; ?>
             </form>

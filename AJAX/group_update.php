@@ -4,9 +4,9 @@
 */
 $usage = <<<EOF
 Usage:
-    gid: id of the group
-    focus: new focus of the group value
-    descr: new group description value
+    gid: id of the channel
+    focus: new focus of the channel value
+    descr: new channel description value
 EOF;
 
 session_start();

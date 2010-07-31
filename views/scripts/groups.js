@@ -57,7 +57,7 @@ var _list = _tap.register({
 	leaveGroup: function(el, e){
 		var parent = el.getParent('li');
 		e.preventDefault();
-		var remove = confirm('Are you sure you want to leave this group?');
+		var remove = confirm('Are you sure you want to leave this channel?');
 		if (remove) {
 			new Request({
 				url: 'AJAX/leave_group.php',
@@ -79,7 +79,7 @@ var _list = _tap.register({
 
 	inviter: function(el){
 		var symbol = el.getParent('li').getData('symbol');
-		window.location = '/invite?group=' + symbol;
+		window.location = '/invite?channel=' + symbol;
 	}
 
 });

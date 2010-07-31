@@ -164,9 +164,9 @@ class ajaz_new_sign_up{
 		$from = "From: tap.info\r\n";
 		$body = <<<EOF
      Welcome to tap.info , with tap you'll be able to stay connected with people and information
-you're interested in.  tap also allows you to 'tap' into specific groups of people by sending a message
-to that group.  For example, if you want to send a message to everyone at Python, simply find the Python 
-group via the autocompleter and people at Python will see that show up in their outside messages
+you're interested in.  tap also allows you to 'tap' into specific channels of people by sending a message
+to that channel.  For example, if you want to send a message to everyone at Python, simply find the Python
+channel via the autocompleter and people at Python will see that show up in their outside messages
 tab.  There's many applications and uses for tap, espcially when it comes to community management, so
 feel free to go wild using it!  Happy tapping!
 
@@ -290,9 +290,9 @@ EOF;
                                 $subject = "$gname has a new member!";
                                 $from = "From: tap.info\r\n";
                                 $body = <<<EOF
-Someone joined tap through your tap community page, terrific!  {$uname} joined your tap group at http://tap.info !  It seems others have joined as well, so keep the real-time collaberative tapping going.
+Someone joined tap through your tap community page, terrific!  {$uname} joined your tap channel at http://tap.info !  It seems others have joined as well, so keep the real-time collaberative tapping going.
 
-Make sure you organize your community or group , so that everyone on tap will feel the communities greatness.
+Make sure you organize your community or channel, so that everyone on tap will feel the communities greatness.
 
 Feel free to invite more people and keep your good ( and popular ) community growing!
 

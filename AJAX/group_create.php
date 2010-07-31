@@ -5,10 +5,10 @@
 $usage = <<<EOF
 Usage:
 
-gname: name of the group
-symbol: symbol of the group
-focus: focus of the group
-descr: description of the group
+gname: name of the channel
+symbol: symbol of the channel
+focus: focus of the channel
+descr: description of the channel
 old_name: user uploaded picture path
 EOF;
 
@@ -64,7 +64,7 @@ class group_functions{
             
 		    if(!$gadmin){
 			    $gadmin = 0;
-			    $descr = 'This is the default topic for a new group, click on manage group to change it!';
+			    $descr = 'This is the default topic for a new channel, click on manage channel to change it!';
 		    }
 
 		    //All form settings     

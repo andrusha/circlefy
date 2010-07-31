@@ -486,7 +486,7 @@ EOF;
 		$group_perm_matches->data_seek(0);
 		while($res = $group_perm_matches->fetch_assoc() )
 			if($this->counter_data['groups'][$res['gname']] == 0)
-				$null_msg = "<span class='null_tap'>Nobody at {$res['symbol']} got your msg, join  the connected group {$res['symbol']}  to get information from/to there</span>";
+				$null_msg = "<span class='null_tap'>Nobody at {$res['symbol']} got your msg, join  the connected channel {$res['symbol']}  to get information from/to there</span>";
 				$this->counter_data['groups'][$null_msg] = '';
 
 		}
