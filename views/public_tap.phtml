@@ -22,7 +22,7 @@ if (!empty($_t['user_bits'])) {
 			stream: JSON.decode('<?= json_encode($tap['cid']) ?>'),
 			convos: [],
 			people: JSON.decode('<?= json_encode($people) ?>'),
-			groups: JSON.decode('<?= json_encode($groups) ?>'),
+			groups: JSON.decode('<?= json_encode($groups) ?>')
 		};
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
@@ -92,7 +92,7 @@ if (!empty($_t['user_bits'])) {
 						<?php $stats = $_t['stats']; ?>
 						<strong><?= $stats['message_count'] ?></strong> Taps sent, 
 						<strong><?= $stats['response_count'] ?></strong> Responses received, and
-						<strong><?= $stats['group_count'] ?></strong> Groups joined.
+						<strong><?= $stats['group_count'] ?></strong> Channels joined.
 					</p>
 				</div>
 
@@ -113,7 +113,7 @@ if (!empty($_t['user_bits'])) {
 							<span class="title">convo</span>
 						</h2>
 						<span class="stream-name">with <?= $_t['user'] ?>&nbsp; 
-						<a href="/group/<?=$tap['symbol']?>" /><img class="public-tap-favicon aggr-favicons" src="/group_pics/<?= $tap['favicon']?>" title="<?=$tap['gname']?>" /> 
+						<a href="/channel/<?=$tap['symbol']?>" /><img class="public-tap-favicon aggr-favicons" src="/group_pics/<?= $tap['favicon']?>" title="<?=$tap['gname']?>" />
 						</span>
 					</div>
 					<div class="body">

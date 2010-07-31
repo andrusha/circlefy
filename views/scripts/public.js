@@ -760,7 +760,7 @@ var _infobox = _tap.register({
             data: {gid: id},
             onSuccess: function() {
                 self.button.set({
-                    'text': 'join channel',
+                    'text': 'follow channel',
                     'class': 'join'
                 });
                 $$('.count-one').each(function(el) {
