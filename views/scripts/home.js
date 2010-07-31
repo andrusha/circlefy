@@ -532,7 +532,7 @@ var _stream = _tap.register({
 					url: feed.symbol ? '/channel/' + feed.symbol : null,
 					type: keyword ? 'search' : 'feed',
 					desc: feed.topic,
-					admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
+					admin: feed.admin ? '/channel_edit?channel=' + feed.symbol : null,
 					online_count: feed.online_count,
 					total_count: feed.total_count
 				});
