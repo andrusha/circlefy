@@ -1,26 +1,7 @@
-var _template = {
-
-	templater: new Template(),
-	prepared: {},
-	map: {
-		'taps': 'template-taps',
-		'responses': 'template-responses',
-		'list.convo': 'template-list-convo',
-		'suggest.group': 'template-suggest-group'
-	},
-
-	parse: function(type, data){
-		var template = this.prepared[type];
-		if (!template){
-			template = this.map[type];
-			if (!template) return '';
-			template = this.prepared[type] = $(template).innerHTML.cleanup();
-		}
-		return this.templater.parse(template, data);
-	}
-
-};
-
+/*
+module: _search
+	controls the global searchbox
+*/
 var _search = _tap.register({
 
 	init: function(){
@@ -55,6 +36,10 @@ var _search = _tap.register({
 		search.focus();	
 	},
 
+	/*
+	handler: start()
+		fired when the search input is focused
+	*/
 	start: function(){
 		var els = this.suggest.getElements('li');
 		this.on = true;
@@ -62,6 +47,10 @@ var _search = _tap.register({
 		if (els.length == 0) new Element('li', {'text': 'Start or Join a conversation', 'class': 'notice'}).inject(this.list);
 	},
 
+	/*
+	handler: end()
+		fired when the search input is blurred
+	*/
 	end: function(el){
 		var self = this,
 			list = this.list;
@@ -72,6 +61,10 @@ var _search = _tap.register({
 		else list.getElements('li').removeClass('selected');
 	},
 
+	/*
+	handler: checkKeys()
+		checks whether the search keys are valid or when enter is pressed
+	*/
 	checkKeys: function(e){
 		var updown = ({'down': 1, 'up': -1})[e.key];
 		if (updown) return this.navigate(updown);
@@ -80,6 +73,13 @@ var _search = _tap.register({
 		this.goSearch(e);
 	},
 
+	/*
+	method: navigate()
+		controls the up/down keys for the search results
+		
+		args:
+		1. updown (number) the number of movements to do (up: positive, down: negative)
+	*/
 	navigate: function(updown){
 		var current = (this.selected !== null) ? this.selected : -1,
 			items = this.list.getElements('li:not(.notice)');
@@ -92,12 +92,20 @@ var _search = _tap.register({
 		}
 	},
 
+	/*
+	method: doAction()
+		performs an action for an item
+	*/
 	doAction: function(){
 		if (this.selected == null) return;
 		this.itemClicked(this.list.getElements('li')[this.selected], {});
 		this.search.set('value', '').blur();
 	},
 
+	/*
+	handler: itemClick()
+		fired when a suggestion item is clicked
+	*/
 	itemClicked: function(el, e){
 		var type = el.getData('type');
 		var id = el.getData('id');
@@ -124,6 +132,10 @@ var _search = _tap.register({
 		}
 	},
 
+	/*
+	handler: goSearch()
+		performs the search
+	*/
 	goSearch: function(e){
 		var el = $(e.target),
 			keyword = el.get('value');
@@ -141,6 +153,10 @@ var _search = _tap.register({
 		}
 	},
 
+	/*
+	method: parseResponse()
+		parses the response from the server and inject it in the suggestion box
+	*/
 	parseResponse: function(txt){
 		var resp = JSON.decode(txt),
 			list = this.list.empty();

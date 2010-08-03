@@ -58,8 +58,11 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
     </script>
     <script type="text/javascript" src="/views/scripts/push.js"></script>
     <script type="text/javascript" src="/views/scripts/public.js"></script>
-	<script type="text/javascript" src="/views/scripts/search.js"></script> 
 
+	<script type="text/javascript" src="/views/scripts/filter.js"></script> 
+	<script type="text/javascript" src="/views/scripts/members.js"></script> 
+
+	<script type="text/javascript" src="/views/scripts/search.js"></script> 
 </head>
 <body>
 <div id="wrapper">
@@ -128,10 +131,11 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
         ?>
         </ul>
     </div>
-<? $add_sidebar = ob_get_clean(); ?>
-<? $show_lists = true; ?>
-<? include(OK_SIDEBAR); ?>
-
+<?
+$add_sidebar = ob_get_clean();
+$show_lists = false;
+include(OK_SIDEBAR); 
+?>
 
 <?php
             /* DYNAMIC STYLES */

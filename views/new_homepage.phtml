@@ -56,12 +56,21 @@ $public_groups_topic = "This is a place where you can discover what's being said
 			convos: JSON.decode('<?= json_encode($convos) ?>'),
 			people: JSON.decode('<?= json_encode($people) ?>'),
 			groups: JSON.decode('<?= json_encode($groups) ?>'),
-			groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>')
+			groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>'),
+            sendTo: "public:public:0:0",
+            filter: {
+                gid: "0",
+                info: {
+                    name: "All Your Channels"
+                }
+            }
 		};
 	</script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
-	<script type="text/javascript" src="/views/scripts/home.js"></script>
+	<script type="text/javascript" src="/views/scripts/public.js"></script>
+	<script type="text/javascript" src="/views/scripts/sidebar.js"></script>
+	<script type="text/javascript" src="/views/scripts/filter.js"></script>
 </head>
 <body>
 		<? include(MODAL_SIGNUP); ?>
