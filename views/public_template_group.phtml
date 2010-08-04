@@ -63,6 +63,9 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<script type="text/javascript" src="/views/scripts/members.js"></script> 
 
 	<script type="text/javascript" src="/views/scripts/search.js"></script> 
+
+<? /*	<script type="text/javascript" src="/views/scripts/public_group.js"></script>  */ ?>
+
 </head>
 <body>
 <div id="wrapper">
@@ -282,8 +285,13 @@ if ($_t['topbg'] == 'dark') {
                                     <a href="/tap/<?= $tap['cid'] ?>" class="date"
                                        data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
                                     <?= $tap['chat_timestamp'] ?>
-                                    </a>
-                                </p>
+									</a>
+									<span style='text-decoration: none; border: 0px;'> | 
+									<a href='#' data-uid="<?= $tap['uid'] ?>" class='link_promote'>promote</a> |
+									<a href='#' data-uid="<?= $tap['uid'] ?>" class='link_ban'>ban</a>
+									</span>
+								</p>
+
                                 <a href="#" class="tap-resp-count" title="view responses">
                                     <p class="tap-body">
                                     <?= $tap['chat_text'] ?>

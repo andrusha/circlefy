@@ -161,6 +161,8 @@ this.show_signup = function(e){
 	modalForm.set('styles', {
 			left: (window.getSize().x / 2) - 265,
 			'opacity': '0',
+			'border': '7px solid black',
+			'-moz-border-radius': '5px 5px 5px 5px',
 			'display': 'block'
 	});
 	var myEffects = new Fx.Morph('modal-signup', {duration: 1000, transition: Fx.Transitions.Sine.easeOut});
