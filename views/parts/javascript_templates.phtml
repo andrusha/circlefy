@@ -72,7 +72,7 @@
                 <# for (var group from this): #>
 			<# if(group.img == false){ new_group = 'new-group' } else { new_group = '' }#>
                         <li class="container <#: new_group #>" data-id="<#: group.id #>"
-                                data-type="group" data-joined="<#: group.joined #>" data-symbol="<#: group.symbol #>" >
+                                data-type="channel" data-joined="<#: group.joined #>" data-symbol="<#: group.symbol #>" >
 				<# if( group.img != false ) { #>
                                 <img src="/<#: group.img #>" alt="<#: group.name #>" class="avatar" />
 				<# } #>

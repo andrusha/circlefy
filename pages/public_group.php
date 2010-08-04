@@ -41,15 +41,11 @@ EOF;
             header('Location: http://tap.info?error=no_public_group');
 
         $res = $gid_result->fetch_assoc();
-        $gid = $res['gid'];
-        $gname = $res['gname'];
-        $type = $res['connected'];
-        $symbol = $res['symbol'];
-        $online_count = $res['count'];
-        $descr = $res['descr'];
-        $pic_100 = $res['pic_100'];
-        $favicon = $res['favicon'];
-        $topbg = $res['topbg'];
+        $mapping = array('gid' => 'gid', 'gname' => 'gname', 'type' => 'connected',
+            'symbol' => 'symbol', 'online_count' => 'count', 'descr' => 'descr',
+            'pic_100' => 'pic_100', 'favicon' => 'favicon', 'topbg' => 'topbg');
+        foreach($mapping as $var => $id)
+            $$var = $res[$id];
 
         // is private group
         $this->set($res['private'], 'private');
@@ -218,8 +214,31 @@ EOF;
 
 //START set the session uid for Orbited
         $this->set($_SESSION['uid'], 'pcid');
-        //END set the session uid for Orbited
+//END set the session uid for Orbited
 
+//START taps count
+        $taps_count_sql = "
+            SELECT COUNT(sm.gid) AS taps_count
+            FROM special_chat_meta AS sm 
+            WHERE sm.gid = {$gid}";
+        $this->db_class_mysql->set_query($taps_count_sql, 'taps_count', 'Returns overall number of taps in channel');
+        $res = $this->db_class_mysql->execute_query('taps_count')->fetch_assoc();
+        $this->set($res['taps_count'], 'taps_count');
+//END taps count
+
+//START responses count
+        $responses_count_sql = "
+            SELECT COUNT(c.mid) AS responses_count
+            FROM special_chat_meta AS sm 
+            INNER JOIN special_chat AS sc
+                    ON sc.mid = sm.mid
+            INNER JOIN chat AS c
+                    ON c.cid = sc.cid
+            WHERE sm.gid = {$gid} ";
+        $this->db_class_mysql->set_query($responses_count_sql, 'responses_count', 'Returns number of responses for all taps in channel');
+        $res = $this->db_class_mysql->execute_query('responses_count')->fetch_assoc();
+        $this->set($res['responses_count'], 'responses_count');
+//END responses count
 
     }
 
@@ -269,24 +288,14 @@ EOF;
         if ($m_results->num_rows)
             while ($res = $m_results->fetch_assoc()) {
                 //Setup
-                $mid = $res['mid'];
-                $special = $res['special'];
-                $chat_timestamp = $res['chat_timestamp'];
-                $cid = $res['cid'];
-                $chat_text = $res['chat_text'];
-                $uname = $res['uname'];
-                $fname = $res['fname'];
-                $lname = $res['lname'];
-                $pic_100 = $res['pic_100'];
-                $pic_36 = $res['pic_36'];
-                $viewer_count = $res['viewer_count'];
-                $user_online = $res['user_online'];
-                $uid = $res['uid'];
-                $gid = $res['gid'];
-                $favicon = $res['favicon'];
-                $gname = $res['gname'];
-                $symbol = $res['symbol'];
-                $connected = $res['connected'];
+
+                $mapping = array('mid' => 'mid', 'special' => 'special', 'chat_timestamp' => 'chat_timestamp',
+                    'cid' => 'cid', 'chat_text' => 'chat_text', 'uname' => 'uname', 'fname' => 'fname',
+                    'lname' => 'lname', 'pic_100' => 'pic_100', 'pic_36' => 'pic_36', 'viewer_count' => 'viewer_count',
+                    'user_online' => 'user_online', 'uid' => 'uid', 'gid' => 'gid', 'favicon' => 'favicon',
+                    'gname' => 'gname', 'symbol' => 'symbol', 'connected' => 'connected');
+                foreach($mapping as $var => $id)
+                    $$var = $res[$id];
 
                 //Process
                 $chat_timestamp_raw = $chat_timestamp;

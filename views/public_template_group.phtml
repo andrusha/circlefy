@@ -182,9 +182,8 @@ if ($_t['topbg'] == 'dark') {
             <p class="stats">
                 <strong class="count-one"><?= (!empty($_t['member_count'])) ? $_t['member_count'] : '0' ?></strong>
                 Members joined,
-            <? /* TODO: this values are hardcoded - find the real active ones */ ?>
-                <strong>29</strong> Taps sent, and
-                <strong>55</strong> Responses received.
+                <strong><?=$_t['taps_count']?></strong> Taps sent, and
+                <strong><?=$_t['responses_count']?></strong> Responses received.
             </p>
 
             <div class="description">
