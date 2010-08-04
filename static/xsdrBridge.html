@@ -29,7 +29,7 @@ function push(data) {
         postMessageToParent("event " + id + " " + JSON.stringify(data));
     }
     else {
-        document.domain = topDomain
+        document.domain = topDomain;
         parent.Orbited.singleton.XSDR.receiveCbs[id](data)
         try {
             document.domain = origDomain;
@@ -94,6 +94,9 @@ function getNext() {
     }
     document.domain = topDomain
     var queue = parent.Orbited.singleton.XSDR.queues[id]
+    if (!queue) {
+        queue = [];
+    }
 //    alert('queue: ' + queue.length)
     var data = null
     if (queue.length > 0)

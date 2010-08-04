@@ -197,7 +197,7 @@ if ($_t['topbg'] == 'dark') {
         </div>
 
         <div id="tapstream" class="section description">
-            <div class="header">
+            <div class="header"> 
                 <a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
                 <a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 
@@ -205,20 +205,42 @@ if ($_t['topbg'] == 'dark') {
                     <img src="/images/flat/loader.gif"/>
                     <span class="title">feed</span>
                 </h2>
-                <span class="stream-name"><img class="favicon-stream-title" src="/group_pics/<?=$_t['favicon']?>"/> &nbsp;<?= $_t['gname'] ?></span>
-						 <span class="visitor_count" title="viewers online/total">
-						<? if (ADMIN_GLOBAL || $_t['enable_admin']): ?>
-                            <span class="admin"><a href="/channel_edit?channel=<?=$_t['symbol']?>">Manage Channel</a></span>
-                        <? endif; ?>
-                            <span class="viewers_online"><?=$_t['online_count']?></span>
-							/ 
-							<span id="total-member-count"><a href="#"><span
-                                    class="count-one"><?=$_t['total_count']?></span></a></span></span>
+                <span class="stream-name" style="float: left">
+                    <img class="favicon-stream-title" src="/group_pics/<?=$_t['favicon']?>"/> &nbsp;<?= $_t['gname'] ?>
+                </span>
+				
+                <span class="visitor_count" title="viewers online/total" style="float: left">
+                <? if (ADMIN_GLOBAL || $_t['enable_admin']): ?>
+                    <span class="admin">
+                        <a href="/channel_edit?channel=<?=$_t['symbol']?>">
+                            Manage Channel
+                        </a>
+                    </span>
+                <? endif; ?>
+                    <span class="viewers_online"><?=$_t['online_count']?></span>
+                    / 
+                    <span id="total-member-count">
+                        <a href="#">
+                        <span class="count-one"><?=$_t['total_count']?></span>
+                        </a>
+                    </span>
+                </span>
 
-                <iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode("http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);?>&amp;layout=button_count&amp;show_faces=true&amp;width=100&amp;action=like&amp;font=arial&amp;colorscheme=dark&amp;height=21"
-                        scrolling="no" frameborder="0"
-                        style="border:none; overflow:hidden; height:21px; margin: 2px 15px 0px; display:inline; position:absolute;"
+                <ul class="like-buttons">
+                    <li style="width: 60px; margin-top:2px; margin-left: 10px;">
+                        <iframe 
+                        src="http://api.tweetmeme.com/button.js?url=<?php echo urlencode("http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);?>&amp;style=compact"></iframe>
+                    </li>       
+
+                    <li style="width: 100px;">
+                        <iframe 
+                        src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode("http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);?>&amp;layout=button_count&amp;show_faces=true&amp;width=100&amp;action=like&amp;font=arial&amp;colorscheme=dark&amp;height=21"
+                        scrolling="no" 
+                        frameborder="0"
                         allowTransparency="true"></iframe>
+                    </li>
+
+                </ul>
 
             </div>
 

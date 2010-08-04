@@ -470,6 +470,7 @@ color:white;
 #content .section .header {
 	background: #3c3c3c;
 	padding: 15px 10px;
+    height: 20px;
 }
 
 #content .section .header h2 {
@@ -787,6 +788,24 @@ float:right;
 
 .header span.stream-name a:hover , .header a:hover{
 	color: #fffa00;
+}
+
+.header ul.like-buttons {
+    margin: 2px 25px 0px; 
+    display:inline; 
+    padding: 0; 
+    list-style: none;   
+}
+
+.header ul.like-buttons li {
+    float: left;
+    display: inline; 
+}
+
+.header ul.like-buttons iframe {
+    border: none;
+    overflow:hidden;
+    height:21px;   
 }
 
 ul.stream {
