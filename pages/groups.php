@@ -9,7 +9,7 @@ class groups extends Base{
 	}
 
 	public function __toString(){
-		return "Homepage Object";
+		return "Group Object";
 	}
 
 	function __construct(){
@@ -19,9 +19,10 @@ class groups extends Base{
 		$this->page_name = "new_groups_manage";
 		$this->need_login = 1;
 		$this->need_db = 1;
+		$this->useOpenGraph = 1;
 
 		parent::__construct();
-		
+
 		$uid = $_SESSION['uid'];
 
 		$get_group_query = <<<EOF
@@ -34,7 +35,7 @@ class groups extends Base{
 			  WHERE uid={$uid}
 			) AS ogm
 			JOIN group_members AS t1 ON t1.gid=ogm.gid
-			JOIN groups AS g ON g.gid = ogm.gid 
+			JOIN groups AS g ON g.gid = ogm.gid
 			GROUP BY ogm.gid;
 EOF;
 			$group_list_query = <<<EOF
@@ -52,26 +53,26 @@ EOF;
 			ORDER BY gid DESC LIMIT 5;
 EOF;
 
-	
+
 			$connected_group_query = <<<EOF
 			SELECT t3.email,t1.gid,t1.gname,t1.symbol,t2.uid,t2.status FROM group_members AS t2
 			JOIN groups AS t1
 			ON t1.gid = t2.gid
 			JOIN join_group_status as t3
 			ON t1.gid = t3.gid AND t2.uid = t3.uid
-			WHERE t2.uid = {$uid} 
+			WHERE t2.uid = {$uid}
 EOF;
 
 			$geo_list_query = <<<EOF
 			SELECT cn.abbr2,cn.name AS Country FROM country_translate AS cn WHERE cn.abbr2 != '-' LIMIT 249;
 EOF;
-			
+
 			$this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
 			$geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
 			while($res = $geo_list_results->fetch_assoc()){
 			$abbr2 = $res['abbr2'];
 			$name = $res['name'];
-		
+
 			$init_geo_data = array(
 				'abbr2' =>	$abbr2,
 				'name' =>	$name
@@ -83,7 +84,7 @@ EOF;
 			$this->db_class_mysql->set_query($connected_group_query,'get_connected_groups','This gets the status and attributes of all connected groups to display to the user');
 				$connected_groups_results = $this->db_class_mysql->execute_query('get_connected_groups');
 				$this->set($connected_groups_results,'connected_groups');
-	
+
 			$this->db_class_mysql->set_query($group_random_pick,'get_random_groups',"Getting random 'relevanct' groups");
 			$rand_group_results = $this->db_class_mysql->execute_query('get_random_groups');
 
@@ -146,7 +147,7 @@ EOF;
 					'last_chat'=> null,
 					'count'	=> 0
 				);
-			
+
 			$gid_list .= $gid.',';
                 }
                         $gid_list = substr($gid_list,0,-1);
@@ -165,29 +166,70 @@ EOF;
 EOF;
 			$this->db_class_mysql->set_query($group_message_count,'group_count',"Get's message count for groups");
 			$message_count_results = $this->db_class_mysql->execute_query('group_count');
-			
+
                         if($message_count_results->num_rows)
                         while($res = $message_count_results->fetch_assoc() ) {
                                 $count = $res['count'];
                                 $gid = $res['gid'];
 				$last_chat = $res['last_chat'];
 				$last_uname = $res['last_uname'];
-				
+
                                 $groups[$gid]['count'] = $count;
 				$groups[$gid]['last_chat'] = $last_chat;
 				$groups[$gid]['last_uname'] = $last_uname;
                         }
 			$this->set($groups,'group_results');
-				
+
 
                         $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
                 	        $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
                         $this->set($groups_you_are_in,'your_groups');
 
-				
-	
+
+
 				}
-				
+
+	function checkIfGroupExists($groupName){
+		$check_group_query = <<<EOF
+			select gname from groups where gname = '{$groupName}'
+EOF;
+		$this->db_class_mysql->set_query($check_group_query,'check_group_query',"Chck if exists group");
+		$check_group_exists = $this->db_class_mysql->execute_query('check_group_query');
+		//$check_group_exists = $this->mysqli->query($check_group_query);
+		return ($check_group_exists->num_rows > 0);
+		
+	}
+
+	function create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town){
+		$uid = $_SESSION["uid"];
+		$uname = $_SESSION["uname"];
+
+		$create_group_query = <<<EOF
+		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town,created)
+		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town",NOW())
+EOF;
+	  $create_group_results = $this->mysqli->query($create_group_query);
+	  $last_id = $this->mysqli->query($this->last_id);
+	  $last_id = $last_id->fetch_assoc();
+        $last_id = $last_id['last_id'];
+		$gid = $last_id;
+
+		$GROUP_ONLINE_query = <<<EOF
+		INSERT INTO GROUP_ONLINE(gid) values($gid)
+EOF;
+                $this->mysqli->query($GROUP_ONLINE_query);
+
+		if($gadmin != 0){
+			$add_me_as_admin_query = <<<EOF
+			INSERT INTO group_members(uid,gid,admin) values({$gadmin},{$gid},1)
+EOF;
+            $this->mysqli->query($add_me_as_admin_query);
+		}
+
+	}
+
+
+
 	}
 
 ?>

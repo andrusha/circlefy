@@ -104,7 +104,7 @@ $public_groups_topic = "This is a place where you can discover what's being said
 							<img src="/images/flat/loader.gif" />
 							<span class="title">feed</span>
 						</h2>
-						<span class="stream-name">All Your Groups</span>
+						<span class="stream-name">All Your Groups <?php if(isset($_t['facebook_loginUrl'])): ?><a href="<?php echo $_t['facebook_loginUrl']; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
 					</div>
 					<div class="description" style="background: lightgrey; padding:15px;"><?= $all_your_groups_topic ?></div>
 					<div class="body">

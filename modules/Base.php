@@ -40,6 +40,9 @@
 		protected $need_filter = 0;
 		protected $input_debug_flag = 0;
 
+		protected $useOpenGraph;
+		protected $facebook;
+
 
 /*Here is a list of protected variables that child class set and get
 such functions such as $db and other functions that need to be set and get
@@ -81,6 +84,10 @@ are included in this centralized function in order to instill encapsulation.
 			// TPL variable ok_user -> "I am a registered user (not guest)"
 			$logged = ((!empty($_SESSION['uid'])) && ($_SESSION['guest']!="1")) ? 1 : 0;
 			$this->set($logged,'ok_user');
+
+			if($this->useOpenGraph == 1){
+				$this->initOpenGraph();
+			}
 		}
 
 		protected function db_conn(){
@@ -141,6 +148,9 @@ are included in this centralized function in order to instill encapsulation.
 		public function page(){
 			return $this->page_name;
 		}
-		
+
+		protected function initOpenGraph(){
+			$this->facebook = new openGraph();
+		}
 
 }

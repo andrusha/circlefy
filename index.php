@@ -6,11 +6,8 @@ require_once('modules/autoCreateUser.php');
 
 
 function __autoload($className){
-	//echo '-'.$className.'<br/>';
 	$file = __FILE__;
 	$file = str_replace('/index.php','',$file);
-	
-
 	require_once($file.'/modules/'.$className.'.php');
 }
 
@@ -73,6 +70,9 @@ if(!$event){
 	$event = '__default';
 
 }
+
+//echo $file.'/pages/'.$page.'.php';
+
 	
 $file = __FILE__;
 $file = str_replace('/index.php','/',$file);
@@ -91,7 +91,7 @@ switch($_t['output']){
 			print 'You forgot to set $this->page_name in your pages/xxxx.php file, please do this in order to set the proper view template';
 			exit();
 		}
-        //echo "<!--" . $view_page . "-->";
+        echo "<!-- View Page: " . $view_page . "-->";
         
         //echo "<!--" . print_r($_SESSION, true)  . "-->";
 		include_once($file.'/views/'.$view_page.'.phtml');	
