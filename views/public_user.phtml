@@ -20,6 +20,7 @@ $private = $_t['private'];
 <head>
 	<? $tpl_title="profile: ".$_t['gname']; ?>
 	<? include(OK_HEADER); ?>
+    <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_t['pcid'] ?>",
@@ -30,6 +31,7 @@ $private = $_t['private'];
 			groups: JSON.decode('<?= json_encode($groups) ?>')
 		};
 	</script>
+	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>  
 	<script type="text/javascript" src="/views/scripts/search.js"></script>

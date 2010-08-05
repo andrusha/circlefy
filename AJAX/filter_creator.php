@@ -65,7 +65,7 @@ Types:
 3 = IND Filter
 33 = AGGR Filters
 */
-if($cb_enable){
+if($cb_enable) {
 	$type = $_GET['type'];
 	$search = $_GET['search'];
 	$outside = $_GET['outside'];
@@ -83,56 +83,46 @@ if($cb_enable){
 
 if(isset($type)){
    	$filter_function = new filter_functions();
-        $res = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag,$more);
+    $res = $filter_function->filter($type,$search,$outside,$o_filter,$id,$flag,$more);
 	api_json_choose($res,$cb_enable);
 } else {
 	api_usage($usage);
 }
 
-
-
-
-
 class filter_functions{
 
-                private $mysqli;
-                private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
-                private $results;
-		private $more = False;
+    private $mysqli;
+    private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
+    private $results;
+    private $more = False;
 
-        function __construct(){
-                                $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
-        }
+    function __construct() {
+        $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+    }
 
 	function filter($type,$search,$outside,$o_filter,$id,$flag,$more){
-		if($more)
+        if($more)
 			$this->more = $more;
 
 		if(!$outside)
-			$outside="1,2";
+			$outside = "1,2"; //"1,2";
 
 		$type = $this->mysqli->real_escape_string($type);
 		$id = $this->mysqli->real_escape_string($id);
 		$search = $this->mysqli->real_escape_string($search);
 		$outside = $this->mysqli->real_escape_string($outside);
 
-		if($type == 50)
-			$mysql_obj = $this->direct_filter($outside,$search,$o_filter);
-		if($type == 11)
-			$mysql_obj = $this->aggr_group_filter($outside,$search,$o_filter);
-		if($type == 100)
-			$mysql_obj = $this->public_filter($search);
-		if($type == 99)
-			$mysql_obj = $this->personal_filter($search,$flag,$id);
-		if($type == 1)
-			$mysql_obj = $this->ind_group_filter($id,$outside,$search,$o_filter);
-		if($type == 2)
-			echo "People Function";
-		if($type == 3)
-			echo "Filter Function";
+        switch ($type) {
+            case 100: $mysql_obj = $this->public_filter($search); break;
+            case  99: $mysql_obj = $this->personal_filter($search,$flag,$id); break;
+            case  50: $mysql_obj = $this->direct_filter($outside,$search,$o_filter); break;
+            case  11: $mysql_obj = $this->aggr_group_filter($outside,$search,$o_filter); break;
+            case   1: $mysql_obj = $this->ind_group_filter($id,$outside,$search,$o_filter); break;
+            case   3: throw new Exception('Not implemented. Filter Function'); break;
+            case   2: throw new Exception('Not implemented. Prople Function'); break;
+       }
 
-
-		if($mysql_obj->num_rows > 0)
+        if($mysql_obj->num_rows > 0)
 			$data = $this->create_filter($mysql_obj);	
 		else
 			return array('results' => False,'data' => False);
@@ -143,21 +133,24 @@ class filter_functions{
 	private function direct_filter($outside,$search,$o_filter){
 		$uid = $_SESSION['uid'];
 		$outside = NULL;
-                if($search)
-                        $search_sql =  "AND chat_text LIKE '%{$search}%'";
+        if($search)
+            $search_sql =  "AND chat_text LIKE '%{$search}%'";
 
-                        $get_groups_bits_query = <<<EOF
-                        SELECT
-                        scm.mid FROM special_chat_meta AS scm
-                        JOIN special_chat AS scj
-                        ON scj.mid = scm.mid
-                        WHERE  scm.uid IN ( {$uid} ) AND connected is NULL
-                        {$search_sql}
-                        GROUP BY mid ORDER BY mid DESC LIMIT 10
+        $get_groups_bits_query = <<<EOF
+            SELECT scm.mid as mid
+              FROM special_chat_meta AS scm
+              JOIN special_chat AS scj
+                ON scj.mid = scm.mid
+             WHERE  scm.uid IN ( {$uid} ) 
+               AND connected is NULL
+          {$search_sql}
+          GROUP BY mid
+          ORDER BY mid DESC
+             LIMIT 10
 EOF;
 
-                $mysql_obj = $this->mysqli->query($get_groups_bits_query);
-                return $mysql_obj;
+        $mysql_obj = $this->mysqli->query($get_groups_bits_query);
+        return $mysql_obj;
 	}
 
 	private function personal_filter($search,$responses,$uid=null){
@@ -206,46 +199,53 @@ EOF;
 		return $mysql_obj;
 	}
 
-	private function aggr_group_filter($outside,$search,$o_filter){
-		$gids = $_SESSION['gid'];
+	private function aggr_group_filter($outside,$search,$o_filter) {
+        $gids = $_SESSION['gid'];
 		$gids = explode(',',$gids);
-		if($gids)
-		foreach($gids as $gid)
-			$gid_query_list .= $gid.',';
-		$gid_query_list = substr($gid_query_list,0,-1);
+        $gid_query = $gids[0] == 'null' ? 
+                    'IS NULL' :
+                    'IN ('.implode(',', $gids).')';
+       
+        $uid = $_SESSION['uid'];
 
-		if($search)
+        $more = $this->more ? $this->more.',' : '';
+
+        if($search)
 			$search_sql =  "AND chat_text LIKE '%{$search}%'";
+        
+        if ($o_filter) {
+            $o_filter_list = implode(',', $o_gid);
 
-		if($o_filter){
-                        foreach($o_filter as $o_gid)
-                                $o_filter_list = $o_gid.',';
-
-                        $o_filter_list = substr($o_filter_list,0,-1);
-
-                        $get_groups_bits_query = <<<EOF
-                        SELECT
-                        scm.mid,scm.gid,scm.connected
-                        FROM special_chat_meta AS scm, special_chat_meta AS scm2
-                        JOIN special_chat AS scj
-                        ON scj.mid = scm2.mid
-                        WHERE scm.gid IN ({$gid_query_list}) AND scm.connected IN ({$outside}) AND scm2.mid = scm.mid
-                        AND scm2.gid IN ({$o_filter_list})
-			{$search_sql}
+            $get_groups_bits_query = <<<EOF
+                SELECT scm.mid AS mid, scm.gid, scm.connected
+                  FROM special_chat_meta AS scm,
+                       special_chat_meta AS scm2
+                  JOIN special_chat AS scj
+                    ON scj.mid = scm2.mid
+                 WHERE scm.gid {$gid_query}
+                   AND scm.connected IN ({$outside})
+                   AND scm2.mid = scm.mid
+                   AND scm2.gid IN ({$o_filter_list})
+                {$search_sql}
 EOF;
 		} else { 
-	
-			$get_groups_bits_query = <<<EOF
-			SELECT
-			scm.mid FROM special_chat_meta AS scm
-			JOIN special_chat AS scj
-			ON scj.mid = scm.mid 
-			WHERE  gid IN ( {$gid_query_list} ) AND connected IN ({$outside})
-			{$search_sql}
-			GROUP BY mid ORDER BY mid DESC LIMIT 10
+            $get_groups_bits_query = <<<EOF
+                SELECT scm.mid AS mid 
+                  FROM special_chat_meta AS scm
+                  JOIN group_members AS gm
+                    ON gm.gid = scm.gid 
+                  JOIN special_chat AS sc
+                    ON sc.mid = scm.mid
+                 WHERE gm.uid = {$uid}
+                   AND scm.connected IN ({$outside})
+                {$search_sql}
+                GROUP BY mid 
+                ORDER BY mid DESC
+                LIMIT {$more}10
 EOF;
 		}
-        	$mysql_obj = $this->mysqli->query($get_groups_bits_query);
+
+       	$mysql_obj = $this->mysqli->query($get_groups_bits_query);
 		return $mysql_obj;
 	}
 

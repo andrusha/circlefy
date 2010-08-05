@@ -106,9 +106,9 @@ _tap.mixin({
 
         if (desc) {
             this.topic.set('text', desc.linkify() );
-            this.main.addClass('description');
+//            this.main.addClass('description');
         } else {
-            this.main.removeClass('description');
+//            this.main.removeClass('description');
         }
         return this;
     },
@@ -198,6 +198,7 @@ var _stream = _tap.register({
 		this.enableLoadMore();
 		//this.setLoadMore(id, feed, keyword);
 		this.setLoadMore('all', {}, null);
+        this.loadmore_count = 10;
         this.setStreamVars();
         this.subscribe({
             'list.item': this.setStream.bind(this),
@@ -233,10 +234,11 @@ var _stream = _tap.register({
 		1. id (string) the id of the group
 		2. feed (object) additional data about the group
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
+        4. more (int) if you want to load more
 	*/
-    changeFeed: function(id, feed, keyword) {
+    changeFeed: function(id, feed, keyword, more) {
         var self = this,
-                data = {type: null};
+            data = {type: null};
 
         switch (id) {
             case 'all': data.type = 11; break;
@@ -252,7 +254,7 @@ var _stream = _tap.register({
 			$('taptext').style.background = 'white';
 		}
 
-/*		
+		
 		if (!more) {
 			more = false;
 			data.more = 0;
@@ -260,7 +262,6 @@ var _stream = _tap.register({
 		} else { 
 			data.more = self.loadmore_count;
 		}	
-*/
         
         if (keyword) data.search = keyword;
         new Request({
