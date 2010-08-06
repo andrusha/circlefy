@@ -19,9 +19,13 @@
 		}
 
 		public function __construct($db_class='') {
+			$this->debu("Guest? " . $_SESSION['guest']);
 			if ($_SESSION['guest']==0 && $_SESSION['uid']!="") {
 				//if($this->session_started){
 				$this->debu("You are logged in! :)");
+				setcookie("GUEST_hash", "", time()-3600);
+				setcookie("GUEST_uid", "", time()-3600);
+				setcookie("GUEST_uname", "", time()-3600);
 				return 0;
 			}
 			$this->debu("You are not logged in! :(");

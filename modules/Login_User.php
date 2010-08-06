@@ -79,10 +79,10 @@ public function bypass_login(){
 	        if($num_rows == 1){
 				$_SESSION['uid'] = $uid;
 				$_SESSION['uname'] = $_COOKIE['uname']; //SLOPPY, needs to be fixed
+				$_SESSION['guest'] = 0;
 				setcookie("GUEST_hash", "", time()-3600);
 				setcookie("GUEST_uid", "", time()-3600);
 				setcookie("GUEST_uname", "", time()-3600);
-
 	            return 'bypassed';
 	        } else {
 			    setcookie("auto_login",'',time()-36000);
@@ -112,8 +112,6 @@ header('Cache-Control: no-store, no-cache, must-revalidate');
 		
 		//This is optional incase the user wants to be automatically logged in each time, he can click the 'keep me logged in' box
 		$auto_login = $_POST['auto_login'];
-		
-
 		
 		$login_status = $this->login_user($uname,$pass,$rand_hash,$auto_login);
 			$uid = $_SESSION['uid'];
@@ -189,8 +187,8 @@ public function login_user($uname,$pass,$hash,$auto_login){
 		// END SESSION UPDATE BASED ON HASH
 			
 		$_SESSION['uid'] = $uid;
-				$_SESSION['uname'] = $uname;
-				$_SESSION['guest'] = 0;
+		$_SESSION['uname'] = $uname;
+		$_SESSION['guest'] = 0;
 		
 			return 1;
 	} else{

@@ -41,7 +41,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
     <script type="text/javascript">
         window._vars = {
             uid: "<?= $_t['pcid'] ?>",
-            uname: "<?= $_SESSION['uname'] ?>Anon",
+            uname: "<?= $_SESSION['uname'] ?>",
             stream: JSON.decode('<?= json_encode($inits) ?>'),
             convos: [],
             people: JSON.decode('<?= json_encode($people) ?>'),
@@ -63,6 +63,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 	<script type="text/javascript" src="/views/scripts/members.js"></script> 
 
 	<script type="text/javascript" src="/views/scripts/search.js"></script> 
+	<script type="text/javascript" src="/views/scripts/group_mod.js"></script> 
 
 <? /*	<script type="text/javascript" src="/views/scripts/public_group.js"></script>  */ ?>
 
@@ -285,10 +286,14 @@ if ($_t['topbg'] == 'dark') {
                                        data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
                                     <?= $tap['chat_timestamp'] ?>
 									</a>
+					                <? if ($_t['enable_admin']): ?>
 									<span style='text-decoration: none; border: 0px;'> | 
 									<a href='#' data-uid="<?= $tap['uid'] ?>" class='link_promote'>promote</a> |
 									<a href='#' data-uid="<?= $tap['uid'] ?>" class='link_ban'>ban</a>
+                                    <span id="mod-status"></span>
+
 									</span>
+									<? endif; ?>
 								</p>
 
                                 <a href="#" class="tap-resp-count" title="view responses">

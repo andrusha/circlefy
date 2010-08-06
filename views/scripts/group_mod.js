@@ -1,68 +1,68 @@
 /*
-script: groups.js
-	Controls the groups interface.
+script: group_mod.js
+	Ban and Promote group members
 */
 
 // UNCOMMENT FOR PROD
 // (function(){
 
-var _template = {
-
-	templater: new Template(),
-	prepared: {},
-	map: {
-		'taps': 'template-taps',
-		'responses': 'template-responses',
-		'list.convo': 'template-list-convo',
-		'suggest.group': 'template-suggest-group'
-	},
-
-	parse: function(type, data){
-		var template = this.prepared[type];
-		if (!template){
-			template = this.map[type];
-			if (!template) return '';
-			template = this.prepared[type] = $(template).innerHTML.cleanup();
-		}
-		return this.templater.parse(template, data);
-	}
-
-};
-
-var _sidelists = _tap.register({
+var _groupmod = _tap.register({
 
 	init: function(){
 		_body.addEvents({
-			'click:relay(li.panel-item)': this.doAction.toHandler(this)
+			'click:relay(a.link_promote)': this.promoteGroupUser.toHandler(this),
+			'click:relay(a.link_ban)': this.blockGroupUser.toHandler(this)
 		});
 	},
 
-	doAction: function(el, e){
-		var link = el.getElement('a');
-		if (!link) return;
-		window.location = link.get('href');
-	}
-
-});
-
-var _list = _tap.register({
-
-	init: function(){
-		_body.addEvents({
-			'click:relay(a.leave)': this.leaveGroup.toHandler(this),
-			'click:relay(button.invite)': this.inviter.toHandler(this)
-		});
-	},
-
-	leaveGroup: function(el, e){
+	promoteGroupUser: function(el, e){
 		var parent = el.getParent('li');
 		e.preventDefault();
-		var remove = confirm('Are you sure you want to leave this group?');
+			var tmpgid = _vars.filter.gid;
+			var data_uid = parent.getData('uid');
+			var confirmPromote = confirm('Are you sure you want to promote this user to Admin? [gid=' + tmpgid + "] [uid=" + data_uid + "]");
+		if (confirmPromote) {
+			new Request({
+				url: '/AJAX/group_mod.php',
+				data: {
+					gid: _vars.filter.gid,
+					target_uid: parent.getData('uid'),
+					action: "promote"
+				},
+				onRequest: function() {
+					el.set('html','<img src="/images/icons/accept.png" /> Promoting user...');
+					el.removeClass('login-fail');
+					el.addClass('login-success');
+					
+				},
+				onSuccess: function(){
+					el.removeClass('login-success');
+					el.set('html','unpromote');
+					/*
+					alert("Obteniendo..");
+					var ms = parent.retrieve('mod-status')
+					alert(ms);
+
+					ms.set('html','<img src="/images/icons/accept.png" /> Promoting user...');
+					ms.removeClass('login-fail');
+					ms.addClass('login-success');
+					*/
+			}
+			}).send();
+		}
+	},
+
+	blockGroupUser: function(el, e){
+		var parent = el.getParent('li');
+		e.preventDefault();
+		var remove = confirm('Are you sure you want to ban this user?');
 		if (remove) {
 			new Request({
-				url: 'AJAX/leave_group.php',
+				url: '/AJAX/group_mod.php',
 				data: {
-					gid: parent.getData('id')
+					gid: _vars.filter.gid,
+					target_uid: parent.getData('uid'),
+					action: "ban"
 				},
 				onSuccess: function(){
 					parent.set('slide', {
@@ -75,11 +75,6 @@ var _list = _tap.register({
 				}
 			}).send();
 		}
-	},
-
-	inviter: function(el){
-		var symbol = el.getParent('li').getData('symbol');
-		window.location = '/invite?group=' + symbol;
 	}
 
 });
