@@ -450,9 +450,8 @@ var _convos = _tap.register({
 		3. data (obj) additional data about the active convo
 	*/
 	addConvo: function(cid, uid, data){
-		var self = this,
-			exists = this.publish('convos.updated', 'cid_' + cid).shift();
-		if (exists) return;
+		var self = this;
+		this.publish('convos.updated', 'cid_' + cid)
 		new Request({
 			url: '/AJAX/add_active.php',
 			data: {cid: cid},
