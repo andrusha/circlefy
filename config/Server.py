@@ -92,7 +92,7 @@ class MessageConnection(object):
         while True:
             data = self.conn.recv(BUF_SIZE)
             if not data:
-                thread_count['message'] += 1
+                thread_count['message'] -= 1
                 logging.info('Quiting message thread %r' % thread_count)
                 break
             self.buffer += data
@@ -299,7 +299,7 @@ class UserConnection(object):
         while True:
             data = self.conn.recv(BUF_SIZE)
             if not data:
-                thread_count['user'] += 1
+                thread_count['user'] -= 1
                 logging.info('Quiting user thread %r' % thread_count)
                 break
             self.buffer += data
@@ -559,7 +559,7 @@ class AdminConnection(object):
         while True:
             data = self.conn.recv(BUF_SIZE)
             if not data:
-                thread_count['admin'] += 1
+                thread_count['admin'] -= 1
                 logging.info('Quiting admin thread %r' % thread_count)
                 break
             self.buffer += data
