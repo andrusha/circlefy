@@ -4,11 +4,11 @@ import time
 import sys
 import random
 import fcntl
-import MySQLdb
 import memcache
 import simplejson as json
 import logging
 import eventlet
+import MySQLdb
 
 # ________________________
 #/ Written By Taso Du Val \
@@ -37,11 +37,11 @@ class ServerRoot(object):
         self.mysql_pinger_obj = MySQL_Pinger(self)
 
     def start(self):
-        api.spawn(self.admin_server)
-        api.spawn(self.user_server)
-        api.spawn(self.message_server)
-        api.spawn(self.pinger_obj)
-        api.spawn(self.mysql_pinger_obj)
+        eventlet.spawn(self.admin_server)
+        eventlet.spawn(self.user_server)
+        eventlet.spawn(self.message_server)
+        eventlet.spawn(self.pinger_obj)
+        eventlet.spawn(self.mysql_pinger_obj)
 
 #START of Message Server
 class MySQL_Pinger(object):
