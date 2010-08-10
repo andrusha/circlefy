@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
  <head>
-     <title>bridge :)</title> 
+     <title>bridge</title> 
      <script src="JSON.js"></script>
 
 <script>
@@ -30,7 +30,8 @@ function push(data) {
     }
     else {
         document.domain = topDomain;
-        parent.Orbited.singleton.XSDR.receiveCbs[id](data)
+        if (parent.Orbited.singleton.XSDR.receiveCbs[id])
+            parent.Orbited.singleton.XSDR.receiveCbs[id](data)
         try {
             document.domain = origDomain;
         }
@@ -94,10 +95,9 @@ function getNext() {
     }
     document.domain = topDomain
     var queue = parent.Orbited.singleton.XSDR.queues[id]
-    if (!queue) {
-        queue = [];
-    }
 //    alert('queue: ' + queue.length)
+    if (!queue)
+        queue = []
     var data = null
     if (queue.length > 0)
         data = queue.shift();

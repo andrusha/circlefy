@@ -1,3 +1,0 @@
-recursive-include greentest *.py *.crt *.key
-recursive-include examples *.py
-include MANIFEST.in README.twisted NEWS

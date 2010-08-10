@@ -8,13 +8,18 @@ import MySQLdb
 import memcache
 import simplejson as json
 import logging
+import eventlet
 
-#
-# Written By Taso Du Val
-# 2009-2010 tap
-#
+# ________________________
+#/ Written By Taso Du Val \
+#\      2009-2010 Tap     /
+# ------------------------
+#        \   ^__^
+#         \  (oo)\_______
+#            (__)\       )\/\
+#                ||----w |
+#                ||     ||
 
-from eventlet import api
 thread_count = {'message': 0, 'user': 0, 'admin': 0}
 BUF_SIZE = 4096
 participants = [ ]
@@ -30,6 +35,7 @@ class ServerRoot(object):
         self.message_server = MessageServer(self)
         self.pinger_obj = Pinger(self)
         self.mysql_pinger_obj = MySQL_Pinger(self)
+
     def start(self):
         api.spawn(self.admin_server)
         api.spawn(self.user_server)
@@ -72,12 +78,12 @@ class MessageServer(object):
         self.root = root
 
     def __call__(self):
-        server = api.tcp_listener(('0.0.0.0', 3333))
+        server = eventlet.listen(('0.0.0.0', 3333))
         while True:
             c = MessageConnection(self,*server.accept())
             thread_count['message'] += 1
             logging.info("Spawn message thread %r" % thread_count)
-            api.spawn(c)
+            eventlet.spawn(c)
 
 class MessageConnection(object):
     
@@ -269,12 +275,12 @@ class UserServer(object):
 
 
     def __call__(self):
-        server = api.tcp_listener(('0.0.0.0', 2222))
+        server = eventlet.listen(('0.0.0.0', 2222))
         while True:
             c = UserConnection(self, *server.accept())
             thread_count['user'] += 1
             logging.info('Spawn user thread %r' % thread_count)
-            api.spawn(c)
+            eventlet.spawn(c)
             
 class UserConnection(object):
     def __init__(self, server, conn, addr):
@@ -532,12 +538,12 @@ class AdminServer(object):
         self.root = root
 
     def __call__(self):
-        server = api.tcp_listener(('0.0.0.0', 4444))
+        server = eventlet.listen(('0.0.0.0', 4444))
         while True:
             c = AdminConnection(self, *server.accept())
             thread_count['admin'] += 1
             logging.info('Spawning admin thread %r' % thread_count)
-            api.spawn(c)
+            eventlet.spawn(c)
 
 class AdminConnection(object):
     def __init__(self, server, conn, addr):

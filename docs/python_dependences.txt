@@ -1,0 +1,5 @@
+easy_install eventlet
+easy_install python-memcached
+
+ver. eventlet >= 0.9.10
+ver. python-memcached >= 1.44

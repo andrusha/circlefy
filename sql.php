@@ -93,7 +93,7 @@ EOF;
 		@param array    key = columns, values = values  
 		return string [sql]
 		******************/
-		public function updateProfile($fname,$flname,$email,$private,$zip,$lang,$country,state,$region,$about,$town,$uname,$anonCheck,$uid) {
+		public function updateProfile($fname,$flname,$email,$private,$zip,$lang,$country,$state,$region,$about,$town,$uname,$anonCheck,$uid) {
 			
 			// You can change username only if you're a Guest User!
 			$change_uname = " t2.uname=\"$uname\", ";
