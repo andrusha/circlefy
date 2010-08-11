@@ -189,6 +189,9 @@ public function login_user($uname,$pass,$hash,$auto_login){
 		$_SESSION['uid'] = $uid;
 		$_SESSION['uname'] = $uname;
 		$_SESSION['guest'] = 0;
+		setcookie("GUEST_hash", "", time()-3600);
+		setcookie("GUEST_uid", "", time()-3600);
+		setcookie("GUEST_uname", "", time()-3600);
 		
 			return 1;
 	} else{

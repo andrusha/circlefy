@@ -309,7 +309,7 @@ input.basic.error, select.basic.error {
 
 .nav-slim a {
     color: white !important;
-    font-size: 1333 !important;
+    font-size: 13 !important;
 }
 
 #nav a {
@@ -1899,4 +1899,32 @@ ul#pending-members li {
 	border-bottom-right-radius: 10px 10px;
 	border-top-left-radius: 10px 10px;
 	border-top-right-radius: 10px 10px;
+}
+
+ul.stream .tap-from .group_mod_controls {
+	float: right;
+	text-decoration: none;
+	border: 0px;
+}
+ul.stream .tap-from .group_mod_controls a {
+	font-size: 10px;
+	text-decoration: none;
+	border: 0px;
+}
+ul.stream .tap-from .group_mod_controls a.link_promote { 	color: #008800; }
+ul.stream .tap-from .group_mod_controls a.link_promote:hover { 	color: #00AA00; border-bottom: 1px solid #009900; }
+ul.stream .tap-from .group_mod_controls a.link_ban {		color: #880000; }
+ul.stream .tap-from .group_mod_controls a.link_ban:hover {		color: #FF0000; border-bottom: 1px solid #FF0000; }
+
+
+
+ul.stream .group_mod_controls {
+	text-decoration: none;
+	border: 0px;
+}
+ul.stream .group_mod_controls a {
+	font-size: 10px;
+	text-decoration: none;
+	color: #ff0000;
+	border: 0px;
 }

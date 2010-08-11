@@ -72,6 +72,7 @@ $public_groups_topic = "This is a place where you can discover what's being said
 	<script type="text/javascript" src="/views/scripts/sidebar.js"></script>
 	<script type="text/javascript" src="/views/scripts/filter.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
+	
 </head>
 <body>
 		<? include(MODAL_SIGNUP); ?>
@@ -165,8 +166,6 @@ $public_groups_topic = "This is a place where you can discover what's being said
 
 
 
-
-
 		</div>
 
 		<div class="clarity"></div>
@@ -174,5 +173,42 @@ $public_groups_topic = "This is a place where you can discover what's being said
 
 	</div>
 	<?include(JAVASCRIPT_TEMPLATES)?>
+
+	<!-- NOTIFICATION TESTING -->	
+	<script type="text/javascript">
+	var feed = [
+		['Tap is great :D', 'testing 123 123 123'],
+		['I mean... this is going to rock :)', 'blabla <a href="http://ig.tap.info">linking</a> blabla'],
+		[':):):)', 'test 123 test 123 test 123 test 123 test 123 <b>bold bold</b>']
+	];
+
+	var randomize = function() {
+
+	// Random message from the feed
+	var item = feed.getRandom();
+	// First argument title, second message body
+	roar.alert(item[0], '' + item[1]);
+	// Get last added element and add the click event
+
+	//roar.items.getLast().addEvent('click', function() {
+	// Old school way for forcing a new window (not the best style!)
+	//window.open('http://www.smashingmagazine.com/' + item[1], 'demo')
+	//});
+	};
+
+	// Our roar instance for all our messages
+	var roar = new Roar({
+		position: 'lowerRight'
+		//, onHide: randomize
+	});
+
+	// Hey ho, lets go!
+	randomize();
+	setTimeout("randomize()", 500);
+	setTimeout("randomize()", 1600);
+
+	</script>
+	<!-- NOTIFICATION TESTING -->	
+
 </body>
 </html>
