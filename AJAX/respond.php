@@ -76,9 +76,8 @@ EOF;
 
 	function send_response($msg,$cid,$init_tapper,$first){
 		$res = $this->check_if_dupe($msg,$cid);
-                if($res)
-                        return array('dupe' => true);
-	
+        if($res)
+            return array('dupe' => true);
 	
 		$uid = $_SESSION["uid"];
 		$uname = $_SESSION["uname"];
@@ -105,34 +104,35 @@ EOF;
 				}
 			}
 		}
+
+        $this->notify_all($cid, $init_tapper);
 		
-			$small_pic = $_POST['small_pic'];
-			$small_pic = 'small_'.$small_pic;
+        $small_pic = $_POST['small_pic'];
+        $small_pic = 'small_'.$small_pic;
 
-			$action = "response";
-			$response = $msg;
-			$response = str_replace('"','\"',$response);
+        $action = "response";
+        $response = $msg;
+        $response = str_replace('"','\"',$response);
 
-			$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-			$insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'","init_tapper":"'.$init_tapper.'","pic_small":"'.$small_pic.'"}'."\r\n";
-			fwrite($fp,$insert_string);
-			fclose($fp);
+        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
+        $insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'","init_tapper":"'.$init_tapper.'","pic_small":"'.$small_pic.'"}'."\r\n";
+        fwrite($fp,$insert_string);
+        fclose($fp);
 
 		$msg = addslashes($msg);
 		$this->mysqli->real_escape_string($msg);
 		$this->mysqli->real_escape_string($cid);
 		
-                $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$cid}','{$uid}','{$uname}','{$msg}')";
-                $this->mysqli->query($resp_message_query);
+        $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$cid}','{$uid}','{$uname}','{$msg}')";
+        $this->mysqli->query($resp_message_query);
 
-			$update_active = "UPDATE active_convo SET active = 1 WHERE mid = {$cid} AND uid={$init_tapper}";
-			$this->mysqli->query($update_active);
+        $update_active = "UPDATE active_convo SET active = 1 WHERE mid = {$cid} AND uid={$init_tapper}";
+        $this->mysqli->query($update_active);
 
 		return array('success' => 1);
 	}
 	
-	private function notify_all($mid){
-
+	private function notify_all($cid, $init_tapper, $send_emails = false) {
 		/*
 		NOTE: NEED TO ADD IN THE JOIN FOR settings, to see if they actually are tracking it
 		*/
@@ -143,21 +143,34 @@ EOF;
 		FROM active_convo AS ac
 		JOIN login AS l
 		ON ac.uid = l.uid
-		WHERE ac.mid = {$mid} AND ac.active = 1 AND ac.uid != {$init_tapper}
+		WHERE ac.mid = {$cid} AND ac.active = 1 AND ac.uid != {$init_tapper}
 EOF;
 		$nofiy_all_res = $this->mysqli->query($notify_all_query);
+        
+        $users = $results = array();
+        while($res = $nofiy_all_res->fetch_assoc()) {
+            $results[] = $res;
+            $users[] = array('uid' => $res['uid'],
+                             'uname' => $res['uname']);
+        }
+
+
+        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
+        fwrite($fp, json_encode(array('cid' => $cid, 'action' => 'notify-convo-response', 'users' => $users)));
+        fclose($fp);
 
 		//For each person who is apart of the message or has the message active, send them an email
-		while($res = $nofiy_all_res->fetch_assoc()){
-			$uname = $res['uname'];
-			$fname = $res['fname'];
-			$lname = $res['lname'];
-			$email = $res['email'];
-		
-				$to = $email;
-				$subject = "{$uname} has replied to your tap.";
-					$from = "From: tap.info\r\n";
-					$body = <<<EOF
+        if ($send_emails) {
+            foreach($results as $res){
+                $uname = $res['uname'];
+                $fname = $res['fname'];
+                $lname = $res['lname'];
+                $email = $res['email'];
+            
+                $to = $email;
+                $subject = "{$uname} has replied to your tap.";
+                $from = "From: tap.info\r\n";
+                $body = <<<EOF
 {$uname} has responded to a tap you're tracking:
 
 {$uname}: {$msg}
@@ -167,8 +180,9 @@ You can respond back in real-time at http://tap.info/tap/{$mid}
 -Team Tap
 http://tap.info
 EOF;
-					mail($to,$subject,$body,$from);
-		}
+                mail($to,$subject,$body,$from);
+            }
+        }
 	}
 
 	private function notify_user($init_tapper,$msg,$uname,$cid,$email){

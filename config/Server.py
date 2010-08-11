@@ -20,6 +20,7 @@ import MySQLdb
 #                ||----w |
 #                ||     ||
 
+DEBUG = False
 thread_count = {'message': 0, 'user': 0, 'admin': 0}
 BUF_SIZE = 4096
 participants = [ ]
@@ -71,7 +72,7 @@ class Pinger(object):
         for uid in self.root.user_server.users:
             for uniq_conn in self.root.user_server.users[uid]:
                 logging.info("Ping %s" % uniq_conn)
-                uniq_conn.send_message('ping')
+                uniq_conn.send_message('ping', {})
         
 class MessageServer(object):
     def __init__(self, root):
@@ -96,19 +97,19 @@ class MessageConnection(object):
 
     def __call__(self):
         while True:
-            data = self.conn.recv(BUF_SIZE)
-            if not data:
-                thread_count['message'] -= 1
-                logging.info('Quiting message thread %r' % thread_count)
-                break
-            self.buffer += data
-            self.dispatchBuffer()
+#            with eventlet.Timeout(60) as timeout:
+                data = self.conn.recv(BUF_SIZE)
+                if not data:
+                    thread_count['message'] -= 1
+                    logging.info('Quiting message thread %r' % thread_count)
+                    break
+                self.buffer += data
+                self.dispatchBuffer()
 
     def dispatchBuffer(self):
         while '\n' in self.buffer:
-            #print  "BUFFER: %s" % ( self.buffer ) 
-            rawFrame, self.buffer = self.buffer.split('\r\n', 1)
-            #print 'Message Console:', rawFrame
+            rawFrame, self.buffer = self.buffer.split('\n', 1)
+            rawFrame = rawFrame.strip(' \r\n\t')
             try:
                 frame = json.loads(rawFrame)
             except(Exception):
@@ -124,17 +125,17 @@ class MessageConnection(object):
             for uid in uniq_uids:
                 if uid in self.server.root.user_server.users:
                     for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message(results)
+                        uniq_conn.send_message('action', results)
             self.uids = []
 
     def response_ACTION(self,cid,data,uname,init_tapper,response):
         try:
             for uid in self.server.root.user_server.channels['channel'][cid]:
                 for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message(response)
+                        uniq_conn.send_message('response', response)
             #Send response to the initial tapper to activate his active convo
             for uniq_conn in self.server.root.user_server.users[int(init_tapper)]:
-                        uniq_conn.send_message([cid,"convo"])
+                        uniq_conn.send_message('convo', {'cid': cid})
         except Exception:
             logging.error("No user '%s' subscribed to channel id %s" % (uname, cid))
             return False
@@ -143,9 +144,20 @@ class MessageConnection(object):
         try:
             for uid in self.server.root.user_server.channels['channel'][cid]:
                 for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message(response)
+                        uniq_conn.send_message('typing', response)
         except Exception:
             logging.error("No user '%s' subscribed to channel id %s" % (uname, cid))
+            return False
+
+    def notify_response_ACTION(self, cid, users):
+        try:
+            for user in users:
+                if user['uid'] in self.server.root.user_server.users:
+                    uniq_conn = self.server.root.user_server.users[ user[uid] ]
+                    response = {'cid': cid, 'uid': user['uid'], 'uname': user['uname']}
+                    uniq_conn.send_message('notify.convo.response', response)
+        except Exception:
+            logging.error("Error on user notification for channel %s" % cid)
             return False
 
     def receivedFrame(self, frame):
@@ -153,22 +165,23 @@ class MessageConnection(object):
             logging.info("Recieved frame %r" % frame)
             type = frame['action']
             cid = frame['cid']
-            data = frame['response']
-            uname = frame['uname']
 
-            if 'pic_small' in frame:
-                pic = frame['pic_small']
-            else:
-                pic = ''
+            if type in ['response', 'typing']:
+                data = frame['response']
+                uname = frame['uname']
+                pic = frame['pic_small'] if 'pic_small' in frame else ''
 
-            response = self.response_generator(cid,data,uname,type,pic)
+                response = self.response_generator(cid,data,uname,pic)
 
-            if type == 'response' and 'init_tapper' in frame:
-                init_tapper = frame['init_tapper']
-                self.response_ACTION(cid,data,uname,init_tapper,response)
+                if type == 'response' and 'init_tapper' in frame:
+                    init_tapper = frame['init_tapper']
+                    self.response_ACTION(cid,data,uname,init_tapper,response)
 
-            if type == 'typing':
-                self.typing_ACTION(cid,data,uname,response)
+                if type == 'typing':
+                    self.typing_ACTION(cid,data,uname,response)
+            elif type == 'notify-convo-response':
+                users = frame['users']
+                self.notify_response_ACTION(cid, users)
 
             return True
 
@@ -181,8 +194,8 @@ class MessageConnection(object):
         logging.error("Warning! Bad packet!")
         return False
 
-    def response_generator(self,cid,data,uname,type,pic):
-        response = [cid,data,uname,type,pic]
+    def response_generator(self,cid,data,uname,pic):
+        response = {'cid': cid, 'data': data, 'uname': uname, 'pic': pic}
         return response
 
     def bit_generator(self,matches_list):
@@ -302,14 +315,18 @@ class UserConnection(object):
         This will cause the while loop to break and will then check if the user is still in a connected state
         if he is, cleanup his connection by deleting his id out of online users, etc
         """
+
+        #setup 60 second timeout on buffer reads
         while True:
-            data = self.conn.recv(BUF_SIZE)
-            if not data:
-                thread_count['user'] -= 1
-                logging.info('Quiting user thread %r' % thread_count)
-                break
-            self.buffer += data
-            self.dispatchBuffer()
+#            with eventlet.Timeout(60) as timeout:
+                data = self.conn.recv(BUF_SIZE)
+                if not data:
+                    thread_count['user'] -= 1
+                    logging.info('Quiting user thread %r' % thread_count)
+                    break
+                self.buffer += data
+                self.dispatchBuffer()
+
         if self.state == 'connected':
             if  len(self.server.users[self.uid]) is not 1:
                 self.server.users[self.uid].remove(self)
@@ -337,10 +354,11 @@ class UserConnection(object):
     def dispatchBuffer(self):
         while '\n' in self.buffer:
             try:
-                rawFrame, self.buffer = self.buffer.split('\r\n', 1)
+                rawFrame, self.buffer = self.buffer.split('\n', 1)
+                rawFrame = rawFrame.strip(' \r\n\t')
             except(Exception):
-                continue    
-            #print rawFrame
+                continue
+
             try:
                 frame = json.loads(rawFrame)
             except(Exception):
@@ -352,14 +370,10 @@ class UserConnection(object):
         type = 'user'
         channel = str(ouid)
         if self.server.channels[type].has_key(channel):
-            if status is 0:
-                for uid in self.server.channels[type][channel]:
-                    for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message({self.push_type_minus[type]:channel})
-            if status is 1:
-                for uid in self.server.channels[type][channel]:
-                    for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message({self.push_type_add[type]:channel})
+            response_type = self.push_type_add[type] if status else self.push_type_minus[type]
+            for uid in self.server.channels[type][channel]:
+                for uniq_conn in self.server.root.user_server.users[uid]:
+                    uniq_conn.send_message(response_type, {'id': channel})
 
         userOnline_query = "UPDATE TEMP_ONLINE SET online = %s WHERE uid = %s" % (status,ouid)
         self.server.mysql_cursor.execute( userOnline_query )
@@ -418,8 +432,10 @@ class UserConnection(object):
 
             if 'uids' in frame and frame['uids']:
                 uids = self.make_unique(frame['uids'].split(',')).keys()
+            elif 'uid' in frame and frame['uid']:
+                uids = [frame['uid']]
             else:
-                logging.info("uids not in frame %r" % frame)
+                logging.info("uids/uid not in frame %r" % frame)
                 uids = [self.uid]
         
             ##This is a temp fix
@@ -474,8 +490,9 @@ class UserConnection(object):
             if type == 'user': return False
             if channel_map_new != []:
                 channel_map_string = self.join_string(channel_map_new)
+                response_type = self.push_type_add[type]
                 for uniq_conn in uid_list_add:
-                    uniq_conn.send_message({self.push_type_add[type]:channel_map_string})
+                    uniq_conn.send_message(response_type, {'id': channel_map_string})
                 logging.info("Adding %s to %s" % (type,channel_map_string))
                 self.g_functions_add[type](channel_map_string)
 
@@ -503,8 +520,9 @@ class UserConnection(object):
             if type == 'user': return False
             #Create SQL compliant string to -1 the tap in the database
             channel_map_string = self.join_string(channel_map_diff)
+            response_type = self.push_type_minus[type]
             for uniq_conn in uid_list_minus:
-                uniq_conn.send_message({self.push_type_minus[type]:channel_map_string})
+                uniq_conn.send_message(response_type, {'id': channel_map_string})
             self.g_functions_minus[type](channel_map_string)
 
     def make_unique(self,seq):
@@ -525,9 +543,9 @@ class UserConnection(object):
         channel_map_string = channel_map_string[0:-1]
         return channel_map_string
 
-    def send_message(self, data):
+    def send_message(self, type, data):
         try:
-            self.conn.send(json.dumps({'msgData': data }) + '\r\n')
+            self.conn.send(json.dumps({'type': type, 'module': 'user', 'data': data }) + '\r\n')
         except:
             pass
 
@@ -611,19 +629,18 @@ class AdminConnection(object):
         msg_data = frame
         if msg_data:
             try:
-                results = {
+                type, data = {
                 'online?' :  "%s users online" % ( len(self.server.root.user_server.users) ),
                 'online_per?' :  "%s" % ( self.connectionPerUser() ),
                 'user_stats?' :  "%s" % ( self.userStats() )
-                }[msg_data]
-                self.users['admin'].send_message(results)
+                } [msg_data]
+                self.users['admin'].send_message(type, {'result': data})
             except KeyError,e:
                 print "Bad Command!"
             
-    def send_message(self, data):
-        self.conn.send("%s" % (data) + '\r\n')
-        #JSON   self.conn.send(json.dumps({'adminData': data }) + '\r\n')
-        
+    def send_message(self, type, data):
+        self.conn.send(json.dumps({'type': type, 'module': 'admin', 'data': data}) + '\r\n')
+
 
 def clearViewers():
     #This is used to clear the viewers count in TAP_ONLINE,GROUP_ONLINE,TEMP_ONLINE so that when the server is
@@ -648,9 +665,14 @@ def clearViewers():
     mysql_conn.commit()
     
 if __name__ == "__main__":
-    logging.basicConfig(level = logging.INFO, filename = '/var/log/tap-server.log',
-        format = '%(asctime)s %(levelname)s: %(message)s', datefmt = '%H:%M:%S')
-    sys.stderr = open('/var/log/tap-server.stderr.log', 'a')
+    log_format = '%(asctime)s %(levelname)s: %(message)s'
+    log_datefmt = '%H:%M:%S'
+    if not DEBUG:
+        logging.basicConfig(level = logging.INFO, filename = '/var/log/tap-server.log',
+            format = log_format, datefmt = log_datefmt)
+    else:
+        logging.basicConfig(level = logging.INFO, format = log_format, datefmt = log_datefmt)
+    sys.stderr = open('/var/log/tap-server.stderr.log', 'a') if not DEBUG else sys.stderr
 
     root = ServerRoot()
     root.start()

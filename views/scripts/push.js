@@ -51,57 +51,34 @@ var _push = _tap.register({
 		var parsed, data, len, test;
 		raw = raw.split('\n');
 		len = raw.reverse().length;
-		while (len--){
+		while (len--) {
 			data = JSON.decode(raw[len]);
 			if (!data) continue;
 			this.publish('push.data', data);
 
-			switch (data.msgData){
-				case 'ping': continue; break;
-				case 'refresh': window.location = [window.location, '?', new Date().getTime()].join(''); break;
-			}
-			test = $try(function(){
-				return data.msgData.every(function(item){
-					return $type(item) === 'array';
-				});
-			}) || false;
-			if (!test) {
-				if (data.msgData.add_count || data.msgData.minus_count) {
-					parsed = {
-						type: (data.msgData.add_count) ? 'view_add' : 'view_minus',
-						data: (data.msgData.add_count || data.msgData.minus_count).split(',')
-					};
-				} else if (data.msgData.add_group || data.msgData.minus_group) {
-					parsed = {
-						type: (data.msgData.add_group) ? 'group_add' : 'group_minus',
-						data: (data.msgData.add_group || data.msgData.minus_group).split(',')
-					};
-				} else if (data.msgData.add_user || data.msgData.minus_user) {
-					parsed = {
-						type: (data.msgData.add_user) ? 'user_add' : 'user_minus',
-						data: (data.msgData.add_user || data.msgData.minus_user).split(',')
-					};
-				} else {
-					parsed = {
-						cid: data.msgData[0],
-						msg: data.msgData[1],
-						user: data.msgData[2],
-						pic_small: data.msgData[4],
-						type: data.msgData[3] || data.msgData[1] || ''
-					};
-				}
-			} else {
-				parsed = {
-					data: data.msgData,
-					type: 'notification'
-				};
-			}
-			switch (parsed.type) {
+            type = data.type
+            module = data.module //'user' or 'admin'
+            parsed = data.data
+
+            if (!type) {
+                type = 'notification'
+                module = 'user'
+                parsed = data
+            }
+
+            //TODO: what the heck is 'notification'?
+            switch (data.type) {
+				case 'ping':
+                    continue;
+                    break;
+				case 'refresh':
+                    window.location = [window.location, '?', new Date().getTime()].join('');
+                    break;
 				case 'typing':
-					this.publish('push.data.response.typing', [parsed.cid, parsed.user]);
+					this.publish('push.data.response.typing', [parsed.cid, parsed.uname]);
 					break;
 				case 'response':
-					this.publish('push.data.response', [parsed.cid, parsed.user, parsed.msg, parsed.pic_small]);
+					this.publish('push.data.response', [parsed.cid, parsed.uname, parsed.data, parsed.pic]);
 					break;
 				case 'convo':
 					this.publish('push.data.convo', [parsed.cid, '']);
@@ -125,9 +102,9 @@ var _push = _tap.register({
 					this.publish('push.data.user.minus', [parsed.data, -1]);
 					break;
 				case 'notification':
-					this.publish('push.data.notification', [parsed.data, 0]);
+					this.publish('push.data.notification', [parsed, 0]);
 					break;
-			}
+            }
 		}
 	}
 
@@ -138,7 +115,7 @@ var _logger = _tap.register({
 	init: function(){
 		this.subscribe({
 			'push.sent; push.data.raw': function(){
-				//console.log.apply(console, arguments);
+				console.log.apply(console, arguments);
 			}
 		});
 	}
