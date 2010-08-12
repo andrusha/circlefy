@@ -20,7 +20,7 @@ import MySQLdb
 #                ||----w |
 #                ||     ||
 
-DEBUG = False
+DEBUG = True 
 thread_count = {'message': 0, 'user': 0, 'admin': 0}
 BUF_SIZE = 4096
 participants = [ ]
@@ -152,23 +152,44 @@ class MessageConnection(object):
     def notify_response_ACTION(self, cid, users):
         try:
             for user in users:
-                if user['uid'] in self.server.root.user_server.users:
-                    uniq_conn = self.server.root.user_server.users[ user[uid] ]
-                    response = {'cid': cid, 'uid': user['uid'], 'uname': user['uname']}
-                    uniq_conn.send_message('notify.convo.response', response)
-        except Exception:
-            logging.error("Error on user notification for channel %s" % cid)
+                if int(user['uid']) in self.server.root.user_server.users:
+                    for uniq_conn in self.server.root.user_server.users[ user['uid'] ]:
+                        response = {'cid': cid, 'uname': user['uname'], 'ureal_name': user['ureal_name']}
+                        uniq_conn.send_message('notify.convo.response', response)
+        except Exception as e:
+            logging.error("Error on user notification for channel %s: %s" % (cid, e))
+            return False
+
+    def notify_tap_ACTION(self, group, users):
+        try:
+            for user in users:
+                if int(user['uid']) in self.server.root.user_server.users:
+                    for uniq_conn in self.server.root.user_server.users[ user['uid'] ]:
+                        response = {'gname': group['name'], 'greal_name': group['symbol'], 'uname': user['uname'], 'ureal_name': user['real_name']}
+                        uniq_conn.send_message('notify.new.tap', response)
+        except Exception as e:
+            logging.error("Error on user notification for channel %s: %s" % (cid, e))
+            return False
+
+    def new_follower_ACTION(self, status, uid, follower):
+        try:
+            if uid in self.server.root.user_server.users:
+                for uniq_conn in self.server.root.user_server.users[uid]:
+                    response = {'status': status, 'uname': follower['uname'], 'ureal_name': follower['ureal_name']}
+                    uniq_conn.send_message('notify.new.follower', response)
+        except Exception as e:
+            logging.error("Error on user notification for user %s: %s" % (uid, e))
             return False
 
     def receivedFrame(self, frame):
-        if 'action' in frame and 'cid' in frame and 'response' in frame and 'uname' in frame:
+        if 'action' in frame:
             logging.info("Recieved frame %r" % frame)
             type = frame['action']
-            cid = frame['cid']
-
-            if type in ['response', 'typing']:
+            
+            if type in ['response', 'typing'] and 'response' in frame and 'uname' in frame and 'cid' in frame:
                 data = frame['response']
                 uname = frame['uname']
+                cid = frame['cid']
                 pic = frame['pic_small'] if 'pic_small' in frame else ''
 
                 response = self.response_generator(cid,data,uname,pic)
@@ -179,9 +200,20 @@ class MessageConnection(object):
 
                 if type == 'typing':
                     self.typing_ACTION(cid,data,uname,response)
-            elif type == 'notify-convo-response':
+            elif type == 'notify-convo-response' and 'cid' in frame:
                 users = frame['users']
+                cid = frame['cid']
                 self.notify_response_ACTION(cid, users)
+            elif type == 'notify-channel-tap':
+                users = frame['users']
+                group = frame['group']
+                self.notify_tap_ACTION(group, users)
+            elif type == 'notify-follower' and 'uid' in frame:
+                follower = frame['follower']
+                uid = frame['uid']
+                status = frame['status']
+                self.new_follower_ACTION(status, uid, follower)
+                return True
 
             return True
 
@@ -391,7 +423,6 @@ class UserConnection(object):
         self.server.mysql_conn.commit()
 
     def minusCountChannel(self,cid_list):
-#        minus_query = "UPDATE TAP_ONLINE SET count = case when count - 1 < 0 then 0 else count - 1 end  WHERE cid IN ( %s )" % (cid_list)
         minus_query = "UPDATE TAP_ONLINE SET count = count - 1 WHERE cid IN ( %s )" % (cid_list)
         self.server.mysql_cursor.execute( minus_query )
         self.server.mysql_conn.commit()
@@ -400,7 +431,7 @@ class UserConnection(object):
         add_query = "UPDATE TAP_ONLINE SET count = count + 1 WHERE cid IN ( %s )" % (cid_list)
         self.server.mysql_cursor.execute( add_query )
         self.server.mysql_conn.commit()
-
+    
 
     def receivedFrame(self, frame):
         if self.state == "init":
@@ -418,6 +449,7 @@ class UserConnection(object):
             self.server.users[self.uid].append(self)
 
         if self.state == "connected":
+
             if 'cids' in frame and frame['cids']:
                 cids = self.make_unique(frame['cids'].split(',')).keys()
             else:

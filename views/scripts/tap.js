@@ -200,3 +200,6 @@ var _errorPopUp = new PopUp('error');
 //with number of new events in it
 var _numPopUp = new PopUp('number');
 
+var _notifications = new Roar({
+    position: 'lowerRight'
+});

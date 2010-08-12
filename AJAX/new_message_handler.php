@@ -163,9 +163,9 @@ EOF;
 
 		//Collect all uids to send message to via different criteria(s)
 		$group_uids = $this->group_matches(array_merge($parsed_symbols['groups'],$this->group_to));
-			$group_gids = $group_uids['gids'];
-			$cgroup_gids = $group_uids['cgids'];
-			$group_uids['groups'] = $group_uids['groups'];
+        $group_gids = $group_uids['gids'];
+        $cgroup_gids = $group_uids['cgids'];
+        $group_uids['groups'] = $group_uids['groups'];
 		
 		$direct_uids = $this->direct_matches($parsed_symbols['friends']);		
 		$friend_uids = $this->friend_matches();
@@ -181,11 +181,16 @@ EOF;
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
 	
 		//Return information to user in JSON
-//		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg, 'counter_data' => $this->counter_data);
 		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg);
 		$msg_and_channel_id = json_encode($msg_and_channel_id);
+
+        reset($this->meta_groups);
+        $gid = key($this->meta_groups);
+        $this->notifyAll($gid);
+
 		return $msg_and_channel_id;
 	}
+
 	//Returns the string without the first character
 	static function remove_first_char($str){
 		return substr($str, 1);
@@ -659,10 +664,34 @@ EOF;
 			);
 		}
 	return $messages;
-	}
+	} //END of function
 
+    /*
+        Notify all group members, that there is new tap
+    */
+    private function notifyAll($gid) {
+        $query = "
+           SELECT g.gname, g.symbol, l.uid, l.uname, CONCAT(l.fname, ' ', l.lname) as real_name
+             FROM group_members AS gm
+            INNER JOIN TEMP_ONLINE AS t ON t.uid = gm.uid
+            INNER JOIN groups AS g ON g.gid = gm.gid
+            INNER JOIN login AS l ON l.uid = gm.uid
+            WHERE gm.gid = {$gid} AND t.online = 1"; 
 
-	//END of function
+        $users = $group = array();
+        $result = $this->mysqli->query($query);
+        while ($row = $result->fetch_assoc()) {
+            $users[] = array('uid' => intval($row['uid']), 'uname' => $row['uname'], 'real_name' => $row['real_name']);
+            $group = array('name' => $row['gname'], 'symbol' => $row['symbol']);
+        }
+        
+        $message = json_encode(array('action' => 'notify-channel-tap', 'group' => $group, 'users' => $users));
+		$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
+		fwrite($fp, $message."\r\n");
+		fclose($fp);
+
+        return true;
+    }
 }
 //END of class
 

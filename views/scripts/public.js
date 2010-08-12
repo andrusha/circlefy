@@ -1146,5 +1146,56 @@ _live.taps = _tap.register({
 
 });
 
+/*
+ * module: _live.notifications
+ *
+ * Shows notifications on new response in your convos,
+ * new tap in followed channels,
+ * new followers & new private messages
+*/
+_live.notifications = _tap.register({
+    init: function() {
+       var self = this;
+        this.subscribe({
+            'push.data.notify.convo.response': this.newConvoResponse.bind(this),
+            'push.data.notify.new.tap': this.newTap.bind(this),
+            'push.data.notify.new.follower': this.newFollower.bind(this)
+        });
+    },
+
+    newConvoResponse: function(cid, uname, ureal_name) {
+        _notifications.alert('New response', '<a href="/user/'+uname+'">' + ureal_name + '</a> left new response in <a href="/tap/'+cid+'">conversation</a>!');
+    	
+        _notifications.items.getLast().addEvent('click', function() {
+        	document.location.replace('http://tap.info/tap/'+cid);
+    	});
+    },
+
+    newTap: function(gname, greal_name, uname, ureal_name) {
+        _notifications.alert('New tap','<a href="/user/'+uname+'">' + ureal_name + '</a> left new tap in <a href="/channel/'+gname+'">'+ greal_name + '</a> channel!');
+
+    	_notifications.items.getLast().addEvent('click', function() {
+        	document.location.replace('http://tap.info/channel/'+gname);
+    	});
+    },
+
+    newFollower: function(status, uname, ureal_name) {
+        var title = '';
+        var message = '';
+        if (status) {
+            title = 'New follower';
+            message = 'Now <a href="/user/'+uname+'">' + ureal_name + '</a> follows you everywhere in your tap journey!';
+        } else {
+            title = 'Follower gone';
+            message = '<a href="/user/'+uname+'">' + ureal_name + '</a> doesn\'t follow you anymore :(';
+        }
+        _notifications.alert(title, message);
+
+    	_notifications.items.getLast().addEvent('click', function() {
+        	document.location.replace('http://tap.info/user/'+uname);
+    	});
+    }
+});
+
 // UNCOMMENT FOR PROD
 // })();

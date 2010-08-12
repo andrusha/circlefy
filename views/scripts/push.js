@@ -104,6 +104,15 @@ var _push = _tap.register({
 				case 'notification':
 					this.publish('push.data.notification', [parsed, 0]);
 					break;
+                case 'notify.convo.response':
+                    this.publish('push.data.notify.convo.response', [parsed.cid, parsed.uname, parsed.ureal_name]);
+                    break;
+                case 'notify.new.tap':
+                    this.publish('push.data.notify.new.tap', [parsed.gname, parsed.greal_name, parsed.uname, parsed.ureal_name]);
+                    break;
+                case 'notify.new.follower':
+                    this.publish('push.data.notify.new.follower', [parsed.status, parsed.uname, parsed.ureal_name]);
+                    break;
             }
 		}
 	}

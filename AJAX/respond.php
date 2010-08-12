@@ -138,25 +138,28 @@ EOF;
 		*/
 		$notify_all_query = <<<EOF
 		SELECT 
-		ac.uid ,	
-		l.uname,l.fname,l.lname,l.email
+		ac.uid,	
+		l.uname, l.fname,l.lname,l.email
 		FROM active_convo AS ac
 		JOIN login AS l
 		ON ac.uid = l.uid
-		WHERE ac.mid = {$cid} AND ac.active = 1 AND ac.uid != {$init_tapper}
+		WHERE ac.mid = {$cid} AND ac.active = 1
 EOF;
+        // AND ac.uid != {$init_tapper}
 		$nofiy_all_res = $this->mysqli->query($notify_all_query);
-        
+var_dump($notify_all_query);
         $users = $results = array();
         while($res = $nofiy_all_res->fetch_assoc()) {
             $results[] = $res;
-            $users[] = array('uid' => $res['uid'],
-                             'uname' => $res['uname']);
+            $users[] = array('uid' => intval($res['uid']),
+                             'uname' => $res['uname'],
+                             'ureal_name' => $res['fname'] . ' ' . $res['lname']);
         }
 
 
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        fwrite($fp, json_encode(array('cid' => $cid, 'action' => 'notify-convo-response', 'users' => $users)));
+        $insert_string = json_encode(array('cid' => intval($cid), 'action' => 'notify-convo-response', 'users' => $users));
+        fwrite($fp, $insert_string."\r\n");
         fclose($fp);
 
 		//For each person who is apart of the message or has the message active, send them an email
