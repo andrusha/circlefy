@@ -497,7 +497,8 @@ var _responses = _tap.register({
         }
 
         _body.addEvents({
-            'click:relay(a.tap-resp-count)': this.setupResponse.toHandler(this)
+            'click:relay(a.tap-resp-count)': this.setupResponse.toHandler(this),
+			'click:relay(img.aggr-favicons)': this.showChannelActions.toHandler(this)
         });
 
         this.subscribe({
@@ -514,6 +515,51 @@ var _responses = _tap.register({
         var link = box.getParent('li').getElement('a.tap-resp-count');
         _body.fireEvent('click', {stop: $empty, preventDefault: $empty, target: link});
     },
+
+	/*
+	handler: showChannelActions()
+		shows a popup with channel actions:
+		- Go to channel
+		- Ban/Promote user (only if you're admin in that channel)
+	*/
+	showChannelActions: function(el, e) {
+		var parent = el.getParent('li');
+		var data_cid = parent.getData('id'),
+			data_uid = parent.getData('uid'),
+			data_uname = parent.getData('user');
+			var tmpgid = _vars.filter.gid;
+
+//		alert("cid: " + data_cid + " // uid: " + data_uid + " // uname: " + data_uname);
+//
+        var self = this;
+        new Request({
+            url: '/AJAX/group_mod.php',
+            data: {
+					cid: data_cid,
+					target_uid: data_uid,
+					gid: tmpgid,
+					action: "get_channel_actions"
+					},
+            onSuccess: function() {
+                var data = JSON.decode(this.response.text);
+				if (!data.public) return;
+
+				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
+				var feed = [
+					["Tap #" + data_cid, "<a href='/channel/" + data.public.gname  + "'>Go to channel <b>" + data.public.gname + "</b></a><br /><a href='#'>Send <b>" + data.public.uname + "</b> a Private Message</a>"],
+					["Admin","lalala"]
+				];
+				// Random message from the feed
+				var showModRoar = function(id) {
+					roar_mod.alert(feed[id][0], feed[id][1]);
+				}
+				showModRoar(0);
+				showModRoar(1);
+				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
+            }
+        }).send();
+		return this;
+	},
 
 	/*
 	handler: setupResponse()

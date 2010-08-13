@@ -269,7 +269,7 @@ if ($_t['topbg'] == 'dark') {
             <div class="body">
                 <ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
                 <?php
-                                                if (!empty($_t['user_bits'])):
+                             if (!empty($_t['user_bits'])):
                     foreach ($_t['user_bits'] as $tap):
                         ?>
                             <li id="tid_<?= $tap['cid'] ?>" class="container"
@@ -282,19 +282,25 @@ if ($_t['topbg'] == 'dark') {
 
                                 <p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '" title="online"' : 'offline' ?>">
 									
-									<? if ($_t['enable_admin']): ?>
+									<? /* if ($_t['enable_admin']): ?>
 										<span class='group_mod_controls'> 
 											<span id="mod-status_<?= $tap['cid'] ?>"></span>
 											<a href='#' data-uid="<?= $tap['uid'] ?>" class='link_promote'>promote</a> |
 											<a href='#' data-uid="<?= $tap['uid'] ?>" class='link_ban'>ban</a>
 										</span>
-									<? endif; ?>
+									<? endif; */ ?>
 
                                     <a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
                                     <a href="/tap/<?= $tap['cid'] ?>" class="date"
                                        data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
                                     <?= $tap['chat_timestamp'] ?>
 									</a>
+
+									<!-- Added Channel Favicon -->
+									<a href="#"><? /* <a href="/channel/<?=$tap['symbol']?>" /> */?>
+										<img class="aggr-favicons" src="/group_pics/<?=$tap['favicon']?>" title="<?=$tap['gname']?>" />
+									</a>
+									<!-- / Added Channel Favicon -->
 								</p>
 
                                 <a href="#" class="tap-resp-count" title="view responses">

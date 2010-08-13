@@ -62,7 +62,7 @@ $allowedModules = array(
     'good' => true,
     'rel_settings' => true,
     'add_catagory' => true,
-    'remove_catagory' => true
+	'remove_catagory' => true
 );
 
 //Check if user has a session

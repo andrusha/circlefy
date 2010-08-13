@@ -38,8 +38,8 @@ if (is_array($_t['your_groups'])) {
 
 $_SESSION['upic'] = $_t['user_pic_100'];
 
-$all_your_groups_topic = "Aggregate feed of all of the groups";
-$public_groups_topic = "This is a place where you can discover what's being said in real-time from all groups, even if you're not apart of them";
+$all_your_groups_topic = "Aggregate feed of all of the channels";
+$public_groups_topic = "This is a place where you can discover what's being said in real-time from all channels, even if you're not apart of them";
 ?>
 <!doctype html>
 <html>
@@ -90,11 +90,11 @@ $public_groups_topic = "This is a place where you can discover what's being said
 			<div id="content">
 
 				<form id="tapbox" action="" class="section active">
-					<div id="tapto">choose a group to tap</div>
+					<div id="tapto">choose a channel to tap</div>
 					<span class="counter">240</span>
 					<input id="taptext" tabindex="1" type="text" disabled="true" style="background:gray;">
 					<button id="tapsend" tabindex="3" type="submit" class="">tap!</button>
-					<span id="no-group-selected">You need to tap to a group!  Tap to a group by clicking on the group tab or searching for new groups to tap</span>
+					<span id="no-group-selected">You need to tap to a channel!  Tap to a channel by clicking on the channel tab or searching for new channels to tap</span>
 				</form>
 
 				<div id="tapstream" class="section description">
@@ -124,7 +124,7 @@ $public_groups_topic = "This is a place where you can discover what's being said
 									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
 										<?= $tap['chat_timestamp'] ?>
 									</a>
-									<a href="/channel/<?=$tap['symbol']?>" />
+									<a href="#" /><? /* <a href="/channel/<?=$tap['symbol']?>" /> */ ?>
 										<img class="aggr-favicons" src="/group_pics/<?=$tap['favicon']?>" title="<?=$tap['gname']?>" />
 									</a>
 								</p>
@@ -177,7 +177,7 @@ $public_groups_topic = "This is a place where you can discover what's being said
 	<!-- NOTIFICATION TESTING -->	
 	<script type="text/javascript">
 	var feed = [
-		['Tap is great :D', 'testing 123 123 123'],
+		['Tap is great :D', 'blablablalbalblabllba'],
 		['I mean... this is going to rock :)', 'blabla <a href="http://ig.tap.info">linking</a> blabla'],
 		[':):):)', 'test 123 test 123 test 123 test 123 test 123 <b>bold bold</b>']
 	];
@@ -204,8 +204,9 @@ $public_groups_topic = "This is a place where you can discover what's being said
 
 	// Hey ho, lets go!
 	randomize();
-	setTimeout("randomize()", 500);
-	setTimeout("randomize()", 1600);
+	setTimeout("randomize()", 1000);
+	//setTimeout("randomize()", 1600);
+
 
 	</script>
 	<!-- NOTIFICATION TESTING -->	
