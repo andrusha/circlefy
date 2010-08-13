@@ -147,7 +147,7 @@ EOF;
 EOF;
         // AND ac.uid != {$init_tapper}
 		$nofiy_all_res = $this->mysqli->query($notify_all_query);
-var_dump($notify_all_query);
+        
         $users = $results = array();
         while($res = $nofiy_all_res->fetch_assoc()) {
             $results[] = $res;

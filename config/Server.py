@@ -119,13 +119,16 @@ class MessageConnection(object):
 
     def tap_ACTION(self,msg_data):
         matches_list = self.check_new_bits(self.server.root.user_server.users,msg_data)
+        print "%s" % matches_list
+        print "%s" % self.server.root.user_server.users
         if matches_list != []:
             results = self.bit_generator(matches_list)
             uniq_uids = set(self.uids)
+            print "%s" % uniq_uids
             for uid in uniq_uids:
                 if uid in self.server.root.user_server.users:
                     for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message('action', results)
+                        uniq_conn.send_message('tap.new', results)
             self.uids = []
 
     def response_ACTION(self,cid,data,uname,init_tapper,response):
@@ -181,12 +184,24 @@ class MessageConnection(object):
             logging.error("Error on user notification for user %s: %s" % (uid, e))
             return False
 
+    def delete_tap_ACTION(gid, cid, users):
+        try:
+            for uid in users:
+                if uid in self.server.root.user_server.users:
+                    for uniq_conn in self.server.root.user_server.users[uid]:
+                        response = {'gid': gid, 'cid': cid}
+                        uniq_conn.send_message('tap.delete', response)
+        except Exception as e:
+            logging.error("Error on deleting tap in group %s: %s" % (gid, e))
+            return False
+
     def receivedFrame(self, frame):
         if 'action' in frame:
             logging.info("Recieved frame %r" % frame)
             type = frame['action']
             
             if type in ['response', 'typing'] and 'response' in frame and 'uname' in frame and 'cid' in frame:
+                #message response, init_message, typing events
                 data = frame['response']
                 uname = frame['uname']
                 cid = frame['cid']
@@ -200,6 +215,7 @@ class MessageConnection(object):
 
                 if type == 'typing':
                     self.typing_ACTION(cid,data,uname,response)
+            #everything else
             elif type == 'notify-convo-response' and 'cid' in frame:
                 users = frame['users']
                 cid = frame['cid']
@@ -213,12 +229,17 @@ class MessageConnection(object):
                 uid = frame['uid']
                 status = frame['status']
                 self.new_follower_ACTION(status, uid, follower)
-                return True
+            elif type == 'delete-tap' and 'gid' in frame and 'cid' in frame:
+                gid = frame['gid']
+                cid = frame['cid']
+                users = frame['users']
+                self.delete_tap_ACTION(gid, cid, users)
 
             return True
 
         if 'msg' in frame:
             msg_data = frame['msg'].split('\n')
+            print "%s" % msg_data
             self.tap_ACTION(msg_data)
 
             return True

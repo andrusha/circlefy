@@ -60,12 +60,6 @@ var _push = _tap.register({
             module = data.module //'user' or 'admin'
             parsed = data.data
 
-            if (!type) {
-                type = 'notification'
-                module = 'user'
-                parsed = data
-            }
-
             //TODO: what the heck is 'notification'?
             switch (data.type) {
 				case 'ping':
@@ -101,8 +95,8 @@ var _push = _tap.register({
 				case 'user_minus':
 					this.publish('push.data.user.minus', [parsed.data, -1]);
 					break;
-				case 'notification':
-					this.publish('push.data.notification', [parsed, 0]);
+				case 'tap.new':
+					this.publish('push.data.tap.new', [parsed, 0]);
 					break;
                 case 'notify.convo.response':
                     this.publish('push.data.notify.convo.response', [parsed.cid, parsed.uname, parsed.ureal_name]);
@@ -112,6 +106,9 @@ var _push = _tap.register({
                     break;
                 case 'notify.new.follower':
                     this.publish('push.data.notify.new.follower', [parsed.status, parsed.uname, parsed.ureal_name]);
+                    break;
+                case 'tap.delete':
+                    this.publish('push.data.tap.delete', [parsed.gid, parsed.cid]);
                     break;
             }
 		}

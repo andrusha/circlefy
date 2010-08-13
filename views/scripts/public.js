@@ -1110,7 +1110,7 @@ _live.taps = _tap.register({
         this.streamer = $('streamer');
         this.stream = !!(this.streamer);
         this.subscribe({
-            'push.data.notification': this.process.bind(this),
+            'push.data.tap.new': this.process.bind(this),
             'feed.changed': this.hideNotifier.bind(this),
             'stream.reload': this.showNotifier.bind(this),
             'stream.updated': this.clearPushed.bind(this)
