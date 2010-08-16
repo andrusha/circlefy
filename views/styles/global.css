@@ -1866,41 +1866,6 @@ ul#pending-members li {
   padding:5px 20px;
 }
 
-.error-message {
-    position: absolute;
-    width: 180px;
-    z-index: 13000;
-    border: 1px darkred solid;
-    background: darkred;
-	border-bottom-left-radius: 5px 5px;
-	border-bottom-right-radius: 5px 5px;
-	border-top-left-radius: 5px 5px;
-	border-top-right-radius: 5px 5px;
-}
-
-.error-title {
-    font-weight: bold;
-    font-size: 14px;
-    padding: 8px;
-    background: #610000;
-}
-
-.error-text {
-    font-size: 13px;
-    padding: 4px 8px 8px;
-    opacity: 0.6;
-}
-
-.notification-number {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-	border-bottom-left-radius: 10px 10px;
-	border-bottom-right-radius: 10px 10px;
-	border-top-left-radius: 10px 10px;
-	border-top-right-radius: 10px 10px;
-}
-
 ul.stream .tap-from .group_mod_controls {
 	float: right;
 	text-decoration: none;

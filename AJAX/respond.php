@@ -133,7 +133,8 @@ EOF;
 	}
 	
 	private function notify_all($cid, $init_tapper, $send_emails = false) {
-		/*
+	    $uid = intval($_SESSION['uid']);
+        /*
 		NOTE: NEED TO ADD IN THE JOIN FOR settings, to see if they actually are tracking it
 		*/
 		$notify_all_query = <<<EOF
@@ -148,17 +149,22 @@ EOF;
         // AND ac.uid != {$init_tapper}
 		$nofiy_all_res = $this->mysqli->query($notify_all_query);
         
+
         $users = $results = array();
+        $uname = $ureal_name = '';
         while($res = $nofiy_all_res->fetch_assoc()) {
             $results[] = $res;
-            $users[] = array('uid' => intval($res['uid']),
-                             'uname' => $res['uname'],
-                             'ureal_name' => $res['fname'] . ' ' . $res['lname']);
+            $users[] = intval($res['uid']);
+            if ($res['uid'] == $uid) {
+                $uname = $res['uname'];
+                $ureal_name = $res['fname'].' '.$res['lname'];
+            }
         }
 
-
+        $data = array('cid' => intval($cid), 'uname' => $uname, 'ureal_name' => $ureal_name);
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        $insert_string = json_encode(array('cid' => intval($cid), 'action' => 'notify-convo-response', 'users' => $users));
+        $insert_string = json_encode(
+            array('action' => 'notify.convo.response', 'users' => $users, 'data' => $data));
         fwrite($fp, $insert_string."\r\n");
         fclose($fp);
 

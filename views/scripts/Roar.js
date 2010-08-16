@@ -51,8 +51,6 @@ var Roar = new Class({
 			offset[0] = last.retrieve('roar:offset');
 			offset[1] = offset[0] + last.offsetHeight + this.options.offset;
 		}
-		var to = {'opacity': 1};
-		to[this.align.y] = offset;
 
 		var item = new Element('div', {
 			'class': this.options.className,
@@ -65,8 +63,18 @@ var Roar = new Class({
 			elements
 		);
 
-		item.setStyle(this.align.x, 0).store('roar:offset', offset[1]).set('morph', $merge({
-			unit: 'px',
+		var to = {'opacity': 1};
+        if (options.position) {
+            item.setStyle('left', options.position[0] - this.body.offsetLeft);
+            item.setStyle('top', options.position[1] - this.body.offsetTop);
+            to['opacity'] = [0.7, 1];
+        } else {
+		    to[this.align.y] = offset;
+    		item.setStyle(this.align.x, 0);
+        }
+
+        item.store('roar:offset', offset[1]).set('morph', $merge({
+            unit: 'px',
 			link: 'cancel',
 			onStart: Chain.prototype.clearChain,
 			transition: Fx.Transitions.Back.easeOut
@@ -80,6 +88,10 @@ var Roar = new Class({
 		this.items.push(item.addEvent('click', remove));
 
 		if (this.options.duration) {
+            var duration = this.options.duration;
+            if (options.duration)
+                duration = options.duration;
+
 			var over = false;
 			var trigger = (function() {
 				trigger = null;
@@ -95,6 +107,10 @@ var Roar = new Class({
 				}
 			});
 		}
+        if (options.color) {
+            //set style for roar-bg inner div (first child)
+            item.firstElementChild.setStyle('background-color', options.color);
+        }
 		item.inject(this.body).morph(to);
 		return this.fireEvent('onShow', [item, this.items.length]);
 	},
@@ -120,12 +136,13 @@ var Roar = new Class({
 		if ($type(this.position) == 'string') {
 			var position = {x: 'center', y: 'center'};
 			this.align = {x: 'left', y: 'top'};
-			if ((/left|west/i).test(this.position)) position.x = 'left';
+
+            if ((/left|west/i).test(this.position)) position.x = 'left';
 			else if ((/right|east/i).test(this.position)) this.align.x = position.x = 'right';
 			if ((/upper|top|north/i).test(this.position)) position.y = 'top';
 			else if ((/bottom|lower|south/i).test(this.position)) this.align.y = position.y = 'bottom';
 			this.position = position;
-		}
+        }
 		this.body = new Element('div', {'class': 'roar-body'}).inject(document.body);
 		if (Browser.Engine.trident4) this.body.addClass('roar-body-ugly');
 		this.moveTo = this.body.setStyles.bind(this.body);

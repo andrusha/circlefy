@@ -147,53 +147,24 @@ class MessageConnection(object):
         try:
             for uid in self.server.root.user_server.channels['channel'][cid]:
                 for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message('typing', response)
+                    uniq_conn.send_message('typing', response)
         except Exception:
             logging.error("No user '%s' subscribed to channel id %s" % (uname, cid))
             return False
 
-    def notify_response_ACTION(self, cid, users):
-        try:
-            for user in users:
-                if int(user['uid']) in self.server.root.user_server.users:
-                    for uniq_conn in self.server.root.user_server.users[ user['uid'] ]:
-                        response = {'cid': cid, 'uname': user['uname'], 'ureal_name': user['ureal_name']}
-                        uniq_conn.send_message('notify.convo.response', response)
-        except Exception as e:
-            logging.error("Error on user notification for channel %s: %s" % (cid, e))
-            return False
+        return False
 
-    def notify_tap_ACTION(self, group, users):
+    def sendToUsers(self, users, event, message):
         try:
-            for user in users:
-                if int(user['uid']) in self.server.root.user_server.users:
-                    for uniq_conn in self.server.root.user_server.users[ user['uid'] ]:
-                        response = {'gname': group['name'], 'greal_name': group['symbol'], 'uname': user['uname'], 'ureal_name': user['real_name']}
-                        uniq_conn.send_message('notify.new.tap', response)
-        except Exception as e:
-            logging.error("Error on user notification for channel %s: %s" % (cid, e))
-            return False
-
-    def new_follower_ACTION(self, status, uid, follower):
-        try:
-            if uid in self.server.root.user_server.users:
-                for uniq_conn in self.server.root.user_server.users[uid]:
-                    response = {'status': status, 'uname': follower['uname'], 'ureal_name': follower['ureal_name']}
-                    uniq_conn.send_message('notify.new.follower', response)
-        except Exception as e:
-            logging.error("Error on user notification for user %s: %s" % (uid, e))
-            return False
-
-    def delete_tap_ACTION(gid, cid, users):
-        try:
+            server_users = self.server.root.user_server.users
             for uid in users:
-                if uid in self.server.root.user_server.users:
-                    for uniq_conn in self.server.root.user_server.users[uid]:
-                        response = {'gid': gid, 'cid': cid}
-                        uniq_conn.send_message('tap.delete', response)
+                if uid in server_users:
+                    for uniq_conn in server_users[uid]:
+                        uniq_conn.send_message(event, message)
         except Exception as e:
-            logging.error("Error on deleting tap in group %s: %s" % (gid, e))
+            logging.error("Can't send message %s to %s because of %s" % (message, users, e))
             return False
+        return True
 
     def receivedFrame(self, frame):
         if 'action' in frame:
@@ -216,24 +187,8 @@ class MessageConnection(object):
                 if type == 'typing':
                     self.typing_ACTION(cid,data,uname,response)
             #everything else
-            elif type == 'notify-convo-response' and 'cid' in frame:
-                users = frame['users']
-                cid = frame['cid']
-                self.notify_response_ACTION(cid, users)
-            elif type == 'notify-channel-tap':
-                users = frame['users']
-                group = frame['group']
-                self.notify_tap_ACTION(group, users)
-            elif type == 'notify-follower' and 'uid' in frame:
-                follower = frame['follower']
-                uid = frame['uid']
-                status = frame['status']
-                self.new_follower_ACTION(status, uid, follower)
-            elif type == 'delete-tap' and 'gid' in frame and 'cid' in frame:
-                gid = frame['gid']
-                cid = frame['cid']
-                users = frame['users']
-                self.delete_tap_ACTION(gid, cid, users)
+            elif ('users' in frame) and ('data' in frame):
+                self.sendToUsers(frame['users'], type, frame['data'])
 
             return True
 

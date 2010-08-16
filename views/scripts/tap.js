@@ -141,65 +141,10 @@ var _dater = _tap.register({
 });
 
 /*
-global: PopUp
-    Manage popups, created from template
-*/
-var PopUp = new Class({
-
-    initialize: function (templateName) {
-        this.templateName = templateName;
-        this.mapping = {};
-    },
-
-    /*
-    method: show
-        Creates and shows popup with animation
-
-        args:
-        1. Element poup relative to
-        2, 3.
-    */
-    show: function (elem, title, text) {
-        if (this.mapping[elem])
-            this.mapping[elem].destroy();
-
-        var html = Elements.from(_template.parse(this.templateName, {'text': text, 'title': title}))[0];
-        html.injectInside(document.body); //inject needs to know popup size
-
-        var coord = elem.getCoordinates();
-        html.setStyles({
-            left: (elem.offsetLeft + coord.width) - html.offsetWidth/2,
-            top: coord.top - html.offsetHeight,
-            visibility: 'visible',
-            opacity: 0
-        });
-        
-        html.fade(0.9);
-        this.mapping[elem] = html;
-    },
-
-    /*
-    method: hide
-        Hides popup with animation, doesn't delete it from html
-
-        args:
-        1. Element popup relative to
-    */
-    hide: function (elem) {
-        if (!this.mapping[elem])
-            return;
-
-        this.mapping[elem].fade('out');
-    }
-});
-
-//local: error popups
-var _errorPopUp = new PopUp('error');
-
-//local: sidebur popups
-//with number of new events in it
-var _numPopUp = new PopUp('number');
-
+ * module: _notifications
+ *
+ * Uses to notify user about some events/errors
+ */
 var _notifications = new Roar({
     position: 'lowerRight'
 });

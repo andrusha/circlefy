@@ -186,7 +186,7 @@ EOF;
 
         reset($this->meta_groups);
         $gid = key($this->meta_groups);
-        $this->notifyAll($gid);
+        $this->notifyAll($gid, $uid);
 
 		return $msg_and_channel_id;
 	}
@@ -669,7 +669,7 @@ EOF;
     /*
         Notify all group members, that there is new tap
     */
-    private function notifyAll($gid) {
+    private function notifyAll($gid, $tapper_uid) {
         $query = "
            SELECT g.gname, g.symbol, l.uid, l.uname, CONCAT(l.fname, ' ', l.lname) as real_name
              FROM group_members AS gm
@@ -679,13 +679,20 @@ EOF;
             WHERE gm.gid = {$gid} AND t.online = 1"; 
 
         $users = $group = array();
+        $uname = $ureal_name = '';
         $result = $this->mysqli->query($query);
         while ($row = $result->fetch_assoc()) {
-            $users[] = array('uid' => intval($row['uid']), 'uname' => $row['uname'], 'real_name' => $row['real_name']);
+            $users[] = intval($row['uid']);
             $group = array('name' => $row['gname'], 'symbol' => $row['symbol']);
+            if ($row['uid'] == $tapper_uid) {
+                $uname = $row['uname'];
+                $ureal_name = $row['real_name'];
+            }
         }
-        
-        $message = json_encode(array('action' => 'notify-channel-tap', 'group' => $group, 'users' => $users));
+
+
+        $data = array('gname' => $group['name'], 'greal_name' => $group['symbol'], 'uname' => $uname, 'ureal_name' => $ureal_name);
+        $message = json_encode(array('action' => 'notify.tap.new', 'users' => $users, 'data' => $data));
 		$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
 		fwrite($fp, $message."\r\n");
 		fclose($fp);

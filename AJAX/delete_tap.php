@@ -16,7 +16,7 @@ $uid = $_SESSION['uid'];
 $cid = $_POST['cid'];
 
 if (intval($uid) && intval($cid)) {
-    $instancae = new tap_deleter(intval($uid));
+    $instance = new tap_deleter(intval($uid));
     echo $instance->delete(intval($cid));
 } else {
     echo FUCKED_UP;
@@ -110,8 +110,9 @@ class tap_deleter {
             $users[] = intval($res['uid']);
         }
 
-        $message = json_encode(array('action' => 'delete-tap', 'gid' => intval($gid),
-                                     'cid' => intval($cid), 'users' => $users));
+        $data = array('gid' => intval($gid), 'cid' => intval($cid));
+        $message = json_encode(array('action' => 'tap.delete', 'data' => $data,
+                                     'users' => $users));
 
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         fwrite($fp, $message."\r\n");

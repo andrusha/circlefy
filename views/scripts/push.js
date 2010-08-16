@@ -61,7 +61,7 @@ var _push = _tap.register({
             parsed = data.data
 
             //TODO: what the heck is 'notification'?
-            switch (data.type) {
+            switch (type) {
 				case 'ping':
                     continue;
                     break;
@@ -98,18 +98,8 @@ var _push = _tap.register({
 				case 'tap.new':
 					this.publish('push.data.tap.new', [parsed, 0]);
 					break;
-                case 'notify.convo.response':
-                    this.publish('push.data.notify.convo.response', [parsed.cid, parsed.uname, parsed.ureal_name]);
-                    break;
-                case 'notify.new.tap':
-                    this.publish('push.data.notify.new.tap', [parsed.gname, parsed.greal_name, parsed.uname, parsed.ureal_name]);
-                    break;
-                case 'notify.new.follower':
-                    this.publish('push.data.notify.new.follower', [parsed.status, parsed.uname, parsed.ureal_name]);
-                    break;
-                case 'tap.delete':
-                    this.publish('push.data.tap.delete', [parsed.gid, parsed.cid]);
-                    break;
+                default:
+                    this.publish('push.data.'+type, [parsed]);
             }
 		}
 	}

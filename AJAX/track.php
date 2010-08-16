@@ -75,11 +75,12 @@ EOF;
         $query = "
             SELECT uname, CONCAT(fname, ' ', lname) AS real_name
               FROM login
-             WHERE uid = {$uid}";
+             WHERE uid = {$uid}
+             LIMIT 1";
         $result = $this->mysqli->query($query)->fetch_assoc();
-        $user = array('uname' => $result['uname'], 'ureal_name' => $result['real_name']);
-        $message = json_encode(array('action' => 'notify-follower', 'uid' => intval($fuid),
-                                     'status' => $status, 'follower' => $user));
+        $data = array('status' => $status, 'uname' => $result['uname'], 'ureal_name' => $result['real_name']);
+        $message = json_encode(array('action' => 'notify.follower', 'users' => array(intval($fuid)),
+                                     'data' => $data));
 
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         fwrite($fp, $message."\r\n");

@@ -532,6 +532,7 @@ var _responses = _tap.register({
 //		alert("cid: " + data_cid + " // uid: " + data_uid + " // uname: " + data_uname);
 //
         var self = this;
+        var elem = el;
         new Request({
             url: '/AJAX/group_mod.php',
             data: {
@@ -543,18 +544,19 @@ var _responses = _tap.register({
             onSuccess: function() {
                 var data = JSON.decode(this.response.text);
 				if (!data.public) return;
-
-				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
+				
+                /* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
 				var feed = [
-					["Tap #" + data_cid, "<a href='/channel/" + data.public.gname  + "'>Go to channel <b>" + data.public.gname + "</b></a><br /><a href='#'>Send <b>" + data.public.uname + "</b> a Private Message</a>"],
-					["Admin","lalala"]
+					["Tap #" + data_cid, "<a href='/channel/" + data.public.gname  + "'>Go to channel <b>" + data.public.gname + "</b></a><br /><a href='#'>Send <b>" + data.public.uname + "</b> a Private Message</a>"]
 				];
 				// Random message from the feed
 				var showModRoar = function(id) {
-					roar_mod.alert(feed[id][0], feed[id][1]);
+					_notifications.alert(feed[id][0], feed[id][1],
+                        { position: [elem.offsetLeft, elem.offsetTop], 
+                          color: 'darkgreen',
+                          duration: 5000});
 				}
 				showModRoar(0);
-				showModRoar(1);
 				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
             }
         }).send();
@@ -673,10 +675,10 @@ var _responses = _tap.register({
             'keydown': function(e) {
                 var outOfLimit = this.get('value').length >= limit;
                 if (outOfLimit && !allowed[e.key]) {
-                    _errorPopUp.show(chatbox,'Error' , 'Your message is too long');
+                    _notifications.alert('Error', 'Your message is too long', {color: 'darkred'});
                     return e.stop();
                 } else if (!outOfLimit) {
-                    _errorPopUp.hide(chatbox);
+                    //all Ok guys, we can hide notification, but no need
                 }
             },
             'keypress': function() {
@@ -686,7 +688,6 @@ var _responses = _tap.register({
                 var length = this.get('value').length,
                         count = limit - length;
                 if (e.key == 'enter' && !this.isEmpty()) {
-                    _errorPopUp.hide(chatbox);
                     return self.sendResponse(chatbox, counter);
                 }
                 counter.set('text', count);
@@ -1111,6 +1112,7 @@ _live.taps = _tap.register({
         this.stream = !!(this.streamer);
         this.subscribe({
             'push.data.tap.new': this.process.bind(this),
+            'push.data.tap.delete': this.deleteTap.bind(this),
             'feed.changed': this.hideNotifier.bind(this),
             'stream.reload': this.showNotifier.bind(this),
             'stream.updated': this.clearPushed.bind(this)
@@ -1123,6 +1125,21 @@ _live.taps = _tap.register({
             self.hideNotifier();
         });
         if (this.streamer) this.streamer.addEvent('click', this.toggleNotifier.toHandler(this));
+    },
+
+    deleteTap: function(data) {
+        gid = data['gid'];
+        cid = data['cid'];
+
+        var tap = $('tid_'+cid);
+        if (!tap)
+            return;
+        
+        var body = tap.getElement('p.tap-body');
+        body.set('text', 'This tap deleted');
+        tap.addClass('deleted');
+
+        self.publish('tap.deleted', [cid]);
     },
 
     process: function(data) {
@@ -1204,36 +1221,56 @@ _live.notifications = _tap.register({
        var self = this;
         this.subscribe({
             'push.data.notify.convo.response': this.newConvoResponse.bind(this),
-            'push.data.notify.new.tap': this.newTap.bind(this),
-            'push.data.notify.new.follower': this.newFollower.bind(this)
+            'push.data.notify.tap.new': this.newTap.bind(this),
+            'push.data.notify.follower': this.newFollower.bind(this)
         });
     },
 
-    newConvoResponse: function(cid, uname, ureal_name) {
-        _notifications.alert('New response', '<a href="/user/'+uname+'">' + ureal_name + '</a> left new response in <a href="/tap/'+cid+'">conversation</a>!');
+    newConvoResponse: function(data) {
+        cid = data['cid'];
+        uname = data['uname'];
+        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+
+        _notifications.alert('New response',
+            '<a href="/user/'+uname+'">' + ureal_name + 
+            '</a> left new response in <a href="/tap/'+cid+'">conversation</a>!');
     	
         _notifications.items.getLast().addEvent('click', function() {
         	document.location.replace('http://tap.info/tap/'+cid);
     	});
     },
 
-    newTap: function(gname, greal_name, uname, ureal_name) {
-        _notifications.alert('New tap','<a href="/user/'+uname+'">' + ureal_name + '</a> left new tap in <a href="/channel/'+gname+'">'+ greal_name + '</a> channel!');
+    newTap: function(data) {
+        gname = data['gname'];
+        greal_name = data['greal_name'];
+        uname = data['uname'];
+        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+
+        _notifications.alert('New tap',
+            '<a href="/user/'+uname+'">' + ureal_name +
+            '</a> left new tap in <a href="/channel/'+gname+'">'+
+            greal_name + '</a> channel!');
 
     	_notifications.items.getLast().addEvent('click', function() {
         	document.location.replace('http://tap.info/channel/'+gname);
     	});
     },
 
-    newFollower: function(status, uname, ureal_name) {
+    newFollower: function(data) {
+        status = data['status'];
+        uname = data['uname'];
+        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+
         var title = '';
         var message = '';
         if (status) {
             title = 'New follower';
-            message = 'Now <a href="/user/'+uname+'">' + ureal_name + '</a> follows you everywhere in your tap journey!';
+            message = 'Now <a href="/user/'+uname+'">' + ureal_name +
+                '</a> follows you everywhere in your tap journey!';
         } else {
             title = 'Follower gone';
-            message = '<a href="/user/'+uname+'">' + ureal_name + '</a> doesn\'t follow you anymore :(';
+            message = '<a href="/user/'+uname+'">' + ureal_name +
+                '</a> doesn\'t follow you anymore :(';
         }
         _notifications.alert(title, message);
 
