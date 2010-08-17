@@ -456,3 +456,11 @@ float:left;
 #taplogin li{
 overflow:hidden;
 }
+
+.mod-ban-user {
+	display:		inline-block;
+	padding-left:	20px;
+	line-height:	18px;
+	background:		url("/images/icons/delete.png") center left no-repeat;
+	font-weight: 	bold;
+}

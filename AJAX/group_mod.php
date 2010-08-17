@@ -54,10 +54,14 @@ EOF;
 		}
 
 		function get_channel_actions($gid, $target_uid, $cid) {
+			$client_uid = $_SESSION["uid"];
+
 			// Parte 1: PUBLIC. Let's generate this links:
 			// 1. Go to channel (get $gid channel gname)
 			// 2. Go to user profile (get $target_uid uname)
-//SELECT l.uname AS myuname, g.gname as mygname FROM login l, groups g WHERE l.uid = $target_uid AND g.gid = $gid;
+			
+			$deletepermission = "no";	// At first, we won't show the DELETE option
+
 			$get_info = "SELECT l.uname AS myuname FROM login l WHERE l.uid = $target_uid;";
 			$get_info_res = $this->mysqli->query($get_info);
 			$row = $get_info_res->fetch_assoc();
@@ -65,32 +69,46 @@ EOF;
 
 			// If we don't know the GID, we find it using the CID:
 			if ($gid) {
-				$get_infochan = "SELECT g.gname AS mygname, g.symbol as mysymbol FROM groups g WHERE g.gid = $gid;";
+				$get_infochan = "SELECT g.gid AS mygid, g.gname AS mygname, g.symbol as mysymbol FROM groups g WHERE g.gid = $gid;";
 			} else {
 				$get_infochan =<<<EOF
-SELECT g.gname AS mygname, g.symbol as mysymbol FROM groups g 
+SELECT g.gid AS mygid, g.gname AS mygname, g.symbol as mysymbol FROM groups g 
 LEFT JOIN special_chat_meta s ON g.gid = s.gid
 WHERE s.mid = '$cid' AND s.gid IS NOT NULL;
 EOF;
 			}
 				$get_infochan_res = $this->mysqli->query($get_infochan);
 				$rowchan = $get_infochan_res->fetch_assoc();
+
 				$channelname = $rowchan['mygname'];
 				$channelsymbol = $rowchan['mysymbol'];
+				$gid = $rowchan['mygid'];
 
-			//$channelname = $row['mygname'];
+				// If $client_uid owns this tap, he'll be able to delete it :)
+				$ownership_q = "SELECT uid FROM special_chat s WHERE s.mid = '$cid' AND s.uid='$client_uid';";
+				$ownership_res = $this->mysqli->query($ownership_q);
+				if ($ownership_res->num_rows) {
+					$deletepermission = "owner";
+				}
+
 
 			// Part 2: ADMIN. If $_SESSION['uid'] is admin on $gid...:
 			// 1. Ban $target_uid from $gid
 			// 2. Promote $target_uid to Admin in $gid
-			$is_admin = $this->check_if_admin($gid,$admin_uid);
+			$is_admin = $this->check_if_admin($gid,$client_uid);
 			if (!$is_admin) {
 				$var_admin = array();
 			} else {
 				// Do the logic...
+				// ban, promote, delete
+
+				//if ($deletepermission=="no") $deletepermission = "admin";
+				$deletepermission = "admin";
 
 				$var_admin = array("test" => true);
 			}
+
+			sleep(1);
 
 			return array(
 				'public' => array(
@@ -98,7 +116,10 @@ EOF;
 					'chansymbol' => "$channelsymbol", 
 					'uname' => "$username"
 				), 
-				'admin' => $var_admin
+				'admin' => $var_admin,
+				'options' => array(
+					'deletepermission' => $deletepermission
+				)
 			);
 			
 		}

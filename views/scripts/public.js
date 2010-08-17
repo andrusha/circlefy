@@ -498,7 +498,8 @@ var _responses = _tap.register({
 
         _body.addEvents({
             'click:relay(a.tap-resp-count)': this.setupResponse.toHandler(this),
-			'click:relay(img.aggr-favicons)': this.showChannelActions.toHandler(this)
+			'click:relay(img.aggr-favicons)': this.showChannelActions.toHandler(this),
+			'click:relay(a.mod-ban-user)': this.banUser.toHandler(this)
         });
 
         this.subscribe({
@@ -516,6 +517,10 @@ var _responses = _tap.register({
         _body.fireEvent('click', {stop: $empty, preventDefault: $empty, target: link});
     },
 
+	banUser: function(el, e) {
+		alert(el.getData('targetuid'));
+	 },
+
 	/*
 	handler: showChannelActions()
 		shows a popup with channel actions:
@@ -528,6 +533,12 @@ var _responses = _tap.register({
 			data_uid = parent.getData('uid'),
 			data_uname = parent.getData('user');
 			var tmpgid = _vars.filter.gid;
+		
+		_notifications.alert("Please wait :)", "Loading tap options... <img src='images/ajax_loading.gif'>",
+			{ position: [el.offsetLeft-272, el.offsetTop-4], 
+			  color: 'black',
+			  duration: 5000});
+		var loadingPopup = _notifications.items.getLast();
 
 //		alert("cid: " + data_cid + " // uid: " + data_uid + " // uname: " + data_uname);
 //
@@ -544,19 +555,44 @@ var _responses = _tap.register({
             onSuccess: function() {
                 var data = JSON.decode(this.response.text);
 				if (!data.public) return;
+				var t_uname = data.public.uname;
+				var t_gname = data.public.gname;
+				var t_symbol = data.public.chansymbol;
+				var t_delete_permission = data.options.deletepermission;
 				
-                /* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
-				var feed = [
-					["Tap #" + data_cid, "<a href='/channel/" + data.public.gname  + "'>Go to channel <b>" + data.public.gname + "</b></a><br /><a href='#'>Send <b>" + data.public.uname + "</b> a Private Message</a>"]
-				];
-				// Random message from the feed
-				var showModRoar = function(id) {
-					_notifications.alert(feed[id][0], feed[id][1],
-                        { position: [elem.offsetLeft, elem.offsetTop], 
-                          color: 'darkgreen',
-                          duration: 5000});
+				var html_user_add = "", html_admin_add = "";
+				if (t_delete_permission=="owner") {
+					html_user_add = "<br /><a href='#'>Delete this tap</a>";
+				} else if (t_delete_permission=="admin") {
+					//html_admin_add = "<br />Delete tap";
 				}
-				showModRoar(0);
+
+				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
+
+				var txtPopup = "asdasd";
+				var txtTitle = "Tap #" + data_cid;
+
+				if (data.admin.test) {
+					var adminOptions = "<ul class='adminOptions'><li><a href='#' data-targetuid='99' class='mod-ban-user'>Ban <b>" + t_uname + "</b> from <b>"+t_gname+"</b></a></li><li><a href='#'>Promote <b>"+t_uname+"</b> to admin</li></li><a href='#'>Delete this tap</a></li></ul>";
+					txtPopup = "<b>Admin Options</b>" + adminOptions + "<hr> " + txtPopup;
+				}
+
+				var feed = [
+					[, "<a href='/channel/" + t_symbol  + "'>Go to channel <b>" + t_gname + "</b></a><br /><a href='#'>Send <b>" + t_uname + "</b> a Private Message</a>"+html_user_add],
+					["Admin Options",]
+				];
+
+				_notifications.remove(loadingPopup);
+
+				_notifications.alert(txtTitle, txtPopup, 
+					{ position: [el.offsetLeft-272, el.offsetTop-4], 
+					  color: 'black',
+					  duration: 5000});
+
+				/* showModRoar(0,'black'); */				
+				/* if (data.admin.test) {
+					showModRoar(1,'black');
+				} */
 				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
             }
         }).send();
