@@ -17,12 +17,14 @@ class openGraph {
 		  'secret' => FBAPPSECRET,
 		  'cookie' => true,
 		));
+        $extended_permissions = array(
+            'ext_perm'=>'read_stream'
+        );
 		$this->session = $this->facebook->getSession();
 		//var_dump($this->session);
 		if(!is_null($this->session)){
 			$me = null;
 			if ($this->session) {
-
 				try{
 					$this->uid = $this->facebook->getUser();
 					$this->me = $this->facebook->api('/me');
@@ -31,18 +33,25 @@ class openGraph {
 					//error_log($e);
 				}
 			}else{
-				$this->loginUrl = $this->facebook->getLoginUrl();
 				$this->logoutUrl = $this->facebook->getLogoutUrl();
 			}
 		}else{
 			$this->session = false;
-			$this->loginUrl = $this->facebook->getLoginUrl();
+			
 		}
+        $this->loginUrl = $this->facebook->getLoginUrl($extended_permissions);
+        //var_dump($this->loginUrl);
+        //exit;
 	}
 
 	public function getInterests(){
+        
+        
 		if($this->session){
-			$interests = $this->facebook->api('/me/groups');
+			$interests = $this->facebook->api('/me/interests');
+            
+            //var_dump($interests);
+            //exit;
 			$arr_int = array();
 			foreach($this->me['work'] as $work){
 				$arr_int[] = $work['employer']['name'];

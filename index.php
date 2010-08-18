@@ -37,7 +37,8 @@ $allowedPages = array(
 		'people'=>true,
 		'settings'=>true,
 		'confirm'=>true,
-		'user'=>true
+		'user'=>true,
+        'fb'=>true
 	);
 
 if (isset($allowedPages[$_GET['page']]) && $allowedPages[$_GET['page']]) {
