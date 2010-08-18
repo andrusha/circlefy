@@ -4,9 +4,13 @@
  */
 	$usage = <<<EOF
 Usage:
-	gid: id of the group
+	gid: id of the channel
 	uid: id of the user to ban/promote
-	action: 1=BAN , 2=UNBAN , 3=PROMOTE , 4=UNPROMOTE(?)
+	action: ban , unban , promote , unpromote
+
+	cid: id of the tap
+	gid: channel of the tap [optional]
+	action: get_channel_actions
 EOF;
 
 	session_start();
@@ -67,16 +71,23 @@ EOF;
 			$row = $get_info_res->fetch_assoc();
 			$username = $row['myuname'];
 
+			/*
 			// If we don't know the GID, we find it using the CID:
 			if ($gid) {
 				$get_infochan = "SELECT g.gid AS mygid, g.gname AS mygname, g.symbol as mysymbol FROM groups g WHERE g.gid = $gid;";
 			} else {
+			 */
+
+			// OK, now we're ALWAYS going to look for GID based on CID:
 				$get_infochan =<<<EOF
 SELECT g.gid AS mygid, g.gname AS mygname, g.symbol as mysymbol FROM groups g 
 LEFT JOIN special_chat_meta s ON g.gid = s.gid
 WHERE s.mid = '$cid' AND s.gid IS NOT NULL;
 EOF;
-			}
+
+			/* } */
+
+
 				$get_infochan_res = $this->mysqli->query($get_infochan);
 				$rowchan = $get_infochan_res->fetch_assoc();
 
@@ -100,12 +111,34 @@ EOF;
 				$var_admin = array();
 			} else {
 				// Do the logic...
-				// ban, promote, delete
 
+				// SHOW BAN OR UNBAN LINK
+				$ban_q = "SELECT abuid FROM block_group WHERE gid='${gid}' AND buid='${target_uid}';";
+				$ban_res = $this->mysqli->query($ban_q);
+				$banned = ($ban_res->num_rows) ? true : false;
+
+				// SHOW PROMOTE OR UNPROMOTE LINK
+				$promoted = false;
+				$prom_q = "SELECT admin FROM group_members WHERE gid='${gid}' AND uid='${target_uid}';";
+				$prom_res = $this->mysqli->query($prom_q);
+				if ($prom_res->num_rows) {
+					$prom_row = $prom_res->fetch_assoc();
+					if ($prom_row['admin']=="1") $promoted = true;
+				}
+
+				// SHOW DELETE LINK
 				//if ($deletepermission=="no") $deletepermission = "admin";
 				$deletepermission = "admin";
 
-				$var_admin = array("test" => true);
+				$ban_action 	= $banned	? "unban" : "ban";
+				$prom_action 	= $promoted	? "unpromote" : "promote";
+
+				if ($client_uid == $target_uid) {
+					// We don't wanna allow you to UN/BAN or UN/PROMOTE yourself!:
+					$ban_action = "";
+					$prom_action = "";
+				}
+				$var_admin = array("moderator" => true, "ban_action" => $ban_action, "prom_action" => $prom_action);
 			}
 
 			sleep(1);
@@ -113,6 +146,7 @@ EOF;
 			return array(
 				'public' => array(
 					'gname' => "$channelname",
+					'gid' => "$gid",
 					'chansymbol' => "$channelsymbol", 
 					'uname' => "$username"
 				), 

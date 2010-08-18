@@ -64,14 +64,21 @@ var Roar = new Class({
 		);
 
 		var to = {'opacity': 1};
-        if (options.position) {
-            item.setStyle('left', options.position[0] - this.body.offsetLeft);
-            item.setStyle('top', options.position[1] - this.body.offsetTop);
-            to['opacity'] = [0.7, 1];
-        } else {
-		    to[this.align.y] = offset;
-    		item.setStyle(this.align.x, 0);
-        }
+
+		// I added this check to support both Absolute Position and Left/Right/Top/Bottom Position. [Ignacio]
+		var isArray = options.position instanceof Array;
+        if (isArray) {
+			// Andrew's absolute position code ---
+			if (options.position) {
+	            item.setStyle('left', options.position[0] - this.body.offsetLeft);
+	            item.setStyle('top', options.position[1] - this.body.offsetTop);
+	            to['opacity'] = [0.7, 1];
+	        }
+		} else {
+			// Original position code ---
+			to[this.align.y] = offset;
+			item.setStyle(this.align.x, 0);
+		}
 
         item.store('roar:offset', offset[1]).set('morph', $merge({
             unit: 'px',

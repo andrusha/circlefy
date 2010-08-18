@@ -56,25 +56,26 @@ class tap_deleter {
         if ($this->mysqli->query('START TRANSACTION') !== True)
             throw new Exception("Guys, we fucked up, transactions doesn't work 8(");
 
-        $nice = true;
+		$nice = true;
+		$optional = true;
 
         //delete tap
-        $nice &&= $this->mysqli->query("DELETE FROM special_chat WHERE mid = {$cid}");
-        $nice &&= $this->mysqli->query("DELETE FROM special_chat_fulltext WHERE mid = {$cid}");
-        $nice &&= $this->mysqli->query("DELETE FROM special_chat_meta WHERE mid = {$cid}");
+        $nice = $nice && $this->mysqli->query("DELETE FROM special_chat WHERE mid = {$cid}");
+        $nice = $nice && $this->mysqli->query("DELETE FROM special_chat_meta WHERE mid = {$cid}");
+        $optional = $optional && $this->mysqli->query("DELETE FROM special_chat_fulltext WHERE mid = {$cid}");	// Not always
         
         //delete responses
-        $nice &&= $this->mysqli->query("DELETE FROM chat WHERE cid = {$cid}");
+        $optional = $optional && $this->mysqli->query("DELETE FROM chat WHERE cid = {$cid}");		// Not always!
 
         //online info for tap
-        $nice &&= $this->mysqli->query("DELETE FROM TAP_ONLINE WHERE cid = {$cid}");
+        $nice = $nice && $this->mysqli->query("DELETE FROM TAP_ONLINE WHERE cid = {$cid}");
 
         //old stuff about active convo
-        $nice &&= $this->mysqli->query("DELETE FROM active_convo WHERE mid = {$cid}");
-        $nice &&= $this->mysqli->query("DELETE FROM active_convo_old WHERE mid = {$cid}");
+        $optional = $optional && $this->mysqli->query("DELETE FROM active_convo WHERE mid = {$cid}");
+        $optional = $optional && $this->mysqli->query("DELETE FROM active_convo_old WHERE mid = {$cid}");
 
         //no one likes deleted taps :'(
-        $nice &&= $this->mysqli->query("DELETE FROM good WHERE mid = {$mid}");
+        $optional = $optional && $this->mysqli->query("DELETE FROM good WHERE mid = {$mid}");		// Not Always!
 
         if (!$nice) {
             //something went wrong

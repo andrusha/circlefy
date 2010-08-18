@@ -27,6 +27,7 @@ $allowedModules = array(
     'new_message_handler' => false,
 
 	//These are modules which must have a session to be accessed
+	'delete_tap' => true, 
 	'ajaz_new_sign_up' => true,
     'connected_group_add' => true,
     'group_check' => true,

@@ -499,7 +499,8 @@ var _responses = _tap.register({
         _body.addEvents({
             'click:relay(a.tap-resp-count)': this.setupResponse.toHandler(this),
 			'click:relay(img.aggr-favicons)': this.showChannelActions.toHandler(this),
-			'click:relay(a.mod-ban-user)': this.banUser.toHandler(this)
+			'click:relay(a.mod-action)': this.modAction.toHandler(this),
+			'click:relay(a.mod-delete-tap)': this.deleteTap.toHandler(this)
         });
 
         this.subscribe({
@@ -517,9 +518,90 @@ var _responses = _tap.register({
         _body.fireEvent('click', {stop: $empty, preventDefault: $empty, target: link});
     },
 
-	banUser: function(el, e) {
-		alert(el.getData('targetuid'));
-	 },
+	/*
+	method: deleteTap()
+		tells the server that a tap must be deleted (by an admin or its owner)
+		
+		args:
+		1. el (object): the DELETE link. It needs data-cid set.
+	*/
+	deleteTap: function(el, e) {
+		var delete_cid 		= el.getData('cid');
+		var executingPopup;
+
+		new Request({
+			url: '/AJAX/delete_tap.php',
+			data: {
+				cid: delete_cid
+			},
+			onRequest: function() {
+				_notifications.alert("Please wait :)", "We are processing your request... <img src='images/ajax_loading.gif'>",
+					{ position: 'bottomRight', 
+					  color: 'black',
+					  duration: 5000});
+				executingPopup = _notifications.items.getLast();
+			},
+			onSuccess: function(){
+                var data = JSON.decode(this.response.text);
+				if (!data) return;
+				var success = data.successful;
+				var msgSuccess = "ERROR: Tap could not be deleted!";
+
+				_notifications.remove(executingPopup);
+				if (success) {
+					msgSuccess = "Tap deleted successfully!"
+				}
+				_notifications.alert("Deleting Tap", msgSuccess, 
+					{ position: 'bottomRight', 
+					  color: 'black',
+					  duration: 5000});
+		}
+		}).send();
+		
+	},
+
+	/*
+	method: modAction()
+		tells the server that we want to execute a Moderation Action
+		
+		args:
+		1. el (object): the link. Needs data-action set. Also, must be inside a UL with these data settings set: data-target_uid, data-gid
+	 		- data-action		: must be "ban", "unban", "promote" or "unpromote"
+			- data-target_uid	: is the user we're banning or promoting
+			- data-gid	 		: is the group we're on
+	*/
+	modAction: function(el, e) {
+		var param_target_uid 	= el.getParent('ul').getData('target_uid');	// UID (admin options UL)
+		var param_gid 			= el.getParent('ul').getData('gid');		// GID (admin options UL)
+		var param_action 		= el.getData('action');						// Action (link)
+		var executingPopup;
+
+		new Request({
+			url: '/AJAX/group_mod.php',
+			data: {
+				gid: param_gid,
+				target_uid: param_target_uid,
+				action: param_action
+			},
+			onRequest: function() {
+				_notifications.alert("Please wait :)", "We are processing your request... <img src='images/ajax_loading.gif'>",
+					{ position: 'bottomRight', 
+					  color: 'black',
+					  duration: 5000});
+				executingPopup = _notifications.items.getLast();
+			},
+			onSuccess: function(){
+				_notifications.remove(executingPopup);
+
+				_notifications.alert("OK!", "test 123", 
+					{ position: 'bottomRight', 
+					  color: 'black',
+					  duration: 5000});
+		}
+		}).send();
+		
+   },
+
 
 	/*
 	handler: showChannelActions()
@@ -532,7 +614,6 @@ var _responses = _tap.register({
 		var data_cid = parent.getData('id'),
 			data_uid = parent.getData('uid'),
 			data_uname = parent.getData('user');
-			var tmpgid = _vars.filter.gid;
 		
 		_notifications.alert("Please wait :)", "Loading tap options... <img src='images/ajax_loading.gif'>",
 			{ position: [el.offsetLeft-272, el.offsetTop-4], 
@@ -549,7 +630,7 @@ var _responses = _tap.register({
             data: {
 					cid: data_cid,
 					target_uid: data_uid,
-					gid: tmpgid,
+					gid: "",
 					action: "get_channel_actions"
 					},
             onSuccess: function() {
@@ -557,8 +638,17 @@ var _responses = _tap.register({
 				if (!data.public) return;
 				var t_uname = data.public.uname;
 				var t_gname = data.public.gname;
+				var t_gid	= data.public.gid;
 				var t_symbol = data.public.chansymbol;
 				var t_delete_permission = data.options.deletepermission;
+				var t_ban_action = data.admin.ban_action;
+				var t_prom_action = data.admin.prom_action;
+
+				// Default promote & Ban Options
+				var banText		= "Ban";
+				var promText 	= "Promote";
+				var banClass 	= "mod-" + t_ban_action + "-user";
+				var promClass 	= "mod-" + t_prom_action + "-user";
 				
 				var html_user_add = "", html_admin_add = "";
 				if (t_delete_permission=="owner") {
@@ -569,30 +659,47 @@ var _responses = _tap.register({
 
 				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
 
-				var txtPopup = "asdasd";
+				var txtPopup = "<ul class='modOptions'>";
+				txtPopup = txtPopup + "<li><a href='/user/"+t_uname+"' class='modlink mod-go-profile'>Go to <b>"+t_uname+"</b> profile</a></li>";
+				txtPopup = txtPopup + "<li><a href='#' class='modlink mod-send-pm'>Send <b>" + t_uname + "</b> a Private Message</a></li>";
+				txtPopup = txtPopup + "<li><a href='/channel/" + t_symbol  + "' class='modlink mod-go-channel'>Go to channel <b>" + t_gname + "</b></a></li>";
+				txtPopup = txtPopup + "</ul>";
 				var txtTitle = "Tap #" + data_cid;
 
-				if (data.admin.test) {
-					var adminOptions = "<ul class='adminOptions'><li><a href='#' data-targetuid='99' class='mod-ban-user'>Ban <b>" + t_uname + "</b> from <b>"+t_gname+"</b></a></li><li><a href='#'>Promote <b>"+t_uname+"</b> to admin</li></li><a href='#'>Delete this tap</a></li></ul>";
-					txtPopup = "<b>Admin Options</b>" + adminOptions + "<hr> " + txtPopup;
-				}
 
-				var feed = [
-					[, "<a href='/channel/" + t_symbol  + "'>Go to channel <b>" + t_gname + "</b></a><br /><a href='#'>Send <b>" + t_uname + "</b> a Private Message</a>"+html_user_add],
-					["Admin Options",]
-				];
+				// I have admin rights here:
+				if (data.admin.moderator) {
+					if (t_ban_action == "unban") banText = "Unban";
+					if (t_prom_action == "unpromote") promText = "Unpromote";
+
+					var admOpt = "<ul class='modOptions' data-target_uid='" + data_uid + "' data-gid='"+t_gid+"'>";
+					
+						// BAN / UNBAN LINK. (Class mod-action binds this link to the function modAction)
+						if (t_ban_action) {
+						admOpt = admOpt + "<li><a href='#' class='mod-action modlink "+banClass+"' data-action='"+t_ban_action+"'>";
+						admOpt = admOpt + "" + banText + " <b>" + t_uname + "</b> from <b>"+t_gname+"</b></a></li>";
+						}
+
+						if (t_prom_action) {
+						// PROMOTE / UNPROMOTE LINK  (Class mod-action binds this link to the function modAction)
+						admOpt = admOpt + "<li><a href='#' class='mod-action modlink "+promClass+"' data-action='"+t_prom_action+"'>";
+						admOpt = admOpt + "" + promText + " <b>"+t_uname+"</b></li>";
+						}
+						
+						// TAP DELETION LINK
+						admOpt = admOpt + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
+
+					admOpt = admOpt + "</ul>";
+
+					txtPopup = "<b>Admin Options</b>" + admOpt + "<hr> " + txtPopup;
+				}
 
 				_notifications.remove(loadingPopup);
 
 				_notifications.alert(txtTitle, txtPopup, 
 					{ position: [el.offsetLeft-272, el.offsetTop-4], 
 					  color: 'black',
-					  duration: 5000});
-
-				/* showModRoar(0,'black'); */				
-				/* if (data.admin.test) {
-					showModRoar(1,'black');
-				} */
+					  duration: 10000});
 				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
             }
         }).send();

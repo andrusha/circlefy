@@ -453,14 +453,30 @@ color:#627AAD;
 float:left;
 }
 
-#taplogin li{
+#taplogin li {
 overflow:hidden;
 }
 
-.mod-ban-user {
+ul.modOptions {
+	list-style-type:none;
+	padding: 0px;
+	margin: 0px;
+}
+ul.modOptions li a.modlink {
 	display:		inline-block;
 	padding-left:	20px;
 	line-height:	18px;
-	background:		url("/images/icons/delete.png") center left no-repeat;
-	font-weight: 	bold;
+	text-decoration:none;
+	color:			#FFFFEE;
 }
+.mod-go-profile	{ background:		url("/images/icons/user.png") center left no-repeat; }
+.mod-send-pm	{ background:		url("/images/icons/email.png") center left no-repeat; }
+.mod-go-channel	{ background:		url("/images/icons/group.png") center left no-repeat; }
+
+.mod-ban-user	{ background:		url("/images/icons/delete.png") center left no-repeat; }
+.mod-unban-user	{ background:		url("/images/icons/accept.png") center left no-repeat; }
+
+.mod-promote-user { background:		url("/images/icons/medal_gold_add.png") center left no-repeat; }
+.mod-unpromote-user { background:		url("/images/icons/medal_gold_delete.png") center left no-repeat; }
+
+.mod-delete-tap	{ background:		url("/images/icons/page_white_delete.png") center left no-repeat; }
