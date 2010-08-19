@@ -38,8 +38,17 @@ if (is_array($_t['your_groups'])) {
 
 $_SESSION['upic'] = $_t['user_pic_100'];
 
+$is_guest = intval($_SESSION['guest']) == 1 ? true : false;
+
 $all_your_groups_topic = "Aggregate feed of all of the channels";
 $public_groups_topic = "This is a place where you can discover what's being said in real-time from all channels, even if you're not apart of them";
+if (!$is_guest) {    
+    $groups_topic = $all_your_groups_topic;
+    $start_gid = 0;
+} else {
+    $groups_topic = $public_groups_topic;
+    $start_gid = 100;
+}
 ?>
 <!doctype html>
 <html>
@@ -60,7 +69,7 @@ $public_groups_topic = "This is a place where you can discover what's being said
 			groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>'),
             sendTo: "public:public:0:0",
             filter: {
-                gid: "0",
+                gid: "<?=$start_gid?>",
                 info: {
                     name: "All Your Channels"
                 }
@@ -107,7 +116,7 @@ $public_groups_topic = "This is a place where you can discover what's being said
 						</h2>
 						<span class="stream-name">All Your Groups <?php if(isset($_t['facebook_loginUrl'])): ?><a href="<?php echo $_t['facebook_loginUrl']; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
 					</div>
-					<div class="description" style="background: lightgrey; padding:15px;"><?= $all_your_groups_topic ?></div>
+					<div class="description" style="background: lightgrey; padding:15px;"><?= $groups_topic ?></div>
 					<div class="body">
 						<ul id="taps" class="stream">
 							<?php

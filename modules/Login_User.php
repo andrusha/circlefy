@@ -173,7 +173,7 @@ public function login_user($uname,$pass,$hash,$auto_login){
 			   $hash_results = $this->db_class_mysql->db->query($hash_update_query);
 			   
 			   		//Get the users ID to use for the rest of the application
-			   			$get_user_id_query = "SELECT t1.uname,t1.uid FROM login AS t1
+			   			$get_user_id_query = "SELECT t1.uname,t1.uid, t1.fname as real_name FROM login AS t1
 									WHERE t1.uname='{$uname}'";
 
 			   			$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
@@ -182,12 +182,14 @@ public function login_user($uname,$pass,$hash,$auto_login){
 							while($res = $get_user_id_result->fetch_assoc()){
 								$uid = $res['uid'];
 								$uname = $res['uname'];
+                                $real_name = $res['real_name'];
 							}
 				}
 		// END SESSION UPDATE BASED ON HASH
 			
 		$_SESSION['uid'] = $uid;
 		$_SESSION['uname'] = $uname;
+        $_SESSION['real_name'] = $real_name != '' ? $real_name : $uname;
 		$_SESSION['guest'] = 0;
 		setcookie("GUEST_hash", "", time()-3600);
 		setcookie("GUEST_uid", "", time()-3600);

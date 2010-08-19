@@ -212,6 +212,10 @@ input, button, select {
 	overflow: hidden;
 }
 
+.deleted {
+    display: none;
+}
+
 .clarity {
 	clear: both;
 }

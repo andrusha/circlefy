@@ -66,6 +66,7 @@
 				$this->debu("Inserting cookies: $NLIuname ($new_uid) Hash: $NLIuname$NLIrand_hash");
 				$_SESSION['uid'] = $new_uid;
 				$_SESSION['uname'] = $NLIuname;
+                $_SESSION['real_name'] = 'guest';
 				$_SESSION['hash'] = $NLIrand_hash;
 				$_SESSION['guest'] = 1;
 			} else {

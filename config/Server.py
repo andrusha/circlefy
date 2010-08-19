@@ -119,40 +119,31 @@ class MessageConnection(object):
 
     def tap_ACTION(self,msg_data):
         matches_list = self.check_new_bits(self.server.root.user_server.users,msg_data)
-        print "%s" % matches_list
-        print "%s" % self.server.root.user_server.users
+        
         if matches_list != []:
             results = self.bit_generator(matches_list)
             uniq_uids = set(self.uids)
-            print "%s" % uniq_uids
+            
             for uid in uniq_uids:
                 if uid in self.server.root.user_server.users:
                     for uniq_conn in self.server.root.user_server.users[uid]:
                         uniq_conn.send_message('tap.new', results)
             self.uids = []
 
-    def response_ACTION(self,cid,data,uname,init_tapper,response):
-        try:
-            for uid in self.server.root.user_server.channels['channel'][cid]:
-                for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message('response', response)
-            #Send response to the initial tapper to activate his active convo
-            for uniq_conn in self.server.root.user_server.users[int(init_tapper)]:
-                        uniq_conn.send_message('convo', {'cid': cid})
-        except Exception:
-            logging.error("No user '%s' subscribed to channel id %s" % (uname, cid))
-            return False
+    def makeList(self, users = None, cid = None, gid = None):
+        user_server = self.server.root.user_server
+        new_users = set(users) if users else set()
+        #TODO: fix that str(cid) shit
+        if cid is not None:
+            cid = str(cid)
+            if cid in user_server.channels['channel']:
+                new_users.update(user_server.channels['channel'][cid])
+        if gid is not None:
+            gid = str(gid)
+            if gid in user_server.channels['group']:
+                new_users.update(user_server.channels['group'][gid])
 
-    def typing_ACTION(self,cid,data,uname,response):
-        try:
-            for uid in self.server.root.user_server.channels['channel'][cid]:
-                for uniq_conn in self.server.root.user_server.users[uid]:
-                    uniq_conn.send_message('typing', response)
-        except Exception:
-            logging.error("No user '%s' subscribed to channel id %s" % (uname, cid))
-            return False
-
-        return False
+        return new_users
 
     def sendToUsers(self, users, event, message):
         try:
@@ -176,19 +167,24 @@ class MessageConnection(object):
                 data = frame['response']
                 uname = frame['uname']
                 cid = frame['cid']
-                pic = frame['pic_small'] if 'pic_small' in frame else ''
+                pic = frame.get('pic_small', '')
 
-                response = self.response_generator(cid,data,uname,pic)
+                response = {'cid': cid, 'data': data, 'uname': uname, 'pic': pic}
 
                 if type == 'response' and 'init_tapper' in frame:
-                    init_tapper = frame['init_tapper']
-                    self.response_ACTION(cid,data,uname,init_tapper,response)
+                    users = self.makeList(cid = cid)
+                    self.sendToUsers(users, 'response', response)
+                    self.sendToUsers([frame['init_tapper']], 'convo', {'cid': cid})
 
                 if type == 'typing':
-                    self.typing_ACTION(cid,data,uname,response)
+                    users = self.makeList(cid = cid)
+                    self.sendToUsers(users, 'typing', response)
             #everything else
-            elif ('users' in frame) and ('data' in frame):
-                self.sendToUsers(frame['users'], type, frame['data'])
+            elif ('users' in frame or 'cid' in frame or 'gid' in frame) and ('data' in frame):
+                users = frame.get('users', None)
+                cid = frame.get('cid', None)
+                gid = frame.get('gid', None)
+                self.sendToUsers(self.makeList(users, cid, gid), type, frame['data'])
 
             return True
 
@@ -201,10 +197,6 @@ class MessageConnection(object):
         
         logging.error("Warning! Bad packet!")
         return False
-
-    def response_generator(self,cid,data,uname,pic):
-        response = {'cid': cid, 'data': data, 'uname': uname, 'pic': pic}
-        return response
 
     def bit_generator(self,matches_list):
         bits = []

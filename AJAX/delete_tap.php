@@ -32,11 +32,17 @@ class tap_deleter {
     }
 
     /*
-        Deletes Tap
-        $cid - tap id
+        Check if user allowed to delete tap,
+        it should be tap owner or channel admin
+
+        returns array(true|false, gid);
     */
-    public function delete($cid) {
-        //We gonna also fetch group (channel) id,
+    private function checkPermissions($cid) {
+        $permitted = false;
+        $gid = -1;
+        
+        //check if user is tap owner
+        //we gonna also fetch group (channel) id,
         //in case we'll notify users
         $result = $this->mysqli->query("
             SELECT s1.uid, s2.gid FROM special_chat s1
@@ -44,14 +50,41 @@ class tap_deleter {
             WHERE s1.mid = {$cid}
             LIMIT 1");
 
-        if (!$result->num_rows) //there isn't tap with this uid
+        if ($result->num_rows) {
+            $result = $result->fetch_assoc();
+            if ($this->uid == $result['uid']) //you can delete only your taps
+                $permitted = true;
+
+            $gid = intval($result['gid']);
+        } else {
+            //there is no such group
+            return array($permitted, $gid);
+        }
+
+        //check if user is moderator
+        $result = $this->mysqli->query("
+            SELECT admin
+              FROM group_members
+             WHERE gid = {$gid}
+               AND uid = {$this->uid}");
+        
+        if ($result->num_rows) {
+            $result = $result->fetch_assoc();
+            if ($result['admin'] == 1)
+                $permitted = true;
+        }
+
+        return array($permitted, $gid);
+    }
+
+    /*
+        Deletes Tap
+        $cid - tap id
+    */
+    public function delete($cid) {
+        list($permitted, $gid) = $this->checkPermissions($cid);
+        if (!$permitted)
             return FUCKED_UP;
-
-        $result = $result->fetch_assoc();
-        if ($this->uid != $result['uid']) //you can delete only your taps
-            return  FUCKED_UP;
-
-        $gid = intval($result['gid']);
 
         if ($this->mysqli->query('START TRANSACTION') !== True)
             throw new Exception("Guys, we fucked up, transactions doesn't work 8(");
@@ -84,7 +117,7 @@ class tap_deleter {
         }
 
         //everything ok
-//        $this->mysqli->query("COMMIT");
+        $this->mysqli->query("COMMIT");
 
         $this->notifyAll($gid, $cid);
 
@@ -96,24 +129,8 @@ class tap_deleter {
         that tap is deleted
     */
     private function notifyAll($gid, $cid) {
-        $query = "
-            SELECT g.uid
-              FROM group_members g
-             INNER
-              JOIN TEMP_ONLINE t
-                ON t.uid = g.uid
-             WHERE t.online <> 0
-               AND g.gid = {$gid}";
-
-        $users = array();
-        $result = $this->mysqli->query($query);
-        while ($res = $result->fetch_assoc()) {
-            $users[] = intval($res['uid']);
-        }
-
         $data = array('gid' => intval($gid), 'cid' => intval($cid));
-        $message = json_encode(array('action' => 'tap.delete', 'data' => $data,
-                                     'users' => $users));
+        $message = json_encode(array('action' => 'tap.delete', 'data' => $data, 'cid' => $cid));
 
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         fwrite($fp, $message."\r\n");

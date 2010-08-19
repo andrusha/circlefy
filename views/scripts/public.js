@@ -1282,7 +1282,7 @@ _live.taps = _tap.register({
         body.set('text', 'This tap deleted');
         tap.addClass('deleted');
 
-        self.publish('tap.deleted', [cid]);
+        this.publish('tap.deleted', [cid]);
     },
 
     process: function(data) {
