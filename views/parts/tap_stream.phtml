@@ -1,0 +1,67 @@
+<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
+<?php
+if (!empty($_taps)):
+    foreach ($_taps as $tap):
+?>
+        <li id="tid_<?= $tap['cid'] ?>" class="container"
+            data-id="<?= $tap['cid'] ?>"
+            data-uid="<?= $tap['uid'] ?>"
+            data-user="<?= $tap['user'] ?>">
+            <a href="/user/<?= $tap['uname'] ?>">
+                <img class="avatar" alt="<?= $tap['uname'] ?>"
+                     src="/user_pics/<?= $tap['pic_100'] ?>"/>
+            </a>
+
+            <p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '" title="online"' : 'offline' ?>">
+                <a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
+                <a href="/tap/<?= $tap['cid'] ?>" class="date"
+                   data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
+                <?= $tap['chat_timestamp'] ?>
+                </a>
+
+                <a href="#"><? /* <a href="/channel/<?=$tap['symbol']?>" /> */?>
+                    <img class="aggr-favicons" src="/group_pics/<?=$tap['favicon']?>" title="<?=$tap['gname']?>" />
+                </a>
+            </p>
+
+            <a href="#" class="tap-resp-count" title="view responses">
+                <p class="tap-body">
+                <?= $tap['chat_text'] ?>
+                </p>
+            </a>
+
+            <p class="tap-actions">
+                <span class="tap-resp">
+                    <span class="indicator">Someone's replying..</span>
+                    <span class="last-resp">
+                        <strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
+                        <span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
+                </span>
+                <a href="#" class="tap-resp-count" title="view responses">
+                    <span class="show-resp-count"><?= $tap['count'] ?></span>
+                    <span class="follow_button">Reply</span>
+
+                </a>
+            </p>
+
+            <div class="responses">
+                <ul class="chat"></ul>
+                <input class="chatbox" type="text"/>
+
+                <div class="counter">240</div>
+                <div class="overlay">type in your response and press enter.</div>
+            </div>
+        </li>
+<?php endforeach; ?>
+        <li class="loadmore">
+            <p>more...</p>
+        </li>
+<?php else: ?>
+        <li id="no-taps-yet" class="notice">
+            <p>Nothing yet! Try tapping this feed...</p>
+        </li>
+<?php
+endif;
+?>
+</ul>
+

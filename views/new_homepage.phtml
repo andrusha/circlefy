@@ -118,57 +118,11 @@ if (!$is_guest) {
 					</div>
 					<div class="description" style="background: lightgrey; padding:15px;"><?= $groups_topic ?></div>
 					<div class="body">
-						<ul id="taps" class="stream">
-							<?php
-								if (!empty($_t['groups_bits'])):
-									foreach($_t['groups_bits'] as $tap):
-							?>
-							<li id="tid_<?= $tap['cid'] ?>" class="container" 
-								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $tap['user'] ?>">
-								<a href="/user/<?= $tap['uname'] ?>">
-									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
-								</a>
-								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '" title="online"' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
-									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
-										<?= $tap['chat_timestamp'] ?>
-									</a>
-									<a href="#" /><? /* <a href="/channel/<?=$tap['symbol']?>" /> */ ?>
-										<img class="aggr-favicons" src="/group_pics/<?=$tap['favicon']?>" title="<?=$tap['gname']?>" />
-									</a>
-								</p>
-								<p class="tap-body">
-									<?= $tap['chat_text'] ?>
-								</p>
-								<p class="tap-actions">
-									<span class="tap-resp">
-										<span class="indicator">Someone's replying..</span>
-										<span class="last-resp">
-											<strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
-											<span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
-										</span>
-									</span>
-									<a href="#" class="tap-resp-count" title="view responses">
-											<span class="show-resp-count"><?= $tap['count'] ?></span>
-											<span class="follow_button">Reply</span>
-									</a>
-								</p>
-								<div class="responses">
-									<ul class="chat">
-									</ul>
-									<input class="chatbox" type="text" />
-									<div class="counter">240</div>
-									<div class="overlay">type in your response and press enter.</div>
-								</div>
-							</li>
-							<?php
-									endforeach;
-								endif;
-							?>
-							<li class="loadmore">
-								<p>more...</p>
-							</li>
-						</ul>
+                        <?php
+                            $_taps = $_t['groups_bits'];
+                            include(TAP_STREAM);
+                        ?>
+					</ul>
 					</div>
 				</div>
 			</div>

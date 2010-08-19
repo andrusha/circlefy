@@ -17,6 +17,7 @@ define("OK_SIDEBAR","parts/ok_sidebar.phtml");
 define("OK_TOPBAR","parts/ok_topbar.phtml");
 define("OK_FOOTER","parts/ok_footer.phtml");
 define("MODAL_SIGNUP","parts/modal_signup.phtml");
+define("TAP_STREAM", "parts/tap_stream.phtml");
 	
 
 //define("FOOTER","parts/footer.phtml");						// OLD

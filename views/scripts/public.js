@@ -105,7 +105,7 @@ _tap.mixin({
         this.title.set('html', title);
 
         if (desc) {
-            this.topic.set('text', desc.linkify() );
+            this.topic.set('html', desc.linkify() );
 //            this.main.addClass('description');
         } else {
 //            this.main.removeClass('description');
@@ -795,12 +795,12 @@ var _responses = _tap.register({
         var items = box.getElements('li'),
             last = items.getLast(),
             parent = box.getParent('li'),
-            //lastresp = parent.getElement('span.last-resp'),
-            //username = lastresp.getElement('strong'),
-            //chattext = lastresp.getElement('span'),
+            lastresp = parent.getElement('span.last-resp'),
+            username = lastresp.getElement('strong'),
+            chattext = lastresp.getElement('span'),
             count = parent.getElement('a.tap-resp-count span.show-resp-count');
-        //username.set('text', last.getElement('a').get('text'));
-        //chattext.set('text', last.getChildren('span').get('text'));
+        username.set('text', last.getElement('a').get('text'));
+        chattext.set('text', last.getChildren('span').get('text'));
         count.set('text', items.length);
     },
 

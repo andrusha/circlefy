@@ -19,7 +19,7 @@ class public_group extends Base {
         $this->need_db = 1;
         $this->need_filter = 1;
         $this->input_debug_flag = 0;
-        $this->page_name = "public_group";
+        $this->page_name = "public_template_group";
 
         parent::__construct();
 
