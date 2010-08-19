@@ -16,8 +16,9 @@ vertical-align:50%;
 }
 
 #no-group-selected{
-color:#700;
+color:#900;
 font-size:11px;
+margin-top: 16px;
 display:none;
 opacity:0;
 }
@@ -1597,7 +1598,17 @@ font-size:10px;
 	display:none;
 }
 
-ul.stream span.show-resp-count{ background:#DFEAF4; color:gray; position:relative;margin:0; padding:4px 4px 6px 6px; width:7px; height:15px; }
+ul.stream span.show-resp-count{ 
+	background: #DFEAF4; 
+	color: gray; 
+	position: relative;
+	margin: 0; 
+	padding: 3px 2px 4px 2px; 
+	width: 18px; 
+	height: 12px; 
+	text-align: center;
+	border: 1px solid #C3D2DF;
+}
 
 #lists li span.remove-convo {
 	float:right;

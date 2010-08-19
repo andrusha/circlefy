@@ -480,3 +480,13 @@ ul.modOptions li a.modlink {
 .mod-unpromote-user { background:		url("/images/icons/medal_gold_delete.png") center left no-repeat; }
 
 .mod-delete-tap	{ background:		url("/images/icons/page_white_delete.png") center left no-repeat; }
+
+.notification-title {
+	display:		inline-block;
+	padding-left:	20px;
+	line-height:	20px;
+	text-decoration: none;
+}
+.icon-user	{ background:		url("/images/icons/user.png") center left no-repeat; }
+.icon-tap	{ background:		url("/images/icons/page_add.png") center left no-repeat; }
+.icon-response	{ background:		url("/images/icons/page_add.png") center left no-repeat; }

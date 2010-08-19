@@ -663,6 +663,9 @@ var _responses = _tap.register({
 				txtPopup = txtPopup + "<li><a href='/user/"+t_uname+"' class='modlink mod-go-profile'>Go to <b>"+t_uname+"</b> profile</a></li>";
 				txtPopup = txtPopup + "<li><a href='#' class='modlink mod-send-pm'>Send <b>" + t_uname + "</b> a Private Message</a></li>";
 				txtPopup = txtPopup + "<li><a href='/channel/" + t_symbol  + "' class='modlink mod-go-channel'>Go to channel <b>" + t_gname + "</b></a></li>";
+				if (t_delete_permission=="owner") {
+					txtPopup = txtPopup + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
+				}
 				txtPopup = txtPopup + "</ul>";
 				var txtTitle = "Tap #" + data_cid;
 
@@ -1374,7 +1377,7 @@ _live.notifications = _tap.register({
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
 
-        _notifications.alert('New response',
+        _notifications.alert('<span class="notification-title icon-response">New response</span>',
             '<a href="/user/'+uname+'">' + ureal_name + 
             '</a> left new response in <a href="/tap/'+cid+'">conversation</a>!');
     	
@@ -1389,7 +1392,7 @@ _live.notifications = _tap.register({
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
 
-        _notifications.alert('New tap',
+        _notifications.alert('<span class="notification-title icon-tap">New tap</span>',
             '<a href="/user/'+uname+'">' + ureal_name +
             '</a> left new tap in <a href="/channel/'+gname+'">'+
             greal_name + '</a> channel!');
@@ -1407,7 +1410,7 @@ _live.notifications = _tap.register({
         var title = '';
         var message = '';
         if (status) {
-            title = 'New follower';
+            title = '<span class="notification-title icon-user">New follower</span>';
             message = 'Now <a href="/user/'+uname+'">' + ureal_name +
                 '</a> follows you everywhere in your tap journey!';
         } else {
