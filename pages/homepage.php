@@ -177,58 +177,22 @@ EOF;
 				$_SESSION['admin'] = 0;
 
 
-		//START User Prefences
-		$user_query = <<<EOF
-                        SELECT lo.pic_100,lo.pic_36,lo.uname,lo.help FROM login AS lo
-                        WHERE lo.uid={$uid}
-EOF;
+        $userClass = new User();
 
-                 $this->db_class_mysql->set_query($user_query,'get_user',"This gets the user who is logged in in order to display it to the homepage next to 'Welcome xxxx'");
-                        $user = $this->db_class_mysql->execute_query('get_user');
-			while($res = $user->fetch_assoc() ){
-			$global_uname = $res['uname'];
-                        $this->set($res['uname'],'user');
-                        $this->set($res['pic_36'],'user_pic');
-                        $this->set($res['pic_100'],'user_pic_100');
-			$this->set($res['help'],'help');
-			}
-		//START User Prefences
+        //Get user info
+        $res = $userClass->getInfo($uid);
+		$global_uname = $res['uname'];
+        $this->set($res['uname'],'user');
+        $this->set($res['small_pic'],'user_pic');
+        $this->set($res['big_pic'],'user_pic_100');
+		$this->set($res['help'],'help');
+        $this->set($res['real_name'], 'real_name');
 
+        $convosClass = new Convos();
 
-		//START get active conversations
-		$ac_query = <<<EOF
-		SELECT t1.mid,t3.uname,t2.uid,t2.uname,t2.chat_text,t3.pic_36 AS small_pic, count(chat.cid) AS resp_count FROM active_convo as t1
-		JOIN chat ON t1.mid = chat.cid
-		JOIN special_chat AS t2
-		ON t1.mid = t2.mid
-		JOIN login AS t3
-		ON t3.uid = t2.uid
-		WHERE t1.uid = {$uid} AND t1.active = 1 GROUP BY chat.cid ORDER BY mid ASC;		
-EOF;
-
-		$this->db_class_mysql->set_query($ac_query,'active_convos',"This is a SPECIAL QUERY that is part of a active of queries - This is for active convos: ALL ");
-	        $actives_bits_results = $this->db_class_mysql->execute_query('active_convos');
-
-		if($actives_bits_results->num_rows)
-		while($res = $actives_bits_results->fetch_assoc() ) {
-			$mid = $res['mid'];
-			$ac_uid = $res['uid'];
-			$small_pic = $res['small_pic'];
-			$uname = $res['uname'];
-			$chat_text = $res['chat_text'];
-			$resp_count = $res['resp_count'];
-
-			$ac_output[] = array(
-			'mid'	=>	$mid,
-			'uid'	=>	$ac_uid,
-			'uname'	=>	$uname,
-			'small_pic' => $small_pic,
-			'chat_text' =>	$chat_text,
-			'resp_count' =>	$resp_count
-			);
-		}
-		$this->set($ac_output,'active_convos');
-		//END get active conversations	
+        //Get active convos
+        $active_convos = $convosClass->getActive($uid);
+		$this->set($active_convos,'active_convos');
 	
 		//START get last tap
 		$last_tap_query = <<<EOF

@@ -47,7 +47,7 @@ var _list = _tap.register({
 			'convos.updated': this.moveItem.bind(this),
 			'convos.removed': this.removeItem.bind(this),
 			'convos.new': function(cid, uid, data){
-				self.addItem('convos', $extend(data, {cid: cid}));
+				self.addItem('convos', data);
 			},
 			'search.selected': function(id){
 				self.itemClick($(id), {});
@@ -115,12 +115,11 @@ var _list = _tap.register({
 		1. type (string) the type of list (eg, convos, groups, etc).
 		2. data (object) data to use for the templater
 	*/
-	addItem: function(type, data){
-		switch (type){
-			case 'convos':
-				Elements.from(_template.parse('list.convo', [data])).inject($('panel-convos'));
-				break;
-		}
+	addItem: function(type, data) {
+        if (type == 'convos') 
+            var item = $$('li.panel-item#cid_'+data['cid']);
+            if (item.length == 0)
+                Elements.from(_template.parse('list.convo', [data])).inject($('panel-convos'));
 		this.publish('list.item.added', [type, data]);
 	},
 

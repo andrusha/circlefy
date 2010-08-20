@@ -81,7 +81,7 @@ $private = $_t['private'];
 				<div id="infobox" class="pubgroup section container">
 					<?php if($private):?>
 						<button class="public-private-button">private account</button>
-					<? else: ?>
+					<? elseif (!$_SESSION['guest']): ?>
 						<?php if ($_t['user'] == $_SESSION["uname"]): ?>
 						<button data-id="<?= $_t['uid'] ?>" class="you" disabled="disabled">this is you!</button>
 						<?php elseif ($_t['tracked']): ?>
@@ -130,62 +130,21 @@ $private = $_t['private'];
 
 					</div>
 					<div class="body">
+                        <?
+                            if($private):
+                        ?>
 						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
-							<?php if($private): ?>
-							<li> <img class="private-lock" src="/images/flat/lock.png" />This user has a private account and does not share his taps outside his channels </li>
-							<? else: ?>
-							<?php
-								if (!empty($_t['user_bits'])):
-									foreach($_t['user_bits'] as $tap):
-							?>
-							<li id="tid_<?= $tap['cid'] ?>" class="container" 
-								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $tap['user'] ?>">
-								<a href="/user/<?= $tap['uname'] ?>">
-									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
-								</a>
-								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>,
-									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
-										<?= $tap['chat_timestamp'] ?>
-									</a>
-									<a href="/channel/<?=$tap['symbol']?>"><img class="aggr-favicons" src="/group_pics/<?=$tap['favicon']?>" title="<?=$tap['gname']?>" /></a>
-								</p>
-								<p class="tap-body">
-									<?= $tap['chat_text'] ?>
-								</p>
-								<p class="tap-actions">
-									<span class="tap-resp">
-										<span class="indicator">Someone's replying..</span>
-										<span class="last-resp">
-											<strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
-											<span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
-										</span>
-									</span>
-									<a href="#" class="tap-resp-count" title="view responses">
-											<span class="show-resp-count"><?= $tap['count'] ?></span>
-                                                                                        <span class="follow_button">Reply</span>
-									</a>
-								</p>
-								<div class="responses">
-									<ul class="chat">
-									</ul>
-									<input class="chatbox" type="text" />
-									<div class="counter">240</div>
-									<div class="overlay">type in your response and press enter.</div>
-								</div>
-							</li>
-							<?php
-									endforeach;
-								else:
-							?>
-							<li id="no-taps-yet" class="notice">
-								<p>Nothing yet! Try tapping this feed...</p>
-							</li>
-							<?php
-								endif;
-							endif;
-							?>
-						</ul>
+							<li>
+                                <img class="private-lock" src="/images/flat/lock.png" />
+                                This user has a private account and does not share his taps outside his channels
+                            </li>
+                        </ul>
+						<?
+                            else:
+                                $_taps = $_t['user_bits'];
+                                include(TAP_STREAM);
+                            endif;
+                        ?>
 					</div>
 				</div>
 

@@ -60,10 +60,14 @@
                 </ul>
                 <ul id="template-list-convo">
                 <# for (var convo from this): #>
-                        <li id="cid_<#: convo.cid #>" class="new panel-item"
-                                data-id="<#: convo.cid #>" data-user="<#: convo.user #>">
-                                <span class="count action" data-action="remove"><a href="#">remove</a></span>
-                                <p class="from inblock"><#: convo.user #> <span class="new">*</span></p>
+                        <li id="cid_<#: convo.mid #>" class="new panel-item"
+                                data-id="<#: convo.mid #>" data-user="<#: convo.uname #>">
+                                <span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
+                                <p class="from inblock">
+                                    <img class="active-convo-pic" src="/user_pics/<#: convo.small_pic #>" /> 
+                                    <span class="active-convo-uname"><#: convo.real_name #></span>
+                                    <span class="new">*</span>
+                                </p>
                                 <p class="body ellipsis"><#: convo.message #></p>
                         </li>
                 <# end; #>

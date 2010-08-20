@@ -20,7 +20,7 @@ import MySQLdb
 #                ||----w |
 #                ||     ||
 
-DEBUG = True 
+DEBUG = False 
 thread_count = {'message': 0, 'user': 0, 'admin': 0}
 BUF_SIZE = 4096
 participants = [ ]

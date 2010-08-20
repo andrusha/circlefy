@@ -162,9 +162,9 @@ $value = '&value='.$u[2];
 	<span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
 	<p class="from inblock">
 	<img class="active-convo-pic" src="/user_pics/<?=$convo['small_pic']?>" /> 
-	<span class="active-convo-uname"><?= $convo['uname'] ?></span>
+	<span class="active-convo-uname"><?= $convo['real_name'] ?></span>
 	<span class="new">*</span></p>
-	<p class="body ellipsis"><?= stripslashes($convo['chat_text']); ?></p>
+	<p class="body ellipsis"><?= stripslashes($convo['message']); ?></p>
 	</li>
 	<?php endforeach; else: ?>					
 	<li class="notify">You have no current conversations going on! Make some!</li>

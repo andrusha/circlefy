@@ -455,8 +455,10 @@ var _convos = _tap.register({
 		new Request({
 			url: '/AJAX/add_active.php',
 			data: {cid: cid},
-			onSuccess: function(){
-				self.publish('convos.new', [cid, uid, data]);
+			onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+                if (response.successful) 
+    				self.publish('convos.new', [cid, uid, response.data]);
 			}
 		}).send();
 	},
