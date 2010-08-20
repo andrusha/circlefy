@@ -1,25 +1,35 @@
-﻿<?php
+<?php
 if($_SERVER['REQUEST_URI'] == '/people')
-$tracker = 0;
-else
-$tracker = empty($_GET['q'])  ? 0 : 1;
 
-$people_list = "people_$tracker";
+$people_list = "peoples";
 ?>
 <!doctype html>
 <html>
 <head>
-	<?include(OK_HEADER)?>
+<?   $tpl_title = "People";
+     include(OK_HEADER); ?>
+
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
+	<script type="text/javascript">
+		window._vars = {
+			uid: "<?= $_t['pcid'] ?>",
+			uname: "<?= $_SESSION['uname'] ?>",
+            filter: {
+                gid: "2",
+                info: {
+                    name: "Peoplae You're Tracking"
+                }
+            }
+		};
+	</script>
+    <script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/people.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
-</head>
+  
 <body>
-	<div id="wrapper">
-
-		<?include(OK_TOPBAR)?>
-
-		<div id="main">
+<div id="wrapper">
+<?include(OK_TOPBAR)?>
+    <div id="main">
 
 			<? ob_start() ?>
 
@@ -43,7 +53,10 @@ $people_list = "people_$tracker";
 					</ul>
 				</div>
 			<? $add_sidebar = ob_get_clean(); ?>
-			<? include(OK_SIDEBAR); ?>
+			<?
+            $show_search = true;
+            include(OK_SIDEBAR);
+            ?>
 
 			<div id="content">
 				
@@ -68,14 +81,7 @@ $people_list = "people_$tracker";
 							<?php 	
 								if (!empty($_t[$people_list])):
 									foreach ($_t[$people_list] as $person):
-										$uid = $n['fuid'];
-										$uname = $n['uname'];
-										$fname = $n['fname'];
-										$lname = $n['lname'];
-										$pic = $n['pic_100'];
-										$last_tap = $n['last_chat'];
-										$friend = $n['friend'];
-										$groups = $n['groups'];
+                                        $stats = $person['stats'];
 							?>
 							<li id="pid_<?= $person['fuid'] ?>" class="container list-item" 
 								data-id="<?= $person['fuid'] ?>" data-uname="<?= $person['uname'] ?>">
@@ -92,9 +98,9 @@ $people_list = "people_$tracker";
 								</h2>
 								<p class="headline"><?= $person['last_chat'] ?></p>
 								<p class="stats">
-									<strong><?= $stats['message_count'] ?></strong> Taps sent, 
-									<strong><?= $stats['response_count'] ?></strong> Responses received, and
-									<strong><?= $stats['group_count'] ?></strong> Groups joined.
+									<strong><?= $stats['taps'] ?></strong> Taps sent, 
+									<strong><?= $stats['responses'] ?></strong> Responses received, and
+									<strong><?= $stats['groups'] ?></strong> Groups joined.
 								</p>
 							</li>
 							<?php
@@ -119,12 +125,8 @@ $people_list = "people_$tracker";
 			</div>
 
 		</div>
-
-		<div class="clarity"></div>
-
-		<?include(OK_FOOTER)?>
-
 	</div>
-	<?include(JAVASCRIPT_TEMPLATES)?>
+<?include(OK_FOOTER)?>
+<?include(JAVASCRIPT_TEMPLATES)?>
 </body>
 </html>

@@ -1,5 +1,6 @@
-html {
-	background-color:#3C3C3C;
+html, body {
+    height: 100%;
+	background-color :#DFEAF4;
 }
 
 .resp-uname{
@@ -209,7 +210,6 @@ input, button, select {
 	#vertical-align: auto;
 }
 .container {
-	height: 1%;
 	overflow: hidden;
 }
 
@@ -264,6 +264,7 @@ input.basic.error, select.basic.error {
 #wrapper {
 	margin: auto;
 	width: 950px;
+    min-height: 100%;
 }
 
 #slim-background {
@@ -458,6 +459,8 @@ color:white;
 	min-height: 450px;
 	height: auto !important;
 	height: 450px;
+    padding-bottom: 35px;
+    overflow: auto;
 }
 
 #content {
@@ -1846,11 +1849,14 @@ div.sideinfo li p.body {
 
 
 #footer {
-	background: #3C3C3C;
+	background: url("/images/footer.gif") repeat-x scroll 0 0 #DFEAF4;
 	font-size: 12px;
-	margin-top: 50px;
-	padding: 10px;
 	text-align: center;
+
+    position: relative;
+    height: 35px;
+    margin-top: -35px;
+    clear: both;
 }
 
 #footer .nav {

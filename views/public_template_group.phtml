@@ -137,6 +137,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
     </div>
 <?
 $add_sidebar = ob_get_clean();
+$show_search = true;
 include(OK_SIDEBAR); 
 ?>
 
@@ -276,11 +277,8 @@ if ($_t['topbg'] == 'dark') {
     </div>
 
 </div>
-
-<div class="clarity"></div>
-<?include(OK_FOOTER)?>
-
 </div>
+<?include(OK_FOOTER)?>
 <?include(JAVASCRIPT_TEMPLATES)?>
 
 <?php if (!$logged && false): ?>

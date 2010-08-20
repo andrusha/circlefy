@@ -97,11 +97,12 @@ $value = '&value='.$u[2];
 <? echo $add_sidebar; ?>
 
 
-
+<? if ($show_search): ?>
 	<div id="filter" class="section">
 		<p class="inblock ellipsis">search <span class="title">all your channels</span> <a href="#" class="clear">clear</a></p>
 		<input id="filterkey" type="text" class="basic" />
 	</div>
+<? endif; ?>
 
 <? if ($show_lists): ?>
 	<div id="lists" class="section container">

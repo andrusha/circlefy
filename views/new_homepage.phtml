@@ -44,10 +44,10 @@ $all_your_groups_topic = "Aggregate feed of all of the channels";
 $public_groups_topic = "This is a place where you can discover what's being said in real-time from all channels, even if you're not apart of them";
 if (!$is_guest) {    
     $groups_topic = $all_your_groups_topic;
-    $start_gid = 0;
+    $start_gid = "all";
 } else {
     $groups_topic = $public_groups_topic;
-    $start_gid = 100;
+    $start_gid = "public";
 }
 ?>
 <!doctype html>
@@ -75,6 +75,12 @@ if (!$is_guest) {
                 }
             }
 		};
+<? if ($is_guest) : ?>
+        window.addEvent('load', function () {
+            var el = $$('li#gid_public.panel-item')[0];
+            _list.itemClick(el, 0, 'javascript');
+        });
+<? endif; ?>
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
@@ -93,8 +99,9 @@ if (!$is_guest) {
 
 	<div id="main">
 
-			<? $show_lists = true; ?>
-			<? include(OK_SIDEBAR); ?>
+			<? $show_lists = true;
+               $show_search = true;
+			   include(OK_SIDEBAR); ?>
 
 			<div id="content">
 
@@ -130,11 +137,8 @@ if (!$is_guest) {
 
 
 		</div>
-
-		<div class="clarity"></div>
-		<?include(OK_FOOTER)?>
-
 	</div>
+    <?include(OK_FOOTER)?>
 	<?include(JAVASCRIPT_TEMPLATES)?>
 
 </body>

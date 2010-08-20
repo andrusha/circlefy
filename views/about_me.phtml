@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $logged = (!empty($_SESSION['uid']));
 $type = !empty($_GET['type']) ? $_GET['type'] : 'account';
 switch ($_GET['saved']){
@@ -374,11 +374,8 @@ if ($_t['settings']) {
 			</div>
 
 		</div>
-
-		<div class="clarity"></div>
-		<?include(OK_FOOTER)?>
-		
 	</div>
+    <?include(OK_FOOTER)?>
 	<?include(JAVASCRIPT_TEMPLATES)?>
 </body>
 </html>

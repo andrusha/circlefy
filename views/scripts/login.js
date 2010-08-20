@@ -79,72 +79,42 @@ window.addEvent('domready', function(){
 
 _login = {
 
-        registerIRC: function(user,pass,options){
+        registerIRC: function(user,pass,options) {
         /*
-        ADDED_ADDED = Registered IRC USER w/ channels
-        ADDED_NONE = Registered IRC USER w/ no channels
         REGISTERED = User is already registered
-        LOGIN_FAILED  = IRC User exists but failed pass
         NOT_REGISTERED = IRC does not exist
         */
-                var options = options||{};
-                var successFn = options['onComplete']||$empty();
+            var options = options||{};
+            var successFn = options['onComplete']||$empty();
 
-                data = { 'user': user , 'pass': pass };
-                var regStatus;
-		var ls = $('login-status');
-		ls.set('html','<img src="/images/flat/loader.gif" /> Processing...');
-                new Request({
-                        url: '/AJAX/irc.php',
-                        data: data,
-                        onRequest: this.showLoginLoad.bind(this),
-                        onSuccess: function(){
-				ls.set('html','');
-	
-                                var response = JSON.decode(this.response.text);
-	
-                                if(response.status == 'REGISTERED'){
-					ls.set('html','<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...');
-					ls.removeClass('login-fail');
-					ls.addClass('login-success');
-                                        regStatus = 'login';
-                                        successFn.delay(2000, this, regStatus);
-                                }
+            data = { 'user': user , 'pass': pass };
+            var regStatus;
+            var ls = $('login-status');
+            ls.set('html','<img src="/images/flat/loader.gif" /> Processing...');
+            new Request({
+                url: '/AJAX/login.php',
+                data: data,
+                onRequest: this.showLoginLoad.bind(this),
+                onSuccess: function() {
+                    ls.set('html','');
 
-                                if(response.status == 'NOT_REGISTERED'){
-					ls.addClass('login-fail');
-					ls.set('text','Sorry, there is no IRC user with this username, please try again');
-                                }
+                    var response = JSON.decode(this.response.text);
 
-                                if(response.status == 'SORRY'){
-					ls.addClass('login-fail');
-					ls.set('text','Wrong username or password!');
-                                }
+                    if(response.status == 'REGISTERED') {
+                        ls.set('html','<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...');
+                        ls.removeClass('login-fail');
+                        ls.addClass('login-success');
+                        regStatus = 'login';
+                        successFn.delay(2000, this, regStatus);
+                    }
 
-                                if(response.status == 'ADDED_NONE'){
-					ls.removeClass('login-fail');
-					ls.addClass('login-success');
-					ls.set('html','<img src="/images/icons/accept.png" /> Welcome!  You are now a tap user!  Enjoy Tap!');
-                                        regStatus = 'login';
-                                        successFn.delay(5000, this, regStatus);
-                                }
+                    if (response.status == 'NOT_REGISTERED') {
+                        ls.addClass('login-fail');
+                        ls.set('text','Sorry, there is no user with this username and password, please try again');
+                    }
 
-                                if(response.status == 'ADDED_ADDED'){
-					ls.removeClass('login-fail');
-					ls.addClass('login-success');
-					ls.set('html','<img src="/images/icons/accept.png" /> Welcome!  You are now a tap user AND we have added you to all of your communities you moderate!  Enjoy Tap!');
-                                        regStatus = 'login';
-                                        successFn.delay(5000, this, regStatus);
-                                }
-		
-                                if(response.status == 'LOGIN_FAILED'){
-					ls.addClass('login-fail');
-					ls.set('text','Well it seems you are apart of freenode but your password is incorrect!  Retry!');
-				}
-				
-
-                        }
-                        }).send();
+                }
+            }).send();
         },
 
 	showLoginLoad: function(){

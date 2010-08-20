@@ -178,7 +178,27 @@ EOF;
 				$groups[$gid]['last_chat'] = $last_chat;
 				$groups[$gid]['last_uname'] = $last_uname;
                         }
-			$this->set($groups,'group_results');
+
+	        $group_responses_count = "
+                SELECT COUNT(c.mid) AS responses_count, sm.gid AS gid
+                FROM special_chat_meta AS sm 
+                INNER JOIN special_chat AS sc
+                        ON sc.mid = sm.mid
+                INNER JOIN chat AS c
+                        ON c.cid = sc.cid
+                WHERE sm.gid IN ( {$gid_list} )
+                GROUP BY sm.gid";
+            $this->db_class_mysql->set_query($group_responses_count, 'responses_count', 'Returns number of responses for all taps in channel');
+            $responses_count_result = $this->db_class_mysql->execute_query('responses_count');
+
+            while ($res = $responses_count_result->fetch_assoc()) {
+                $count = $res['responses_count'];
+                $gid = $res['gid'];
+
+                $groups[$gid]['responses'] = $count;
+            }
+
+		$this->set($groups,'group_results');
 
 
                         $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");

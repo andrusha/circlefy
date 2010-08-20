@@ -1,10 +1,6 @@
 <?php
 
 class people extends Base{
-
-	protected $text;
-	protected $top;
-	
 	function __default(){
 	}
 	
@@ -12,8 +8,8 @@ class people extends Base{
 		return "Homepage Object";
 	}
 	
-	function __construct(){
-				
+	function __construct() {
+	
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
 		$this->page_name = "people";
@@ -23,120 +19,29 @@ class people extends Base{
 		parent::__construct();
 		$uid = $_SESSION['uid'];
 
-		$this->db_class_mysql->set_query('SELECT t2.gname,t1.gid FROM group_members AS t1 JOIN groups AS t2 ON t2.gid=t1.gid WHERE t1.uid='.$uid,
-                        'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
-                        $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
-		$this->set($groups_you_are_in,'your_groups');
+        $peoples = new Peoples();
 
-		$track_count = <<<EOF
-		SELECT COUNT(*) AS count FROM friends AS f WHERE f.uid = {$uid}
-EOF;
-		$tracked_count = <<<EOF
-		SELECT COUNT(*) AS count FROM friends AS f WHERE f.fuid = {$uid}
-EOF;
+		$this->set($peoples->followingCount($uid),'tracked_count');
+		$this->set($peoples->followersCount($uid),'track_count');
 
-		$this->db_class_mysql->set_query($track_count,'tracked_count',"Counts # of users tracking you");
-                $tracked_count_res = $this->db_class_mysql->execute_query('tracked_count');
-		$tracked_count_res = $tracked_count_res->fetch_assoc();
-		$this->set($tracked_count_res['count'],'tracked_count');
-
-		$this->db_class_mysql->set_query($tracked_count,'track_count',"Counts # of users you are tracking");
-                $track_count_res = $this->db_class_mysql->execute_query('track_count');
-		$track_count_res = $track_count_res->fetch_assoc();
-		$this->set($track_count_res['count'],'track_count');
-
-		
-
-
+        $users = array();
 		if(!$_GET['q'])	
-		$query[0] = <<<EOF
-		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1 
-		LEFT JOIN 
-		(
-		 SELECT uid,mid,chat_text FROM special_chat AS t4 ORDER BY mid DESC
-		) AS t4_sub ON t4_sub.uid = t1.fuid
-		JOIN login AS t2 ON t1.fuid = t2.uid 
-		WHERE t1.uid = {$uid} GROUP BY t1.fuid;
-EOF;
+            $users = $peoples->getFollowing($uid);
+		else
+            $users = $peoples->getFollowers($uid);
 
-		if($_GET['q'])	
-                $query[1] = <<<EOF
-		SELECT t2.pic_100,t2.uid,t2.uname,t2.fname,t2.lname,t4_sub.chat_text AS last_chat FROM friends AS t1
-		LEFT JOIN
-		(
-		SELECT uid,mid,chat_text FROM special_chat AS t4 ORDER BY mid DESC
-		) AS t4_sub ON t4_sub.uid = t1.uid
-		JOIN login AS t2 ON t1.uid = t2.uid
-		WHERE t1.fuid = {$uid} GROUP BY t1.uid;
-EOF;
+        foreach($users as $fuid => $user_info) {
+            $friend = array_intersect_key($user_info, 
+                array_flip(array('uname', 'fname', 'lname', 'pic_100', 'last_chat')));
+            $friend['fuid'] = $fuid;
+            $friend['stats'] = $peoples->userStats($fuid);
+            $friend['friend'] = 1;
+            if (!$friend['last_chat'])
+                $friend['last_chat'] = "*This user has not tap'd yet*;";
 
-foreach($query as $k_query => $v_query){
-		 //Reset $res encase next iteration is blank and the variable is cleared , this is because the output layer ( html_1 ) will hold $res if it's not cleared
-		 $res = '';
-		 $ids = '';
-		 $this->db_class_mysql->set_query($query[$k_query],'find_users',"Updating a users alert settings on his profile");	
-		 $search_people = $this->db_class_mysql->execute_query('find_users');
-				 if($search_people->num_rows > 0){
-                                                while($search_res = $search_people->fetch_assoc()){
-                                                        $fuid = $search_res['uid'];
-                                                        $uname = $search_res['uname'];
-                                                        $fname = $search_res['fname'];
-                                                        $lname =  $search_res['lname'];
-                                                        $pic_100 = $search_res['pic_100'];
-							$last_chat = $search_res['last_chat'];
-	
-							if(!$last_chat)
-                                                                $last_chat = "*This user has not tap'd yet*";
+            $friend_data[$fuid] = $friend;
+        }
 
-                                                        $friend_data[$fuid] = array(
-                                                        'fuid' => $fuid,
-                                                        'uname' => $uname,
-                                                        'fname' => $fname,
-                                                        'lname' => $lname,
-                                                        'pic_100' => $pic_100,
-                                                        'last_chat' => $last_chat,
-                                                        'groups' => null,
-                                                        'friend' => null
-                                                        );
-                                                        $ids .= $fuid.',';
-                                                }
-                                                        $ids = substr($ids,0,-1);
-
-                                                $group_query = <<<EOF
-                                                SELECT groups.gid,uid,gname,symbol FROM groups
-                                                JOIN group_members ON groups.gid = group_members.gid
-                                                WHERE uid IN ({$ids})
-EOF;
-                                                $this->db_class_mysql->set_query($group_query,'users_groups',"Finds all of the group a specific user is in");
-                                                $search_groups = $this->db_class_mysql->execute_query('users_groups');
-                                                while($res = $search_groups->fetch_assoc()){
-                                                        $fuid = $res['uid'];
-							if($c[$fuid])$c[$fuid]++; else $c[$fuid] = 1;
-							if($c[$fuid] > 3) continue;
-
-                                                        $gname = $res['gname'];
-                                                        $gid = $res['gid'];
-                                                        $symbol = $res['symbol'];
-                                                        $friend_data[$fuid]['groups'][$gid] = array(
-                                                        'gid' => $gid,
-                                                        'gname' => $gname,
-                                                        'symbol' => $symbol
-                                                        );
-                                                }
-						$c = null;
-                                                $friend_query = <<<EOF
-                                                SELECT fuid FROM friends WHERE uid = {$uid} AND fuid IN({$ids});
-EOF;
-						$this->db_class_mysql->set_query($friend_query,'friend_query',"This tells you if they're you haved them tap or not so the correct state can be set upon the page loading");
-                                                $friend_res = $this->db_class_mysql->execute_query('friend_query');
-
-                                                if($friend_res->num_rows > 0)
-                                                        while($res = $friend_res->fetch_assoc())
-                                                                $friend_data[$res['fuid']]['friend'] = 1;	
-					$this->set($friend_data,'people_'.$k_query);
-					}
-	}
-	
-}
-}
-?>
+        $this->set($friend_data,'peoples');
+    }
+};

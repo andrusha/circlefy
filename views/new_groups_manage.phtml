@@ -78,14 +78,19 @@
 										<a href="#" class="leave follow_button gm">Leave</a>
 									</span>
 								</h2>
-								<p class="headline">&#8220;<?= $group['descr'] ?>&#8221;</p>
+								<p class="headline">
+                                    <? if ($group['descr'])
+                                        echo "&#8220;".$group['descr']."&#8221;";
+                                       else
+                                        echo "There is no description yet";
+                                    ?></p>
 								<p class="stats">
 									<? if ($official == "*"): ?>
 									<strong>Official Channel.</strong>
 									<? endif; ?>
 									<strong><?= $group['size'] ?></strong> Members joined, 
 									<strong><?= $group['count'] ?></strong> Taps sent, and
-									<strong>0</strong> Responses received. 
+									<strong><?= $group['responses'] ?></strong> Responses received. 
 								</p>
 							</li>
 							<?
@@ -104,11 +109,8 @@
 			</div>
 
 		</div>
-
-		<div class="clarity"></div>
-		<?include(OK_FOOTER)?>
-
 	</div>
+    <?include(OK_FOOTER)?>
 	<?include(JAVASCRIPT_TEMPLATES)?>	
 </body>
 </html>

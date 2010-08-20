@@ -10,8 +10,8 @@ $api_module = $find_api_module[0];
 
 $allowedModules = array(
     //These are modules which can be accessed without a session
+    'login' => false,
     'group_status' => false,
-    'irc' => false,
     'ajaz_sign_up' => false,
     'response_poller' => false,
     'group_userlist' => false,
@@ -27,7 +27,8 @@ $allowedModules = array(
     'new_message_handler' => false,
 
 	//These are modules which must have a session to be accessed
-	'delete_tap' => true, 
+	'delete_tap' => true,
+    'search_people' => true,
 	'ajaz_new_sign_up' => true,
     'connected_group_add' => true,
     'group_check' => true,

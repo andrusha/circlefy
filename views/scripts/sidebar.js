@@ -84,7 +84,8 @@ var _list = _tap.register({
 		var type = el.getParent('ul').getData('name'),
 			id = el.getData('id'),
 			data = {};
-		this.items.removeClass('selected');
+        if (this.items)
+    		this.items.removeClass('selected');
 		el.addClass('selected');
 		switch (type){
 			case 'channels':

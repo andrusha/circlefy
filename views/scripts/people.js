@@ -108,11 +108,10 @@ var _filter = _tap.register({
 	search: function(keyword){
 		var self = this;
 		new Request({
-			url: '/search_people',
-			method: 'GET',
+			url: '/AJAX/search_people.php',
+			method: 'POST',
 			data: {
-				uname: keyword,
-				people_search_button: 'Submit'
+				uname: keyword
 			},
 			onSuccess: function(){
 				var resp = JSON.decode(this.response.text);
