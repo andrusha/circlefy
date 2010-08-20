@@ -117,7 +117,7 @@ var _list = _tap.register({
 	*/
 	addItem: function(type, data) {
         if (type == 'convos') 
-            var item = $$('li.panel-item#cid_'+data['cid']);
+            var item = $$('li.panel-item#cid_'+data['mid']);
             if (item.length == 0)
                 Elements.from(_template.parse('list.convo', [data])).inject($('panel-convos'));
 		this.publish('list.item.added', [type, data]);
