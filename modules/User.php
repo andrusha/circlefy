@@ -34,7 +34,66 @@ class User {
                     FROM login
                    WHERE uid = {$uid}
                    LIMIT 1";
-        $info = $this->db->query($query)->fetch_assoc();
+        $info = array();
+        $result = $this->db->query($query);
+        if ($result->num_rows)
+            $info = $result->fetch_assoc();
         return $info;
+    }
+
+    /*
+        User information from profile table too, like about, etc
+    */
+    public function getFullInfo($uid) {
+        $query = "SELECT l.uname, GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
+                         l.pic_100 AS big_pic, l.pic_36 AS small_pic, l.help,
+                         p.about
+                    FROM login l
+                   INNER
+                    JOIN profile p
+                      ON p.rpid = l.uid
+                   WHERE l.uid = {$uid}
+                   LIMIT 1";
+        $info = array();
+        $result = $this->db->query($query);
+        if ($result->num_rows)
+            $info = $result->fetch_assoc();
+        return $info;
+    }
+
+    /*
+        Returns user statistics
+        taps, responses & following channels count
+
+        $uid - user id
+        
+        array('taps' => , 'responses' => , 'groups' => )
+    */
+    public function getStats($uid) {
+        $query = "
+         SELECT COUNT(i.mid) AS taps,
+                SUM(i.count) AS responses,
+                (
+                    SELECT COUNT(g.uid) AS groups
+                      FROM group_members AS g
+                     WHERE g.uid = {$uid}
+                     GROUP
+                        BY g.uid
+                ) AS groups
+           FROM (
+                    SELECT s.mid AS mid,
+                           COUNT(c.mid) AS count
+                      FROM special_chat AS s
+                      JOIN chat c
+                        ON c.cid = s.mid
+                     WHERE s.uid = {$uid}
+                     GROUP
+                        BY (s.mid)
+                ) AS i";
+        $stats = array();
+        $result = $this->db->query($query);
+        if ($result->num_rows)
+            $stats = $result->fetch_assoc();
+        return $stats;
     }
 };

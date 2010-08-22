@@ -190,7 +190,8 @@ EOF;
                 GROUP BY sm.gid";
             $this->db_class_mysql->set_query($group_responses_count, 'responses_count', 'Returns number of responses for all taps in channel');
             $responses_count_result = $this->db_class_mysql->execute_query('responses_count');
-
+            
+            if ($responses_count_result->num_rows) 
             while ($res = $responses_count_result->fetch_assoc()) {
                 $count = $res['responses_count'];
                 $gid = $res['gid'];

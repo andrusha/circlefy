@@ -6,6 +6,7 @@
 */
 require('../config.php');
 require('../api.php');
+require('../modules/User.php');
 
 session_start();
 
@@ -72,13 +73,10 @@ EOF;
 	}
 
     private function notifyFriend($uid, $fuid, $status) {
-        $query = "
-            SELECT uname, CONCAT(fname, ' ', lname) AS real_name
-              FROM login
-             WHERE uid = {$uid}
-             LIMIT 1";
-        $result = $this->mysqli->query($query)->fetch_assoc();
-        $data = array('status' => $status, 'uname' => $result['uname'], 'ureal_name' => $result['real_name']);
+        $userClass = User();
+        $info = $userClass->getInfo($uid);
+
+        $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
         $message = json_encode(array('action' => 'notify.follower', 'users' => array(intval($fuid)),
                                      'data' => $data));
 

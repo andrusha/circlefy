@@ -31,8 +31,9 @@ class Convos {
                 BY ac.mid ASC";
         $result = $this->db->query($query);
         $activeConvos = array();
-        while ($res = $result->fetch_assoc())
-           $activeConvos[ intval($res['mid']) ] = $res;
+        if ($result->num_rows)
+            while ($res = $result->fetch_assoc())
+               $activeConvos[ intval($res['mid']) ] = $res;
 
         return $activeConvos;
     }
@@ -80,4 +81,26 @@ class Convos {
         if (!$this->setActive($uid, $mid))
             $this->addActive($uid, $mid);
     }
+
+    /*
+        Returns if convo active or not
+        (1 | 0)
+    */
+    public function getStatus($uid, $mid) {
+        $query = "
+            SELECT active
+              FROM active_convo
+             WHERE uid = {$uid}
+               AND mid = {$mid}
+             LIMIT 1";
+        $active = 0;
+        $result = $this->db->query($query);
+        if ($result->num_rows) {
+            $result = $result->fetch_assoc();
+            $active = $result['active'];
+        }
+
+        return $active;
+    }
+
 };

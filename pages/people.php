@@ -19,7 +19,8 @@ class people extends Base{
 		parent::__construct();
 		$uid = $_SESSION['uid'];
 
-        $peoples = new Peoples();
+        $peoples = new Friends();
+        $user = new User();
 
 		$this->set($peoples->followingCount($uid),'tracked_count');
 		$this->set($peoples->followersCount($uid),'track_count');
@@ -34,7 +35,7 @@ class people extends Base{
             $friend = array_intersect_key($user_info, 
                 array_flip(array('uname', 'fname', 'lname', 'pic_100', 'last_chat')));
             $friend['fuid'] = $fuid;
-            $friend['stats'] = $peoples->userStats($fuid);
+            $friend['stats'] = $user->getStats($fuid);
             $friend['friend'] = 1;
             if (!$friend['last_chat'])
                 $friend['last_chat'] = "*This user has not tap'd yet*;";

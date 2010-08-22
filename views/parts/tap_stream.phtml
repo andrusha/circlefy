@@ -1,12 +1,13 @@
-<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
+<ul id="taps" class="stream <?= empty($_taps) ? "empty" : "" ?>">
 <?php
 if (!empty($_taps)):
     foreach ($_taps as $tap):
+        $show_resp = isset($show_responses) && isset($tap['responses']);
 ?>
         <li id="tid_<?= $tap['cid'] ?>" class="container"
             data-id="<?= $tap['cid'] ?>"
             data-uid="<?= $tap['uid'] ?>"
-            data-user="<?= $tap['user'] ?>">
+            data-user="<?= $tap['uname'] ?>">
             <a href="/user/<?= $tap['uname'] ?>">
                 <img class="avatar" alt="<?= $tap['uname'] ?>"
                      src="/user_pics/<?= $tap['pic_100'] ?>"/>
@@ -39,13 +40,29 @@ if (!empty($_taps)):
                 </span>
                 <a href="#" class="tap-resp-count" title="view responses">
                     <span class="show-resp-count"><?= $tap['count'] ?></span>
-                    <span class="follow_button">Reply</span>
-
+                    <span class="follow_button"<? echo ($show_resp ? "style='display: none'" : '') ?>>Reply</span>
                 </a>
             </p>
 
-            <div class="responses">
-                <ul class="chat"></ul>
+            <div class="responses<? /*echo ($show_resp ? ' open' : '')*/ ?>">
+                <ul class="chat"<? echo ($show_resp ? "style='height: 350px'" : '') ?>>
+                <?php
+                    if ($show_resp):
+                        foreach($tap['responses'] as $resp):
+                ?>
+                    <li>
+                        <em data-timestamp="<?= $resp['chat_time_raw'] ?>"><?= $resp['chat_time'] ?></em>
+                        <a href="/user/<?= $resp['uname'] ?>" class="user">
+        					<img src="/user_pics/<?= $resp['small_pic'] ?>" />
+		        			<span class="resp-uname"><?= $resp['uname'] ?>:</span>
+                        </a>
+				         <span class="resp-text"><?= $resp['chat_text'] ?></span>
+                    </li>
+                <?php
+                        endforeach;
+                    endif;
+                ?>
+                </ul>
                 <input class="chatbox" type="text"/>
 
                 <div class="counter">240</div>
@@ -53,9 +70,11 @@ if (!empty($_taps)):
             </div>
         </li>
 <?php endforeach; ?>
-        <li class="loadmore">
-            <p>more...</p>
-        </li>
+    <?php if (!isset($dont_show_more)): ?>
+            <li class="loadmore">
+                <p>more...</p>
+            </li>
+    <?php endif; ?>
 <?php else: ?>
         <li id="no-taps-yet" class="notice">
             <p>Nothing yet! Try tapping this feed...</p>

@@ -2,28 +2,35 @@
 $logged = (!empty($_SESSION['uid']));
 // if ($_t['no_tap']) header('location:/');
 
-if (!empty($_t['user_bits'])) {
-	$tap = array_shift($_t['user_bits']);
-}
+extract($_t, EXTR_PREFIX_SAME, '_');
 ?>
 <!doctype html>
 <html>
 <head>
 	<? 
-	$tpl_title = "Convo with ".$_t['user'];
+	$tpl_title = "Convo with ".$user['real_name'];
 	include(OK_HEADER);
 	?>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
+			uid: "<?= $_SESSION['uid'] ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
-			stream: JSON.decode('<?= json_encode($tap['cid']) ?>'),
-			convos: [],
-			people: JSON.decode('<?= json_encode($people) ?>'),
-			groups: JSON.decode('<?= json_encode($groups) ?>')
+			stream: "<?= $cid ?>",
+			convos: ["<?= $cid ?>"],
+			people: ["<?= $_SESSION['uid'] ?>"],
+			groups: []
 		};
+
+        window.addEvent('load', function() {
+            var boxes = $$('ul.chat');
+            _tap.publish('stream.updated', []);
+            boxes.each(function(box){
+                //box.scrollTo(0, box.getScrollSize().y);
+                _tap.publish('convos.loaded', [box, 0]);
+            });
+        });
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
@@ -32,7 +39,10 @@ if (!empty($_t['user_bits'])) {
 <body>
 	<div id="wrapper">
 
-	<? include(OK_TOPBAR); ?> 
+	<? 
+
+    include(OK_TOPBAR);
+    ?> 
 
 		<div id="main">
 
@@ -41,36 +51,36 @@ if (!empty($_t['user_bits'])) {
 			<div class="sideinfo section container">
 
 			<h3>	
-			<?php if($_t['active_convo']):?>
-				<span id="tab-name" class="untrack-convo follow_button" cid="<?= $tap['cid'] ?>">You are following this convo</span>
+			<?php if($active_convo):?>
+				<span id="tab-name" class="untrack-convo follow_button" cid="<?= $cid ?>">You are following this convo</span>
 			<?php else: ?>
-				<span id="tab-name" class="track-convo follow_button" cid="<?= $tap['cid'] ?>">Follow this convo</span>
+				<span id="tab-name" class="track-convo follow_button" cid="<?= $cid ?>">Follow this convo</span>
 			<?php endif;?>
 			</h3>
 
 			<h2>
-				<span id="tab-name">in this convo<?php if (isset($_['debug'])) echo " >> ".$_t['debug']; ?></span>
+				<span id="tab-name">in this convo<?php if (isset($debug)) echo " >> ".$debug; ?></span>
 			</h2>
 
 			<ul class="panel">
 			<?php 
-			if (!empty($_t['invovled'])):
-				foreach ($_t['invovled'] as $person):
-					?>
+			if (!empty($involved)):
+				foreach ($involved as $person):
+			?>
 					<li class="panel-item" >
 					<span class="count"><?= $person['count'] ?></span>	
 					<img class="small-pic" src="/user_pics/<?= $person['small_pic'] ?>" />
 					&nbsp;
 					<a href="/user/<?= $person['uname'] ?>" class="names inblock-public ellipsis"><?= $person['uname'] ?></a>
 					</li>
-					<?php
+            <?php
 				endforeach;
 			else:
-				?>
+            ?>
 				<li class="notify">
 				no one's responded yet
 				</li>
-				<?php
+            <?php
 			endif;
 			?>
 			</ul>
@@ -80,98 +90,38 @@ if (!empty($_t['user_bits'])) {
 		<? include(OK_SIDEBAR); ?>
 
 			<div id="content">
-				
 				<div id="infobox" class="pubgroup section container">
 					<?php /* if (!$logged): ?>
 					<button class="login">login to respond</button>
 					<?php endif;*/  ?>
-					<img src="/user_pics/<?= $_t['user_pic_med'] ?>" class="avatar" />
-					<h2><?= $_t['user'] ?> <span class="nick"></span></h2>
-					<p class="headline">&#8220;<?=$_t['about']?>&#8221;</p>
+					<img src="/user_pics/<?= $user['big_pic'] ?>" class="avatar" />
+					<h2><?= $user['real_name'] ?> <span class="nick"></span></h2>
+					<p class="headline">&#8220;<?=$user['about']?>&#8221;</p>
 					<p class="stats">
-						<?php $stats = $_t['stats']; ?>
-						<strong><?= $stats['message_count'] ?></strong> Taps sent, 
-						<strong><?= $stats['response_count'] ?></strong> Responses received, and
-						<strong><?= $stats['group_count'] ?></strong> Channels joined.
+						<strong><?= intval($stats['taps']) ?></strong> Taps sent, 
+						<strong><?= intval($stats['responses']) ?></strong> Responses received, and
+						<strong><?= intval($stats['groups']) ?></strong> Channels joined.
 					</p>
 				</div>
 
-				<form id="tapbox" action="" class="section active">
-					<div id="tapto">
-						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($_t['gname']) ?>..
-					</div>
-					<span class="counter">240</span>
-					<input id="taptext" tabindex="1" type="text">
-					<button id="tapsend" tabindex="3" type="submit">tap!</button>
-				</form>
-
 				<div id="tapstream" class="section">
+                    <a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 					<div class="header header-non">
-						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 						<h2 class="header-title">
 							<img src="/images/flat/loader.gif" />
 							<span class="title">convo</span>
 						</h2>
-						<span class="stream-name">with <?= $_t['user'] ?>&nbsp; 
-						<a href="/channel/<?=$tap['symbol']?>" /><img class="public-tap-favicon aggr-favicons" src="/group_pics/<?= $tap['favicon']?>" title="<?=$tap['gname']?>" />
+						<span class="stream-name">with <?= $user['uname'] ?>&nbsp; 
+						<a href="/channel/<?=$tap['symbol']?>" /><img class="public-tap-favicon aggr-favicons" src="/group_pics/<?= $tap['favicon']?>" title="<?=$tap['gname']?>" /></a>
 						</span>
 					</div>
 					<div class="body">
-						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
-							<li id="tid_<?= $tap['cid'] ?>" class="container" 
-								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $_t['user'] ?>">
-								<a href="/user/<?= $tap['uname'] ?>">
-									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
-								</a>
-								<p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '' : 'offline' ?>">
-									<a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['fname'] . " " . $tap['lname']) ?></a>,
-									<a href="/tap/<?= $tap['cid'] ?>" class="date" data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
-										<?= $tap['chat_timestamp'] ?>
-									</a>
-								</p>
-								<p class="tap-body">
-									<?= $tap['chat_text'] ?>
-								</p>
-								<p class="tap-actions">
-									<span class="tap-resp">
-										<span class="indicator">Someone's replying..</span>
-										<span class="last-resp">
-											<strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
-											<span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
-										</span>
-									</span>
-									<a href="#" class="tap-resp-count" title="view responses">
-										<span class="count">
-											<?= $tap['count'] ?>
-										</span>
-									</a>
-									<span class="tap-view-count count" title="viewers">
-										<?= (!empty($tap['viewer_count'])) ? $tap['viewer_count'] : '0' ?>
-									</span>
-								</p>
-								<div class="responses perma">
-									<ul class="chat chat-pub">
-										<?php
-											if (!empty($_t['responses'])):
-												foreach($_t['responses'] as $resp):
-										?>
-										<li>
-											<em data-timestamp="<?= $resp['chat_time'] ?>">
-												<?= date('g:i A', $resp['chat_time']) ?>
-											</em>
-											<a href="/user/<?= $resp['uname'] ?>" class="user"><?= $resp['uname'] ?>:</a> <span><?= $resp['chat_text'] ?></span>
-										</li>
-										<?php
-												endforeach;
-											endif;
-										?>
-									</ul>
-									<input class="chatbox" type="text" />
-									<div class="counter">240</div>
-									<div class="overlay">type in your response and press enter.</div>
-								</div>
-							</li>
-						</ul>
+                        <?php
+                            $_taps = array($tap);
+                            $dont_show_more = true;
+                            $show_responses = true;
+                            include(TAP_STREAM);
+                        ?>
 					</div>
 				</div>
 

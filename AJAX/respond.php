@@ -15,6 +15,8 @@ EOF;
 session_start();
 require('../config.php');
 require('../api.php');
+require('../modules/User.php');
+
 
 if($cb_enable){
 	$response = stripslashes($_GET['response']);
@@ -132,66 +134,17 @@ EOF;
 		return array('success' => 1);
 	}
 	
-	private function notify_all($cid, $init_tapper, $send_emails = false) {
+	private function notify_all($cid, $init_tapper) {
 	    $uid = intval($_SESSION['uid']);
-        /*
-		NOTE: NEED TO ADD IN THE JOIN FOR settings, to see if they actually are tracking it
-		*/
-		$notify_all_query = <<<EOF
-		SELECT 
-		ac.uid,	
-		l.uname, l.fname,l.lname,l.email
-		FROM active_convo AS ac
-		JOIN login AS l
-		ON ac.uid = l.uid
-		WHERE ac.mid = {$cid} AND ac.active = 1
-EOF;
-        // AND ac.uid != {$init_tapper}
-		$nofiy_all_res = $this->mysqli->query($notify_all_query);
-        
+        $userClass = new User();
+        $info = $userClass->getInfo($uid);        
 
-        $users = $results = array();
-        $uname = $ureal_name = '';
-        while($res = $nofiy_all_res->fetch_assoc()) {
-            $results[] = $res;
-            $users[] = intval($res['uid']);
-            if ($res['uid'] == $uid) {
-                $uname = $res['uname'];
-                $ureal_name = $res['fname'].' '.$res['lname'];
-            }
-        }
-
-        $data = array('cid' => intval($cid), 'uname' => $uname, 'ureal_name' => $ureal_name);
+        $data = array('cid' => intval($cid), 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         $insert_string = json_encode(
-            array('action' => 'notify.convo.response', 'users' => $users, 'data' => $data));
+            array('action' => 'notify.convo.response', 'cid' => intval($cid), 'data' => $data));
         fwrite($fp, $insert_string."\r\n");
         fclose($fp);
-
-		//For each person who is apart of the message or has the message active, send them an email
-        if ($send_emails) {
-            foreach($results as $res){
-                $uname = $res['uname'];
-                $fname = $res['fname'];
-                $lname = $res['lname'];
-                $email = $res['email'];
-            
-                $to = $email;
-                $subject = "{$uname} has replied to your tap.";
-                $from = "From: tap.info\r\n";
-                $body = <<<EOF
-{$uname} has responded to a tap you're tracking:
-
-{$uname}: {$msg}
-
-You can respond back in real-time at http://tap.info/tap/{$mid}
-
--Team Tap
-http://tap.info
-EOF;
-                mail($to,$subject,$body,$from);
-            }
-        }
 	}
 
 	private function notify_user($init_tapper,$msg,$uname,$cid,$email){

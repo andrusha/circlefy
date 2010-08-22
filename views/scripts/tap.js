@@ -125,7 +125,10 @@ var _dater = _tap.register({
                 diff = ((now - orig) / 1000),
                 day_diff = Math.floor(diff / 86400);
 
-        if (isNaN(timestamp) || $type(diff) == false || day_diff < 0 || day_diff >= 31)
+        if (diff < 0)
+            return "Just Now";
+
+        if (isNaN(timestamp) || $type(diff) == false || day_diff >= 31)
             return orig.format('jS M Y');
 
         return day_diff == 0 && (
@@ -135,6 +138,7 @@ var _dater = _tap.register({
                         diff < 86400 && Math.floor(diff / 3600) + " hours ago") ||
                 day_diff == 1 && "Yesterday" ||
                 day_diff < 7 && day_diff + " days ago" ||
+                day_diff == 7 && "A week ago" ||
                 day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago";
     }
 

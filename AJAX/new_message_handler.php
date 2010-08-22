@@ -10,6 +10,8 @@ format:
 session_start();
 require('../config.php');
 require('../api.php');
+require('../modules/User.php');
+require('../modules/Group.php');
 
 
 $to_box = stripslashes($_POST['to_box']);
@@ -670,29 +672,15 @@ EOF;
         Notify all group members, that there is new tap
     */
     private function notifyAll($gid, $tapper_uid) {
-        $query = "
-           SELECT g.gname, g.symbol, l.uid, l.uname, CONCAT(l.fname, ' ', l.lname) as real_name
-             FROM group_members AS gm
-            INNER JOIN TEMP_ONLINE AS t ON t.uid = gm.uid
-            INNER JOIN groups AS g ON g.gid = gm.gid
-            INNER JOIN login AS l ON l.uid = gm.uid
-            WHERE gm.gid = {$gid} AND t.online = 1"; 
+        $userClass = new User();
+        $info = $userClass->getInfo($tapper_uid);
 
-        $users = $group = array();
-        $uname = $ureal_name = '';
-        $result = $this->mysqli->query($query);
-        while ($row = $result->fetch_assoc()) {
-            $users[] = intval($row['uid']);
-            $group = array('name' => $row['gname'], 'symbol' => $row['symbol']);
-            if ($row['uid'] == $tapper_uid) {
-                $uname = $row['uname'];
-                $ureal_name = $row['real_name'];
-            }
-        }
+        $groupClass = new Group();
+        $ginfo = $groupClass->getInfo($gid);
 
-
-        $data = array('gname' => $group['name'], 'greal_name' => $group['symbol'], 'uname' => $uname, 'ureal_name' => $ureal_name);
-        $message = json_encode(array('action' => 'notify.tap.new', 'users' => $users, 'data' => $data));
+        $data = array('gname' => $ginfo['gname'], 'greal_name' => $ginfo['symbol'], 
+                      'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
+        $message = json_encode(array('action' => 'notify.tap.new', 'gid' => intval($gid), 'data' => $data));
 		$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
 		fwrite($fp, $message."\r\n");
 		fclose($fp);

@@ -3,7 +3,7 @@
 /*
 Class for all things related to friends
 */
-class Peoples {
+class Friends {
     private $db;
 
     public function __construct() {
@@ -85,40 +85,5 @@ class Peoples {
     public function filterByUname($uid, $uname) {
         return $this->filterFriends($uid, true, " AND u.uname LIKE '%{$uname}%' ");
     }
-
-    /*
-        Returns user statistics
-        taps, responses & following channels count
-
-        $uid - user id
-        
-        array('taps' => , 'responses' => , 'groups' => )
-    */
-    public function userStats($uid) {
-        $query = "
-         SELECT COUNT(i.mid) AS taps,
-                SUM(i.count) AS responses,
-                (
-                    SELECT COUNT(g.uid) AS groups
-                      FROM group_members AS g
-                     WHERE g.uid = {$uid}
-                     GROUP
-                        BY g.uid
-                ) AS groups
-           FROM (
-                    SELECT s.mid AS mid,
-                           COUNT(c.mid) AS count
-                      FROM special_chat AS s
-                      JOIN chat c
-                        ON c.cid = s.mid
-                     WHERE s.uid = {$uid}
-                     GROUP
-                        BY (s.mid)
-                ) AS i";
-
-        $result = $this->db->query($query)->fetch_assoc();
-        return $result;
-    }
-
 };
 
