@@ -20,7 +20,7 @@ import MySQLdb
 #                ||----w |
 #                ||     ||
 
-DEBUG = False 
+DEBUG = True 
 thread_count = {'message': 0, 'user': 0, 'admin': 0}
 BUF_SIZE = 4096
 participants = [ ]
@@ -130,7 +130,7 @@ class MessageConnection(object):
                         uniq_conn.send_message('tap.new', results)
             self.uids = []
 
-    def makeList(self, users = None, cid = None, gid = None):
+    def makeList(self, users = None, cid = None, gid = None, exclude = None):
         user_server = self.server.root.user_server
         new_users = set(users) if users else set()
         #TODO: fix that str(cid) shit
@@ -142,6 +142,9 @@ class MessageConnection(object):
             gid = str(gid)
             if gid in user_server.channels['group']:
                 new_users.update(user_server.channels['group'][gid])
+
+        if exclude is not None:
+            new_users.difference_update(set(exclude))
 
         return new_users
 
@@ -184,7 +187,9 @@ class MessageConnection(object):
                 users = frame.get('users', None)
                 cid = frame.get('cid', None)
                 gid = frame.get('gid', None)
-                self.sendToUsers(self.makeList(users, cid, gid), type, frame['data'])
+                exclude = frame.get('exclude', None)
+                users_list = self.makeList(users, cid, gid, exclude)
+                self.sendToUsers(users_list, type, frame['data'])
 
             return True
 

@@ -175,7 +175,7 @@ $value = '&value='.$u[2];
 	<li>All your people</li>
 	<?php if($_t['your_friends']) : ?>
 	<?php foreach ($_t['your_friends'] as $person): ?>
-	<a href="/user/<?=$person['friend_uname']?>" />
+	<a href="/user/<?=$person['friend_uname']?>">
 	<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
 	title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">
 	</li>

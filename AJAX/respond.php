@@ -121,10 +121,11 @@ EOF;
         fwrite($fp,$insert_string);
         fclose($fp);
 
+        $msg = strip_tags($msg);
 		$msg = addslashes($msg);
 		$this->mysqli->real_escape_string($msg);
 		$this->mysqli->real_escape_string($cid);
-		
+	
         $resp_message_query = "INSERT INTO chat(cid,uid,uname,chat_text) values('{$cid}','{$uid}','{$uname}','{$msg}')";
         $this->mysqli->query($resp_message_query);
 
@@ -136,13 +137,32 @@ EOF;
 	
 	private function notify_all($cid, $init_tapper) {
 	    $uid = intval($_SESSION['uid']);
+
+        $query = "
+            SELECT a.uid
+              FROM active_convo a 
+             INNER
+              JOIN TEMP_ONLINE tmo
+                ON tmo.uid = a.uid
+             WHERE a.mid = {$cid}
+               AND tmo.online = 1
+               AND a.active = 1
+               AND a.uid <> {$uid}";
+
+        $users = array();
+        $result = $this->mysqli->query($query);
+        if ($result->num_rows)
+            while ($res = $result->fetch_assoc())
+                $users[] = intval($res['uid']);
+
         $userClass = new User();
         $info = $userClass->getInfo($uid);        
 
         $data = array('cid' => intval($cid), 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         $insert_string = json_encode(
-            array('action' => 'notify.convo.response', 'cid' => intval($cid), 'data' => $data));
+            array('action' => 'notify.convo.response', 'users' => $users, 
+            'cid' => intval($cid), 'exclude' => array(intval($uid)), 'data' => $data));
         fwrite($fp, $insert_string."\r\n");
         fclose($fp);
 	}

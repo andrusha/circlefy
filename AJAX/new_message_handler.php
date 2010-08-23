@@ -672,6 +672,21 @@ EOF;
         Notify all group members, that there is new tap
     */
     private function notifyAll($gid, $tapper_uid) {
+        $query = "
+            SELECT g.uid
+              FROM group_members g
+             INNER
+              JOIN TEMP_ONLINE tmo
+                ON tmo.uid = g.uid
+             WHERE g.gid = {$gid}
+               AND tmo.online = 1
+               AND g.uid <> {$tapper_uid}";
+        $users = array();
+        $result = $this->mysqli->query($query);
+        if ($result->num_rows)
+            while($res = $result->fetch_assoc())
+                $users[] = intval($res['uid']);
+
         $userClass = new User();
         $info = $userClass->getInfo($tapper_uid);
 
@@ -680,7 +695,9 @@ EOF;
 
         $data = array('gname' => $ginfo['gname'], 'greal_name' => $ginfo['symbol'], 
                       'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
-        $message = json_encode(array('action' => 'notify.tap.new', 'gid' => intval($gid), 'data' => $data));
+        $message = json_encode(array('action' => 'notify.tap.new',
+            'gid' => intval($gid), 'users' => $users,
+            'exclude' => array(intval($tapper_uid)), 'data' => $data));
 		$fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
 		fwrite($fp, $message."\r\n");
 		fclose($fp);

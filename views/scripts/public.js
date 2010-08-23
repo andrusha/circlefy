@@ -1044,6 +1044,35 @@ var _tapbox = _tap.register({
 });
 
 /*
+ * module: _resizer
+ *
+ * Makes responses area resizeable
+ */
+_resizer = _tap.register({
+    init: function() {
+        this.makeResizeable();
+        this.subscribe({
+            'stream.updated': this.makeResizeable.bind(this),
+        });
+    },
+
+    makeResizeable: function() {
+        this.resizers = $$('div.resizer');
+        this.resizers.each( function(div) {
+            var chat = div.parentNode.getElement('ul.chat');
+            var drag = new Drag(chat, {
+                snap: 0,
+                handle: div,
+                modifiers: {y: 'height'},
+                onComplete: function(el) {
+                    el.scrollTo(0, el.getScrollSize().y);
+                }
+            });
+        });
+    },
+});
+
+/*
 module: _live.stream
 	controls the automatic tap streaming
 
@@ -1199,15 +1228,17 @@ _live.responses = _tap.register({
         var parent = $('tid_' + id);
         if (!parent) return;
         var box = parent.getElement('ul.chat');
+        var time_raw = new Date().getTime().toString().substring(0, 10);
         if (box) this.publish('responses.new', [box, [
             {
                 uname: user,
-                pic_small: pic,
-                chat_text: msg,
-                chat_time: new Date().getTime().toString().substring(0, 10)
+                small_pic: pic,
+                chat_text: msg.stripTags(),
+                chat_time_raw: time_raw,
+                chat_time: _dater.timestampToStr(time_raw*1)
             }
         ]]);
-    }
+    },
 
 });
 

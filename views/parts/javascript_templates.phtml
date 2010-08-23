@@ -14,7 +14,7 @@
                                 <a href="/tap/<#: tap.cid #>" class="date" data-timestamp="<#: tap.chat_timestamp_raw #>">
                                         <#: tap.chat_timestamp #>
                                 </a>
-				<a href="/channel/<#: tap.symbol #>" /><img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" /></a>
+				<a href="/channel/<#: tap.symbol #>"><img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" /></a>
                         </p>
                         <p class="tap-body">
                                 <#: tap.chat_text #>
@@ -36,6 +36,7 @@
                                 <ul class="chat">
                                 </ul>
                                 <input class="chatbox" type="text" />
+                                <div class="resizer"></div>
                                 <div class="counter">240</div>
                                 <div class="overlay">type in your response and press enter.</div>
                         </div>
@@ -46,15 +47,15 @@
                 <ul id="template-responses">
 		<# for (var response from this): #>
                         <li>
-                                <em data-timestamp="<#: response.chat_time #>">
-                                    <#: _dater.timestampToStr(response.chat_time*1)  #>
+                                <em data-timestamp="<#: response.chat_time_raw #>">
+                                    <#: response.chat_time  #>
                                 </em>
                                 <a href="/user/<#: response.uname #>" class="user">
-					<img src="/user_pics/<#: response.pic_small #>" />
+					<img src="/user_pics/<#: response.small_pic #>" />
 					<span class="resp-uname"><#: response.uname #>:</span>
 
 				</a>
-				<span class="resp-text"><#: response.chat_text.linkify() #></span>
+				<span class="resp-text"><#: response.chat_text #></span>
                         </li>
                 <# end; #>
                 </ul>

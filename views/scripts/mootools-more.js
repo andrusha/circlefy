@@ -720,6 +720,220 @@ Date.implement('format', function(str){
 
 })();
 
+var Drag = new Class({
+
+	Implements: [Events, Options],
+
+	options: {/*
+		onBeforeStart: $empty(thisElement),
+		onStart: $empty(thisElement, event),
+		onSnap: $empty(thisElement)
+		onDrag: $empty(thisElement, event),
+		onCancel: $empty(thisElement),
+		onComplete: $empty(thisElement, event),*/
+		snap: 6,
+		unit: 'px',
+		grid: false,
+		style: true,
+		limit: false,
+		handle: false,
+		invert: false,
+		preventDefault: false,
+		stopPropagation: false,
+		modifiers: {x: 'left', y: 'top'}
+	},
+
+	initialize: function(){
+		var params = Array.link(arguments, {'options': Object.type, 'element': $defined});
+		this.element = document.id(params.element);
+		this.document = this.element.getDocument();
+		this.setOptions(params.options || {});
+		var htype = $type(this.options.handle);
+		this.handles = ((htype == 'array' || htype == 'collection') ? $$(this.options.handle) : document.id(this.options.handle)) || this.element;
+		this.mouse = {'now': {}, 'pos': {}};
+		this.value = {'start': {}, 'now': {}};
+
+		this.selection = (Browser.Engine.trident) ? 'selectstart' : 'mousedown';
+
+		this.bound = {
+			start: this.start.bind(this),
+			check: this.check.bind(this),
+			drag: this.drag.bind(this),
+			stop: this.stop.bind(this),
+			cancel: this.cancel.bind(this),
+			eventStop: $lambda(false)
+		};
+		this.attach();
+	},
+
+	attach: function(){
+		this.handles.addEvent('mousedown', this.bound.start);
+		return this;
+	},
+
+	detach: function(){
+		this.handles.removeEvent('mousedown', this.bound.start);
+		return this;
+	},
+
+	start: function(event){
+		if (event.rightClick) return;
+		if (this.options.preventDefault) event.preventDefault();
+		if (this.options.stopPropagation) event.stopPropagation();
+		this.mouse.start = event.page;
+		this.fireEvent('beforeStart', this.element);
+		var limit = this.options.limit;
+		this.limit = {x: [], y: []};
+		for (var z in this.options.modifiers){
+			if (!this.options.modifiers[z]) continue;
+			if (this.options.style) this.value.now[z] = this.element.getStyle(this.options.modifiers[z]).toInt();
+			else this.value.now[z] = this.element[this.options.modifiers[z]];
+			if (this.options.invert) this.value.now[z] *= -1;
+			this.mouse.pos[z] = event.page[z] - this.value.now[z];
+			if (limit && limit[z]){
+				for (var i = 2; i--; i){
+					if ($chk(limit[z][i])) this.limit[z][i] = $lambda(limit[z][i])();
+				}
+			}
+		}
+		if ($type(this.options.grid) == 'number') this.options.grid = {x: this.options.grid, y: this.options.grid};
+		this.document.addEvents({mousemove: this.bound.check, mouseup: this.bound.cancel});
+		this.document.addEvent(this.selection, this.bound.eventStop);
+	},
+
+	check: function(event){
+		if (this.options.preventDefault) event.preventDefault();
+		var distance = Math.round(Math.sqrt(Math.pow(event.page.x - this.mouse.start.x, 2) + Math.pow(event.page.y - this.mouse.start.y, 2)));
+		if (distance > this.options.snap){
+			this.cancel();
+			this.document.addEvents({
+				mousemove: this.bound.drag,
+				mouseup: this.bound.stop
+			});
+			this.fireEvent('start', [this.element, event]).fireEvent('snap', this.element);
+		}
+	},
+
+	drag: function(event){
+		if (this.options.preventDefault) event.preventDefault();
+		this.mouse.now = event.page;
+		for (var z in this.options.modifiers){
+			if (!this.options.modifiers[z]) continue;
+			this.value.now[z] = this.mouse.now[z] - this.mouse.pos[z];
+			if (this.options.invert) this.value.now[z] *= -1;
+			if (this.options.limit && this.limit[z]){
+				if ($chk(this.limit[z][1]) && (this.value.now[z] > this.limit[z][1])){
+					this.value.now[z] = this.limit[z][1];
+				} else if ($chk(this.limit[z][0]) && (this.value.now[z] < this.limit[z][0])){
+					this.value.now[z] = this.limit[z][0];
+				}
+			}
+			if (this.options.grid[z]) this.value.now[z] -= ((this.value.now[z] - (this.limit[z][0]||0)) % this.options.grid[z]);
+			if (this.options.style) {
+				this.element.setStyle(this.options.modifiers[z], this.value.now[z] + this.options.unit);
+			} else {
+				this.element[this.options.modifiers[z]] = this.value.now[z];
+			}
+		}
+		this.fireEvent('drag', [this.element, event]);
+	},
+
+	cancel: function(event){
+		this.document.removeEvent('mousemove', this.bound.check);
+		this.document.removeEvent('mouseup', this.bound.cancel);
+		if (event){
+			this.document.removeEvent(this.selection, this.bound.eventStop);
+			this.fireEvent('cancel', this.element);
+		}
+	},
+
+	stop: function(event){
+		this.document.removeEvent(this.selection, this.bound.eventStop);
+		this.document.removeEvent('mousemove', this.bound.drag);
+		this.document.removeEvent('mouseup', this.bound.stop);
+		if (event) this.fireEvent('complete', [this.element, event]);
+	}
+
+});
+
+Element.implement({
+
+	makeResizable: function(options){
+		var drag = new Drag(this, $merge({modifiers: {x: 'width', y: 'height'}}, options));
+		this.store('resizer', drag);
+		return drag.addEvent('drag', function(){
+			this.fireEvent('resize', drag);
+		}.bind(this));
+	}
+
+});
+
+(function(){
+  
+var special = ['À','à','Á','á','Â','â','Ã','ã','Ä','ä','Å','å','Ă','ă','Ą','ą','Ć','ć','Č','č','Ç','ç', 'Ď','ď','Đ','đ', 'È','è','É','é','Ê','ê','Ë','ë','Ě','ě','Ę','ę', 'Ğ','ğ','Ì','ì','Í','í','Î','î','Ï','ï', 'Ĺ','ĺ','Ľ','ľ','Ł','ł', 'Ñ','ñ','Ň','ň','Ń','ń','Ò','ò','Ó','ó','Ô','ô','Õ','õ','Ö','ö','Ø','ø','ő','Ř','ř','Ŕ','ŕ','Š','š','Ş','ş','Ś','ś', 'Ť','ť','Ť','ť','Ţ','ţ','Ù','ù','Ú','ú','Û','û','Ü','ü','Ů','ů', 'Ÿ','ÿ','ý','Ý','Ž','ž','Ź','ź','Ż','ż', 'Þ','þ','Ð','ð','ß','Œ','œ','Æ','æ','µ'];
+
+var standard = ['A','a','A','a','A','a','A','a','Ae','ae','A','a','A','a','A','a','C','c','C','c','C','c','D','d','D','d', 'E','e','E','e','E','e','E','e','E','e','E','e','G','g','I','i','I','i','I','i','I','i','L','l','L','l','L','l', 'N','n','N','n','N','n', 'O','o','O','o','O','o','O','o','Oe','oe','O','o','o', 'R','r','R','r', 'S','s','S','s','S','s','T','t','T','t','T','t', 'U','u','U','u','U','u','Ue','ue','U','u','Y','y','Y','y','Z','z','Z','z','Z','z','TH','th','DH','dh','ss','OE','oe','AE','ae','u'];
+
+var tidymap = {
+	"[\xa0\u2002\u2003\u2009]": " ",
+	"\xb7": "*",
+	"[\u2018\u2019]": "'",
+	"[\u201c\u201d]": '"',
+	"\u2026": "...",
+	"\u2013": "-",
+	"\u2014": "--",
+	"\uFFFD": "&raquo;"
+};
+
+var getRegForTag = function(tag, contents) {
+	tag = tag || '';
+	var regstr = contents ? "<" + tag + "[^>]*>([\\s\\S]*?)<\/" + tag + ">" : "<\/?" + tag + "([^>]+)?>";
+	reg = new RegExp(regstr, "gi");
+	return reg;
+};
+
+String.implement({
+
+	standardize: function(){
+		var text = this;
+		special.each(function(ch, i){
+			text = text.replace(new RegExp(ch, 'g'), standard[i]);
+		});
+		return text;
+	},
+
+	repeat: function(times){
+		return new Array(times + 1).join(this);
+	},
+
+	pad: function(length, str, dir){
+		if (this.length >= length) return this;
+		var pad = (str == null ? ' ' : '' + str).repeat(length - this.length).substr(0, length - this.length);
+		if (!dir || dir == 'right') return this + pad;
+		if (dir == 'left') return pad + this;
+		return pad.substr(0, (pad.length / 2).floor()) + this + pad.substr(0, (pad.length / 2).ceil());
+	},
+
+	getTags: function(tag, contents){
+		return this.match(getRegForTag(tag, contents)) || [];
+	},
+
+	stripTags: function(tag, contents){
+		return this.replace(getRegForTag(tag, contents), '');
+	},
+
+	tidy: function(){
+		var txt = this.toString();
+		$each(tidymap, function(value, key){
+			txt = txt.replace(new RegExp(key, 'g'), value);
+		});
+		return txt;
+	}
+
+});
+
+})();
+
 // GENERALS
 
 if (!window.console) {
