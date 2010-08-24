@@ -13,6 +13,7 @@ var _filter = _tap.register({
     init: function() {
         this.box = $('filter');
         if (!this.box) return;
+        this.anon = $('anon_filter');
         this.group = _vars.filter.gid;
         this.info = _vars.filter.info;
         this.title = this.box.getElement('span.title');
@@ -25,6 +26,24 @@ var _filter = _tap.register({
         this.subscribe({
             'list.item': this.change.bind(this)
         });
+        this.anon.addEvent('click', this.toggleAnons.bind(this));
+        this.anon.store('state', false);
+    },
+
+    /*
+     * Toggle guests/registred users filter
+     */
+    toggleAnons: function() {
+        var state = this.anon.retrieve('state');
+        state = !state;
+        if (state) {
+            //filter bastards
+            this.anon.set('text', 'Registered users + others');
+        } else {
+            this.anon.set('text', 'Registered users');
+        }
+        this.anon.store('state', state);
+        this.publish('filter.search', [this.group, this.info, null, null, state]);
     },
 
 	/*

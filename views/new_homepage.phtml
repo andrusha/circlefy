@@ -75,12 +75,6 @@ if (!$is_guest) {
                 }
             }
 		};
-<? if ($is_guest) : ?>
-        window.addEvent('load', function () {
-            var el = $$('li#gid_public.panel-item')[0];
-            _list.itemClick(el, 0, 'javascript');
-        });
-<? endif; ?>
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>
@@ -116,6 +110,7 @@ if (!$is_guest) {
 				<div id="tapstream" class="section description">
 					<div class="header">
 						<a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
+                        <a href="#" id="anon_filter" class="floater" alt="Filter guests" title="Filter guests">Registred users</a>
 						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 						<h2 class="header-title">
 							<img src="/images/flat/loader.gif" />
@@ -129,7 +124,6 @@ if (!$is_guest) {
                             $_taps = $_t['groups_bits'];
                             include(TAP_STREAM);
                         ?>
-					</ul>
 					</div>
 				</div>
 			</div>

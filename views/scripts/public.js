@@ -236,7 +236,7 @@ var _stream = _tap.register({
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
         4. more (int) if you want to load more
 	*/
-    changeFeed: function(id, feed, keyword, more) {
+    changeFeed: function(id, feed, keyword, more, anon) {
         var self = this,
             data = {type: null};
 
@@ -261,7 +261,15 @@ var _stream = _tap.register({
 			self.loadmore_count = 10;
 		} else { 
 			data.more = self.loadmore_count;
-		}	
+		}
+
+        if (anon)
+            data.anon = 0; //1 for guests only, 0 for registred only
+        else {
+            var anon_elem = $('anon_filter');
+            if (anon_elem.retrieve('state'))
+                data.anon = 0;
+        }
         
         if (keyword) data.search = keyword;
         new Request({
