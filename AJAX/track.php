@@ -7,6 +7,7 @@
 require('../config.php');
 require('../api.php');
 require('../modules/User.php');
+require('../modules/Friends.php');
 
 session_start();
 
@@ -36,16 +37,16 @@ class friend_functions{
         $fid = $this->mysqli->real_escape_string($fid);
         $state = $this->mysqli->real_escape_string($state);
 
-		$friend_email_query = "SELECT l.email FROM login AS l WHERE l.uid = {$fid} AND l.private != 1 LIMIT 1";
-		$friend_email_result = $this->mysqli->query($friend_email_query);
-		$res = $friend_email_result->fetch_assoc();
-        $will_be_friends = 0;
+        $user = new User();
+        $info = $user->getInfo($uid);
+        $friend_info = $user->getInfo($fid);
 
-		if($state == 1 && $friend_email_result->num_rows){
-            $will_be_friends = 1;
+        $friends = new Friends();
 
-            $friend_query = "INSERT INTO friends(uid,fuid,time_stamp) values('{$uid}','{$fid}',NOW());";
-			$to = $res['email'];
+		if($state == 1 && !$friend_info['private']){
+            $friends->follow($uid, $fid);
+
+			$to = $friend_info['email'];
             $subject = "{$uname} now has you on tap.";
             $from = "From: tap.info\r\n";
             $body = <<<EOF
@@ -61,21 +62,17 @@ EOF;
             if($this->mysqli->query($email_check_query)->num_rows)	
                 mail($to,$subject,$body,$from);
 		} else {
-			$friend_query = "DELETE FROM friends WHERE fuid = '{$fid}' AND uid = '{$uid}';";
+            $friends->unfollow($uid, $fid);
 		}
 
-        $friend_results = $this->mysqli->query($friend_query);
         $results = json_encode(array('success' => 1));
 
-        $this->notifyFriend($uid, $fid, $will_be_friends);
+        $this->notifyFriend($info, $uid, $fid, $will_be_friends);
 
         return $results;
 	}
 
-    private function notifyFriend($uid, $fuid, $status) {
-        $userClass = User();
-        $info = $userClass->getInfo($uid);
-
+    private function notifyFriend($info, $uid, $fuid, $status) {
         $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
         $message = json_encode(array('action' => 'notify.follower', 'users' => array(intval($fuid)),
                                      'data' => $data));

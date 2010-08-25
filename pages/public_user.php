@@ -62,34 +62,16 @@ EOF;
 		}
 			$this->set($private,'private');
 
-		$tracked_query = <<<EOF
-		SELECT fuid FROM friends WHERE fuid = {$uid} and uid = {$_SESSION['uid']} LIMIT 1
-EOF;
-                $this->db_class_mysql->set_query($tracked_query,'tracked',"Checks if you're tracking the person");
-                $tracked = $this->db_class_mysql->execute_query('tracked');
-		if($tracked->num_rows)
-			$this->set(1,'tracked');
-		else
-			$this->set(0,'tracked');
+        $friends = new Friends();
+        $followers = $friends->followersCount($uid);
+        $following = $friends->followingCount($uid);
 
-		$track_count = <<<EOF
-                SELECT COUNT(*) AS count FROM friends AS f WHERE f.uid = {$uid}
-EOF;
-                $tracked_count = <<<EOF
-                SELECT COUNT(*) AS count FROM friends AS f WHERE f.fuid = {$uid}
-EOF;
+        $status = $friends->following($_SESSION['uid'], $uid);
+        $this->set((int)$status, 'tracked');
 
-                $this->db_class_mysql->set_query($track_count,'tracked_count',"Counts # of users tracking you");
-                $tracked_count_res = $this->db_class_mysql->execute_query('tracked_count');
-                $tracked_count_res = $tracked_count_res->fetch_assoc();
-                $this->set($tracked_count_res['count'],'tracked_count');
-
-                $this->db_class_mysql->set_query($tracked_count,'track_count',"Counts # of users you are tracking");
-                $track_count_res = $this->db_class_mysql->execute_query('track_count');
-                $track_count_res = $track_count_res->fetch_assoc();
-                $this->set($track_count_res['count'],'track_count');
+        $this->set($following,'tracked_count');
+        $this->set($followers,'track_count');
 		
-
 		//START User Prefences
 		$user_query = <<<EOF
 		SELECT t2.online,t1.pic_100,t1.pic_36,t1.uid,t1.uname,p.about,p.country,t1.help FROM login AS t1
@@ -159,49 +141,16 @@ EOF;
 
         $taps = new Taps();
 
-		$data_taps = $taps->getFiltered('personal', array('#uid#' => $uid));
+		$data_taps = $taps->getFiltered('personal', array('#uid#' => $uid, '#outside#' => '1, 2'));
 		$this->set($data_taps, 'user_bits');
 
-		//START stats
-		$count_messages = <<<EOF
-		SELECT COUNT(*) AS message_count FROM special_chat WHERE uid = {$uid}
-EOF;
-		$this->db_class_mysql->set_query($count_messages,'count_messages','Counts amount of messages a user has for a stat');
-		$count_results = $this->db_class_mysql->execute_query('count_messages');
-		if($count_results->num_rows)
-		$res = $count_results->fetch_assoc();
-			$message_count = $res['message_count'];
-
-		$count_resp = <<<EOF
-		SELECT COUNT(*) AS resp_count FROM chat WHERE uid = {$uid}
-EOF;
-
-		$this->db_class_mysql->set_query($count_resp,'count_resp','Counts amount of responses a user has for a stat');
-		$count_results = $this->db_class_mysql->execute_query('count_resp');
-		if($count_results->num_rows)
-		$res = $count_results->fetch_assoc();
-			$resp_count = $res['resp_count'];
-
-		$count_group = <<<EOF
-		SELECT COUNT(*) AS group_count FROM group_members WHERE uid = {$uid}
-EOF;
-		$this->db_class_mysql->set_query($count_group,'count_group','Counts amount of groups a user has for a stat');
-		$count_results = $this->db_class_mysql->execute_query('count_group');
-		if($count_results->num_rows)
-		$res = $count_results->fetch_assoc();
-			$group_count = $res['group_count'];
-
-		if(!$message_count)
-			$message_count = 0;
-		if(!$resp_count)
-			$resp_count = 0;
-		if(!$group_count)
-			$group_count = 0;
+        $user = new User();
+        $stats = $user->getStats($uid);
 
 		$stats = array(
-			'message_count' => $message_count,
-			'response_count' => $resp_count,
-			'group_count' => $group_count
+			'message_count' => $stats['taps'],
+			'response_count' => $stats['responses'],
+			'group_count' => $stats['groups']
 		);
 		$this->set($stats,'stats');
 		//END stats

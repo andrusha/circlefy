@@ -1,4 +1,9 @@
 <ul id="taps" class="stream <?= empty($_taps) ? "empty" : "" ?>">
+    <?php if (isset($show_less)): ?>
+            <li id="loadless" class="paginator">
+                <p>&#9650;</p>
+            </li>
+    <?php endif; ?>
 <?php
 if (!empty($_taps)):
     foreach ($_taps as $tap):
@@ -72,9 +77,9 @@ if (!empty($_taps)):
             </div>
         </li>
 <?php endforeach; ?>
-    <?php if (!isset($dont_show_more)): ?>
-            <li class="loadmore">
-                <p>more...</p>
+    <?php if (!isset($dont_show_more) && count($_taps) >= 10): ?>
+            <li id="loadmore" class="paginator">
+                <p>&#9660;</p>
             </li>
     <?php endif; ?>
 <?php else: ?>

@@ -1,7 +1,6 @@
 <?php
-if($_SERVER['REQUEST_URI'] == '/people')
-
 $people_list = "peoples";
+$tracker = $_t['q'];
 ?>
 <!doctype html>
 <html>
@@ -33,11 +32,11 @@ $people_list = "peoples";
 
 			<? ob_start() ?>
 
-				<div class="sideinfo section container">
+				<div id="lists" class="section container">
 					<h2>
 						<span id="tab-name">people</span>
 					</h2>
-					<ul class="panel">
+					<ul class="panel selected">
 						<li class="panel-item <?= !$tracker ? 'selected' : '' ?>">
 							<span class="count"><?= $_t['tracked_count'] ?></span>
 							<a href="/people?q=0" class="names inblock ellipsis">people you're tracking</a>
@@ -78,7 +77,7 @@ $people_list = "peoples";
 					</div>
 					<div class="body">
 						<ul class="bodylist <?= empty($_t[$people_list]) ? 'empty' : '' ?>">
-							<?php 	
+							<?php 
 								if (!empty($_t[$people_list])):
 									foreach ($_t[$people_list] as $person):
                                         $stats = $person['stats'];

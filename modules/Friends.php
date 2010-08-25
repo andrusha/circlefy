@@ -64,7 +64,7 @@ class Friends {
             {$special_where}
             GROUP
                BY u.uid;";
-
+        
         $users = array();
         $result = $this->db->query($query);
         while ($res = $result->fetch_assoc()) {
@@ -84,6 +84,44 @@ class Friends {
 
     public function filterByUname($uid, $uname) {
         return $this->filterFriends($uid, true, " AND u.uname LIKE '%{$uname}%' ");
+    }
+
+    /*
+        Follows user
+    */
+    public function follow($you, $friend) {
+        $query = "INSERT
+                    INTO friends (uid, fuid, time_stamp)
+                  VALUES ({$you}, {$friend}, NOW())";
+
+        $okay = $this->db->query($query)->affected_rows == 1;
+        return $okay;
+    }
+
+    /*
+        Unfollows user
+    */
+    public function unfollow($you, $friend) {
+        $query = "DELETE
+                    FROM friends
+                   WHERE fuid = {$friend}
+                     AND uid = {$you}
+                   LIMIT 1";
+        $okay = $this->db->query($query)->affected_rows == 1;
+        return $okay;
+    }
+    
+    /*
+        Check if user following you or not
+    */
+    public function following($you, $friend) {
+        $query = "SELECT fuid
+                    FROM friends
+                   WHERE fuid = {$friend}
+                     AND uid = {$you}
+                   LIMIT 1";
+        $okay = $this->db->query($query)->num_rows == 1;
+        return $okay;
     }
 };
 

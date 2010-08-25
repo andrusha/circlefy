@@ -100,17 +100,24 @@ _login = {
 
                     var response = JSON.decode(this.response.text);
 
+                    var el = $('login-button');
+                    var position = [el.offsetLeft+63, el.offsetTop+25];
+
                     if(response.status == 'REGISTERED') {
-                        ls.set('html','<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...');
+                        _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
+                            {color: 'darkgreen', delay: 2000, position: position});
+                        /*ls.set('html','<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...');
                         ls.removeClass('login-fail');
-                        ls.addClass('login-success');
+                        ls.addClass('login-success');*/
                         regStatus = 'login';
                         successFn.delay(2000, this, regStatus);
                     }
 
                     if (response.status == 'NOT_REGISTERED') {
-                        ls.addClass('login-fail');
-                        ls.set('text','Sorry, there is no user with this username and password, please try again');
+                        _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
+                            {color: 'darkred', delay: 5000, position: position});
+                        /*ls.addClass('login-fail');
+                        ls.set('text','Sorry, there is no user with this username and password, please try again');*/
                     }
 
                 }

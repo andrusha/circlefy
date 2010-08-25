@@ -16,9 +16,13 @@
                                 </a>
 				<a href="/channel/<#: tap.symbol #>"><img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" /></a>
                         </p>
+                        
+                    <a href="#" class="tap-resp-count" title="view responses">
                         <p class="tap-body">
                                 <#: tap.chat_text #>
                         </p>
+                    </a>
+
                         <p class="tap-actions">
                                 <span class="tap-resp">
                                         <span class="indicator">Someone's replying..</span>
@@ -96,8 +100,11 @@
                         <li id="no-taps-yet" class="notice">
                                 <p>Nothing yet! Try tapping this feed...</p>
                         </li>
-                        <li id="load-more" class="loadmore">
-                                <p>more...</p>
+                        <li id="loadmore-template" class="paginator">
+                                <p>&#9660;</p>
+                        </li>
+                        <li id="loadless-template" class="paginator">
+                                <p>&#9650;</p>
                         </li>
                 </ul>
 

@@ -43,11 +43,13 @@ $is_guest = intval($_SESSION['guest']) == 1 ? true : false;
 $all_your_groups_topic = "Aggregate feed of all of the channels";
 $public_groups_topic = "This is a place where you can discover what's being said in real-time from all channels, even if you're not apart of them";
 if (!$is_guest) {    
-    $groups_topic = $all_your_groups_topic;
+    $groups_descr = $all_your_groups_topic;
     $start_gid = "all";
+    $groups_topic = "All Your Channels";
 } else {
-    $groups_topic = $public_groups_topic;
+    $groups_descr = $public_groups_topic;
     $start_gid = "public";
+    $groups_topic = "Discover";
 }
 ?>
 <!doctype html>
@@ -73,7 +75,7 @@ if (!$is_guest) {
             filter: {
                 gid: "<?=$start_gid?>",
                 info: {
-                    name: "All Your Channels"
+                    name: "<?=$groups_topic?>"
                 }
             }
 		};
@@ -118,9 +120,9 @@ if (!$is_guest) {
 							<img src="/images/flat/loader.gif" />
 							<span class="title">feed</span>
 						</h2>
-						<span class="stream-name">All Your Groups <?php if(isset($_t['facebook_loginUrl'])): ?><a href="<?php echo $_t['facebook_loginUrl']; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
+						<span class="stream-name"><?=$groups_topic?> <?php if(isset($_t['facebook_loginUrl'])): ?><a href="<?php echo $_t['facebook_loginUrl']; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
 					</div>
-					<div class="description" style="background: lightgrey; padding:15px;"><?= $groups_topic ?></div>
+					<div class="description" style="background: lightgrey; padding:15px;"><?= $groups_descr ?></div>
 					<div class="body">
                         <?php
                             $_taps = $_t['groups_bits'];

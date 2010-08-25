@@ -26,11 +26,12 @@ class User {
 
     /*
         Returns info about user
-        userpics, username, help, real name
+        userpics, username, help, real name, email, private settings
     */
     public function getInfo($uid) {
         $query = "SELECT uname, GET_REAL_NAME(fname, lname, uname) AS real_name,
-                         pic_100 AS big_pic, pic_36 AS small_pic, help
+                         pic_100 AS big_pic, pic_36 AS small_pic, help,
+                         email, private
                     FROM login
                    WHERE uid = {$uid}
                    LIMIT 1";
@@ -65,6 +66,9 @@ class User {
         Returns user statistics
         taps, responses & following channels count
 
+        Taps & responses counts only for taps
+        in public groups (connected 1, 2)
+
         $uid - user id
         
         array('taps' => , 'responses' => , 'groups' => )
@@ -84,12 +88,18 @@ class User {
                     SELECT s.mid AS mid,
                            COUNT(c.mid) AS count
                       FROM special_chat AS s
+                     INNER
+                      JOIN special_chat_meta scm
+                        ON scm.mid = s.mid
+                      LEFT
                       JOIN chat c
                         ON c.cid = s.mid
                      WHERE s.uid = {$uid}
+                       AND scm.connected IN (1, 2)
                      GROUP
                         BY (s.mid)
                 ) AS i";
+        
         $stats = array();
         $result = $this->db->query($query);
         if ($result->num_rows)

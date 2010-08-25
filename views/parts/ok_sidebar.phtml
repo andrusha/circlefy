@@ -4,7 +4,7 @@
 <div id="you" class="section container">
 
 	<a href="/user/<?= $_SESSION['uname'] ?>"><img src="/user_pics/<?= $_SESSION['upic'] ?>" class="avatar" />
-	<span style="font-size:14px;"><p>hello <strong><?= $_SESSION['real_name'] ?></strong>!</p></span>
+	<span style="font-size:14px;"><p>hello <strong><?= ($_SESSION['real_name'] ? $_SESSION['real_name'] : 'guest') ?></strong>!</p></span>
 	</a>
 
 	<p class="special">

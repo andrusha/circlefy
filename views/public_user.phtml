@@ -28,12 +28,17 @@ $private = $_t['private'];
 			stream: JSON.decode('<?= json_encode($inits) ?>'),
 			convos: [],
 			people: JSON.decode('<?= json_encode($people) ?>'),
-			groups: JSON.decode('<?= json_encode($groups) ?>')
+			groups: JSON.decode('<?= json_encode($groups) ?>'),
+            filter: {
+                gid: 'personal',
+                uid: <?=$_t['uid'];?>
+            }
 		};
 	</script>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>  
+	<script type="text/javascript" src="/views/scripts/filter.js"></script>
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 	<script type="text/javascript" src="/views/scripts/infobox.js"></script>
 </head>

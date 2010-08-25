@@ -3,6 +3,14 @@ html, body {
 	background-color :#DFEAF4;
 }
 
+:focus {
+    -moz-outline-style: none !important;
+}
+
+a {
+  outline: none !important;
+}
+
 .resp-uname{
 font-size:14px;
 color:#627AAD;
@@ -32,9 +40,11 @@ font-size:12px;
 }
 
 .login-success{
+font-size: 14px;
 color:lightgreen;
 }
 .login-fail{
+font-size: 14px;
 color:red;
 }
 
@@ -839,19 +849,23 @@ ul.stream li.notice {
 vertical-align:-15%;
 }
 
-ul.stream li.loadmore {
-	font-size: 14px;
+ul.stream li.paginator {
+    padding: 5px 0px;
+    margin: 0;
+	font-size: 24px;
 	background: #222222;
 	color: #ACB19B;
 	cursor:pointer;
 	text-align: center;
 }
 
-ul.stream li.loadmore:hover {
-	font-size: 14px;
+ul.stream li.paginator:hover {
 	background: #444444;
-	cursor:pointer;
-	text-align: center;
+}
+
+ul.stream li.paginator p {
+    margin: 0;
+    padding: 0;
 }
 
 ul.stream.empty li.notice {
@@ -898,6 +912,10 @@ ul.stream .tap-from a.date {
 	color: gray;
 	font-weight: normal;
 	font-size: 11px;
+}
+
+ul.stream .tap-from a.date:hover {
+    text-decoration: none;
 }
 
 ul.stream .tap-from a:hover {
@@ -962,6 +980,10 @@ ul.stream .tap-actions .count {
 ul.stream .tap-resp-count:hover .count {
 	background-position: right bottom;
 	color: #fffa00;
+    text-decoration: none;
+}
+
+ul.stream p:hover {
     text-decoration: none;
 }
 

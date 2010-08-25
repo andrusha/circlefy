@@ -85,7 +85,10 @@ class Taps {
             $where[$i] = strtr($where[$i], $params);
 
         $toJoin = ' '.implode(' ', $toJoin).' ';
-        $where = ' WHERE '.implode(' AND ', $where).' ';
+        if ($where)
+            $where = ' WHERE '.implode(' AND ', $where).' ';
+        else
+            $where = '';
 
         $query = "
             SELECT sc.mid
@@ -95,7 +98,7 @@ class Taps {
              ORDER
                 BY sc.mid DESC
              LIMIT {$limit}";
-        
+
         $mids = array();
         $result = $this->db->query($query);
         if ($result->num_rows)

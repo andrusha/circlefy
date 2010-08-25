@@ -58,11 +58,11 @@ class filter_functions {
         if (!$outside)
             $outside = '1, 2';
 
+        $params['#outside#'] = $outside;
+
         if (isset($anon))
             $params['#anon#'] = $anon;
         
-        $params['#outside#'] = $outside;
-
         $search = mysql_escape_string($search);
         if ($search)
             $params['#search#'] = $search;
@@ -78,6 +78,10 @@ class filter_functions {
             case   1:
                 $filter = 'ind_group';
                 $params['#gid#'] = intval($id);
+                break;
+            case   2:
+                $filter = 'personal';
+                $params['#uid#'] = intval($id);
                 break;
         }
 

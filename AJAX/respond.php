@@ -162,7 +162,7 @@ EOF;
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         $insert_string = json_encode(
             array('action' => 'notify.convo.response', 'users' => $users, 
-            'cid' => intval($cid), 'exclude' => array(intval($uid)), 'data' => $data));
+            /*'cid' => intval($cid), */'exclude' => array(intval($uid)), 'data' => $data));
         fwrite($fp, $insert_string."\r\n");
         fclose($fp);
 	}

@@ -153,7 +153,7 @@ _tap.mixin({
             });
 			items = $$(items.reverse());
 
-			if (items.length > 8 && !keep) ($('load-more').clone()).inject('taps','bottom');
+			if (items.length >= 10 && !keep) ($('loadmore-template').clone()).inject('taps','bottom').setProperty('id', 'loadmore');
 			if(keep) publish_type = 'stream.more'; else publish_type = 'stream.new';
 			this.publish(publish_type, [items]);
             stream.removeClass('empty');
@@ -173,6 +173,9 @@ _tap.mixin({
     addTaps: function(items) {
         items.setStyles({opacity:0});
         items.inject(this.stream, 'top');
+        if (_stream.loadmore_count > 0) {
+            ($('loadless-template').clone()).inject(this.stream,'top').setProperty('id', 'loadless');
+        }
         items.fade(1);
         this.publish('stream.updated', this.streamType);
         return this;
@@ -197,8 +200,8 @@ var _stream = _tap.register({
     init: function() {
 		this.enableLoadMore();
 		//this.setLoadMore(id, feed, keyword);
-		this.setLoadMore('all', {}, null);
-        this.loadmore_count = 10;
+		this.setLoadMore(_vars.filter.gid, {}, null);
+        this.loadmore_count = 0;
         this.setStreamVars();
         this.subscribe({
             'list.item': this.setStream.bind(this),
@@ -240,25 +243,32 @@ var _stream = _tap.register({
         var self = this,
             data = {type: null};
 
+        self.id = id;
+
         switch (id) {
             case 'all': data.type = 11; break;
             case 'public': data.type = 100; break;
+            case 'personal': data.type = 2; data.id = _vars.filter.uid; break;
             default: data.type = 1; data.id = id;
         }
 
-		if (id == 'public' || id == 'all') {
-			$('taptext').disabled = true;
-			$('taptext').style.background = 'gray';
-		} else {
-			$('taptext').disabled = false;
-			$('taptext').style.background = 'white';
-		}
+        var tapbox = $('taptext');
+
+        if (tapbox) {
+            if (id == 'public' || id == 'all') {
+                $('taptext').disabled = true;
+                $('taptext').style.background = 'gray';
+            } else {
+                $('taptext').disabled = false;
+                $('taptext').style.background = 'white';
+            }
+        }
 
 		
 		if (!more) {
 			more = false;
 			data.more = 0;
-			self.loadmore_count = 10;
+			self.loadmore_count = 0;
 		} else { 
 			data.more = self.loadmore_count;
 		}
@@ -267,7 +277,7 @@ var _stream = _tap.register({
             data.anon = 0; //1 for guests only, 0 for registred only
         else {
             var anon_elem = $('anon_filter');
-            if (anon_elem.retrieve('state'))
+            if (anon_elem && anon_elem.retrieve('state'))
                 data.anon = 0;
         }
         
@@ -278,32 +288,48 @@ var _stream = _tap.register({
             onRequest: this.showLoader.bind(this),
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);
-                self.setTitle({
-                    title: keyword ? ['"', keyword, '" in ', feed.name].join('') : feed.name,
-//					favicon: data.type == 1 ? $$('#gid_'+id+' img.favicon-img')[0].src : '',
-                    url: feed.symbol ? '/channel/' + feed.symbol : null,
-                    type: keyword ? 'search' : 'feed',
-                    desc: feed.topic,
-                    admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
-					online_count: feed.online_count,
-					total_count: feed.total_count
-                });
+                if (self.id != 'personal')
+                    self.setTitle({
+                        title: keyword ? ['"', keyword, '" in ', feed.name].join('') : feed.name,
+    //					favicon: data.type == 1 ? $$('#gid_'+id+' img.favicon-img')[0].src : '',
+                        url: feed.symbol ? '/channel/' + feed.symbol : null,
+                        type: keyword ? 'search' : 'feed',
+                        desc: feed.topic,
+                        admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
+                        online_count: feed.online_count,
+                        total_count: feed.total_count
+                    });
 
                 if (response) self.parseFeed(response);
                 self.hideLoader();
                 self.publish('feed.changed', id.test(/^(public|all)$/) ? id : 'group_' + id);
 				self.setLoadMore(id, feed, keyword);
 				self.enableLoadMore();
+                self.enableLoadLess();
             }
         }).send();
     },
 
+	enableLoadLess: function(){
+		var self = this;
+        var loadless = $('loadless');
+        if (loadless) {
+            loadless.addEvent('click',function(){
+                    self.loadmore_count = self.loadmore_count - 10;
+                    self.changeFeed(self.loadmore_gid,self.loadmore_feed,self.loadmore_keyword,self.loadmore_count);
+            });
+        }
+	},
+
 	enableLoadMore: function(){
 		var self = this;
-		$$('.loadmore')[0].addEvent('click',function(){
-				self.changeFeed(self.loadmore_gid,self.loadmore_feed,self.loadmore_keyword,self.loadmore_count);
-				self.loadmore_count = self.loadmore_count + 10;
-		})
+        var loadmore = $('loadmore');
+        if (loadmore) {
+            loadmore.addEvent('click',function(){
+                    self.loadmore_count = self.loadmore_count + 10;
+                    self.changeFeed(self.loadmore_gid,self.loadmore_feed,self.loadmore_keyword,self.loadmore_count);
+            });
+        }
 	},
 
 	setLoadMore: function( gid, feed, keyword) {
@@ -545,7 +571,7 @@ var _responses = _tap.register({
 				cid: delete_cid
 			},
 			onRequest: function() {
-				_notifications.alert("Please wait :)", "We are processing your request... <img src='images/ajax_loading.gif'>",
+				_notifications.alert("Please wait :)", "We are processing your request... <img src='/images/ajax_loading.gif'>",
 					{ position: 'bottomRight', 
 					  color: 'black',
 					  duration: 5000});
@@ -594,7 +620,7 @@ var _responses = _tap.register({
 				action: param_action
 			},
 			onRequest: function() {
-				_notifications.alert("Please wait :)", "We are processing your request... <img src='images/ajax_loading.gif'>",
+				_notifications.alert("Please wait :)", "We are processing your request... <img src='/images/ajax_loading.gif'>",
 					{ position: 'bottomRight', 
 					  color: 'black',
 					  duration: 5000});
@@ -625,7 +651,7 @@ var _responses = _tap.register({
 			data_uid = parent.getData('uid'),
 			data_uname = parent.getData('user');
 		
-		_notifications.alert("Please wait :)", "Loading tap options... <img src='images/ajax_loading.gif'>",
+		_notifications.alert("Please wait :)", "Loading tap options... <img src='/images/ajax_loading.gif'>",
 			{ position: [el.offsetLeft-272, el.offsetTop-4], 
 			  color: 'black',
 			  duration: 5000});
