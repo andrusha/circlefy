@@ -21,7 +21,28 @@ class Group {
               FROM groups
              WHERE gid = {$gid} 
              LIMIT 1";
-        $result = $this->db->query($query)->fetch_assoc();
-        return $result;
+        $info = array();
+        $result = $this->db->query($query);
+        if ($result->num_rows)
+            $info = $result->fetch_assoc();
+
+        return $info;
+    }
+
+    public function gidFromSymbol($symbol) {
+        $query = "
+            SELECT gid
+              FROM groups
+             WHERE symbol = '{$symbol}'
+             LIMIT 1";
+
+        $gid = null;
+        $result = $this->db->query($query);
+        if ($result->num_rows) {
+            $result = $result->fetch_assoc();
+            $gid = intval($result['gid']);
+        }
+
+        return $gid;
     }
 };

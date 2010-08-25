@@ -20,6 +20,7 @@ $private = $_t['private'];
 <head>
 	<? $tpl_title="profile: ".$_t['gname']; ?>
 	<? include(OK_HEADER); ?>
+    <link title="" type="application/rss+xml" rel="alternate" href="http://<?=$_SERVER['SERVER_NAME']?>/rss_personal_<?=$_t['user'];?>.xml"/>
     <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {

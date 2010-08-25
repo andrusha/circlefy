@@ -24,6 +24,20 @@ class User {
         return $exists;
     }
 
+    public function uidFromUname($uname) {
+        $query = "SELECT uid
+                    FROM login
+                   WHERE uname = '{$uname}'
+                   LIMIT 1";
+        $uid = null;
+        $result = $this->db->query($query);
+        if ($result->num_rows) {
+            $result = $result->fetch_assoc();
+            $uid = intval($result['uid']);
+        }
+        return $uid;
+    }
+
     /*
         Returns info about user
         userpics, username, help, real name, email, private settings
