@@ -17,7 +17,7 @@ class Taps {
         filters as we want, but it not implemented by now
         
         $filter selected filter type for query
-        'aggr_groups' | 'ind_group' | 'public'
+        'aggr_groups' | 'ind_group' | 'public' | 'personal'
 
         $params array of params related to that filter
         array('#uid#' => user id
@@ -50,6 +50,10 @@ class Taps {
 
             case 'public':
                 //it's ok for public anyway
+                break;
+
+            case 'personal':
+                $where[] = 'sc.uid = #uid#';
                 break;
         }
 
@@ -123,7 +127,7 @@ class Taps {
             else
                 $resp = $responses[$cid];
             
-            $taps[$cid] = array_merge($resp, $data);
+            $taps[$cid] = array_merge($data, $resp);
         }
         
         //FIXME: since shitty js-code works only with reversed lists
@@ -142,11 +146,13 @@ class Taps {
         else
             $where = " = {$tap_ids}";
 
+        //default responses info (count, last_resp, resp_uname) set to null
         $query = "
             SELECT sc.mid AS cid, sc.chat_text, UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp_raw,
                    UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp, sc.uid, l.uname,
                    GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name, l.pic_100,
-                   tmo.online AS user_online, scm.gid, g.gname, g.symbol, g.favicon
+                   tmo.online AS user_online, scm.gid, g.gname, g.symbol, g.favicon,
+                   0 AS count, NULL AS last_resp, NULL AS resp_uname
               FROM special_chat sc
              INNER
               JOIN login l

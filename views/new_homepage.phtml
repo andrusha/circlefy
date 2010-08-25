@@ -57,6 +57,8 @@ if (!$is_guest) {
 	$tpl_title = "Home";
 	include(OK_HEADER);
 	?>
+    <link title="" type="application/rss+xml" rel="alternate" href="http://<?=$_SERVER['SERVER_NAME']?>/rss.xml"/>
+
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript">
 		window._vars = {

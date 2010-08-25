@@ -12,6 +12,7 @@ require('../config.php');
 require('../api.php');
 require('../modules/User.php');
 require('../modules/Group.php');
+require('../modules/Taps.php');
 
 
 $to_box = stripslashes($_POST['to_box']);
@@ -151,7 +152,6 @@ EOF;
 		$init_message_query_ft = "INSERT INTO special_chat_fulltext(cid,uid,uname,chat_text,ip) values('{$last_id}','{$uid}','{$uname}','{$msg}',INET_ATON('{$addr}'))";
 		$this->mysqli->query($init_message_query_ft);
 
-		$html_msg = $this->bit_generator($last_id);
 		$time = time();
 
 		//Dispatch Active Conversation
@@ -175,6 +175,7 @@ EOF;
 		//Calls the function to insert the meta data about the message into the specail_chat_meta table	
 		$this->insert_meta_data($last_id);
 
+
 		if($parsed_symbols['building'] !== false)
 			$building_uids = $this->building_matches();
 		$filter_uids = $this->filter_matches($msg,$sent_zip=$parsed_symbols['zips'],$static_zip=0,$gid_list=$group_gids,$cgid_list=$cgroup_gids);
@@ -182,8 +183,14 @@ EOF;
 		//Dispatch all messages with associated reason
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
 	
+        $tap = new Taps();
+        $html_msg = $tap->getTap($last_id);
+
 		//Return information to user in JSON
-		$msg_and_channel_id  = array('channel_id' => $last_id, 'time' => $time,'new_channel' => 'true','new_msg' => $html_msg);
+		$msg_and_channel_id  = array('channel_id' => $last_id, 
+            'time' => $time,
+            'new_channel' => 'true',
+            'new_msg' => array($html_msg));
 		$msg_and_channel_id = json_encode($msg_and_channel_id);
 
         reset($this->meta_groups);
@@ -607,66 +614,6 @@ EOF;
 		return $uid_list;	
 		//END parsing to see who gets what
 	}
-
-	//This generates the new bit HTML so that it can be displayed once you send your message
-	//$mid = the new channel id ( will change, because mid/cid is confusing and it really is a new channel.. not message ) 
-	private function bit_generator($mid){
-		$query = <<<EOF
-		SELECT t3.special,UNIX_TIMESTAMP(t3.chat_timestamp) AS chat_timestamp,t3.cid,t3.chat_text,t2.uname,t2.fname,t2.lname,t2.pic_100,t2.pic_36,t2.uid FROM login AS t2
-		JOIN special_chat as t3
-		ON t3.uid = t2.uid
-		WHERE t3.mid = {$mid}
-		LIMIT 1;
-EOF;
-
-		$type = "self";
-		$counter = 0;
-		$m_results = $this->mysqli->query($query);
-		if($m_results->num_rows)
-		while($res = $m_results->fetch_assoc()){
-			//Setup
-			$mid = $res['mid'];
-			$special = $res['special'];
-			$chat_timestamp = $res['chat_timestamp'];
-			$cid = $res['cid'];
-			$chat_text = $res['chat_text'];
-			$uname = $res['uname'];
-			$fname = $res['fname'];
-			$lname  = $res['lname'];
-			$pic_100 = $res['pic_100'];
-			$pic_36 = $res['pic_36'];
-			$uid = $res['uid'];
-
-			//Process
-			$chat_timestamp_raw = $chat_timestamp;
-			$chat_timestamp = "Now!";
-			$chat_text = stripslashes($chat_text);
-
-			//Additional
-			$rand = rand(1,999);
-
-			//Store
-			$messages[] = array(
-			'mid' =>           $mid,
-			'special'=>       $special,
-			'chat_timestamp'=>$chat_timestamp,
-			'chat_timestamp_raw'=>$chat_timestamp_raw,
-			'cid'=>           $cid,
-			'chat_text'=>     $chat_text,
-			'uname'=>         $uname,
-			'fname'=>         $fname,
-			'lname'=>         $lname,
-			'pic_100'=>       $pic_100,
-			'pic_36'=>        $pic_36,
-			'favicon'=>        'default.ico',
-			'uid'=>           $uid,
-			'last_resp'=>     null,
-                        'resp_uname'=>    null,
-                        'count'=>         0
-			);
-		}
-	return $messages;
-	} //END of function
 
     /*
         Notify all group members, that there is new tap
