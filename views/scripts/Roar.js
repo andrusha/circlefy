@@ -103,7 +103,7 @@ var Roar = new Class({
 			var trigger = (function() {
 				trigger = null;
 				if (!over) remove();
-			}).delay(this.options.duration);
+			}).delay(duration);
 			item.addEvents({
 				mouseover: function() {
 					over = true;
@@ -177,6 +177,12 @@ var Roar = new Class({
 		max.top += scroll.y;
 		max.bottom += scroll.y;
 		var rel = ($type(this.container) == 'element') ? this.container.getCoordinates() : max;
+
+        //dirty chrome hack (cuz it returns document width without scrollbars)
+        if (Browser.Engine.webkit) {
+            margin.x += 15;
+            //margin.y += 15;
+        }
 		this.moveTo({
 			left: (this.position.x == 'right')
 				? (Math.min(rel.right, max.right) - margin.x)

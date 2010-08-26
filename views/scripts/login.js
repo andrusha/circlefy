@@ -105,7 +105,7 @@ _login = {
 
                     if(response.status == 'REGISTERED') {
                         _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
-                            {color: 'darkgreen', delay: 2000, position: position});
+                            {color: 'darkgreen', duration: 2000, position: position});
                         /*ls.set('html','<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...');
                         ls.removeClass('login-fail');
                         ls.addClass('login-success');*/
@@ -115,7 +115,7 @@ _login = {
 
                     if (response.status == 'NOT_REGISTERED') {
                         _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
-                            {color: 'darkred', delay: 5000, position: position});
+                            {color: 'darkred', duration: 5000, position: position});
                         /*ls.addClass('login-fail');
                         ls.set('text','Sorry, there is no user with this username and password, please try again');*/
                     }

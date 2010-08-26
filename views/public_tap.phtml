@@ -20,7 +20,11 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 			stream: "<?= $cid ?>",
 			convos: ["<?= $cid ?>"],
 			people: ["<?= $_SESSION['uid'] ?>"],
-			groups: []
+			groups: [],
+            filter: {
+                gid: '0',
+                cid: <?=$cid?>
+            }
 		};
 
         window.addEvent('load', function() {

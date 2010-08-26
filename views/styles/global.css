@@ -824,6 +824,7 @@ float:right;
     border: none;
     overflow:hidden;
     height:21px;   
+    width: 120px;
 }
 
 ul.stream {
