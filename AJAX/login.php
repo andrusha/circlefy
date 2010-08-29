@@ -2,25 +2,45 @@
 /* CALLS:
     login.js
 */ 
-require('../config.php');
-require('../api.php');
-require('../modules/User.php');
+require_once('../config.php');
+require_once('../api.php');
 
 define('FUCKED_UP', json_encode(array('status' => 'NOT_REGISTERED')));
 define('SUCCESS', json_encode(array('status' => 'REGISTERED')));
 
-$user = $_POST['user'];
-$password = $_POST['pass'];
+$type = $_POST['type'];
 
-if (!$user || !$password) {
-    echo FUCKED_UP;
-    exit();
+if ($type == 'user') {
+    $user = $_POST['user'];
+    $password = $_POST['pass'];
+
+    if (!$user || !$password) {
+        echo FUCKED_UP;
+        exit();
+    }
+
+    $class = new User();
+    if ($class->logIn($user, $password, false))
+        echo SUCCESS;
+    else
+        echo FUCKED_UP;
+} else if ($type == 'facebook') {
+    $fb = new Facebook();
+
+    $fb_info = $fb->infoFromCookies();
+    $fbid = intval($fb_info['uid']);
+    $exists = $fb->userExists($fbid);
+    
+    if ($exists)
+        echo SUCCESS;
+    else {
+        $user_info = $fb->getUserInfo($fbid, $fb_info['access_token']);
+        $data = array(
+            'fb_uid' => $fbid,
+            'uname' => $user_info->id,
+            'fname' => $user_info->first_name,
+            'lname' => $user_info->last_name);
+
+        echo json_encode(array('status' => 'NOT_REGISTERED', 'data' => $data));
+    }
 }
-
-$class = new User();
-if ($class->logIn($user, $password)) {
-    echo SUCCESS;
-} else {
-    echo FUCKED_UP;
-}
-

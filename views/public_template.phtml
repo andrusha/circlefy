@@ -28,7 +28,13 @@ if (!empty($_t['user_bits'])) {
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
 <body>
-	<div id="wrapper">
+
+<?php if (!$_t['ok_user']): ?>
+    <? include(MODAL_SIGNUP); ?>
+    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
+<?php endif; ?>
+
+    <div id="wrapper">
 
 		<?include(OK_TOPBAR)?>
 

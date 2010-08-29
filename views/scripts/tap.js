@@ -152,3 +152,4 @@ var _dater = _tap.register({
 var _notifications = new Roar({
     position: 'lowerRight'
 });
+

@@ -1,131 +1,124 @@
-window._tap = new Observer();
+var _login = _tap.register({
 
-/*
-global: _body and _head
-	Shortcuts for document.body and document.head
-*/
-_tap.register({
-	init: function(){
-		window._body = $(document.body);
-		window._head = $(document.head);
-		this.addGroupTips();	
-	},
+    init: function() {
+        var self = this;
 
-	addGroupTips: function() {
-                this.myTips = new Tips('.small-pics-logout',{fixed:true });
-
-                this.myTips.addEvent('show', function(tip, el){
-                    tip.fade('in');
-                });
-        }
-});
-
-var _template = {
-
-	templater: new Template(),
-	prepared: {},
-	map: {
-		'taps': 'template-taps',
-		'responses': 'template-responses',
-		'list.convo': 'template-list-convo',
-		'suggest.group': 'template-suggest-group'
-	},
-
-	parse: function(type, data){
-		var template = this.prepared[type];
-		if (!template){
-			template = this.map[type];
-			if (!template) return '';
-			template = this.prepared[type] = $(template).innerHTML.cleanup();
-		}
-		return this.templater.parse(template, data);
-	}
-
-};
-
-window.addEvent('domready', function(){
         var form = $('taplogin'),
-                user = form.getElement('input[name="uname"]'),
-                pass = form.getElement('input[name="pass"]'),
-                metaerror = $(document.head).getElement('meta[name="with-errors"]');
+            user = form.getElement('input[name="uname"]'),
+            pass = form.getElement('input[name="pass"]');
 
-        form.addEvent('submit', function(e){
-                e.stop();
-                var submitbtn = this;
+        this.form = form;
 
-                var login = _login.registerIRC(user.value,pass.value, {onComplete:function(status){
-                     var errors = false;
-                     switch (user.isEmpty()){
-                        case true: user.addClass('error'); errors = true; break;
-                        default: user.removeClass('error');
-                     }
-                     switch (pass.isEmpty()){
-                        case true: pass.addClass('error'); errors = true; break;
-                        default: pass.removeClass('error');
-                     }
-
-                     //alert(status);
-                     if (errors || status != 'login') return submitbtn.getElement('.error').focus();
-                     else submitbtn.submit();
-                } });
-                
+        this.subscribe({
+            'facebook.logged_in': this.fb_login.bind(this),
+            'facebook.logged_out': this.fb_logout.bind(this),
         });
 
-        if (metaerror && metaerror.get('content') == 'y'){
-                $$(user, pass).addClass('error');
-                user.focus();
-        }
-});
+        form.addEvent('submit', function(e) {
+            e.stop();
+            var submitbtn = this;
+            
+            if (user.isEmpty()) {
+                user.addClass('error');
+                return user.focus();
+            } else
+                user.removeClass('error');
 
-_login = {
+            if (pass.isEmpty()) {
+                pass.addClass('error');
+                return pass.focus();
+            } else
+                pass.removeClass('error');
 
-        registerIRC: function(user,pass,options) {
-        /*
-        REGISTERED = User is already registered
-        NOT_REGISTERED = IRC does not exist
-        */
-            var options = options||{};
-            var successFn = options['onComplete']||$empty();
+            self.auth(user.value, pass.value,
+                function(status) {
+                    self.publish('user.logged_in', []);
 
-            data = { 'user': user , 'pass': pass };
-            var regStatus;
-            var ls = $('login-status');
-            ls.set('html','<img src="/images/flat/loader.gif" /> Processing...');
-            new Request({
-                url: '/AJAX/login.php',
-                data: data,
-                onRequest: this.showLoginLoad.bind(this),
-                onSuccess: function() {
-                    ls.set('html','');
+                    if (status == 'login') 
+                        submitbtn.submit();
+                }
+            );
+        });
+    },
 
-                    var response = JSON.decode(this.response.text);
+    auth: function(user, pass, callback) {
+        var callback = callback || $empty();
+
+        var el = $('login-button');
+        var position = el.getPosition();
+        position = [position.x+63, position.y+25];
+
+        _notifications.alert('Please wait', "We are processing your request... <img src='/images/ajax_loading.gif'>",
+            { color: 'black',  duration: 10000, position: position});
+        var executing = _notifications.items.getLast();
+
+        data = {'user': user,
+                'pass': pass,
+                'type': 'user'};
+        new Request({
+            url: '/AJAX/login.php',
+            data: data,
+            onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+                _notifications.remove(executing);
+
+                if(response.status == 'REGISTERED') {
+                    _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
+                        {color: 'darkgreen', duration: 2000, position: position});
+
+                    callback.delay(2000, this, 'login');
+                } else if (response.status == 'NOT_REGISTERED') {
+                    _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
+                        {color: 'darkred', duration: 5000, position: position});
+                }
+
+            }
+        }).send();
+    },
+
+    fb_login: function() {
+        var fb_login = this.form.getElement('input[name="fb_login"]'),
+            form = this.form;
+
+        new Request({
+            url: '/AJAX/login.php',
+            data: {'type': 'facebook'},
+            onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+
+                if (response.status == 'REGISTERED') {
+                    //if registred, proceed to auth on homepage
+                    fb_login.set('value', '1');
 
                     var el = $('login-button');
-                    var position = [el.offsetLeft+63, el.offsetTop+25];
+                    var position = el.getPosition();
+                    position = [position.x+63, position.y+25];
 
-                    if(response.status == 'REGISTERED') {
-                        _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
-                            {color: 'darkgreen', duration: 2000, position: position});
-                        /*ls.set('html','<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...');
-                        ls.removeClass('login-fail');
-                        ls.addClass('login-success');*/
-                        regStatus = 'login';
-                        successFn.delay(2000, this, regStatus);
-                    }
+                    _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
+                        {color: 'darkgreen', duration: 2000, position: position});
+            
+                    callback = function() { form.submit(); };
+                    callback.delay(2000, this, 'login');
+                } else if (response.status == 'NOT_REGISTERED') {
+                    //if none, then get fb info and show signup form
+                    var data = response.data;
 
-                    if (response.status == 'NOT_REGISTERED') {
-                        _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
-                            {color: 'darkred', duration: 5000, position: position});
-                        /*ls.addClass('login-fail');
-                        ls.set('text','Sorry, there is no user with this username and password, please try again');*/
-                    }
+                    var signup_form = $('modal-signup');
+                    signup_form.getElement('span#modal-signup-name').set('text', data.fname);
+                    signup_form.getElement('p#real_name').setStyle('display', 'none');
+                    signup_form.getElement('input[name="name"]').addClass('passed').store('passed', 1);
+                    signup_form.getElement('input[name="facebook"]').set('value', 1).store('passed', 1);
+                    signup_form.getElement('input[name="fb_fname"]').set('value', data.fname).store('passed', 1);
+                    signup_form.getElement('input[name="fb_lname"]').set('value', data.lname).store('passed', 1);
 
+                    show_signup();
                 }
-            }).send();
-        },
+            }
+        }).send();
+    },
 
-	showLoginLoad: function(){
-		//alert('Showing the loader...');
-	}
-
-}
+    fb_logout: function() {
+        //simply redirect to general logout, or do nothing
+        //document.location.rewrite('/?logout=true');
+    }
+});

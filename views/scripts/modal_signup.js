@@ -16,11 +16,15 @@ $('modal_signup-cancel').addEvent('click', function(e){
 		'opacity': '0'
 	});
 });
+
 var signupData = {
-        name: modalForm.getElement('input[name="name"]').store('passed', true),
+        name: modalForm.getElement('input[name="name"]'),
         uname: modalForm.getElement('input[name="uname"]'),
         email: modalForm.getElement('input[name="email"]'),
-        pass: modalForm.getElement('input[name="pass"]')
+        pass: modalForm.getElement('input[name="pass"]'),
+        facebook: modalForm.getElement('input[name="facebook"]'),
+        fb_fname: modalForm.getElement('input[name="fb_fname"]'),
+        fb_lname: modalForm.getElement('input[name="fb_lname"]')
 };
 
 var showError = function(el, msg){
@@ -108,12 +112,25 @@ modalForm.getElement('button').addEvent('click', function(e){
                         modalForm.metricked = true;
                 }
 				*/
+                var facebook = signupData.facebook.get('value');
+                if (facebook) {
+                    var fname = signupData.fb_fname.get('value');
+                    var lname = signupData.fb_lname.get('value');
+                } else {
+                    var name = signupData.name.get('value');
+                    var fname = name.substring(0, name.indexOf(' '));
+                    var lname = name.substring(name.indexOf(' '), name.length);
+                }
+
                 new Request({
                         url: '/AJAX/ajaz_new_sign_up.php',
                         data: {
                                 uname: signupData.uname.get('value'),
                                 email: signupData.email.get('value'),
                                 pass: signupData.pass.get('value'),
+                                fname: fname,
+                                lname: lname,
+                                facebook: facebook, 
 								joinType : join_type,
 								joinValue: join_value,
                                 lang: "English",
@@ -155,11 +172,10 @@ this.show_signup = function(e){
 			'opacity': '0.7',
 			'display': 'block',
 			'background-color': 'black',
-			'height': window.getSize().x,
-			'width': window.getWidth()
+			'height': '100%',
+			'width': '100%' 
 	});
 	modalForm.set('styles', {
-			left: (window.getSize().x / 2) - 265,
 			'opacity': '0',
 			'border': '7px solid black',
 			'-moz-border-radius': '5px 5px 5px 5px',
@@ -171,60 +187,11 @@ this.show_signup = function(e){
 	});
 
 	signupData.uname.focus();
-
-	/*
-        var api = FB.Facebook.apiClient;
-        var uid = api.get_session().uid;
-        api.users_getInfo(uid, 'username, name, pic_square', function(data){
-                if (!data) return null;
-                data = data.pop();
-		
-
-                $('modal-signup-name').set('text', data.name);
-                signupData.name.set('value', data.name);
-		$('modal-signup').adopt(new Element('img', { 'src': data.pic_square } ));
-		$('modal-signup').adopt(new Element('p', { 'html': data.name + ', you will soon be on tap!' , styles:  { 'color' : 'black' , 'font-weight' : 'bold' } } ));
-
-                if (data.username) signupData.uname.set('value', data.username).fireEvent('blur', {
-                        stop: $empty,
-                        preventDefault: $empty,
-                        stopPropagation: $empty
-                });
-
-                curtain.set('styles', {
-                        'opacity': '.3',
-                        'display': 'block',
-                        'height': window.getSize().x,
-                        'width': window.getWidth()
-                });
-                modalForm.set('styles', {
-                        left: (window.getSize().x / 2) - 265,
-                        'display': 'block'
-                });
-
-                signupData.uname.focus();
-*/
-                /*
-				 * * *
-                var form = $('signup-form');
-                if (data.username) form.getElement('input[name="user"]').set('value', data.username);
-                form.getElement('input[name="name"]').set('value', data.name);
-                form.getElement('input[name="email"]').focus();
-                form.fireEvent('submit');
-                form.highlight();
-                $('modal-guide').setStyle('display', 'block');
-				* * * 
-                */
-                //mpmetrics.track('fbmodal-complete', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
-                // window.fbconnected = true;
-       // });
 };
 
 this.click_connect = function(){
         //mpmetrics.track('fbmodal-click', {'type': Tap.Vars.ref ? 'referral' : 'direct'});
 		alert("asd");
 };
-
-// FB.init("e31fd60bbbc576ac7fd96f69215268d0", "/xd_receiver.htm");
 
 })();

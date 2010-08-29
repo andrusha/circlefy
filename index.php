@@ -1,15 +1,7 @@
 <?php
 
 require_once('config.php');
-require_once('modules/autoCreateUser.php');
 //echo "These are the classes that are dynamically loaded:<br/>";
-
-
-function __autoload($className){
-	$file = __FILE__;
-	$file = str_replace('/index.php','',$file);
-	require_once($file.'/modules/'.$className.'.php');
-}
 
 $allowedPages = array(
 		'catagory_add'=>true,

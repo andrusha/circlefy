@@ -40,10 +40,6 @@
 		protected $need_filter = 0;
 		protected $input_debug_flag = 0;
 
-		protected $useOpenGraph;
-		protected $facebook;
-
-
 /*Here is a list of protected variables that child class set and get
 such functions such as $db and other functions that need to be set and get
 are included in this centralized function in order to instill encapsulation.
@@ -63,31 +59,16 @@ are included in this centralized function in order to instill encapsulation.
 			if($this->need_db == 1){
 				$this->db_conn();
 			}
-
-			if($this->need_auth == 1){
-				$this->auth();
-			}
-
-			if($this->need_login == 1){
-				$this->login();
-			}
-
-			if($this->need_filter == 1){
+			
+            if($this->need_filter == 1){
 				$this->db_filter();
 			}
+            
+            $this->login_class = new User();
+            $this->auth_class = $this->login_class;
+            $logged = $this->login_class->identify();
 
-			$this->autoCreateUser = 1;	// We'll use autoCreate everywhere.
-			if($this->autoCreateUser == 1){
-				$this->auto_create();
-			}
-
-			// TPL variable ok_user -> "I am a registered user (not guest)"
-			$logged = ((!empty($_SESSION['uid'])) && ($_SESSION['guest']!="1")) ? 1 : 0;
 			$this->set($logged,'ok_user');
-
-			if($this->useOpenGraph == 1){
-				$this->initOpenGraph();
-			}
 		}
 
 		protected function db_conn(){
@@ -102,20 +83,9 @@ are included in this centralized function in order to instill encapsulation.
 			} else {
 				return $this->$type;
 			}
-
 		}
-
-		protected function auth(){
-			if($this->need_auth){
-				$this->auth_class = new Auth($this->db_class_mysql);
-			}
-		}
-		protected function auto_create(){
-			require_once('autoCreateUser.php');
-			$this->autoCreateUserObject = new autoCreateUser($this->db_class_mysql);
-		}
-
-		protected function db_filter(){
+		
+        protected function db_filter(){
 			foreach($_POST as $key => $val){
 				$escaped_value = $this->db_class_mysql->db->real_escape_string($val);
 				$_POST[$key] = $escaped_value;
@@ -130,13 +100,8 @@ are included in this centralized function in order to instill encapsulation.
 				echo $key." => ".$val."<br/>";
 			}
 		}
-
-		protected function login(){
-			$this->login_class = new Login_User($this->db_class_mysql);
-			//var_dump($this->auth_class);
-		}
-
-		public function set($text,$var){
+		
+        public function set($text,$var){
 			$this->data[$var] = $text;
 		}
 
@@ -148,9 +113,4 @@ are included in this centralized function in order to instill encapsulation.
 		public function page(){
 			return $this->page_name;
 		}
-
-		protected function initOpenGraph(){
-			$this->facebook = new openGraph();
-		}
-
-}
+};

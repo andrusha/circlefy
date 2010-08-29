@@ -88,8 +88,10 @@ if (!$is_guest) {
 	
 </head>
 <body>
-		<? include(MODAL_SIGNUP); ?>
-		<script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
+<?php if (!$_t['ok_user']): ?>
+    <? include(MODAL_SIGNUP); ?>
+    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
+<?php endif; ?>
 				
 <div id="wrapper">
 		

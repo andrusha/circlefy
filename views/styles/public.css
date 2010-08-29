@@ -194,6 +194,11 @@ div.form button.action:hover {
 .tap-from a, #tapper-info a.tap-from {
         color: #627AAD;
 }
+
+#modal-container {
+    width: 500px;
+    margin: auto;
+}
        
 #modal-signup {
         display: none;
@@ -202,7 +207,6 @@ div.form button.action:hover {
         z-index: 2;
         background: #F2F2F2;
         top: 100px;
-        left: 200px;
         border: 1px solid #ccc;
         padding: 10px;
 }
@@ -299,8 +303,6 @@ div.form button.action:hover {
 	font-size: 12px;
 }
 
-
-
 #login a.selected {
 	background-color: #fffa00 !important;
 }
@@ -328,7 +330,6 @@ div.form button.action:hover {
 	padding: 0;
 	list-style: none;
 	font-size: 12px;
-	border-bottom: 2px solid #fffa00;
 }
 
 body #login li {

@@ -10,6 +10,12 @@
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
 <body>
+
+<?php if (!$_t['ok_user'] || TRUE): ?>
+    <? include(MODAL_SIGNUP); ?>
+    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
+<?php endif; ?>
+
 	<div id="wrapper">
 
 	<? include(OK_TOPBAR); ?> 
@@ -40,26 +46,38 @@
                                 $value = '&value='.$u[2];
                         ?>
                         <div id="login" class="section container">
-                            <form id="taplogin" action="/" method="POST">
-                                <ul>
-                                    <li>
-                                        <label class="inblock">username</label>
-                                            <p class="body">
-                                                <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
-                                            </p>
-                                    </li>
-                                    <li>
-                                        <label class="inblock">password</label>
-                                        <p class="body">
-                                        <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
-                                        </p>
-                                    </li>
-                                    <li class="action">
-                                        <button id="login-button" type="submit">login</button>
-                                    </li>
-                                    <li id="login-status"></li>
-                                </ul>
-                            </form>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <form id="taplogin" action="/" method="POST">
+                                        <input name="fb_login" type="hidden" value="">
+                                            <ul>
+                                                <li>
+                                                    <label class="inblock">username</label>
+                                                        <p class="body">
+                                                            <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
+                                                        </p>
+                                                </li>
+                                                <li>
+                                                    <label class="inblock">password</label>
+                                                    <p class="body">
+                                                    <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
+                                                    </p>
+                                                </li>
+                                                <li class="action">
+                                                    <button id="login-button" type="submit">login</button>
+                                                </li>
+                                            </ul>
+                                        </form>
+                                    </td>
+                                    <td style="width: 40px; padding-right: 10px; text-align: center;">
+                                        OR
+                                    </td>
+                                    <td>
+                                        <fb:login-button show-faces="true" width="300" perms="user_about_me,email,read_friendlists,user_groups"></fb:login-button>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>    
                         </div>
 					</div>
@@ -83,6 +101,6 @@ var _gaq = _gaq || [];
    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
  })();
 </script>
-		<?//include(FBCONNECT_BOTTOM)?>
+		<?include(FBCONNECT_BOTTOM)?>
 </body>
 </html>

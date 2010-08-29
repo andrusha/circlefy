@@ -1,7 +1,20 @@
-<script type="text/javascript">
-<?php $u = $_SERVER['REQUEST_URI']; ?>
-var server_uri = "<?=$u?>";
-var join_type = "<?$g = explode('/',$u); $g = $g[1]; echo $g;?>";
-var join_value = "<?$g = explode('/',$u); $g = $g[2]; echo $g;?>";
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script>
+    FB.init({appId: '<?=FBAPPID?>', status: true, cookie: true, xfbml: true});
+    FB.Event.subscribe('auth.sessionChange', function(response) {
+        if (response.session) {
+            _tap.publish('facebook.logged_in', []);
+        } else {
+            _tap.publish('facebook.logged_out', []);
+        }
+    });
+    FB.getLoginStatus(function(response) {
+        if (response.session) {
+            // logged in and connected user, someone you know
+            _tap.publish('facebook.logged_in', []);
+        } else {
+            // no user session available, someone you dont know
+        }
+    });
 </script>
-<script type="text/javascript" src="/views/scripts/fbconnect.js"></script>

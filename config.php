@@ -1,4 +1,8 @@
 <?php
+function __autoload($classname){
+	require_once(dirname(__FILE__).'/modules/'.$classname.'.php');
+}
+
 session_start();
 
 define("METRIC_KEY","05a951428ed5199e27d52356aae83a22");

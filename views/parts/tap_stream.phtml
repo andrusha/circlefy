@@ -41,8 +41,8 @@ if (!empty($_taps)):
                     <span class="indicator">Someone's replying..</span>
                     <span class="last-resp">
                         <strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
-                        <span class="body ellipsis inblock"><?= $tap['last_resp'] ?></span>
-                </span>
+                        <span class="inblock"><?= $tap['last_resp'] ?></span>
+                    </span>
                 <a href="#" class="tap-resp-count" title="view responses">
                     <span class="show-resp-count"><?= $tap['count'] ?></span>
                     <span class="follow_button"<? echo ($show_resp ? "style='display: none'" : '') ?>>Reply</span>

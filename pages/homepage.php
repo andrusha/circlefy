@@ -21,63 +21,23 @@ class homepage extends Base{
 		$this->need_filter = 1;
 		$this->input_debug_flag = 0;
 		//$this->autoCreateUser = 1;
-		$this->useOpenGraph = 1;
 	
 		parent::__construct();
 		
 		$this->set($result,'users');
 		
 		if($_GET['logout'] && !$_POST['uname']){
-			$logout_status = $this->login_class->log_out($_SESSION['uid']);
-		
-			switch($logout_status){
-				case 'goodbye':
-					// $this->set('<font color="red">You are now logged out</font>','errors');
-					header("location: /");
-					break;		
-			}
+			$logout_status = $this->login_class->logOut($_SESSION['uid']);
+            header("location: /");
 		}
-		
-		if(!$_GET['logout'] && $_COOKIE['auto_login'] && !$_SESSION['uid']){
-			$bypass = $this->login_class->bypass_login();
-			
-			switch ($bypass){
-				case 'bypassed':
-					break;
-					
-				case 'fraud':
-				//	$this->set("<font color='red'>Warning! You are trying to use a expired account session!</font>",'errors');
-					break;
-			}
-		}
-		
-		if(!$bypass && !$_GET['logout'] && $_POST['uname']){
-			$login_status = $this->login_class->validate_user();
-			
-			switch ($login_status){
-				
-				case 'short':
-					$this->set('<font color="red">Your username you type is less then 2 chars</font>','errors');
-					break;
-					
-				case 'success':
-					$this->set("Congrats, You're logged in!",'errors1');
-					break;
-				
-				case 'invalid':
-					$this->set('<font color="red">Your username and/or password is invalid</font>','errors');
-				
-			}
-		}
-		
-		if($_COOKIE['wasp_attack']){
-			$this->set('Continue Signing Up!','signup');
-			$this->set('<script type="text/javascript">first_run();</script>','second_step');
-			$this->set('onclick="show_next_step(this); return false;">&nbsp; Next &gt;&gt; &nbsp;','step_one');
-		} else { 
-			$this->set('Sign Up!','signup');
-			$this->set('onclick="check_all(this,1); return false;">&nbsp; Sign Up! &nbsp;','step_one'); 
-		}
+        
+        if (!empty($_POST['uname']) && !empty($_POST['pass']) && empty($_POST['fb_login'])) {
+           $this->login_class->logIn($_POST['uname'], $_POST['pass']);
+           $this->set(true, 'ok_user');
+        } else if ($_POST['fb_login'] == '1') {
+           $this->login_class->logInWithFacebook();
+           $this->set(true, 'ok_user');
+        }
 
 		// We'll always use this view:
 			$this->page_name = "new_homepage";
