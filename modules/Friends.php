@@ -44,7 +44,7 @@ class Friends extends BaseModel {
 
         array(uid => array(info), ...
     */
-    private function filterFriends($uid, $youFollowing = true, $special_where = "", $special_params = "") {
+    private function filterFriends($uid, $youFollowing = true, $special_where = "", array $special_params = array()) {
         $identifier = $youFollowing ? 'uid' : 'fuid';
         $reverse_ident = $youFollowing ? 'fuid' : 'uid';
         $query = "

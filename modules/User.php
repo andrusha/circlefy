@@ -128,6 +128,7 @@ class User extends BaseModel {
         Makes current user guest
     */
     public function makeGuest() {
+        
         if ($_COOKIE['GUEST_uid'] && $_COOKIE['GUEST_hash']) {
             $uid = $_COOKIE['GUEST_uid'];
             $uname = $_COOKIE['GUEST_uname'];
@@ -144,11 +145,21 @@ class User extends BaseModel {
     }
 
     /*
+        Yeah, it returns max uid from login table
+    */
+    public function getMaxId() {
+        $query = "SELECT MAX(uid)+1 AS max
+                    FROM login";
+        $result = $this->db->query($query)->fetch_assoc();
+        return intval($result['max']);
+    }
+
+    /*
         Creates new guest-user and returns info about it
     */
     private function createGuest() {
         $hash = $this->makeHash();
-        $uname = 'Guest'.rand(10000,99999);
+        $uname = 'Guest'.$this->getMaxId();
         $ip = $_SERVER['REMOTE_ADDR'];
 
         $query = "INSERT
