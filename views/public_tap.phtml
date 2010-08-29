@@ -1,6 +1,6 @@
 <?php
 $logged = (!empty($_SESSION['uid']));
-// if ($_t['no_tap']) header('location:/');
+// if ($no_tap) header('location:/');
 
 extract($_t, EXTR_PREFIX_SAME, '_');
 ?>
@@ -41,7 +41,7 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>

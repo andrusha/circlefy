@@ -4,11 +4,9 @@
     It's pretty much function library
     with all about Taps & Responses to them
 */
-class Taps {
-    private $db;
-
+class Taps extends BaseModel {
     public function __construct() {
-        $this->db = new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+        parent::__construct();
     }
 
     /*
@@ -98,7 +96,7 @@ class Taps {
              ORDER
                 BY sc.mid DESC
              LIMIT {$limit}";
-
+        
         $mids = array();
         $result = $this->db->query($query);
         if ($result->num_rows)
@@ -143,12 +141,6 @@ class Taps {
         $tap_id int|array
     */
     public function getTaps($tap_ids) {
-        $where = '';
-        if (is_array($tap_ids))
-            $where = 'IN ('.implode(', ', $tap_ids).') ';
-        else
-            $where = " = {$tap_ids}";
-
         //default responses info (count, last_resp, resp_uname) set to null
         $query = "
             SELECT sc.mid AS cid, sc.chat_text, UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp_raw,
@@ -169,9 +161,10 @@ class Taps {
              INNER
               JOIN groups g
                 ON g.gid = scm.gid
-             WHERE sc.mid {$where}";
+             WHERE sc.mid IN (#tap_ids#)";
         $taps = array();
-        $result = $this->db->query($query);
+
+        $result = $this->db->query($query, array('tap_ids' => $tap_ids));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
                 $taps[ intval($res['cid']) ] = $this->formatTap($res);
@@ -265,9 +258,9 @@ class Taps {
             INNER
              JOIN login l 
                ON l.uid = c.uid
-            WHERE c.cid = {$tap_id}";
+            WHERE c.cid = #tap_id#";
         $responses = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('tap_id' => $tap_id));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
                 $responses[] = $this->formatTap($res);
@@ -281,14 +274,13 @@ class Taps {
         $tap_ids array
     */
     public function lastResponses($tap_ids) {
-        $ids = implode(', ', $tap_ids);
         $query = "
             SELECT c2.cid, c2.chat_text AS last_resp, c1.count, l.uname AS resp_uname,
                    GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name 
               FROM (
                     SELECT MAX(mid) AS mid, COUNT(mid) AS count
                       FROM chat c
-                     WHERE cid IN ({$ids})
+                     WHERE cid IN (#ids#)
                      GROUP
                         BY cid
                    ) AS c1
@@ -299,7 +291,7 @@ class Taps {
               JOIN login l
                 ON l.uid = c2.uid";
         $responses = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('ids' => $tap_ids));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
                 $responses[ intval($res['cid']) ] = $res;
@@ -316,28 +308,20 @@ class Taps {
         $tap_ids int|array
     */
     public function responsesCount($tap_ids) {
-        if (is_array($tap_ids)) {
-            $where = ' IN ('.implode(', ', $tap_ids).') ';
-            $multiple = true;
-        } else {
-            $where = " = {$tap_id}";
-            $multiple = false;
-        }
-
         $query = "
             SELECT COUNT(mid), cid AS count
               FROM chat
-             WHERE cid {$where}
+             WHERE cid IN (#cids#) 
              GROUP
                 BY mid";
 
         $counts = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('cids' => $tap_ids));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
                 $counts[ intval($res['cid']) ] = intval($res['count']);
 
-        if (!$multiple)
+        if (!is_array($tap_ids))
             $counts = current($counts);
 
         return $counts;

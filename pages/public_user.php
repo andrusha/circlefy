@@ -147,11 +147,6 @@ EOF;
         $user = new User();
         $stats = $user->getStats($uid);
 
-		$stats = array(
-			'message_count' => $stats['taps'],
-			'response_count' => $stats['responses'],
-			'group_count' => $stats['groups']
-		);
 		$this->set($stats,'stats');
 		//END stats
 

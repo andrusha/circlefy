@@ -5,7 +5,7 @@ switch ($_GET['saved']){
 	case "no": $notify = 'error'; break;
 }
 
-$res = $_t['edit_profile'];
+$res = $edit_profile;
 $fname = $res['fname'];
 $lname = $res['lname'];
 $uname = $_SESSION['uname'];
@@ -18,7 +18,7 @@ $town = $res['town'];
 $lang = $res['lang'];
 $about = $res['about'];
 
-$stat = $_t['stats'];
+$stat = $stats;
 $message_count = $stat['message_count'];
 $response_count = $stat['response_count'];
 $group_count = $stat['group_count'];
@@ -46,7 +46,7 @@ $group_count = $stat['group_count'];
 
 </head>
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -118,7 +118,7 @@ $group_count = $stat['group_count'];
 								<span class="error"></span>
 							</label>
 							<select name="country" class="basic full">
-								<? foreach ( $_t['init_geo_data'] as $item): ?>
+								<? foreach ( $init_geo_data as $item): ?>
 								<option value="<?= $item['abbr2'] ?>">
 									<?= $item['name'] ?>
 								</option>

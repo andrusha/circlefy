@@ -1,6 +1,6 @@
 <?php
 $logged = (!empty($_SESSION['uid']));
-if ($_t['no_group']) header('location:/');
+if ($no_group) header('location:/');
 
 function map_clean($func, $arr) {
     return array_filter(array_map($func, $arr));
@@ -8,50 +8,50 @@ function map_clean($func, $arr) {
 
 $inits = array();
 $people = array();
-if (is_array($_t['user_bits'])) {
+if (is_array($user_bits)) {
     function get_cids($bit) {
         return $bit['cid'];
     }
 
-    $inits = map_clean("get_cids", $_t['user_bits']);
+    $inits = map_clean("get_cids", $user_bits);
     function get_uids($bit) {
         return $bit['uid'];
     }
 
-    $people = map_clean("get_uids", $_t['user_bits']);
+    $people = map_clean("get_uids", $user_bits);
 }
 
-$groups = $_t['gid'];
+$groups = $gid;
 
 function map_admins($admin) {
     return $admin['uname'];
 }
 
-$_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['admins']) ? $_t['admins'] : array()));
+$admin = in_array($_SESSION['uname'], array_map("map_admins", !empty($admins) ? $admins : array()));
 
 ?>
 <!doctype html>
 <html>
 <head>
-	<? $tpl_title = "Channel " . $_t['symbol']; ?>
+	<? $tpl_title = "Channel " . $symbol; ?>
 	<?include(OK_HEADER)?>
-    <link rel="shortcut icon" href="http://tap.info/group_pics/<?=$_t['favicon']?>"/>
-    <link title="" type="application/rss+xml" rel="alternate" href="http://<?=$_SERVER['SERVER_NAME']?>/rss_<?=$_t['symbol'];?>.xml"/>
+    <link rel="shortcut icon" href="http://tap.info/group_pics/<?=$favicon?>"/>
+    <link title="" type="application/rss+xml" rel="alternate" href="http://<?=$_SERVER['SERVER_NAME']?>/rss_<?=$symbol;?>.xml"/>
     <script type="text/javascript" src="/views/scripts/tap.js"></script>
     <script type="text/javascript">
         window._vars = {
-            uid: "<?= $_t['pcid'] ?>",
+            uid: "<?= $pcid ?>",
             uname: "<?= $_SESSION['uname'] ?>",
             stream: JSON.decode('<?= json_encode($inits) ?>'),
             convos: [],
             people: JSON.decode('<?= json_encode($people) ?>'),
             groups: JSON.decode('<?= json_encode($groups) ?>'),
-            sendTo: "<?= $_t['gname'] ?>:<?= $_t['symbol'] ?>:0:<?= $_t['gid'] ?>",
+            sendTo: "<?= $gname ?>:<?= $symbol ?>:0:<?= $gid ?>",
             filter: {
-                gid: "<?= $_t['gid'] ?>",
+                gid: "<?= $gid ?>",
                 info: {
-                    name: "<?= $_t['gname'] ?>",
-                    symbol: "<?= $_t['symbol'] ?>"
+                    name: "<?= $gname ?>",
+                    symbol: "<?= $symbol ?>"
                 }
             }
         };
@@ -71,7 +71,7 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
 </head>
 <body>
 
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -89,8 +89,8 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
         </h2>
         <ul class="panel">
         <?php
-        if ($_t['admins']):
-            foreach ($_t['admins'] as $admin):
+        if ($admins):
+            foreach ($admins as $admin):
                 ?>
                     <a href="/user/<?=$admin['uname']?>">
                         <li class="panel-item-public-admin" title="<?=$admin['uname']?>">
@@ -119,8 +119,8 @@ $_t['admin'] = in_array($_SESSION['uname'], array_map("map_admins", !empty($_t['
         <li id="online-only-checkbox"><label>Online Only</label><input id="online-checked" type="checkbox" checked></li>
         <ul id="member-panel" class="panel selected">
         <?php
-                                    if (!empty($_t['popular_members'])):
-            foreach ($_t['popular_members'] as $member):
+                                    if (!empty($popular_members)):
+            foreach ($popular_members as $member):
                 ?>
 <a href="/user/<?=$member['member']?>"/>
 <li class="panel-item-public-group">
@@ -150,7 +150,7 @@ include(OK_SIDEBAR);
 
 <?php
             /* DYNAMIC STYLES */
-if ($_t['topbg'] == 'dark') {
+if ($topbg == 'dark') {
     $color_name = '#FFFA00';
     $color_topbg = '#3C3C3C';
     $join = 'lightgreen';
@@ -163,42 +163,42 @@ if ($_t['topbg'] == 'dark') {
     <div id="content">
         <div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
 
-        <?php if ($_t['status'] == 1): ?>
-            <button data-id="<?= $_t['gid'] ?>" class="leave">unfollow channel</button>
+        <?php if ($status == 1): ?>
+            <button data-id="<?= $gid ?>" class="leave">unfollow channel</button>
         <?php elseif ($logged): ?>
-            <?php if ($_t['private']): ?>
-                <?php if ($_t['requested']): ?>
-                    <button data-id="<?= $_t['gid'] ?>" class="waiting">waiting accept</button>
+            <?php if ($private): ?>
+                <?php if ($requested): ?>
+                    <button data-id="<?= $gid ?>" class="waiting">waiting accept</button>
                 <?php  else: ?>
-                    <button data-id="<?= $_t['gid'] ?>" class="request">request to follow channel</button>
+                    <button data-id="<?= $gid ?>" class="request">request to follow channel</button>
                 <?php  endif; ?>
             <?php  else: ?>
-                <button data-id="<?= $_t['gid'] ?>" class="join">follow channel</button>
+                <button data-id="<?= $gid ?>" class="join">follow channel</button>
             <?php endif; ?>
         <?php  else: ?>
-            <button data-id="<?= $_t['gid'] ?>" class="login">login to follow</button>
+            <button data-id="<?= $gid ?>" class="login">login to follow</button>
         <?php endif; ?>
 
-            <img src="/group_pics/<?= $_t['group_pic_med'] ?>" class="group-avatar"/>
+            <img src="/group_pics/<?= $group_pic_med ?>" class="group-avatar"/>
 
             <h2>
-            <?= ($_t['admin'] ? '<span class="moderator-title">&#10070;</span> ' : '') ?> <span
-                    style="color:<?=$color_name?>;"><?= $_t['gname'] ?></span> <span
-                    class="nick"><?= $_t['symbol'] ?></span>
+            <?= ($admin ? '<span class="moderator-title">&#10070;</span> ' : '') ?> <span
+                    style="color:<?=$color_name?>;"><?= $gname ?></span> <span
+                    class="nick"><?= $symbol ?></span>
             </h2>
 
             <p class="stats">
-                <strong class="count-one"><?= (!empty($_t['member_count'])) ? $_t['member_count'] : '0' ?></strong>
+                <strong class="count-one"><?= (!empty($member_count)) ? $member_count : '0' ?></strong>
                 Members joined,
-                <strong><?=$_t['taps_count']?></strong> Taps sent, and
-                <strong><?=$_t['responses_count']?></strong> Responses received.
+                <strong><?=$taps_count?></strong> Taps sent, and
+                <strong><?=$responses_count?></strong> Responses received.
             </p>
 
             <div class="description">
-            <?=$_t['descr']?>
+            <?=$descr?>
             </div>
 
-        <? if ($_t['type'] == 3 || $_t['type'] == 1): ?>
+        <? if ($type == 3 || $type == 1): ?>
             <img style="float:right;" src="/images/icons/tick.png" title="Verified Official Community"/>
         <? endif; ?>
             <span style="float:right;display:block;color:<?=$join?>;opacity:0;" class="positive-click">Joined!</span>
@@ -217,22 +217,22 @@ if ($_t['topbg'] == 'dark') {
                     <span class="title">feed</span>
                 </h2>
                 <span class="stream-name" style="float: left">
-                    <img class="favicon-stream-title" src="/group_pics/<?=$_t['favicon']?>"/> &nbsp;<?= $_t['gname'] ?>
+                    <img class="favicon-stream-title" src="/group_pics/<?=$favicon?>"/> &nbsp;<?= $gname ?>
                 </span>
 				
                 <span class="visitor_count" title="viewers online/total" style="float: left">
-                <? if (ADMIN_GLOBAL || $_t['enable_admin']): ?>
+                <? if (ADMIN_GLOBAL || $enable_admin): ?>
                     <span class="admin">
-                        <a href="/channel_edit?channel=<?=$_t['symbol']?>">
+                        <a href="/channel_edit?channel=<?=$symbol?>">
                             Manage Channel
                         </a>
                     </span>
                 <? endif; ?>
-                    <span class="viewers_online"><?=$_t['online_count']?></span>
+                    <span class="viewers_online"><?=$online_count?></span>
                     / 
                     <span id="total-member-count">
                         <a href="#">
-                        <span class="count-one"><?=$_t['total_count']?></span>
+                        <span class="count-one"><?=$total_count?></span>
                         </a>
                     </span>
                 </span>
@@ -258,16 +258,16 @@ if ($_t['topbg'] == 'dark') {
 
             <form id="tapbox" action="">
                 <div id="tapto">
-                    tap <?= strtolower($_t['gname']) ?>..
+                    tap <?= strtolower($gname) ?>..
                 </div>
                 <span class="counter">240</span>
                 <input id="taptext" tabindex="1" type="text">
                 <button id="tapsend" tabindex="3" type="submit">tap!</button>
 
-                <?php if ($_t['private']): ?>
-                    <?php if ($_t['status'] == -1): ?>
+                <?php if ($private): ?>
+                    <?php if ($status == -1): ?>
                         <div style="color:red;margin-top:20px;">This channel is private, you can request to join a conversation.</div>
-                    <?php elseif ($_t['status'] == 0): ?>
+                    <?php elseif ($status == 0): ?>
                         <div style="color:red;margin-top:20px;">Please wait for the channel owner to accept your request.</div>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -276,7 +276,7 @@ if ($_t['topbg'] == 'dark') {
 
             <div class="body">
                 <?php
-                    $_taps = $_t['user_bits'];
+                    $_taps = $user_bits;
                     include(TAP_STREAM);
                 ?>
             </div>

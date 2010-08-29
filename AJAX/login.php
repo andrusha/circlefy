@@ -37,9 +37,9 @@ if ($type == 'user') {
         $user_info = $fb->getUserInfo($fbid, $fb_info['access_token']);
         $data = array(
             'fb_uid' => $fbid,
-            'uname' => $user_info->id,
-            'fname' => $user_info->first_name,
-            'lname' => $user_info->last_name);
+            'uname' => $user_info['id'],
+            'fname' => $user_info['first_name'],
+            'lname' => $user_info['last_name']);
 
         echo json_encode(array('status' => 'NOT_REGISTERED', 'data' => $data));
     }

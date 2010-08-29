@@ -1,21 +1,21 @@
 <?php
 $logged = (!empty($_SESSION['uid']));
-// if ($_t['no_tap']) header('location:/');
+// if ($no_tap) header('location:/');
 
-if (!empty($_t['user_bits'])) {
-	$tap = array_shift($_t['user_bits']);
+if (!empty($user_bits)) {
+	$tap = array_shift($user_bits);
 }
 ?>
 <!doctype html>
 <html>
 <head>
-	<? $tpl_title = "convo with ".$_t['user']; ?>
+	<? $tpl_title = "convo with ".$user; ?>
 	<? include(OK_HEADER); ?>
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
+			uid: "<?= $pcid ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: JSON.decode('<?= json_encode($tap['cid']) ?>'),
 			convos: [],
@@ -29,7 +29,7 @@ if (!empty($_t['user_bits'])) {
 </head>
 <body>
 
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -49,7 +49,7 @@ if (!empty($_t['user_bits'])) {
 				<div class="sideinfo section container">
 						
 					<h3>	
-						<?php if($_t['active_convo']):?>
+						<?php if($active_convo):?>
 						<span id="tab-name" class="untrack-convo follow_button" cid="<?= $tap['cid'] ?>">You are following this convo</span>
 						<?php else: ?>
 						<span id="tab-name" class="track-convo follow_button" cid="<?= $tap['cid'] ?>">Follow this convo</span>
@@ -61,8 +61,8 @@ if (!empty($_t['user_bits'])) {
 					</h2>
 					<ul class="panel">
 						<?php 
-							if (!empty($_t['invovled'])):
-								foreach ($_t['invovled'] as $person):
+							if (!empty($invovled)):
+								foreach ($invovled as $person):
 						?>
 						<li class="panel-item" >
 							<span class="count"><?= $person['count'] ?></span>	
@@ -91,11 +91,11 @@ if (!empty($_t['user_bits'])) {
 					<?php if (!$logged): ?>
 					<button class="login">login to respond</button>
 					<?php endif; ?>
-					<img src="/user_pics/<?= $_t['user_pic_med'] ?>" class="avatar" />
-					<h2><?= $_t['user'] ?> <span class="nick"></span></h2>
-					<p class="headline">&#8220;<?=$_t['about']?>&#8221;</p>
+					<img src="/user_pics/<?= $user_pic_med ?>" class="avatar" />
+					<h2><?= $user ?> <span class="nick"></span></h2>
+					<p class="headline">&#8220;<?=$about?>&#8221;</p>
 					<p class="stats">
-						<?php $stats = $_t['stats']; ?>
+						<?php $stats = $stats; ?>
 						<strong><?= $stats['message_count'] ?></strong> Taps sent, 
 						<strong><?= $stats['response_count'] ?></strong> Responses received, and
 						<strong><?= $stats['group_count'] ?></strong> Channels joined.
@@ -105,7 +105,7 @@ if (!empty($_t['user_bits'])) {
 				<!-- 
 				<form id="tapbox" action="" class="section active">
 					<div id="tapto">
-						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($_t['gname']) ?>..
+						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($gname) ?>..
 					</div>
 					<span class="counter">240</span>
 					<input id="taptext" tabindex="1" type="text">
@@ -120,7 +120,7 @@ if (!empty($_t['user_bits'])) {
 							<img src="/images/flat/loader.gif" />
 							<span class="title">convo</span>
 						</h2>
-						<span class="stream-name">with <?= $_t['user'] ?>&nbsp; 
+						<span class="stream-name">with <?= $user ?>&nbsp; 
 						<a href="/channel/<?=$tap['symbol']?>" /><img class="public-tap-favicon aggr-favicons" src="/group_pics/<?= $tap['favicon']?>" title="<?=$tap['gname']?>" />
 						
                         
@@ -133,9 +133,9 @@ if (!empty($_t['user_bits'])) {
                         </span>
 					</div>
 					<div class="body">
-						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
+						<ul id="taps" class="stream <?= empty($user_bits) ? "empty" : "" ?>">
 							<li id="tid_<?= $tap['cid'] ?>" class="container" 
-								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $_t['user'] ?>">
+								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $user ?>">
 								<a href="/user/<?= $tap['uname'] ?>">
 									<img class="avatar" alt="<?= $tap['uname'] ?>" src="/user_pics/<?= $tap['pic_100'] ?>" />
 								</a>
@@ -168,8 +168,8 @@ if (!empty($_t['user_bits'])) {
 								<div class="responses perma">
 									<ul class="chat chat-pub">
 										<?php
-											if (!empty($_t['responses'])):
-												foreach($_t['responses'] as $resp):
+											if (!empty($responses)):
+												foreach($responses as $resp):
 										?>
 										<li>
 											<em data-timestamp="<?= $resp['chat_time'] ?>">

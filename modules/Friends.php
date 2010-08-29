@@ -3,11 +3,9 @@
 /*
 Class for all things related to friends
 */
-class Friends {
-    private $db;
-
+class Friends extends BaseModel {
     public function __construct() {
-        $this->db = new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+        parent::__construct();
     }
 
     /*
@@ -23,8 +21,8 @@ class Friends {
         $query = "
             SELECT COUNT(*) AS count
               FROM friends AS f
-             WHERE f.{$identifier} = {$uid}";
-        $result = $this->db->query($query)->fetch_assoc();
+             WHERE f.{$identifier} = #uid#";
+        $result = $this->db->query($query, array('uid' => $uid))->fetch_assoc();
         return intval($result['count']);
     }
 
@@ -46,7 +44,7 @@ class Friends {
 
         array(uid => array(info), ...
     */
-    private function filterFriends($uid, $youFollowing = true, $special_where = "") {
+    private function filterFriends($uid, $youFollowing = true, $special_where = "", $special_params = "") {
         $identifier = $youFollowing ? 'uid' : 'fuid';
         $reverse_ident = $youFollowing ? 'fuid' : 'uid';
         $query = "
@@ -60,13 +58,13 @@ class Friends {
                    ) AS sc ON sc.uid = f.{$reverse_ident}
              JOIN login AS u
                ON  u.uid = f.{$reverse_ident}
-            WHERE f.{$identifier} = {$uid}
+            WHERE f.{$identifier} = #uid#
             {$special_where}
             GROUP
                BY u.uid;";
         
         $users = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array_merge($special_params, array('uid' => $uid)));
         while ($res = $result->fetch_assoc()) {
             $users[intval($res['uid'])] = $res;
         }
@@ -83,18 +81,35 @@ class Friends {
     }
 
     public function filterByUname($uid, $uname) {
-        return $this->filterFriends($uid, true, " AND u.uname LIKE '%{$uname}%' ");
+        $uname = "%$uname%";
+        return $this->filterFriends($uid, true, " AND u.uname LIKE #uname# ", array('uname' => $uname));
     }
 
     /*
         Follows user
-    */
+
+        $you int - your uid
+        $friend int|array - friend uid, or list of uids
+    */    
     public function follow($you, $friend) {
+        $you = intval($you);
+        if (is_array($friend)) {
+            $values = '';
+            foreach($friend as $fuid) {
+                $fuid = intval($fuid);
+                $values .= "({$you}, {$fuid}, NOW())";
+            }
+            $values = substr($values, 1);
+        } else {
+            $friend = intval($friend);
+            $values = "({$you}, {$friend}, NOW())"; 
+        }
+
         $query = "INSERT
                     INTO friends (uid, fuid, time_stamp)
-                  VALUES ({$you}, {$friend}, NOW())";
+                  VALUES {$values}";
 
-        $okay = $this->db->query($query)->affected_rows == 1;
+        $okay = $this->db->query($query)->affected_rows >= 1;
         return $okay;
     }
 
@@ -104,10 +119,10 @@ class Friends {
     public function unfollow($you, $friend) {
         $query = "DELETE
                     FROM friends
-                   WHERE fuid = {$friend}
-                     AND uid = {$you}
+                   WHERE fuid = #friend#
+                     AND uid = #you#
                    LIMIT 1";
-        $okay = $this->db->query($query)->affected_rows == 1;
+        $okay = $this->db->query($query, array('you' => $you, 'friend' => $friend))->affected_rows == 1;
         return $okay;
     }
     
@@ -117,10 +132,10 @@ class Friends {
     public function following($you, $friend) {
         $query = "SELECT fuid
                     FROM friends
-                   WHERE fuid = {$friend}
-                     AND uid = {$you}
+                   WHERE fuid = #friend#
+                     AND uid = #you#
                    LIMIT 1";
-        $okay = $this->db->query($query)->num_rows == 1;
+        $okay = $this->db->query($query, array('you' => $you, 'friend' => $friend))->num_rows == 1;
         return $okay;
     }
 };

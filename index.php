@@ -85,9 +85,12 @@ switch($_t['output']){
 			exit();
 		}
         echo "<!-- View Page: " . $view_page . "-->";
+
+        $_t['_t'] = $_t; //for old-style templates
+        renderPage($file.'/views/'.$view_page.'.phtml', $_t);
         
         //echo "<!--" . print_r($_SESSION, true)  . "-->";
-		include_once($file.'/views/'.$view_page.'.phtml');	
+		//include_once($file.'/views/'.$view_page.'.phtml');	
 	break;
 	
 	case 'JSON':
@@ -106,4 +109,10 @@ default:
 break;
 	
 }
-?>
+
+function renderPage($__pagename, $__variables) {
+    extract($__variables);
+    ob_start();
+    include($__pagename);
+    echo ob_get_clean();
+}

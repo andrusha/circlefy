@@ -46,7 +46,7 @@
 							<span class="add-catagory-button follow_button"><a href="#">Add Catagory</a></span>
 
 							<ul id="catagory-list">
-								<?php if($_t['my_categories']) foreach ($_t['my_categories'] as $catagory): ?>
+								<?php if($my_categories) foreach ($my_categories as $catagory): ?>
                                 <li class="catagory-item" catagoryid="<?php echo $catagory['scid']; ?>" gid="<?php echo $catagory['gid']; ?>">
 									<span class="catagory-name"><?php echo $catagory['catagory']; ?></span>
 									<span class="remove-catagory"><a href="#">Remove</a></span>

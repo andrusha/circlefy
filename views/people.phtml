@@ -1,6 +1,6 @@
 <?php
 $people_list = "peoples";
-$tracker = $_t['q'];
+$tracker = $q;
 ?>
 <!doctype html>
 <html>
@@ -11,7 +11,7 @@ $tracker = $_t['q'];
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
+			uid: "<?= $pcid ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
             filter: {
                 gid: "2",
@@ -26,7 +26,7 @@ $tracker = $_t['q'];
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
   
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -42,11 +42,11 @@ $tracker = $_t['q'];
 					</h2>
 					<ul class="panel selected">
 						<li class="panel-item <?= !$tracker ? 'selected' : '' ?>">
-							<span class="count"><?= $_t['tracked_count'] ?></span>
+							<span class="count"><?= $tracked_count ?></span>
 							<a href="/people?q=0" class="names inblock ellipsis">people you're tracking</a>
 						</li>
 						<li class="panel-item <?= $tracker ? 'selected' : '' ?>" >
-							<span class="count"><?= $_t['track_count'] ?></span>
+							<span class="count"><?= $track_count ?></span>
 							<a href="/people?q=1" class="names inblock ellipsis">people tracking you</a>
 						</li>
 						<li class="panel-item" >
@@ -73,9 +73,9 @@ $tracker = $_t['q'];
 						<span class="stream-name">
 							People 
 							<?php if ($tracker): ?>
-							Tracking You (<?= $_t['track_count'] ?>)
+							Tracking You (<?= $track_count ?>)
 							<?php else: ?>
-							You're Tracking (<?= $_t['tracked_count'] ?>)
+							You're Tracking (<?= $tracked_count ?>)
 							<?php endif; ?>
 						</span>
 					</div>

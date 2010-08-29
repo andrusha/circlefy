@@ -4,17 +4,15 @@
     Conversations, and everything related to them
     add/get active conversations, etc
 */
-class Convos {
-    private $db;
-
+class Convos extends BaseModel {
     public function __construct() {
-        $this->db = new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+        parent::__construct();
     }
 
     /*
         Returns active conversations
     */
-    public function getActive($uid, $special_where = "") {
+    public function getActive($uid, $special_where = "", $special_params = array()) {
         $query = "
 		    SELECT ac.mid, ac.uid, l.uname, l.pic_36 AS small_pic,
                    GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
@@ -24,12 +22,12 @@ class Convos {
         		ON sc.mid = ac.mid
               JOIN login AS l
                 ON l.uid = sc.uid
-             WHERE ac.uid = {$uid}
+             WHERE ac.uid = #uid#
                AND ac.active = 1
              {$special_where}
              ORDER
                 BY ac.mid ASC";
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array_merge($special_params, array('uid' => $uid)));
         $activeConvos = array();
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
@@ -44,7 +42,7 @@ class Convos {
         $mid - conversation id, sometimes called cid
     */
     public function getActiveOne($uid, $mid) {
-        $result = $this->getActive($uid, " AND ac.mid = {$mid} ");
+        $result = $this->getActive($uid, " AND ac.mid = #mid# ", array('mid' => $mid));
         return $result[ intval($mid) ];
     }
 
@@ -56,10 +54,10 @@ class Convos {
     private function setActive($uid, $mid) {
         $query = "UPDATE active_convo
                      SET active = 1
-                   WHERE uid = {$uid}
-                     AND mid = {$mid}
+                   WHERE uid = #uid#
+                     AND mid = #mid#
                    LIMIT 1";
-        $this->db->query($query);
+        $this->db->query($query, array('uid' => $uid, 'mid' => $mid));
         return $this->db->affected_rows == 1;
     }
 
@@ -70,8 +68,8 @@ class Convos {
         $query = "INSERT 
                     INTO active_convo
                         (mid, uid, active)
-                 VALUES ({$mid}, {$uid}, 1)";
-        $this->db->query($query);
+                 VALUES (#mid#, #uid#, 1)";
+        $this->db->query($query, array('uid' => $uid, 'mid' => $mid));
     }
 
     /*
@@ -90,11 +88,11 @@ class Convos {
         $query = "
             SELECT active
               FROM active_convo
-             WHERE uid = {$uid}
-               AND mid = {$mid}
+             WHERE uid = #uid#
+               AND mid = #mid#
              LIMIT 1";
         $active = 0;
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('uid' => $uid, 'mid' => $mid));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
             $active = $result['active'];

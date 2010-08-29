@@ -6,7 +6,7 @@ switch ($_GET['saved']){
 	case "no": $notify = 'error'; break;
 }
 
-$res = $_t['edit_profile'];
+$res = $edit_profile;
 $fname = $res['fname'];
 $lname = $res['lname'];
 $uname = $_SESSION['uname'];
@@ -21,13 +21,13 @@ $about = $res['about'];
 $private = $res['private'];
 $is_guest = $res['anon'];
 
-$stat = $_t['stats'];
+$stat = $stats;
 $message_count = $stat['message_count'];
 $response_count = $stat['response_count'];
 $group_count = $stat['group_count'];
 
-if ($_t['settings']) {
-	foreach ($_t['settings'] as $setting) { $notifications = $setting; }
+if ($settings) {
+	foreach ($settings as $setting) { $notifications = $setting; }
 }
 
 ?>
@@ -56,7 +56,7 @@ if ($_t['settings']) {
 
 </head>
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -70,9 +70,6 @@ if ($_t['settings']) {
 
 			<div id="content">
 				
-				<?php
-					if ($type == 'account'):
-				?>
 				<div class="section">
 					<div class="header header-non">
 						<a id="newtaps" href="" class="floater"></a>
@@ -80,306 +77,284 @@ if ($_t['settings']) {
 							<img src="/images/flat/loader.gif" />
 							<span class="title">settings</span>
 						</h2>
-						<span class="stream-name">Account <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
+						<span class="stream-name">Account <!--Profile Picture Notifications Change Password--><a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
 					</div>
 					<div class="body">
-						<div id="user-account" class="form <?= $notify ?>">
-							<p class="notify">Your changes have been saved</p>
-							<p class="error">Something weird happened, could you please try again?</p>
+                        <div id="menus">
+                            <a class="tab selected" href="#" title="Your personal settings" data-name="user-account">Personal</a>
+                            <a class="tab" href="#" title="Upload profile picture" data-name="user-picture">Picture</a>
+                            <a class="tab" href="#" title="Manage notifications" data-name="user-notifications">Notifications</a>
+                            <a class="tab" href="#" title="Change your password" data-name="user-password">Password</a>
+                            <a class="tab" href="#" title="Bind your account to facebook" data-name="user-facebook">Facebook</a>
+                            <br>
+<!-- User account menu -->
+                            <div id="user-account" class="form item selected">
+                                <p class="notify">Your changes have been saved</p>
+                                <p class="error">Something weird happened, could you please try again?</p>
 
-			
-							<label for="username">
-								username 
-								<span class="help">this is your public username</span>
-								<span class="error"></span>
-							</label>
-							<input name="username" value="<?= $uname ?>" type="text" <? if ($is_guest != "1") { ?> disabled="disabled" <? } ?> class="basic full" />
-							
-							<label for="email">
-								email
-								<span class="help">your email address</span>
-								<span class="error"></span>
-							</label>
-							<input name="email" value="<?= $email ?>" type="text" class="basic full" />
-							
-							<label for="about">
-								about me 
-								<span class="help">a short description of yourself for your profile page</span>
-								<span class="error"></span>
-							</label>
-							<input name="about" value="<?= $about ?>" type="text" class="basic full" />
-							
-							<label for="firstname">
-								first name
-								<span class="help">your first name</span>
-								<span class="error"></span>
-							</label>
-							<input name="firstname" value="<?= $fname ?>" type="text" class="basic full" />
-							
-							<label for="lastname">
-								last name
-								<span class="help">your last name</span>
-								<span class="error"></span>
-							</label>
-							<input name="lastname" value="<?= $lname ?>" type="text" class="basic full" />
-							
-							<label for="language">
-								country
-								<span class="help">your current location</span>
-								<span class="error"></span>
-							</label>
-							<select name="country" class="basic full">
-								<? foreach ( $_t['init_geo_data'] as $item): ?>
-								<option value="<?= $item['abbr2'] ?>">
-									<?= $item['name'] ?>
-								</option>
-								<? endforeach; ?>
-							</select>
-							
-							<label for="language">
-								language
-								<span class="help">your primary language</span>
-								<span class="error"></span>
-							</label>
-							<select name="language" class="basic full">
-								<option value="English">English</option>
-								<option value="Afrikaans">Afrikaans</option>
-								<option value="Albanian">Albanian</option>
-								<option value="Aragonese">Aragonese</option>
-								<option value="Asturian">Asturian</option>
-								<option value="Azeri">Azeri</option>
-								<option value="Basque">Basque</option>
-								<option value="Belarusian">Belarusian</option>
-								<option value="Breton">Breton</option>
-								<option value="Catalan">Catalan</option>
-								<option value="Cebuano">Cebuano</option>
-								<option value="Cornish">Cornish</option>
-								<option value="Corsican">Corsican</option>
-								<option value="Croatian">Croatian</option>
-								<option value="Czech">Czech</option>
-								<option value="Danish">Danish</option>
-								<option value="Dutch">Dutch</option>
-								<option value="English">English</option>
-								<option value="Esperanto">Esperanto</option>
-								<option value="Estonian">Estonian</option>
-								<option value="Faroese">Faroese</option>
-								<option value="Finnish">Finnish</option>
-								<option value="French">French</option>
-								<option value="Frisian">Frisian</option>
-								<option value="Friulian">Friulian</option>
-								<option value="Fula (Pulaar)">Fula (Pulaar)</option>
-								<option value="Gaelic (Scottish)">Gaelic (Scottish)</option>
-								<option value="Galician">Galician</option>
-								<option value="German">German</option>
-								<option value="Gikuyu">Gikuyu</option>
-								<option value="Guaraní">Guaraní</option>
-								<option value="Hausa">Hausa</option>
-								<option value="Hawai'ian">Hawai'ian</option>
-								<option value="Hungarian">Hungarian</option>
-								<option value="Icelandic">Icelandic</option>
-								<option value="Ido">Ido</option>
-								<option value="Igbo">Igbo</option>
-								<option value="Indonesian">Indonesian</option>
-								<option value="Insubric">Insubric</option>
-								<option value="Interlingua">Interlingua</option>
-								<option value="Irish">Irish</option>
-								<option value="Italian">Italian</option>
-								<option value="Javanese">Javanese</option>
-								<option value="Kikongo">Kikongo</option>
-								<option value="Kinyarwanda">Kinyarwanda</option>
-								<option value="Kirundi">Kirundi</option>
-								<option value="Latin">Latin</option>
-								<option value="Latvian">Latvian</option>
-								<option value="Lingala">Lingala</option>
-								<option value="Lithuanian">Lithuanian</option>
-								<option value="Luganda">Luganda</option>
-								<option value="Luxembourgish">Luxembourgish</option>
-								<option value="Maori">Maori</option>
-								<option value="Malay">Malay</option>
-								<option value="Maltese">Maltese</option>
-								<option value="Manx">Manx</option>
-								<option value="Moldovan">Moldovan</option>
-								<option value="Nahuatl (post Spanish Conquest)">Nahuatl (post Spanish Conquest)</option>
-								<option value="Navaho or Navajo">Navaho or Navajo</option>
-								<option value="Ndebele">Ndebele</option>
-								<option value="Norwegian">Norwegian</option>
-								<option value="Occitan">Occitan</option>
-								<option value="Orobic">Orobic</option>
-								<option value="Oromo">Oromo</option>
-								<option value="Polish">Polish</option>
-								<option value="Portuguese">Portuguese</option>
-								<option value="Quechua">Quechua</option>
-								<option value="Romanian">Romanian</option>
-								<option value="Samoan">Samoan</option>
-								<option value="Scots">Scots</option>
-								<option value="Serbian">Serbian</option>
-								<option value="Shona">Shona</option>
-								<option value="Slovak">Slovak</option>
-								<option value="Slovenian">Slovenian</option>
-								<option value="Somali">Somali</option>
-								<option value="Spanish">Spanish</option>
-								<option value="Swahili">Swahili</option>
-								<option value="Swedish">Swedish</option>
-								<option value="Tagalog/Filipino">Tagalog/Filipino</option>
-								<option value="Tahitian">Tahitian</option>
-								<option value="Tatar">Tatar</option>
-								<option value="Tongan">Tongan</option>
-								<option value="Tswana">Tswana</option>
-								<option value="Turkish">Turkish</option>
-								<option value="Turoyo">Turoyo</option>
-								<option value="Vietnamese">Vietnamese</option>
-								<option value="Võro">Võro</option>
-								<option value="Walloon">Walloon</option>
-								<option value="Welsh">Welsh</option>
-								<option value="Wolof">Wolof</option>
-								<option value="Xhosa">Xhosa</option>
-								<option value="Yoruba">Yoruba</option>
-								<option value="Zulu">Zulu</option>
-							</select>
-							<label for="private">
-								private
-								<br/>
-								<span class="help">make your tap account private ( people will not be able to follow you and your tap will not be viewable via your profile )</span>
-								<span class="error"></span>
-							</label>
-							<input id="private" name="private" value="1" <?if($private) echo "checked"?> type="checkbox" class="basic full" style="margin-top: -16px" />
-							
-							<div class="buttons">
-								<button class="action">save changes</button> or <a href="/">cancel</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					elseif ($type == 'picture'):
-				?>
-				<div class="section">
-					<div class="header header-non">
-						<a id="newtaps" href="" class="floater"></a>
-						<h2 class="header-title">
-							<img src="/images/flat/loader.gif" />
-							<span class="title">settings</span>
-						</h2>
-						<span class="stream-name">Profile Picture <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
-					</div>
-					<div class="body">
-						<div id="user-picture" class="form <?= $notify ?>">
-							<p class="notify">Your changes have been saved</p>
-							<p class="error">Something weird happened, could you please try again?</p>
-							<form name="picuploader" action="/AJAX/profile_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
-								<label for="file">
-									picture 
-									<span class="help">your profile picture</span>
-									<span class="error"></span>
-								</label>
-								<input id="pic-uploader" name="you-pic" type="file" class="basic full" />
-								<img id="preview" src="/user_pics/<?= $pic ?>" />
-								<iframe name="picture" style="display:block;"> </iframe>
-							</form>
-							
-							<div class="buttons">
-								<button class="action">change picture</button> or <a href="/">cancel</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					elseif ($type == 'notifications'):
-				?>
-				<div class="section">
-					<div class="header header-non">
-						<a id="newtaps" href="" class="floater"></a>
-						<h2 class="header-title">
-							<img src="/images/flat/loader.gif" />
-							<span class="title">settings</span>
-						</h2>
-						<span class="stream-name">Notifications <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
-					</div>
-					<div class="body">
-						<div id="user-notifications" class="form <?= $notify ?>">
-							<p class="notify">Your changes have been saved</p>
-							<p class="error">Something weird happened, could you please try again?</p>
-							<label>
-								notifications 
-								<span class="help">tap will send you an email for the following events</span>
-								<span class="error"></span>
-							</label>
-							<label class="inline">
-								<input name="respond" type="checkbox" value="1" <?= $notifications['respond'] ? 'checked="checked"' : '' ?> /> 
-								When someone responds to my tap.
-							</label>
-							<label class="inline">
-								<input name="track" type="checkbox" value="1" <?= $notifications['track'] ? 'checked="checked"' : '' ?> /> 
-								When someone starts tracking me.
-							</label>
-							<label class="inline">
-								<input name="group" type="checkbox" value="1" <?= $notifications['join_group'] ? 'checked="checked"' : '' ?> /> 
-								When someone joins a group I own or moderate.
-							</label>
+                
+                                <label for="username">
+                                    username 
+                                    <span class="help">this is your public username</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="username" value="<?= $uname ?>" type="text" <? if ($is_guest != "1") { ?> disabled="disabled" <? } ?> class="basic full" />
+                                
+                                <label for="email">
+                                    email
+                                    <span class="help">your email address</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="email" value="<?= $email ?>" type="text" class="basic full" />
+                                
+                                <label for="about">
+                                    about me 
+                                    <span class="help">a short description of yourself for your profile page</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="about" value="<?= $about ?>" type="text" class="basic full" />
+                                
+                                <label for="firstname">
+                                    first name
+                                    <span class="help">your first name</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="firstname" value="<?= $fname ?>" type="text" class="basic full" />
+                                
+                                <label for="lastname">
+                                    last name
+                                    <span class="help">your last name</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="lastname" value="<?= $lname ?>" type="text" class="basic full" />
+                                
+                                <label for="language">
+                                    country
+                                    <span class="help">your current location</span>
+                                    <span class="error"></span>
+                                </label>
+                                <select name="country" class="basic full">
+                                    <? foreach ( $init_geo_data as $item): ?>
+                                    <option value="<?= $item['abbr2'] ?>">
+                                        <?= $item['name'] ?>
+                                    </option>
+                                    <? endforeach; ?>
+                                </select>
+                                
+                                <label for="language">
+                                    language
+                                    <span class="help">your primary language</span>
+                                    <span class="error"></span>
+                                </label>
+                                <select name="language" class="basic full">
+                                    <option value="English">English</option>
+                                    <option value="Afrikaans">Afrikaans</option>
+                                    <option value="Albanian">Albanian</option>
+                                    <option value="Aragonese">Aragonese</option>
+                                    <option value="Asturian">Asturian</option>
+                                    <option value="Azeri">Azeri</option>
+                                    <option value="Basque">Basque</option>
+                                    <option value="Belarusian">Belarusian</option>
+                                    <option value="Breton">Breton</option>
+                                    <option value="Catalan">Catalan</option>
+                                    <option value="Cebuano">Cebuano</option>
+                                    <option value="Cornish">Cornish</option>
+                                    <option value="Corsican">Corsican</option>
+                                    <option value="Croatian">Croatian</option>
+                                    <option value="Czech">Czech</option>
+                                    <option value="Danish">Danish</option>
+                                    <option value="Dutch">Dutch</option>
+                                    <option value="English">English</option>
+                                    <option value="Esperanto">Esperanto</option>
+                                    <option value="Estonian">Estonian</option>
+                                    <option value="Faroese">Faroese</option>
+                                    <option value="Finnish">Finnish</option>
+                                    <option value="French">French</option>
+                                    <option value="Frisian">Frisian</option>
+                                    <option value="Friulian">Friulian</option>
+                                    <option value="Fula (Pulaar)">Fula (Pulaar)</option>
+                                    <option value="Gaelic (Scottish)">Gaelic (Scottish)</option>
+                                    <option value="Galician">Galician</option>
+                                    <option value="German">German</option>
+                                    <option value="Gikuyu">Gikuyu</option>
+                                    <option value="Guaraní">Guaraní</option>
+                                    <option value="Hausa">Hausa</option>
+                                    <option value="Hawai'ian">Hawai'ian</option>
+                                    <option value="Hungarian">Hungarian</option>
+                                    <option value="Icelandic">Icelandic</option>
+                                    <option value="Ido">Ido</option>
+                                    <option value="Igbo">Igbo</option>
+                                    <option value="Indonesian">Indonesian</option>
+                                    <option value="Insubric">Insubric</option>
+                                    <option value="Interlingua">Interlingua</option>
+                                    <option value="Irish">Irish</option>
+                                    <option value="Italian">Italian</option>
+                                    <option value="Javanese">Javanese</option>
+                                    <option value="Kikongo">Kikongo</option>
+                                    <option value="Kinyarwanda">Kinyarwanda</option>
+                                    <option value="Kirundi">Kirundi</option>
+                                    <option value="Latin">Latin</option>
+                                    <option value="Latvian">Latvian</option>
+                                    <option value="Lingala">Lingala</option>
+                                    <option value="Lithuanian">Lithuanian</option>
+                                    <option value="Luganda">Luganda</option>
+                                    <option value="Luxembourgish">Luxembourgish</option>
+                                    <option value="Maori">Maori</option>
+                                    <option value="Malay">Malay</option>
+                                    <option value="Maltese">Maltese</option>
+                                    <option value="Manx">Manx</option>
+                                    <option value="Moldovan">Moldovan</option>
+                                    <option value="Nahuatl (post Spanish Conquest)">Nahuatl (post Spanish Conquest)</option>
+                                    <option value="Navaho or Navajo">Navaho or Navajo</option>
+                                    <option value="Ndebele">Ndebele</option>
+                                    <option value="Norwegian">Norwegian</option>
+                                    <option value="Occitan">Occitan</option>
+                                    <option value="Orobic">Orobic</option>
+                                    <option value="Oromo">Oromo</option>
+                                    <option value="Polish">Polish</option>
+                                    <option value="Portuguese">Portuguese</option>
+                                    <option value="Quechua">Quechua</option>
+                                    <option value="Romanian">Romanian</option>
+                                    <option value="Samoan">Samoan</option>
+                                    <option value="Scots">Scots</option>
+                                    <option value="Serbian">Serbian</option>
+                                    <option value="Shona">Shona</option>
+                                    <option value="Slovak">Slovak</option>
+                                    <option value="Slovenian">Slovenian</option>
+                                    <option value="Somali">Somali</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="Swahili">Swahili</option>
+                                    <option value="Swedish">Swedish</option>
+                                    <option value="Tagalog/Filipino">Tagalog/Filipino</option>
+                                    <option value="Tahitian">Tahitian</option>
+                                    <option value="Tatar">Tatar</option>
+                                    <option value="Tongan">Tongan</option>
+                                    <option value="Tswana">Tswana</option>
+                                    <option value="Turkish">Turkish</option>
+                                    <option value="Turoyo">Turoyo</option>
+                                    <option value="Vietnamese">Vietnamese</option>
+                                    <option value="Võro">Võro</option>
+                                    <option value="Walloon">Walloon</option>
+                                    <option value="Welsh">Welsh</option>
+                                    <option value="Wolof">Wolof</option>
+                                    <option value="Xhosa">Xhosa</option>
+                                    <option value="Yoruba">Yoruba</option>
+                                    <option value="Zulu">Zulu</option>
+                                </select>
+                                <label for="private">
+                                    private
+                                    <br/>
+                                    <span class="help">make your tap account private ( people will not be able to follow you and your tap will not be viewable via your profile )</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input id="private" name="private" value="1" <?if($private) echo "checked"?> type="checkbox" class="basic full" style="margin-top: -16px" />
+                                
+                                <div class="buttons">
+                                    <button class="action" id="action-user">save changes</button> or <a href="/">cancel</a>
+                                </div>
+                            </div>
+<!-- User pictre menu -->
+                            <div id="user-picture" class="form item">
+                                <p class="notify">Your changes have been saved</p>
+                                <p class="error">Something weird happened, could you please try again?</p>
+                                <form name="picuploader" action="/AJAX/profile_picture_upload.php" enctype="multipart/form-data" method="post" target="picture">
+                                    <label for="file">
+                                        picture 
+                                        <span class="help">your profile picture</span>
+                                        <span class="error"></span>
+                                    </label>
+                                    <input id="pic-uploader" name="you-pic" type="file" class="basic full" />
+                                    <img id="preview" src="/user_pics/<?= $pic ?>" />
+                                    <iframe name="picture" style="display:block;"> </iframe>
+                                </form>
+                                
+                                <div class="buttons">
+                                    <button class="action" id="action-picture">change picture</button> or <a href="/">cancel</a>
+                                </div>
+                            </div>
+<!-- User notifications menu -->                            
+                            <div id="user-notifications" class="form item">
+                                <p class="notify">Your changes have been saved</p>
+                                <p class="error">Something weird happened, could you please try again?</p>
+                                <label>
+                                    notifications 
+                                    <span class="help">tap will send you an email for the following events</span>
+                                    <span class="error"></span>
+                                </label>
+                                <label class="inline">
+                                    <input name="respond" type="checkbox" value="1" <?= $notifications['respond'] ? 'checked="checked"' : '' ?> /> 
+                                    When someone responds to my tap.
+                                </label>
+                                <label class="inline">
+                                    <input name="track" type="checkbox" value="1" <?= $notifications['track'] ? 'checked="checked"' : '' ?> /> 
+                                    When someone starts tracking me.
+                                </label>
+                                <label class="inline">
+                                    <input name="group" type="checkbox" value="1" <?= $notifications['join_group'] ? 'checked="checked"' : '' ?> /> 
+                                    When someone joins a group I own or moderate.
+                                </label>
 
-							<label class="inline">
-								<input name="autotrack" type="checkbox" value="1" <?= $notifications['autotrack'] ? 'checked="checked"' : '' ?> /> 
-								Auto track convos I respond to ( when you track things, you get notifications about them )
-							</label>
-							
-							<div class="buttons">
-								<button class="action">save settings</button> or <a href="/">cancel</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					elseif ($type == 'password'):
-				?>
-				<div class="section">
-					<div class="header header-non">
-						<a id="newtaps" href="" class="floater"></a>
-						<h2 class="header-title">
-							<img src="/images/flat/loader.gif" />
-							<span class="title">settings</span>
-						</h2>
-						<span class="stream-name">Change Password <a href="/user/<?= $_SESSION['uname'] ?>">view your profile</a></span>
-					</div>
-					<div class="body">
-						<div id="user-password" class="form <?= $notify ?>">
-							<p class="notify">Your password has been changed</p>
-							<p class="error">Hmm, I don't think you entered the right passwords. Could you please try again?</p>
-							<label for="current">
-								current password 
-								<span class="help">enter your current password</span>
-								<span class="error"></span>
-							</label>
-							<input name="current" type="password" class="basic full" />
-							
-							<label for="new">
-								new password 
-								<span class="help">enter your new password</span>
-								<span class="error"></span>
-							</label>
-							<input name="new" type="password" class="basic full" />
-							
-							<label for="about">
-								repeat password 
-								<span class="help">type your new password again, just to make sure</span>
-								<span class="error"></span>
-							</label>
-							<input name="repeat" type="password" class="basic full" />
-							
-							<div class="buttons">
-								<button class="action">change password</button> or <a href="/">cancel</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					endif;
-				?>
+                                <label class="inline">
+                                    <input name="autotrack" type="checkbox" value="1" <?= $notifications['autotrack'] ? 'checked="checked"' : '' ?> /> 
+                                    Auto track convos I respond to ( when you track things, you get notifications about them )
+                                </label>
+                                
+                                <div class="buttons">
+                                    <button class="action" id="action-notify">save settings</button> or <a href="/">cancel</a>
+                                </div>
+                            </div>
+<!-- User password menu -->
+                            <div id="user-password" class="form item">
+                                <p class="notify">Your password has been changed</p>
+                                <p class="error">Hmm, I don't think you entered the right passwords. Could you please try again?</p>
+                                <label for="current">
+                                    current password 
+                                    <span class="help">enter your current password</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="current" type="password" class="basic full" />
+                                
+                                <label for="new">
+                                    new password 
+                                    <span class="help">enter your new password</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="new" type="password" class="basic full" />
+                                
+                                <label for="about">
+                                    repeat password 
+                                    <span class="help">type your new password again, just to make sure</span>
+                                    <span class="error"></span>
+                                </label>
+                                <input name="repeat" type="password" class="basic full" />
+                                
+                                <div class="buttons">
+                                    <button class="action" id="action-pass">change password</button> or <a href="/">cancel</a>
+                                </div>
+                            </div>
+<!-- Facebook account bind -->
+                        <div id="user-facebook" class="form item">
+                            <label for="fb-button">
+                                your facebook account
+                                <span class="help">it will replace your personal info and profile picture</span>
+                                <span class="error"></span>
+                            </label>
+                            <fb:login-button id="fb-button" name="fb-button" show-faces="true" width="300" perms="user_about_me,email,read_friendlists,user_groups"></fb:login-button>
 
+                            <div class="buttons">
+                                <button class="action" id="action-facebook">bind account</button> or <a href="/">cancel</a>
+                            </div>
+                        </div>
+<!-- Menu items end -->
+                        </div>
+                    </div>
+                </div>
 			</div>
 
 		</div>
 	</div>
     <?include(OK_FOOTER)?>
 	<?include(JAVASCRIPT_TEMPLATES)?>
+    <?include(FBCONNECT_BOTTOM)?>
 </body>
 </html>

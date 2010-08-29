@@ -4,39 +4,39 @@ function map_clean($func, $arr) {
 }
 
 // Taps
-$last = (!empty($_t['last_tap'])) ? $_t['last_tap'][0] : null;
+$last = (!empty($last_tap)) ? $last_tap[0] : null;
 
 $inits = array(); $people = array();
-if (is_array($_t['groups_bits'])) {
+if (is_array($groups_bits)) {
 	function get_cids($bit) { return $bit['cid']; }
-	$inits = map_clean("get_cids", $_t['groups_bits']);
+	$inits = map_clean("get_cids", $groups_bits);
 
 	function get_uids($bit) { return $bit['uid']; }
-	$people = map_clean("get_uids", $_t['groups_bits']);
+	$people = map_clean("get_uids", $groups_bits);
 }
 
 $convos = array();
-if (is_array($_t['active_convos'])) {
+if (is_array($active_convos)) {
 	function get_mids($bit) { return $bit['mid']; }
-	$convos = map_clean("get_mids", $_t['active_convos']);
+	$convos = map_clean("get_mids", $active_convos);
 }
 
 $groups = array(); $groups_online = array();
-if (is_array($_t['your_groups'])) {
+if (is_array($your_groups)) {
 	function get_gids($bit) { return $bit['gid']; }
-	//$groups = map_clean("get_gids", $_t['your_groups']);
+	//$groups = map_clean("get_gids", $your_groups);
 
 	$count=0;
-	foreach($_t['your_groups'] as $k => $v){
+	foreach($your_groups as $k => $v){
 		$groups[$count] = $k;
 		$count++;
 	}
-	foreach ($_t['your_groups'] as $group){
+	foreach ($your_groups as $group){
 		$groups_online[$group['gid']] = $group['online_count'];
 	}
 }
 
-$_SESSION['upic'] = $_t['user_pic_100'];
+$_SESSION['upic'] = $user_pic_100;
 
 $is_guest = intval($_SESSION['guest']) == 1 ? true : false;
 
@@ -64,7 +64,7 @@ if (!$is_guest) {
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
+			uid: "<?= $pcid ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: JSON.decode('<?= json_encode($inits) ?>'),
 			convos: JSON.decode('<?= json_encode($convos) ?>'),
@@ -88,7 +88,7 @@ if (!$is_guest) {
 	
 </head>
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -122,12 +122,12 @@ if (!$is_guest) {
 							<img src="/images/flat/loader.gif" />
 							<span class="title">feed</span>
 						</h2>
-						<span class="stream-name"><?=$groups_topic?> <?php if(isset($_t['facebook_loginUrl'])): ?><a href="<?php echo $_t['facebook_loginUrl']; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
+						<span class="stream-name"><?=$groups_topic?> <?php if(isset($facebook_loginUrl)): ?><a href="<?php echo $facebook_loginUrl; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
 					</div>
 					<div class="description" style="background: lightgrey; padding:15px;"><?= $groups_descr ?></div>
 					<div class="body">
                         <?php
-                            $_taps = $_t['groups_bits'];
+                            $_taps = $groups_bits;
                             include(TAP_STREAM);
                         ?>
 					</div>

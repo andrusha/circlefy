@@ -61,60 +61,6 @@ EOF;
 		$get_user_id_result = $this->db_class_mysql->db->query($get_user_id_query);
 
 
-		//Facebook - Auto create groups based on interests
-        if($this->facebook->session){
-            $interests = $this->facebook->getInterests();
-            foreach($interests as $gname){
-                if(!$this->checkIfGroupExists($gname)){
-                    $symbol = $this->createSymbol($gname);
-                    while($this->checkIfSymbolExists($symbol, $existingSymbols)){
-                        $existingSymbols[] = $symbol;
-                        $symbol = $this->createSymbol($gname, $existingSymbols);
-                    }
-                    $gadmin = $uid;
-                    $descr = "Group about $gname";
-                    $focus = "social, media, tap, $symbol";
-                    $private = "0";
-                    $invite_only = "0";
-                    $email_suffix = "'0'";
-                    
-                    
-                    $create_group_query = <<<EOF
-                        INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town,created)
-                        values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town",NOW())
-EOF;
-                    //echo $create_group_query;
-                    //exit;
-                    $this->db_class_mysql->set_query($create_group_query,'create_group_query',"Create group query");
-                    $this->db_class_mysql->execute_query('create_group_query');
-                    
-                    //The following lines get lad gid and make association between UID<->GID
-                    $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
-                    $this->db_class_mysql->set_query($last_id,'last_gid','This gets the last gid to be inserted into group_members for UID<->GID association');
-                    $last_id = $this->db_class_mysql->execute_query('last_gid');
-                    $res = $last_id->fetch_assoc();
-                    $last_id = $res['last_id'];
-                    $gid = $last_id;
-                    
-                    
-                    $GROUP_ONLINE_query = <<<EOF
-                        INSERT INTO GROUP_ONLINE(gid) values($gid)
-EOF;
-                    $this->db_class_mysql->set_query($GROUP_ONLINE_query,'GROUP_ONLINE_query',"Group online query");
-                    $this->db_class_mysql->execute_query('GROUP_ONLINE_query'); 
-
-                    if($gadmin != 0){
-                        $add_me_as_admin_query = <<<EOF
-                        INSERT INTO group_members(uid,gid,admin) values({$gadmin},{$gid},1)
-EOF;
-                        $this->db_class_mysql->set_query($add_me_as_admin_query,'add_me_as_admin_query',"Add me as admin query");
-                        $this->db_class_mysql->execute_query('add_me_as_admin_query'); 
-                    }
-                }
-            }
-        }else{
-            $this->set($this->facebook->loginUrl ,'facebook_loginUrl');
-        }
 			//This creates the array that holds all the users gids
 			if($get_user_id_result->num_rows)
 			while($res = $get_user_id_result->fetch_assoc()){

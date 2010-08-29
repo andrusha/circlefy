@@ -8,8 +8,8 @@
 	> 
  
 <channel> 
-	<title><?=$_t['symbol']?> Tap Channel Feed</title> 
-	<atom:link href="http://tap.info/rss?symbol=<?=$_t['symbol']?>" rel="self" type="application/rss+xml" /> 
+	<title><?=$symbol?> Tap Channel Feed</title> 
+	<atom:link href="http://tap.info/rss?symbol=<?=$symbol?>" rel="self" type="application/rss+xml" /> 
 	<link>http://tap.info/about</link> 
 	<description>tap - real-time communication platform</description> 
 	<lastBuildDate><?=date('r');?></lastBuildDate> 
@@ -18,8 +18,8 @@
 	<sy:updateFrequency>1</sy:updateFrequency> 
 
 		<?php
-		if (!empty($_t['user_bits'])):
-			foreach($_t['user_bits'] as $tap):
+		if (!empty($user_bits)):
+			foreach($user_bits as $tap):
 		?>
 
 		<item>

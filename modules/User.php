@@ -4,13 +4,12 @@
 /*
 All user operations, e.g login in, information
 */
-class User {
-    private $db;
+class User extends BaseModel {
     private $loggedIn = false;
     private $session_started = false;
 
     public function __construct() {
-        $this->db = new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+        parent::__construct();
         if (!$this->session_started) {
             session_start();
             $this->serssion_started = true;
@@ -46,7 +45,8 @@ class User {
     */
     public function logIn($username, $password, $set_cookies = true, $auto_login = false, $with_facebook = false) {
         if (!$with_facebook) {
-           $where = "uname = '$username' AND pass = MD5('$password')";
+           $where = "uname = #uname# AND pass = MD5(#pass#)";
+           $params = array('uname' => $username, 'pass' => $password);
         } else {
             $fb = new Facebook();
             $cookie = $fb->infoFromCookies();
@@ -54,7 +54,8 @@ class User {
                 return false;
 
             $fbid = intval($cookie['uid']);
-            $where = "fb_uid = $fbid";
+            $where = "fb_uid = #fbid#";
+            $params = array('fbid' => $fbid);
         }
 
         $query = "SELECT uid, uname, fname
@@ -62,7 +63,7 @@ class User {
                    WHERE {$where}
                      AND ban = 0
                    LIMIT 1";
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, $params);
 
         if ($result->num_rows) {
             $this->loggedIn = true;
@@ -95,10 +96,10 @@ class User {
         $hash = $this->db->real_escape_string($_COOKIE['rand_hash']);
         $query = "SELECT uid, uname, fname
                     FROM login
-                   WHERE uid = {$uid}
-                     AND hash = '{$hash}'
+                   WHERE uid = #uid#
+                     AND hash = #hash#
                    LIMIT 1";
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('uid' => $uid, 'hash' => $hash));
         if ($result->num_rows) {
             $this->loggedIn = true;
 
@@ -117,8 +118,8 @@ class User {
     public function logOut($uid) {
         $query = "UPDATE login
                      SET hash = ''
-                   WHERE uid = {$uid}";
-        $this->db->query($query);
+                   WHERE uid = #uid#";
+        $this->db->query($query, array('uid' => $uid));
         $this->clearCookies();
         session_destroy();
     }
@@ -152,8 +153,8 @@ class User {
 
         $query = "INSERT
                     INTO login (`hash`,`uname`,`last_login`, `ip`, `anon`, `email`)
-                  VALUES ('{$hash}', '{$uname}', CURRENT_TIMESTAMP(), INET_ATON('{$ip}'), 1, '{$hash}')";
-        $result = $this->db->query($query);
+                  VALUES (#hash#, #uname#, CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, #hash#)";
+        $result = $this->db->query($query, array('hash' => $hash, 'uname' => $uname, 'ip' => $ip));
         
         if ($this->db->affected_rows != 1)
             return null;
@@ -161,10 +162,10 @@ class User {
         $uid = $this->db->insert_id;
         
         //Setting up default account
-        $this->db->query("INSERT INTO profile (uid, language) VALUES ({$uid}, 'English')");
-        $this->db->query("INSERT INTO settings (uid) VALUES ({$uid})");
-        $this->db->query("INSERT INTO notifications (uid) VALUES ({$uid})");
-        $this->db->query("INSERT INTO TEMP_ONLINE (uid) VALUES ({$uid})");
+        $this->db->query("INSERT INTO profile (uid, language) VALUES (#uid#, 'English')", array('uid' => $uid));
+        $this->db->query("INSERT INTO settings (uid) VALUES (#uid#)", array('uid' => $uid));
+        $this->db->query("INSERT INTO notifications (uid) VALUES (#uid#)", array('uid' => $uid));
+        $this->db->query("INSERT INTO TEMP_ONLINE (uid) VALUES (#uid#)", array('uid' => $uid));
 
         return array($uid, $uname, $hash);
     }
@@ -174,15 +175,16 @@ class User {
     */
     public function userificateGuest($uid, $uname, $fname, $lname, $email, $pass) {
         $query = "UPDATE login
-                     SET uname = '{$uname}',
-                         fname = '{$fname}',
-                         lname = '{$lname}',
-                         pass = MD5('{$pass}'),
-                         email = '{$email}',
+                     SET uname = #uname#,
+                         fname = #fname#,
+                         lname = #lname#',
+                         pass = MD5(#pass#),
+                         email = #email#,
                          anon = 0
-                   WHERE uid = {$uid}
+                   WHERE uid = #uid#
                    LIMIT 1";
-        $this->db->query($query);
+        $this->db->query($query, array('uname' => $uname, 'fname' => $fname,
+            'lname' => $lname, 'pass' => $pass, 'email' => $email));
         
         if ($this->db->affected_rows == 1) {
             $hash = $this->makeHash();
@@ -213,11 +215,11 @@ class User {
         $ip = $_SERVER['REMOTE_ADDR'];
         $query = "UPDATE login
                      SET last_login = CURRENT_TIMESTAMP(),
-                         ip = INET_ATON('{$ip}'),
-                         hash = '{$hash}'
-                   WHERE uid = {$uid}
+                         ip = INET_ATON(#ip#),
+                         hash = #hash#
+                   WHERE uid = #uid#
                    LIMIT 1";
-        $this->db->query($query);
+        $this->db->query($query, array('ip' => $ip, 'hash' => $hash, 'uid' => $uid));
         
         if ($clear)
             $this->clearCookies();
@@ -249,10 +251,10 @@ class User {
     public function uidFromUname($uname) {
         $query = "SELECT uid
                     FROM login
-                   WHERE uname = '{$uname}'
+                   WHERE uname = #uname#
                    LIMIT 1";
         $uid = null;
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('uname' => $uname));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
             $uid = intval($result['uid']);
@@ -269,10 +271,10 @@ class User {
                          pic_100 AS big_pic, pic_36 AS small_pic, help,
                          email, private
                     FROM login
-                   WHERE uid = {$uid}
+                   WHERE uid = #uid#
                    LIMIT 1";
         $info = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('uid' => $uid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
         return $info;
@@ -289,10 +291,10 @@ class User {
                    INNER
                     JOIN profile p
                       ON p.rpid = l.uid
-                   WHERE l.uid = {$uid}
+                   WHERE l.uid = #uid#
                    LIMIT 1";
         $info = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('uid' => $uid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
         return $info;
@@ -315,8 +317,8 @@ class User {
                 SUM(i.count) AS responses,
                 (
                     SELECT COUNT(g.uid) AS groups
-                      FROM group_members AS gndom
-                     WHERE g.uid = {$uid}
+                      FROM group_members AS g
+                     WHERE g.uid = #uid#
                      GROUP
                         BY g.uid
                 ) AS groups
@@ -330,14 +332,14 @@ class User {
                       LEFT
                       JOIN chat c
                         ON c.cid = s.mid
-                     WHERE s.uid = {$uid}
+                     WHERE s.uid = #uid#
                        AND scm.connected IN (1, 2)
                      GROUP
                         BY (s.mid)
                 ) AS i";
-        
+
         $stats = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('uid' => $uid));
         if ($result->num_rows)
             $stats = $result->fetch_assoc();
         return $stats;

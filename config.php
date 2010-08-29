@@ -22,18 +22,10 @@ define("OK_TOPBAR","parts/ok_topbar.phtml");
 define("OK_FOOTER","parts/ok_footer.phtml");
 define("MODAL_SIGNUP","parts/modal_signup.phtml");
 define("TAP_STREAM", "parts/tap_stream.phtml");
-	
-
-//define("FOOTER","parts/footer.phtml");						// OLD
-//define("HEADER","parts/final_header.phtml");					// OLD
-//define("HEADER_LOGOUT","parts/final_header_logout.phtml");	// OLD
-//define("HEADER_SLIM","parts/slim_header.phtml");
-//define("HEADER_LOGOUT","parts/final_header_logout.phtml");
 
 define("JAVASCRIPT_TEMPLATES","parts/javascript_templates.phtml");
 define("LOGIN","parts/login.phtml");
 define("FBCONNECT_BOTTOM","parts/fbconnect.phtml");
-define("FBCONNECT_HTML","fbconnect_html.phtml");
 define("YOU","parts/you.phtml");
 
 define("NEW_HEADER","parts/new_header_2.phtml");
@@ -57,4 +49,3 @@ define("FBAPPID",'e31fd60bbbc576ac7fd96f69215268d0');
 define("FBAPPSECRET",'6692d8984d00d3f67ee81bf31637970e');
 
 define("ROOT","/");
-?>

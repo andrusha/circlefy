@@ -77,8 +77,8 @@ $value = '&value='.$u[2];
 		</li>
 		<li id="pics-galore" >
 		<? 
-		if($_t['pics_array'])	
-		foreach($_t['pics_array'] as $pic): ?>
+		if($pics_array)	
+		foreach($pics_array as $pic): ?>
 		<a href="/channel/<?=$pic['symbol']?>" >
 		<img class="small-pics-logout" style="height:16px;width:16px;margin:4px;" src="/group_pics/<?=$pic['pic_36']?>" title="<?=$pic['symbol']?>" />
 		</a>
@@ -128,7 +128,7 @@ $value = '&value='.$u[2];
 			<a href="#" class="names inblock ellipsis">all your channels</a>
 		</li>
 
-	<?php if($_t['your_groups']) foreach ($_t['your_groups'] as $group): ?>
+	<?php if($your_groups) foreach ($your_groups as $group): ?>
 	<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
 	data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
 	data-symbol="<?= $group['symbol'][0] ?>"
@@ -153,8 +153,8 @@ $value = '&value='.$u[2];
 	</ul>
 	<ul id="panel-convos" class="panel" data-name="convos">
 	<?php
-		if (!empty($_t['active_convos'])):
-			$active_convos = array_reverse($_t['active_convos']);
+		if (!empty($active_convos)):
+			$active_convos = array_reverse($active_convos);
 		foreach ($active_convos as $convo):
 	?>
 	<li id="cid_<?= $convo['mid'] ?>" class="new panel-item" 
@@ -173,8 +173,8 @@ $value = '&value='.$u[2];
 	<ul id="panel-people" class="panel"
 	data-action="add contacts" data-action-href="/people" data-name="people">
 	<li>All your people</li>
-	<?php if($_t['your_friends']) : ?>
-	<?php foreach ($_t['your_friends'] as $person): ?>
+	<?php if($your_friends) : ?>
+	<?php foreach ($your_friends as $person): ?>
 	<a href="/user/<?=$person['friend_uname']?>">
 	<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
 	title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">

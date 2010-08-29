@@ -6,41 +6,24 @@ script: creategroups.js
 // UNCOMMENT FOR PROD
 // (function(){
 
-var _template = {
+var _settings = {};
 
-	templater: new Template(),
-	prepared: {},
-	map: {
-		'taps': 'template-taps',
-		'responses': 'template-responses',
-		'list.convo': 'template-list-convo',
-		'suggest.group': 'template-suggest-group'
-	},
-
-	parse: function(type, data){
-		var template = this.prepared[type];
-		if (!template){
-			template = this.map[type];
-			if (!template) return '';
-			template = this.prepared[type] = $(template).innerHTML.cleanup();
-		}
-		return this.templater.parse(template, data);
-	}
-
-};
-
-var _lists = _tap.register({
+_settings.menus = _tap.register({
 
 	init: function(){
 		_body.addEvents({
-			'click:relay(li.panel-item)': this.doAction.toHandler(this)
+			'click:relay(a.tab)': this.doAction.toHandler(this)
 		});
 	},
 
 	doAction: function(el, e){
-		var link = el.getElement('a');
-		if (!link) return;
-		window.location = link.get('href');
+        e.stop();
+
+        $$('div.form.item.selected')[0].removeClass('selected');
+        $(el.get('data-name')).addClass('selected');
+
+        $$('a.tab.selected')[0].removeClass('selected');
+        el.addClass('selected');
 	}
 
 });
@@ -82,7 +65,7 @@ _tap.mixin({
 
 });
 
-var _account = _tap.register({
+_settings.account = _tap.register({
 
 	mixins: 'errors',
 
@@ -107,7 +90,7 @@ var _account = _tap.register({
 		if (_vars.country) data.country.getElement('option[value="'+_vars.country+'"]').set('selected', 'selected');
 		else data.country.getElement('option[value="us"]').set('selected', 'selected');
 		if (_vars.lang) data.lang.getElement('option[value="'+_vars.lang+'"]').set('selected', 'selected');
-		main.getElement('button.action').addEvent('click', this.save.toHandler(this));
+		main.getElement('button#action-user').addEvent('click', this.save.toHandler(this));
 	},
 
 	emailCheck: function(el, e){
@@ -184,7 +167,7 @@ var _picture = _tap.register({
 		this.uploader = $('pic-uploader');
 		this.uploader.addEvent('change', this.check.toHandler(this));
 		window.addEvent('uploaded', this.set.bind(this));
-		main.getElement('button.action').addEvent('click', this.save.toHandler(this));
+		main.getElement('button#action-picture').addEvent('click', this.save.toHandler(this));
 	},
 
 	check: function(el){
@@ -236,7 +219,7 @@ var _picture = _tap.register({
 
 });
 
-var _password = _tap.register({
+_settings.password = _tap.register({
 
 	mixins: 'errors',
 
@@ -253,7 +236,7 @@ var _password = _tap.register({
 				data[key].addEvent('blur', this[key + 'Check'].toHandler(this));
 			}
 		}
-		main.getElement('button.action').addEvent('click', this.save.toHandler(this));
+		main.getElement('button#action-pass').addEvent('click', this.save.toHandler(this));
 	},
 
 	currentCheck: function(el){
@@ -301,7 +284,7 @@ var _password = _tap.register({
 	}
 });
 
-var _notifications = _tap.register({
+_settings.notifications = _tap.register({
 
 	init: function(){
 		var main = this.main = $('user-notifications');
@@ -310,7 +293,7 @@ var _notifications = _tap.register({
 			track: main.getElement('input[name="track"]'),
 			group: main.getElement('input[name="group"]')
 		};
-		main.getElement('button.action').addEvent('click', this.save.toHandler(this));
+		main.getElement('button#action-notify').addEvent('click', this.save.toHandler(this));
 */
 	},
 
@@ -332,6 +315,59 @@ var _notifications = _tap.register({
 		}).send();
 	}
 
+});
+
+_settings.facebook = _tap.register({
+    mixins: 'errors',
+
+    init: function() {
+		var main = this.main = $('user-facebook');
+        this.fbelem = $('fb-button');
+        main.getElement('button#action-facebook').addEvent('click', this.save.toHandler(this));
+        
+        this.subscribe({
+            'facebook.logged_in': this.onLoggedIn.bind(this),
+        });
+    },
+
+    onLoggedIn: function() {
+        this.removeError(this.fbelem);
+    },
+
+    save: function() {
+         var self = this;
+         
+         FB.getLoginStatus(function(response) {
+            if (response.session) {
+                self.bindToFB();
+            } else {
+                self.showError(self.fbelem, 'you should login into your facebook account first');
+            }
+        });
+    },
+
+    bindToFB: function() {
+        var self = this,
+            data = {'action': 'bind'};
+        new Request({
+            url: '/AJAX/facebook.php',
+            method: 'POST',
+            data: data,
+            onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+                if (response.success) {
+                    window.location = ('/settings?type=facebook&saved=yes');
+                } else {
+                    if (response.reason == 'already binded') 
+                        self.showError(self.fbelem, 'your account already binded to facebook');
+                    else if (response.reason == 'binded by someone')
+                        self.showError(self.fbelem, 'facebook account you logged in is already binded by someone else');
+                    else
+                        self.showError(self.fbelem, 'something went wrong durning account binding');
+                }
+            }
+        }).send();
+    }
 });
 
 // })();

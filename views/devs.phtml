@@ -6,7 +6,7 @@
 <? /*
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
+			uid: "<?= $pcid ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: [],
 			convos: [],
@@ -20,7 +20,7 @@
 <script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>

@@ -3,11 +3,9 @@
 /*
     All things related to groups (channels)
 */
-class Group {
-    private $db;
-
+class Group extends BaseModel {
     public function __construct() {
-        $this->db = new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
+        parent::__construct();
     }
 
     /*
@@ -19,10 +17,10 @@ class Group {
         $query = "
             SELECT gname, symbol
               FROM groups
-             WHERE gid = {$gid} 
+             WHERE gid = #gid#
              LIMIT 1";
         $info = array();
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('gid' => $gid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
 
@@ -33,11 +31,11 @@ class Group {
         $query = "
             SELECT gid
               FROM groups
-             WHERE symbol = '{$symbol}'
+             WHERE symbol = #symbol#
              LIMIT 1";
 
         $gid = null;
-        $result = $this->db->query($query);
+        $result = $this->db->query($query, array('symbol' => $symbol));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
             $gid = intval($result['gid']);

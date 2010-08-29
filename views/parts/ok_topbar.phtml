@@ -24,7 +24,7 @@ switch($r){
                                 <a href="/channels"   <?=$groups?>  >channels</a>
                                 <a href="/people"   <?=$people?>  >people</a>
                                 <a href="/settings" <?=$settings?>>settings</a>
-                                <?php if ($_t['ok_user']): ?>
+                                <?php if ($ok_user): ?>
 								<a href="/?logout=true">logout</a>
                                 <?php else: ?>
 								<a href="#" onclick="show_signup();">create account</a>
@@ -74,12 +74,12 @@ switch($r){
 	<div id="nav">
 
 	<?php 
-	if ($_t['ok_user']) { ?>
+	if ($ok_user) { ?>
 		<a href="/"  	    <?=$home?>    >home</a>
 		<a href="/channels"   <?=$groups?>  >channels</a>
 		<a href="/people"   <?=$people?>  >people</a>
 		<a href="/settings" <?=$settings?>>settings</a>
-		<a href="/?logout=true">logout</a> <? echo $_t['ok_user']; ?>
+		<a href="/?logout=true">logout</a> <? echo $ok_user; ?>
 	<? } else { ?>
 		<a href="/" 	   <?=$home?>   >home</a>
 		<a href="/login"       <?=$login?>   >login</a>

@@ -1,5 +1,7 @@
 <?php
 
+class QueryParamException extends Exception {};
+
 //This class defines all of the database queries as well as what connection is to be used.
 //The explination of how to set queries is listed below.  The way you set your database connector
 //depends on the flag that either your Base class has or your page has.  
@@ -22,6 +24,12 @@ class DB{
 	//This is your $db class, it defaults to mysqli, but you can change it with db-type
 	//Use: $db->query("SELECT ..");
 	public $db = NULL;
+
+    /*
+        Params for current query,
+        set in every parametrized DB::query call
+    */
+    private $params = array();
 	
 	function __default(){
 	}
@@ -78,6 +86,55 @@ class DB{
 		$last_id_row = $result->fetch_assoc();
 		return $last_id_row['LAST_ID'];
 	}
+
+    /*
+        A simple query with params support
+        if params is empty, then query db as usual
+
+        if not, replace #placeholder# with 
+        value or 'value' or 'value1', 'value2', 'value3'
+        depending on value type (int, str, array)
+    */
+    public function query($query, array $params = array()) {
+        if (!empty($params)) {
+            $this->params = $params;
+            $query = preg_replace_callback('/#([a-z_0-9^#]*)#/i', array($this, 'prepareSql'), $query);
+        }
+
+        return $this->db->query($query);
+    }
+
+    /*
+        Return escaped & formatted parameter of sql query
+    */
+    private function prepareSql($matches) {
+        if (is_array($matches))
+            $name = $matches[1];
+        else
+            $name = $matches;
+
+        if (!isset($this->params[$name]))
+            throw new QueryParamException('Undefined `'.$name.'` parameter');
+
+        $value = $this->params[$name];
+        return $this->formatByType($value);
+    }
+
+    private function formatByType($value) {
+        if (is_array($value)) {
+            //every array element should be escaped too
+            $str = '';
+            foreach($value as $x)
+                $str .= ', '.$this->formatByType($x);
+            return substr($str, 2);
+        } else if (is_int($value) || is_float($value)) {
+            //int values don't need to be escaped
+            return strval($value);
+        } else {
+            //escape all special chars in string
+            return "'".$this->db->real_escape_string($value)."'";
+        }
+    }
 	
 	public function execute_query($query_name){
 		

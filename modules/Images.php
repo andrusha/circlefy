@@ -9,7 +9,7 @@ class Images {
         $h = $img->getImageHeight();
         $min = min($w, $h);
         $img->cropImage($min, $min, 0, 0);
-        $img->resizeImage($size, $size, imagick::FILTER_CUBIC, 1);
+        $img->resizeImage($size, $size, imagick::FILTER_LANCZOS, 1);
 
         $img->writeImage($out);
 

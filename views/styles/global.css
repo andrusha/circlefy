@@ -1489,6 +1489,29 @@ div.form #preview.blank {
 	display: none;
 }
 
+#menus a.tab {
+	background-color: #ACB19B;
+	float: left;
+	margin-right: 5px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: #101010;
+	font-size: 14px;
+    padding: 10px;
+}
+
+#menus a.selected {
+	background-color: #fffa00 !important;
+}
+
+#menus div.item {
+	display: none;
+}
+
+#menus div.item.selected {
+	display: block;
+}
+
 #lists a.tab {
 	width: 30px;
 	height: 30px;

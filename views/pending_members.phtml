@@ -31,9 +31,9 @@ include(OK_HEADER);
 
                 <div class="body">
                     <div class="full info">
-                    <?php if ($_t['members']): ?>
+                    <?php if ($members): ?>
                         <ul id="pending-members">
-                        <?php foreach ($_t['members'] as $k => $m): ?>
+                        <?php foreach ($members as $k => $m): ?>
                             <li>
                                 <?=$m['gname']?> -
                                 <img src="/user_pics/<?=$m['pic_36']?>"/>

@@ -1,19 +1,19 @@
 <?php
 $logged = (!empty($_SESSION['uid']));
-if ($_t['no_user']) header('location:/');
+if ($no_user) header('location:/');
 
 function map_clean($func, $arr) {
 	return array_filter(array_map($func, $arr));
 }
 $inits = array();
 $people = array();
-if (is_array($_t['user_bits'])) {
+if (is_array($user_bits)) {
 	function get_cids($bit) { return $bit['cid']; }
-	$inits = map_clean("get_cids", $_t['user_bits']);
+	$inits = map_clean("get_cids", $user_bits);
 	function get_uids($bit) { return $bit['uid']; }
-	$people = map_clean("get_uids", $_t['user_bits']);
+	$people = map_clean("get_uids", $user_bits);
 }
-$private = $_t['private'];
+$private = $private;
 ?>
 <!doctype html>
 <html>
@@ -23,7 +23,7 @@ $private = $_t['private'];
 	<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $_t['pcid'] ?>",
+			uid: "<?= $pcid ?>",
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: JSON.decode('<?= json_encode($inits) ?>'),
 			convos: [],
@@ -37,7 +37,7 @@ $private = $_t['private'];
 	<script type="text/javascript" src="/views/scripts/infobox.js"></script>
 </head>
 <body>
-<?php if (!$_t['ok_user']): ?>
+<?php if (!$ok_user): ?>
     <? include(MODAL_SIGNUP); ?>
     <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
 <?php endif; ?>
@@ -55,8 +55,8 @@ $private = $_t['private'];
 					</h2>
 					<ul class="panel">
 						<?php 
-							if (!empty($_t['your_groups'])):
-								foreach ($_t['your_groups'] as $group):
+							if (!empty($your_groups)):
+								foreach ($your_groups as $group):
 						?>
 						<li class="panel-item" >
 							<span class="count"><? if($group['admin']) echo "<span title='Moderator'>&#10070;</span>" ?></span>
@@ -85,21 +85,21 @@ $private = $_t['private'];
 					<?php if($private):?>
 						<button class="public-private-button">private account</button>
 					<? else: ?>
-						<?php if ($_t['user'] == $_SESSION["uname"]): ?>
-						<button data-id="<?= $_t['uid'] ?>" class="you" disabled="disabled">this is you!</button>
-						<?php elseif ($_t['tracked']): ?>
-						<button data-id="<?= $_t['uid'] ?>" class="untrack">unfollow</button>
+						<?php if ($user == $_SESSION["uname"]): ?>
+						<button data-id="<?= $uid ?>" class="you" disabled="disabled">this is you!</button>
+						<?php elseif ($tracked): ?>
+						<button data-id="<?= $uid ?>" class="untrack">unfollow</button>
 						<?php elseif ($logged): ?>
-						<button data-id="<?= $_t['uid'] ?>" class="track">follow</button>
+						<button data-id="<?= $uid ?>" class="track">follow</button>
 						<?php else: ?>
-						<button data-id="<?= $_t['uid'] ?>" class="login">login to follow</button>
+						<button data-id="<?= $uid ?>" class="login">login to follow</button>
 						<?php endif; ?>
 					<? endif; ?>
-					<img src="/user_pics/<?= $_t['user_pic_med'] ?>" class="avatar" />
-					<h2><?= $_t['user'] ?> <span class="nick"><? if ($_t['user_online']) echo "<span class='useronline'>user online</span>"; else echo "user offline"; ?></span></h2>
-					<p class="headline">&#8220;<?=$_t['about']?>&#8221;</p>
+					<img src="/user_pics/<?= $user_pic_med ?>" class="avatar" />
+					<h2><?= $user ?> <span class="nick"><? if ($user_online) echo "<span class='useronline'>user online</span>"; else echo "user offline"; ?></span></h2>
+					<p class="headline">&#8220;<?=$about?>&#8221;</p>
 					<p class="stats">
-						<?php $stats = $_t['stats']; ?>
+						<?php $stats = $stats; ?>
 						<strong><?= $stats['message_count'] ?></strong> Taps sent, 
 						<strong><?= $stats['response_count'] ?></strong> Responses received, and
 						<strong><?= $stats['group_count'] ?></strong> Channels joined.
@@ -112,7 +112,7 @@ $private = $_t['private'];
 				<!-- 
 				<form id="tapbox" action="" class="section active">
 					<div id="tapto">
-						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($_t['gname']) ?>..
+						<?= (!$logged) ? 'login to ' : '' ?>tap <?= strtolower($gname) ?>..
 					</div>
 					<span class="counter">240</span>
 					<input id="taptext" tabindex="1" type="text">
@@ -128,20 +128,20 @@ $private = $_t['private'];
 							<img src="/images/flat/loader.gif" />
 							<span class="title">feed</span>
 						</h2>
-						<span class="stream-name"><?= $_t['user'] ?></span>
+						<span class="stream-name"><?= $user ?></span>
 			
-						<span id="public-following" >Followers ( <span class="count-one"><?=$_t['track_count']?></span> )</span>
-						<span id="public-followers">Following ( <?=$_t['tracked_count']?>  )</span>
+						<span id="public-following" >Followers ( <span class="count-one"><?=$track_count?></span> )</span>
+						<span id="public-followers">Following ( <?=$tracked_count?>  )</span>
 
 					</div>
 					<div class="body">
-						<ul id="taps" class="stream <?= empty($_t['user_bits']) ? "empty" : "" ?>">
+						<ul id="taps" class="stream <?= empty($user_bits) ? "empty" : "" ?>">
 							<?php if($private): ?>
 							<li> <img class="private-lock" src="/images/flat/lock.png" />This user has a private account and does not share his taps outside his channels </li>
 							<? else: ?>
 							<?php
-								if (!empty($_t['user_bits'])):
-									foreach($_t['user_bits'] as $tap):
+								if (!empty($user_bits)):
+									foreach($user_bits as $tap):
 							?>
 							<li id="tid_<?= $tap['cid'] ?>" class="container" 
 								data-id="<?= $tap['cid'] ?>" data-uid="<?= $tap['uid'] ?>" data-user="<?= $tap['user'] ?>">
