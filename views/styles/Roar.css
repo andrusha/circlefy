@@ -44,6 +44,14 @@
 	color:					#fff;
 	z-index:				1002;
 }
+.roar h3 div
+{
+    float: right;
+    display: block;
+    font-weight: normal;
+    font-size: 10px;
+    color: lightgray;
+}
 .roar p
 {
 	position:				relative;

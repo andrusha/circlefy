@@ -107,11 +107,12 @@ var _login = _tap.register({
                     signup_form.getElement('span#modal-signup-name').set('text', data.fname);
                     signup_form.getElement('p#real_name').setStyle('display', 'none');
                     signup_form.getElement('input[name="name"]').addClass('passed').store('passed', 1);
-                    signup_form.getElement('input[name="facebook"]').set('value', 1).store('passed', 1);
-                    signup_form.getElement('input[name="fb_fname"]').set('value', data.fname).store('passed', 1);
-                    signup_form.getElement('input[name="fb_lname"]').set('value', data.lname).store('passed', 1);
+                    signup_form.getElement('input[name="facebook"]').set('value', 1);
+                    signup_form.getElement('input[name="fb_fname"]').set('value', data.fname);
+                    signup_form.getElement('input[name="fb_lname"]').set('value', data.lname);
+                    signup_form.getElement('p#fb-button').setStyle('display', 'none');
 
-                    show_signup();
+                    this.publish('modal.show.signup', []);
                 }
             }
         }).send();

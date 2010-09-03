@@ -27,6 +27,10 @@ body #searchsuggest .new-group .search-group-name{
 	top: 0;
 }
 
+div#curtain.show {
+    display: block;
+}
+
 .transparent_class_compat {
 	filter:alpha(opacity=50);
 	-moz-opacity:0.5;
@@ -199,19 +203,38 @@ div.form button.action:hover {
     width: 500px;
     margin: auto;
 }
-       
-#modal-signup {
-        display: none;
-        position: absolute;
-        width: 500px;
-        z-index: 2;
-        background: #F2F2F2;
-        top: 100px;
-        border: 1px solid #ccc;
-        padding: 10px;
+
+.modal-window {
+    display: none;
+    position: absolute;
+    width: 500px;
+    z-index: 2;
+    background: #F2F2F2;
+    top: 100px;
+    padding: 10px;
+    border: 7px solid black;
+    -moz-border-radius: 5px 5px 5px 5px;
+	border-bottom-left-radius: 5px 5px;
+	border-bottom-right-radius: 5px 5px;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
 }
 
-#modal-signup h2 {
+div.modal-window.show {
+    display: block;
+}
+
+#modal-sign-notify {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.modal-actions {
+    color: #656565;
+    font-size: 14px;
+}
+       
+.modal-window h2 {
         border-bottom: 2px solid #ccc;
         color: #333;
         font-weight: bold;
@@ -219,39 +242,35 @@ div.form button.action:hover {
 		margin-top: 4px;
 }
 
-#modal-signup p {
+.modal-window p {
         margin-bottom: 10px;
         font-size: 13px;
 		color: #656565;
 }
 
-#modal-signup a {
+.modal-window a {
 		color: #000000;
 		font-weight: bold;
 }
 
-#modal-signup span.indicator {
+.modal-window span.indicator {
         display: none;
 }
 
-#modal-signup2 span.indicator {
-        display: none;
-}
-
-#modal-signup p.forms {
+.modal-window p.forms {
         margin-top: 10px;
         padding-left: 30px;
         clear: both;
 }
 
-#modal-signup label {
+.modal-window label {
         font-size: 16px;
         margin-top: 20px;
         font-weight: bold;
         color: #3088ED;
 }
 
-#modal-signup p.guide, #modal-signup2 p.guide {
+.modal-window p.guide, .modal-window2 p.guide {
         display: none;
         margin-top: -5px;
         text-align: right;
@@ -261,7 +280,7 @@ div.form button.action:hover {
         color: #F12C46;
 }
 
-#modal-signup input {
+.modal-window input {
         border: 1px solid #ccc;
         padding: 5px;
         float: right;
@@ -271,23 +290,15 @@ div.form button.action:hover {
         margin-bottom: 10px;
 }
 
-#modal-signup input.error {
+.modal-window input.error {
         background: #FDEBEB;
 }
 
-#modal-signup input.passed {
+.modal-window input.passed {
         background: #EEFDEB;
 }
 
-#modal-signup2 input.error {
-        border:1px solid red;
-}
-
-#modal-signup2 input.passed {
-	border:1px solid lightgreen;
-}
-
-#modal-signup button {
+.modal-window button {
         font-size: 16px;
 }
 
@@ -471,6 +482,8 @@ ul.modOptions li a.modlink {
 	text-decoration:none;
 	color:			#FFFFEE;
 }
+.mod-facebook-status	{ background:		url("/images/fb.ico") center left no-repeat; }
+
 .mod-go-profile	{ background:		url("/images/icons/user.png") center left no-repeat; }
 .mod-send-pm	{ background:		url("/images/icons/email.png") center left no-repeat; }
 .mod-go-channel	{ background:		url("/images/icons/group.png") center left no-repeat; }

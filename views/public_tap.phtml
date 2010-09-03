@@ -16,6 +16,8 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $_SESSION['uid'] ?>",
+            anon: <?=$ok_user ? 0 : 1?>,
+            fb: <?=$_SESSION['facebook'] ? 1 : 0?>,
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: "<?= $cid ?>",
 			convos: ["<?= $cid ?>"],
@@ -41,10 +43,6 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 	<script type="text/javascript" src="/views/scripts/search.js"></script>
 </head>
 <body>
-<?php if (!$ok_user): ?>
-    <? include(MODAL_SIGNUP); ?>
-    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
-<?php endif; ?>
 	<div id="wrapper">
 
 	<? 
@@ -138,6 +136,5 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 		</div>
 	</div>
     <?include(OK_FOOTER)?>
-	<?include(JAVASCRIPT_TEMPLATES)?>	
 </body>
 </html>

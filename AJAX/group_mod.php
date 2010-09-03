@@ -94,12 +94,13 @@ EOF;
 				$channelname = $rowchan['mygname'];
 				$channelsymbol = $rowchan['mysymbol'];
 				$gid = $rowchan['mygid'];
-
+                $tapowner = false;
 				// If $client_uid owns this tap, he'll be able to delete it :)
 				$ownership_q = "SELECT uid FROM special_chat s WHERE s.mid = '$cid' AND s.uid='$client_uid';";
 				$ownership_res = $this->mysqli->query($ownership_q);
 				if ($ownership_res->num_rows) {
 					$deletepermission = "owner";
+                    $tapowner = true;
 				}
 
 
@@ -152,7 +153,8 @@ EOF;
 				), 
 				'admin' => $var_admin,
 				'options' => array(
-					'deletepermission' => $deletepermission
+					'deletepermission' => $deletepermission,
+                    'owner' => $tapowner
 				)
 			);
 			

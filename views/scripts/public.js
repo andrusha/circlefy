@@ -536,7 +536,8 @@ var _responses = _tap.register({
             'click:relay(a.tap-resp-count)': this.setupResponse.toHandler(this),
 			'click:relay(img.aggr-favicons)': this.showChannelActions.toHandler(this),
 			'click:relay(a.mod-action)': this.modAction.toHandler(this),
-			'click:relay(a.mod-delete-tap)': this.deleteTap.toHandler(this)
+			'click:relay(a.mod-delete-tap)': this.deleteTap.toHandler(this),
+            'click:relay(a.mod-facebook-status)': this.facebookStatus.toHandler(this)
         });
 
         this.subscribe({
@@ -545,6 +546,13 @@ var _responses = _tap.register({
         });
 
         this.openBoxes();
+    },
+
+    facebookStatus: function(el, e) {
+        var cid = el.getData('cid');
+        var symbol = el.getData('symbol');
+
+        this.publish('modal.show.facebook-status', [cid, symbol]);
     },
 
     openBoxes: function() {
@@ -702,6 +710,8 @@ var _responses = _tap.register({
 				if (t_delete_permission=="owner") {
 					txtPopup = txtPopup + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
 				}
+                if (data.options.owner && _vars.fb)
+                    txtPopup += "<li><a href='#' class='modlink mod-facebook-status' data-cid='"+data_cid+"' data-symbol='"+t_symbol+"'>Share on Facebook</a></li>";
 				txtPopup = txtPopup + "</ul>";
 				var txtTitle = "Tap #" + data_cid;
 
@@ -726,7 +736,7 @@ var _responses = _tap.register({
 						}
 						
 						// TAP DELETION LINK
-						admOpt = admOpt + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
+						admOpt = admOpt + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"' >Delete this tap</a></li>";
 
 					admOpt = admOpt + "</ul>";
 
@@ -808,6 +818,7 @@ var _responses = _tap.register({
 		2. data (object) data to use in parsing the template
 	*/
     addResponses: function(box, data) {
+        data = data.map(this.processResponses, this);
         var items = Elements.from(_template.parse('responses', data));
         items.setStyles({opacity:0});
         items.fade(1);
@@ -816,6 +827,30 @@ var _responses = _tap.register({
         box.scrollTo(0, box.getScrollSize().y);
         this.publish('responses.updated');
         return this;
+    },
+    
+    /*
+        Response processing, uses for linkify, smilify, etc
+    */
+    processResponses: function(response) {
+        response.chat_text = this.smilify(response.chat_text);
+        return response;
+    },
+
+    /*
+        Add smiles ^_^"
+    */
+    smilify: function(msg) {
+        var smiles = {'hug': 'bearhug.gif'};
+        
+        return msg.replace(
+            new RegExp('\\(([a-z]*)\\)', 'gi'),
+            function (full, name) {
+                if (!smiles[name])
+                    return full;
+
+                return '<img src="/images/'+smiles[name]+'" title="'+full+'">';
+            });
     },
 
 	/*
@@ -1073,6 +1108,8 @@ var _tapbox = _tap.register({
             var item = Elements.from(_template.parse('taps', resp.new_msg));
             this.publish('tapbox.sent', item);
         }
+        if (resp.your_first && _vars.anon)
+            this.publish('modal.show.sign-notify', []);
     }
 
 });
@@ -1273,6 +1310,7 @@ _live.responses = _tap.register({
             }
         ]]);
     },
+
 
 });
 

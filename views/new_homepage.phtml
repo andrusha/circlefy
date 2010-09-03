@@ -65,6 +65,8 @@ if (!$is_guest) {
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $pcid ?>",
+            anon: <?=$ok_user ? 0 : 1?>,
+            fb: <?=$_SESSION['facebook'] ? 1 : 0?>,
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: JSON.decode('<?= json_encode($inits) ?>'),
 			convos: JSON.decode('<?= json_encode($convos) ?>'),
@@ -88,10 +90,6 @@ if (!$is_guest) {
 	
 </head>
 <body>
-<?php if (!$ok_user): ?>
-    <? include(MODAL_SIGNUP); ?>
-    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
-<?php endif; ?>
 				
 <div id="wrapper">
 		
@@ -138,8 +136,8 @@ if (!$is_guest) {
 
 		</div>
 	</div>
+
     <?include(OK_FOOTER)?>
-	<?include(JAVASCRIPT_TEMPLATES)?>
 
 </body>
 </html>

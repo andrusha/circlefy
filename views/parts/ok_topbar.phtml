@@ -23,11 +23,11 @@ switch($r){
                                 <a href="/"  	    <?=$home?>    >home</a>
                                 <a href="/channels"   <?=$groups?>  >channels</a>
                                 <a href="/people"   <?=$people?>  >people</a>
-                                <a href="/settings" <?=$settings?>>settings</a>
                                 <?php if ($ok_user): ?>
+                                <a href="/settings" <?=$settings?>>settings</a>
 								<a href="/?logout=true">logout</a>
                                 <?php else: ?>
-								<a href="#" onclick="show_signup();">create account</a>
+								<a href="#" class="signup-button">create account</a>
                                 <?php endif; ?>
                         </div>
 

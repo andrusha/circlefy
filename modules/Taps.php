@@ -326,4 +326,21 @@ class Taps extends BaseModel {
 
         return $counts;
     }
+
+    /*
+        Checks if user left any taps in group
+    */
+    public function firstTapInGroup($gid, $uid) {
+        $query = "SELECT sc.metaid
+                    FROM special_chat_meta sc
+                   INNER
+                    JOIN special_chat s
+                      ON s.mid = sc.mid
+                   WHERE sc.gid = #gid#
+                     AND s.uid = #uid#
+                   LIMIT 1";
+        $result = $this->db->query($query, array('gid' => intval($gid), 'uid' => intval($uid)));
+        $check = $result->num_rows == 1;
+        return $check;
+    }
 };

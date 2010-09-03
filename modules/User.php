@@ -188,14 +188,14 @@ class User extends BaseModel {
         $query = "UPDATE login
                      SET uname = #uname#,
                          fname = #fname#,
-                         lname = #lname#',
+                         lname = #lname#,
                          pass = MD5(#pass#),
                          email = #email#,
                          anon = 0
                    WHERE uid = #uid#
                    LIMIT 1";
         $this->db->query($query, array('uname' => $uname, 'fname' => $fname,
-            'lname' => $lname, 'pass' => $pass, 'email' => $email));
+            'lname' => $lname, 'pass' => $pass, 'email' => $email, 'uid' => $uid));
         
         if ($this->db->affected_rows == 1) {
             $hash = $this->makeHash();
@@ -235,6 +235,10 @@ class User extends BaseModel {
         if ($clear)
             $this->clearCookies();
 
+        $fb = new Facebook();
+        $binded = $fb->bindedByUID($uid);
+
+        $_SESSION['facebook'] = $binded;
         $_SESSION['uid'] = $uid;
         $_SESSION['uname'] = $uname;
         $_SESSION['real_name'] = $real_name;
@@ -301,7 +305,7 @@ class User extends BaseModel {
                     FROM login l
                    INNER
                     JOIN profile p
-                      ON p.rpid = l.uid
+                      ON p.uid = l.uid
                    WHERE l.uid = #uid#
                    LIMIT 1";
         $info = array();

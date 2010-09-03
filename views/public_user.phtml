@@ -25,6 +25,9 @@ $private = $private;
 	<script type="text/javascript">
 		window._vars = {
 			uid: "<?= $pcid ?>",
+            anon: <?=$ok_user ? 0 : 1?>,
+            fb: <?=$_SESSION['facebook'] ? 1 : 0?>,
+            real_name: "<?=$_SESSION['real_name']?>",
 			uname: "<?= $_SESSION['uname'] ?>",
 			stream: JSON.decode('<?= json_encode($inits) ?>'),
 			convos: [],
@@ -44,10 +47,6 @@ $private = $private;
 	<script type="text/javascript" src="/views/scripts/infobox.js"></script>
 </head>
 <body>
-<?php if (!$ok_user): ?>
-    <? include(MODAL_SIGNUP); ?>
-    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
-<?php endif; ?>
 	<div id="wrapper">
 
 	<? include(OK_TOPBAR) ?>
@@ -163,7 +162,5 @@ $private = $private;
 		</div>
 	</div>
     <?include(OK_FOOTER)?>
-	<?include(JAVASCRIPT_TEMPLATES)?>	
-
 </body>
 </html>

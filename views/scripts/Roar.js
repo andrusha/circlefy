@@ -36,7 +36,7 @@ var Roar = new Class({
 
 	alert: function(title, message, options) {
 		var params = Array.link(arguments, {title: String.type, message: String.type, options: Object.type});
-		var items = [new Element('h3', {'html': $pick(params.title, '')})];
+		var items = [new Element('h3', {'html': $pick(params.title, '')+'<div>click to dismiss</div>'})];
 		if (params.message) items.push(new Element('p', {'html': params.message}));
 		return this.inject(items, params.options);
 	},

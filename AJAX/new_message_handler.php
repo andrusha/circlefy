@@ -182,19 +182,22 @@ EOF;
 
 		//Dispatch all messages with associated reason
 		$aggr_ids = $this->aggr_ids($group_uids['groups'],$direct_uids['direct'],$friend_uids['friend'],$filter_uids['filters'],$building_uids['building'],$last_id,$uid);
+
+        reset($this->meta_groups);
+        $gid = key($this->meta_groups);
 	
         $tap = new Taps();
         $html_msg = $tap->getTap($last_id);
+        $your_first = $tap->firstTapInGroup($gid, $uid);
 
 		//Return information to user in JSON
 		$msg_and_channel_id  = array('channel_id' => $last_id, 
             'time' => $time,
             'new_channel' => 'true',
-            'new_msg' => array($html_msg));
+            'new_msg' => array($html_msg),
+            'your_first' => $your_first);
 		$msg_and_channel_id = json_encode($msg_and_channel_id);
 
-        reset($this->meta_groups);
-        $gid = key($this->meta_groups);
         $this->notifyAll($gid, $uid);
 
 		return $msg_and_channel_id;

@@ -198,4 +198,27 @@ class Facebook extends BaseModel {
 
         return $ok;
     }
+
+    /*
+        Post FB-status
+
+        Status contains following fields:
+        message, picture, link, name, caption, description, source
+    */
+    public function postStatus(array $status) {
+        $info = $this->getInfoStraight();
+        if (!$info)
+            return false;
+        
+        $fbid = intval($info['id']);
+        $access_token = $info['access_token'];
+
+        $url = "https://graph.facebook.com/$fbid/feed";
+        $post = array_merge($status, array('access_token' => $access_token));
+
+        $curl = new Curl();
+        var_dump($curl->open($url, $post));
+
+        return true;
+    }
 };

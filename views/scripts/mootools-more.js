@@ -928,7 +928,11 @@ String.implement({
 			txt = txt.replace(new RegExp(key, 'g'), value);
 		});
 		return txt;
-	}
+	},
+
+    strip: function() {
+        return this.replace(/^\s+|\s+$/g, '');
+    }
 
 });
 

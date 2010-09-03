@@ -56,10 +56,6 @@ if ($settings) {
 
 </head>
 <body>
-<?php if (!$ok_user): ?>
-    <? include(MODAL_SIGNUP); ?>
-    <script type="text/javascript" src="/views/scripts/modal_signup.js"></script>
-<?php endif; ?>
 	<div id="wrapper">
 
 	<? include(OK_TOPBAR); ?> 
@@ -339,7 +335,7 @@ if ($settings) {
                                 <span class="help">it will replace your personal info and profile picture</span>
                                 <span class="error"></span>
                             </label>
-                            <fb:login-button id="fb-button" name="fb-button" show-faces="true" width="300" perms="user_about_me,email,read_friendlists,user_groups"></fb:login-button>
+                            <fb:login-button id="fb-button" name="fb-button" show-faces="true" width="300" perms="user_about_me,email,read_friendlists,user_groups,publish_stream"></fb:login-button>
 
                             <div class="buttons">
                                 <button class="action" id="action-facebook">bind account</button> or <a href="/">cancel</a>
@@ -354,7 +350,5 @@ if ($settings) {
 		</div>
 	</div>
     <?include(OK_FOOTER)?>
-	<?include(JAVASCRIPT_TEMPLATES)?>
-    <?include(FBCONNECT_BOTTOM)?>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 
 class QueryParamException extends Exception {};
+class NotImplementedException extends Exception {};
 
 //This class defines all of the database queries as well as what connection is to be used.
 //The explination of how to set queries is listed below.  The way you set your database connector
@@ -68,7 +69,7 @@ class DB{
     /*
         Proxing all mysqli variables right to user
 
-        make better implementation further
+        TODO: make better implementation in future
     */
     public function __get($key) {
         if (!is_null($this->$key))
@@ -77,6 +78,21 @@ class DB{
             return $this->db->$key;
             
         throw new OutOfBoundsException('Wrong key `'.$key.'`');
+    }
+    
+    /*
+        Proxing mysqli methods direct to DB class
+        for back compatability
+
+        TODO: make better implementation in future
+    */
+    public function __call($name, $args) {
+        if (method_exists($this, $name))
+            return call_user_method_array($name, $this, $args);
+        else if (method_exists($this->db, $name))
+            return call_user_method_array($name, $this->db, $args);
+
+        throw new NotImplementedException('Wrong method named `'.$name.'`');
     }
 
     public function set_query($query,$name,$comment,$x='') {
