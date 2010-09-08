@@ -190,6 +190,74 @@ class Taps extends BaseModel {
     }
 
     /*
+        Creates new tap, return tap_id (cid/mid)
+    */
+    public function add($uid, $uname, $addr, $gid, $text) {
+        $this->db->startTransaction();
+        $ok = true;
+
+        //requires to get proper cid (OBSOLETE)
+        $query = "INSERT
+                    INTO channel (uid)
+                  VALUES (#uid#)";
+        $ok = $ok && $this->db->query($query, array('uid' => $uid));
+
+        $cid = $this->db->insert_id;
+
+        //makes tap appears online (OBSOLETE)
+        $query = "INSERT
+                    INTO TAP_ONLINE (cid)
+                  VALUES (#cid#)";
+        $ok = $ok && $this->db->query($query, array('cid' => $cid));
+
+        $query = "INSERT
+                    INTO special_chat (cid, uid, uname, chat_text, ip)
+                  VALUES (#cid#, #uid#, #uname#, #chat_text#, INET_ATON(#ip#))";
+        $ok = $ok && $this->db->query($query, array('cid' => $cid, 'uid' => $uid, 'uname' => $uname,
+            'chat_text' => $text, 'ip' => $addr));
+
+        //fulltext table duplicates everything
+        $ok = $ok && $this->db->query(str_replace('special_chat', 'special_chat_fulltext', $query),
+            array('cid' => $cid, 'uid' => $uid, 'uname' => $uname, 'chat_text' => $text,
+                'ip' => $addr));
+
+        $query = "INSERT
+                    INTO special_chat_meta (mid, gid, connected, uid)
+                   VALUE (#cid#, #gid#, 1, #uid#)";     
+        $ok = $ok && $this->db->query($query, array('cid' => $cid, 'gid' => $gid, 'uid' => $uid));
+
+        if ($ok)
+            $this->db->commit();
+        else {
+            $this->db->rollback();
+            throw new Exception('We have some DB problem out there');
+        }
+
+        return $cid;
+    }
+
+    /*
+        Returns bool if tap is duplicate or not
+    */
+    public function checkDuplicate($text, $uid) {
+        $query = "SELECT chat_text
+                    FROM special_chat
+                   WHERE uid = #uid#
+                   ORDER
+                      BY mid DESC
+                   LIMIT 1";
+        $result = $this->db->query($query, array('uid' => $uid));
+
+        $dupe = false;
+        if ($result->num_rows) {
+            $result = $result->fetch_assoc();
+            $dupe = $result['chat_text'] == $text;
+        }
+
+        return $dupe;
+    }
+
+    /*
         Formats time since & tap text 
     */
     public function formatTap($tap) {
@@ -340,7 +408,62 @@ class Taps extends BaseModel {
                      AND s.uid = #uid#
                    LIMIT 1";
         $result = $this->db->query($query, array('gid' => intval($gid), 'uid' => intval($uid)));
-        $check = $result->num_rows == 1;
+        $check = $result->num_rows == 0;
         return $check;
+    }
+
+    /*
+        Makes text shorter. If it exceeds limit, adds '...'
+    */
+    public static function makePreview($text, $limit = 50) {
+        if (!function_exists('clean')) {
+            //cleans all mess around text, before make it shorter
+            function clean($text) {
+                $text = trim($text);
+                $text = preg_replace('/\s{2,}/ism', ' ', $text);
+                return $text;    
+            }
+        }
+
+        if (!function_exists('byExplode')) {
+            //tries to combine as much parts of string
+            //exploded by delimeter not to exceed limit
+            function byExplode($text, $delimeter, $limit) {
+                $parts = explode($delimeter, $text);
+                $result = '';
+                foreach ($parts as $part) {
+                    if (strlen($result) + strlen($delimeter) + strlen($part) <= $limit)
+                        $result .= $delimeter.$part;
+                }
+                $result = substr($result, 1);
+
+                return $result;
+            }
+        }
+
+        $text = clean($text);
+
+        //okay, text is good enough anyway
+        if (strlen($text) <= $limit)
+            return $text;
+        
+        $limit -= 3; //for '...'
+        $byPoint = byExplode($text, '.', $limit);
+        $byWord = byExplode($text, ' ', $limit);
+
+        $result = '';
+
+        //select best match, if fails, just
+        //cut text up to the limit
+        if ($byPoint || $byWord) {
+            if (strlen($byPoint) > strlen($byWord))
+                $result = $byPoint;
+            else
+                $result = $byWord;
+        } else {
+            $result = substr($text, 0, $limit-1);
+        }
+
+        return $result.'...';
     }
 };

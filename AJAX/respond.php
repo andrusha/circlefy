@@ -107,7 +107,6 @@ EOF;
 			}
 		}
 
-        $this->notify_all($cid, $init_tapper);
 		
         $small_pic = $_POST['small_pic'];
         $small_pic = 'small_'.$small_pic;
@@ -131,11 +130,13 @@ EOF;
 
         $update_active = "UPDATE active_convo SET active = 1 WHERE mid = {$cid} AND uid={$init_tapper}";
         $this->mysqli->query($update_active);
+        
+        $this->notify_all($cid, $init_tapper, $msg);
 
 		return array('success' => 1);
 	}
 	
-	private function notify_all($cid, $init_tapper) {
+	private function notify_all($cid, $init_tapper, $respText) {
 	    $uid = intval($_SESSION['uid']);
 
         $query = "
@@ -158,7 +159,9 @@ EOF;
         $userClass = new User();
         $info = $userClass->getInfo($uid);        
 
-        $data = array('cid' => intval($cid), 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
+        $text = Taps::makePreview($respText);
+        $data = array('cid' => intval($cid), 'uname' => $info['uname'],
+            'ureal_name' => $info['real_name'], 'text' => $text);
         $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
         $insert_string = json_encode(
             array('action' => 'notify.convo.response', 'users' => $users, 

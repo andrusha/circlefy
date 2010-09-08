@@ -839,6 +839,11 @@ ul.stream li {
 	padding: 15px 10px 0px;
 /*	border-bottom: 2px solid #627AAD;*/
 	border-bottom: 2px solid #DFEAF4;
+    background-color: white;
+}
+
+ul.stream li.new {
+    /* background-color: lightyellow; */
 }
 
 ul.stream li.notice {

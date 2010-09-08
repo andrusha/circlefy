@@ -2,6 +2,7 @@
 
 class QueryParamException extends Exception {};
 class NotImplementedException extends Exception {};
+class TransactionException extends Exception {};
 
 //This class defines all of the database queries as well as what connection is to be used.
 //The explination of how to set queries is listed below.  The way you set your database connector
@@ -25,6 +26,8 @@ class DB{
     //Use: $db->query("SELECT ..");
     public $db = NULL;
 
+    private $transactions = 0;
+
     /*
         Params for current query,
         set in every parametrized DB::query call
@@ -33,6 +36,11 @@ class DB{
 
     function __default() {}    
     private function __construct() {}
+
+    function __destruct() {
+        if ($this->transactions != 0)
+            throw new TransactionException('You forgot to commit or rollback transactions');
+    }
 
     static public function getInstance() { 
         if (empty(self::$instance)) 
@@ -157,6 +165,27 @@ class DB{
         }
     }
 
+    public function startTransaction() {
+        $this->db->query('START TRANSACTION');
+        $this->transactions++;
+    }
+
+    public function commit() {
+        $this->transactions--;
+        if ($this->transactions < 0)
+            throw new TransactionException('Commits more than start transactions');
+
+        if (!$this->transactions)
+            $this->db->commit();
+    }
+
+    public function rollback() {
+        //we surely will got exception
+        //on nested transactions
+        $this->transactions = 0;
+        $this->db->rollback();
+    }
+
     public function execute_query($query_name) {
         if(!$this->db_debug) {
             $result = $this->db->query($this->query_list[$query_name]);
@@ -184,10 +213,5 @@ class DB{
 
         return $result;
 
-    }
-
-
-    function __destruct(){    
-    //$this->db->close();
     }
 };

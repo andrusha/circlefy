@@ -141,7 +141,7 @@ _tap.mixin({
 		1. resp (obj) the response object from the xhr.
 		2. keep (bool) if true, taps already in the feed are not removed.
 	*/
-    parseFeed: function(resp, keep) {
+    parseFeed: function(resp, keep, scrollAndColor) {
         var stream = this.stream;
         if (!keep) stream.empty();
         if (resp.results && resp.data) {
@@ -155,7 +155,21 @@ _tap.mixin({
 
 			if (items.length >= 10 && !keep) ($('loadmore-template').clone()).inject('taps','bottom').setProperty('id', 'loadmore');
 			if(keep) publish_type = 'stream.more'; else publish_type = 'stream.new';
-			this.publish(publish_type, [items]);
+            this.publish(publish_type, [items]);
+            
+            if (scrollAndColor == true) {
+                var overallHeight = 0;
+                items.each( function (item) {
+                    item.addClass('new');
+                    item.setStyle('background-color', 'lightyellow');
+                    overallHeight += item.getSize().y;
+                });
+
+                var curScroll = window.getScroll();
+                if (curScroll.y > $('taps').getPosition().y)
+                    window.scrollTo(curScroll.x, curScroll.y + overallHeight);
+            }
+
             stream.removeClass('empty');
         } else {
             this.publish('stream.empty', $('no-taps-yet').clone());
@@ -170,7 +184,7 @@ _tap.mixin({
 		args:
 		1. items (elements) the tap items to be added to the feedlist
 	*/
-    addTaps: function(items) {
+    addTaps: function(items ) {
         items.setStyles({opacity:0});
         items.inject(this.stream, 'top');
         if (_stream.loadmore_count > 0) {
@@ -205,12 +219,10 @@ var _stream = _tap.register({
         this.setStreamVars();
         this.subscribe({
             'list.item': this.setStream.bind(this),
-            'stream.new; stream.empty; tapbox.sent; stream.more': this.addTaps.bind(this),
+            'stream.new; stream.empty; tapbox.sent; stream.more; stream.live.new': this.addTaps.bind(this),
             'feed.changed': (function(type) {
                 this.streamType = type;
             }).bind(this),
-            'taps.pushed': this.parsePushed.bind(this),
-            'taps.notify.click': this.getPushed.bind(this),
             'filter.search': this.changeFeed.bind(this)
         });
     },
@@ -338,54 +350,7 @@ var _stream = _tap.register({
 		self.loadmore_gid = gid;
 		self.loadmore_feed = feed;
 		self.loadmore_keyword = keyword;
-	},
-
-	/*
-	method: parsePushed()
-		parses pushed data from the server
-		
-		args:
-		1. type (string) the type of push data recieved
-		2. items (array) the items from the server
-		3. stream (bool) if true, the pushed data would automatically be turned to taps and put on the tapstream
-	*/
-    parsePushed: function(type, items, stream) {
-        var self = this;
-        if ((type == 'channels' && this.streamType == 'all') || this.streamType == type) {
-            items = items.filter(function(id) {
-                var item = self.stream.getElement('li[data-id="' + id + '"]');
-                return !item;
-            });
-            if (items.length > 0) {
-                if (!stream) this.publish('stream.reload', [items]);
-                else this.getPushed(items);
-            }
-        }
-    },
-
-	/*
-	method: getPushed()
-		retrieves taps data from the server
-		
-		args:
-		1. items (array) an array of tap ids to be fetched from the server
-	*/
-    getPushed: function(items) {
-        var self = this,
-            data = {id_list: items.join(',')};
-        new Request({
-            url: '/AJAX/loader.php',
-            data: data,
-            onRequest: this.showLoader.bind(this),
-            onSuccess: function() {
-                var response = JSON.decode(this.response.text);
-                if (response) self.parseFeed(response, true);
-                self.hideLoader();
-				self.publish('stream.loaded', self.streamType);
-            }
-        }).send();
-    }
-
+	}
 });
 
 /*
@@ -704,9 +669,10 @@ var _responses = _tap.register({
 				/* * * * * * * * * * * * * * ** * * NOTIFICATION * * * * * * * * * * * * * * * * * * * * */
 
 				var txtPopup = "<ul class='modOptions'>";
-				txtPopup = txtPopup + "<li><a href='/user/"+t_uname+"' class='modlink mod-go-profile'>Go to <b>"+t_uname+"</b> profile</a></li>";
-				txtPopup = txtPopup + "<li><a href='#' class='modlink mod-send-pm'>Send <b>" + t_uname + "</b> a Private Message</a></li>";
-				txtPopup = txtPopup + "<li><a href='/channel/" + t_symbol  + "' class='modlink mod-go-channel'>Go to channel <b>" + t_gname + "</b></a></li>";
+				txtPopup += "<li><a href='/user/"+t_uname+"' class='modlink mod-go-profile'>View <b>"+t_uname+"</b> profile</a></li>";
+				txtPopup += "<li><a href='#' class='modlink mod-send-pm'>Send <b>" + t_uname + "</b> a Private Message</a></li>";
+				txtPopup += "<li><a href='/channel/" + t_symbol  + "' class='modlink mod-go-channel'>Go to channel <b>" + t_gname + "</b></a></li>";
+				txtPopup += "<li><a href='/tap/" + data_cid  + "' class='modlink mod-go-tap'>View this discussion</b></a></li>";
 				if (t_delete_permission=="owner") {
 					txtPopup = txtPopup + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
 				}
@@ -1357,25 +1323,44 @@ _live.taps = _tap.register({
 
     init: function() {
         var self = this;
-        this.pushed = {};
+        this.pushed = [];
         this.notifier = $('newtaps');
         this.streamer = $('streamer');
         this.stream = !!(this.streamer);
         this.subscribe({
             'push.data.tap.new': this.process.bind(this),
             'push.data.tap.delete': this.deleteTap.bind(this),
-            'feed.changed': this.hideNotifier.bind(this),
-            'stream.reload': this.showNotifier.bind(this),
-            'stream.updated': this.clearPushed.bind(this)
+            'feed.changed': this.clearPushed.bind(this)
         });
         this.notifier.addEvent('click', function(e) {
             e.stop();
-            var items = this.retrieve('items');
-            if (!items) return;
-            self.publish('taps.notify.click', [items]);
+            self.showPushed();
             self.hideNotifier();
         });
         if (this.streamer) this.streamer.addEvent('click', this.toggleNotifier.toHandler(this));
+
+        window.addEvent('scroll', function () {
+            var newTaps = $$('li.container.new');
+            if (newTaps.length == 0)
+                return;
+
+            var curScroll = window.getScroll();
+
+            newTaps.each( function (tap) {
+                if (tap.get('viewed'))
+                    return;
+
+                if (tap.getPosition().y < curScroll.y)
+                    return;
+
+                tap.set('viewed', true);
+                (function () {
+                    tap.removeClass('new');
+                    var fx = new Fx.Tween(tap);
+                    fx.start('background-color', 'lightyellow', 'white');
+                }).delay(1500);
+            });
+        });
     },
 
     deleteTap: function(data) {
@@ -1394,49 +1379,35 @@ _live.taps = _tap.register({
     },
 
     process: function(data) {
-        var len, item, ids,
-                pushed = this.pushed;
-        data = data.map(function(item) {
-            return item.link({
-                type: String.type,
-                _: Number.type,
-                cid: Number.type,
-                $: Boolean.type,
-                perm: Number.type
-            });
-        });
+        this.pushed.combine([data]);
 
-        len = data.reverse().length;
-        while (len--) {
-            item = data[len];
-            if (!item.type.test(/^group/)) continue;
-            if (!pushed[item.type]) pushed[item.type] = [];
-            ids = pushed[item.type];
-            ids.include(item.cid);
+        if (this.stream) {
+            this.showPushed();
+        } else {
+            this.showNotifier(this.pushed.length);
         }
-        for (var i in pushed) this.publish('taps.pushed', [i, pushed[i], this.stream]);
+    },
+
+    showPushed: function() {
+        _stream.parseFeed({results: true, data: this.pushed.reverse()}, true, true);
+        this.clearPushed();
     },
 
     clearPushed: function(type) {
-        if (!type) return;
-        switch (type) {
-            case 'all': this.pushed['groups'] = []; break;
-            default: this.pushed[type] = [];
-        }
+        this.pushed = [];
+        this.hideNotifier();
     },
 
-    showNotifier: function(items) {
-        var notifier = this.notifier,
-                length = items.length;
+    showNotifier: function(count) {
+        var notifier = this.notifier;
         notifier.set('text', [
-            length.toString(), 'new', length == 1 ? 'tap.' : 'taps.', 'Click here to load them.'
+            count, 'new', count == 1 ? 'tap.' : 'taps.', 'Click here to load them.'
         ].join(' '));
-        notifier.store('items', items).addClass('notify');
+        notifier.addClass('notify');
     },
 
     hideNotifier: function() {
-        var notifier = this.notifier;
-        notifier.set('text', '').store('items', null).removeClass('notify');
+        this.notifier.set('text', '').removeClass('notify');
     },
 
     toggleNotifier: function(el) {
@@ -1481,10 +1452,11 @@ _live.notifications = _tap.register({
         cid = data['cid'];
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+        text = data['text'];
 
         _notifications.alert('<span class="notification-title icon-response">New response</span>',
             '<a href="/user/'+uname+'">' + ureal_name + 
-            '</a> left new response in <a href="/tap/'+cid+'">conversation</a>!');
+            '</a> says "' + text + '" in <a href="/tap/'+cid+'">conversation</a>!');
     	
         _notifications.items.getLast().addEvent('click', function() {
         	document.location.replace('http://tap.info/tap/'+cid);
@@ -1496,10 +1468,11 @@ _live.notifications = _tap.register({
         greal_name = data['greal_name'];
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+        text = data['text']
 
         _notifications.alert('<span class="notification-title icon-tap">New tap</span>',
             '<a href="/user/'+uname+'">' + ureal_name +
-            '</a> left new tap in <a href="/channel/'+gname+'">'+
+            '</a> starts discuss about "' + text + '" in <a href="/channel/'+gname+'">'+
             greal_name + '</a> channel!');
 
     	_notifications.items.getLast().addEvent('click', function() {

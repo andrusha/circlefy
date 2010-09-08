@@ -13,7 +13,6 @@ class settings extends Base{
 	}
 
 	function __construct(){
-
 		$this->view_output = "HTML";
 		$this->db_type = "mysql";
 		$this->page_name = "about_me";

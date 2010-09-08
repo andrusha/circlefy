@@ -117,34 +117,25 @@ class MessageConnection(object):
 
             self.receivedFrame(frame)
 
-    def tap_ACTION(self,msg_data):
-        matches_list = self.check_new_bits(self.server.root.user_server.users,msg_data)
-        
-        if matches_list != []:
-            results = self.bit_generator(matches_list)
-            uniq_uids = set(self.uids)
-            
-            for uid in uniq_uids:
-                if uid in self.server.root.user_server.users:
-                    for uniq_conn in self.server.root.user_server.users[uid]:
-                        uniq_conn.send_message('tap.new', results)
-            self.uids = []
-
     def makeList(self, users = None, cid = None, gid = None, exclude = None):
         user_server = self.server.root.user_server
+
         new_users = set(users) if users else set()
+
         #TODO: fix that str(cid) shit
         if cid is not None:
-            cid = str(cid)
+            cid = cid
             if cid in user_server.channels['channel']:
                 new_users.update(user_server.channels['channel'][cid])
         if gid is not None:
-            gid = str(gid)
+            gid = gid
             if gid in user_server.channels['group']:
                 new_users.update(user_server.channels['group'][gid])
 
+        print 'Before: %s' % new_users
         if exclude is not None:
             new_users.difference_update(set(exclude))
+        print 'After: %s' % new_users
 
         return new_users
 
@@ -192,84 +183,9 @@ class MessageConnection(object):
                 self.sendToUsers(users_list, type, frame['data'])
 
             return True
-
-        if 'msg' in frame:
-            msg_data = frame['msg'].split('\n')
-            print "%s" % msg_data
-            self.tap_ACTION(msg_data)
-
-            return True
         
         logging.error("Warning! Bad packet!")
         return False
-
-    def bit_generator(self,matches_list):
-        bits = []
-        for tuples in matches_list:
-            for els in tuples:
-                if type(els) == list:
-                    for el in els:
-                        display_row_type=el
-                        real_row_type=tuples[2]
-                        if real_row_type is 0:
-                            tap_type = tuples[3]
-                        else:
-                            tap_type = None
-                
-                        uid=tuples[0]
-                        cid=tuples[1]
-                        bits.append((uid,cid,tap_type,display_row_type))
-        return bits
-
-    def check_new_bits(self,uid_list,msg_data):
-        matches_list = []
-        for row in msg_data:
-            #FIGURE OUT WHICH LINES MATCH
-            cols = row.split(' ')
-            if cols[0]:
-                cols = [ int(col) for col in cols ]
-                uid = cols[0]
-            else:
-                continue
-
-            if uid not in uid_list:
-                continue
-            else:
-                self.uids.append(uid)
-
-            '''
-            Process all matches, get their association and run queries against them
-            FORMAT FOR TABLES ARE AS FOLLOWS:
-            uid     cid      gid    rid     fuid    type
-            types: group = 0 , friends = 1, direct = 2, filters = 3, fuid = 4, type = 5
-            '''
-
-            groups, friends, rel = ('groups', 'friends', 'rel')
-            group_hit = friend_hit = rel_hit = 1
-            if len(cols) >= 6:
-                (uid, cid, gid, rid, fuid, row_type) = cols[:5]
-                tap_type = cols[6] if not row_type else None
-
-                #Group Processing
-                if row_type == 0 and group_hit:
-                    groups = False
-                    matches_list.insert(0,(uid,cid,row_type,tap_type,["groups","group_%s" % ( gid )]))
-                #Friend Processing
-                elif row_type == 1 and friend_hit:
-                    friends = False
-                    matches_list.insert(0,(uid,cid,row_type,tap_type,["friends","friend_%s" % ( fuid )]))
-                #Direct Processing
-                elif row_type == 2:
-                    matches_list.insert(0,(uid,cid,row_type,tap_type,["direct"]))
-                #Filter Processing
-                elif row_type == 3 and rel_hit:
-                    rel = False
-                    matches_list.insert(0,(uid,cid,row_type,tap_type,["rel","tab_rel_%s" % ( rid )] ))
-                #Direct Processing
-                elif row_type == 4:
-                    matches_list.insert(0,(uid,cid,row_type,tap_type,["building"]))
-
-        return matches_list
 
 #START of User Server
 class UserServer(object):
@@ -373,7 +289,7 @@ class UserConnection(object):
 
     def userOnline(self,ouid,status=1):
         type = 'user'
-        channel = str(ouid)
+        channel = int(ouid)
         if self.server.channels[type].has_key(channel):
             response_type = self.push_type_add[type] if status else self.push_type_minus[type]
             for uid in self.server.channels[type][channel]:
@@ -474,6 +390,7 @@ class UserConnection(object):
         if channel_list_cmp:
             for channel in channel_list_cmp:
                 update=0
+                channel = int(channel)
                 if self.server.channels[type].has_key(channel):
                     if not self.server.channels[type][channel].__contains__(self.uid):
                         self.server.channels[type][channel].add(self.uid)
@@ -505,6 +422,7 @@ class UserConnection(object):
         uid_list_minus = set()
         update = 0
         for channel in channel_map_diff:
+            channel = int(channel)
             #Create a list of connection sessions to notify a tap is minus 1
             for uid in self.server.root.user_server.channels[type][channel]:
                 #if uid != self.uid:

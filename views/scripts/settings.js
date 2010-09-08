@@ -70,7 +70,6 @@ _settings.account = _tap.register({
 	mixins: 'errors',
 
 	init: function(){
-		if (_vars.type !== 'account') return;
 		var main = this.main = $('user-account');
 		var data = this.data = {
 			email: main.getElement('input[name="email"]').store('passed', true),
@@ -162,7 +161,6 @@ var _picture = _tap.register({
 	mixins: 'errors',
 
 	init: function(){
-		if (_vars.type !== 'picture') return;
 		var main = this.main = $('user-picture');
 		this.uploader = $('pic-uploader');
 		this.uploader.addEvent('change', this.check.toHandler(this));
@@ -224,7 +222,6 @@ _settings.password = _tap.register({
 	mixins: 'errors',
 
 	init: function(){
-		if (_vars.type !== 'password') return;
 		var main = this.main = $('user-password');
 		var data = this.data = {
 			current: main.getElement('input[name="current"]'),

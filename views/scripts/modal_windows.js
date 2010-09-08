@@ -52,6 +52,8 @@ var _modal = _tap.register({
         myEffects.start({
             'opacity': '1'
         });
+
+        window.scrollTo(0,0);
     },
 
     /*

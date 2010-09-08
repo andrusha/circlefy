@@ -1,0 +1,88 @@
+<div id="curtain" class="curtain"></div>
+
+<div id="modal-container">
+
+<!-- Signup window for new users -->
+	<div id="modal-signup" class="modal-window">
+		<h2>Just one more thing before we log you in..</h2>
+		<p>We're almost there <strong><span id="modal-signup-name"></span></strong>, but first we'll need you to add a few more details to personalize your Tap experience.</p>
+        <input type="hidden" name="facebook" value="0">
+        <input type="hidden" name="fb_fname" value="">
+        <input type="hidden" name="fb_lname" value="">
+		<p class="forms" style="margin-top:30px"><label>Username</label> <input type="text" name="uname" /></p>
+		<p class="guide">This username is already taken.</p>
+		<p class="forms" id="real_name"><label>Real name</label> <input type="text" name="name" /></p>
+		<p class="guide">Please, enter your name</p>
+		<p class="forms"><label>Email</label> <input type="text" name="email" /></p>
+		<p class="guide">Enter a valid email address.</p>
+		<p class="forms"><label>Password</label> <input type="password" name="pass" /></p>
+		<p class="guide">Passwords must be at least 4 characters.</p>
+        <p class="forms" id="fb-button"><label style="padding-right: 28px">Facebook</label>
+        <fb:login-button id="fb-login-button" show-faces="true" width="300" perms="user_about_me,user_education_history,user_hometown,user_interests,user_likes,user_location,user_work_history,email,read_friendlists,user_groups,publish_stream"></fb:login-button>
+            <span id="fb-checkbox" style="display:none">
+                <input type="checkbox" name="fb_connect">Bind your new account to facebook
+            </span>
+        </p>
+        <p class="guide">There is some issue with your fb-account</p>
+		<p style="margin-top: 50px; text-align: right; font-size: 14px; margin-right: 20px">
+				<span class="indicator">
+						<img src="/images/spinner.gif" />
+						<span class="indic-msg">Signing you up...</span>
+				</span>
+				<span class="modal-actions">
+						<button>Start Tapping!</button> or <a class="modal-cancel" href="#">close</a>
+				</span>
+		</p>
+	</div>
+
+<!-- Notification for guests to login or signup -->
+	<div id="modal-sign-notify" class="modal-window">
+		<h2>You've just posted your first tap</h2>
+		<p>In order to make your tap experience better, please, sign up or log in</p>
+        <span class="modal-actions">
+                <button class="signup-button">Sign up</button> or <button onClick="javascript: window.location.replace('/login')">Log in</button> or <a class="modal-cancel" href="#">close</a>
+        </span>
+	</div>
+
+<!-- Post status on facebook -->
+	<div id="modal-facebook-status" class="modal-window">
+		<h2>Tap notice</h2>
+		<p>Share your tap experience with your friends!</p>
+        <input type="hidden" name="link">
+        <div id="fb_preview" style="background-color: white; border: 1px solid #CCCCCC; width: 460px; color:#333333; font-family: 'lucida grande', tahoma, verdana, arial; font-weight: normal; text-align: left; overflow: hidden;font-size: 11px; padding: 4px;">
+            <div>
+                <h3 style="width: 340px; font-size: 13px; margin: 0; padding: 0">
+                    <a class="fb_name" style="font-weight: bold; color: #3B5998; cursor: pointer; text-decoration: none"> </a>
+                    <span class="fb_message" style="font-weight: normal;"> </span>
+                </h3>
+            </div>
+            <div style="margin-bottom: 5px; margin-top: 6px; padding-right: 10px; overflow: hidden;">
+                <div style="padding-right: 10px; float: left; overflow: hidden;">
+                    <img src="/images/flat/tap_square.png" style="display: block;">
+                </div>
+                <div style="display: table;">
+                    <div style="display: inline; font-weight: bold; padding-top: 3px">
+                        <a style="color: #3B5998; cursor: pointer; text-decoration: none;">Join discussion</a>
+                    </div>
+                    <div class="caption" style="color: #808080; padding-top: 3px;"> </div>
+                    <div style="display:inline; color: #808080; padding: 3px 0;">TAP communication platform</div>
+                </div>
+            </div>
+        </div>
+		<p class="forms" style="margin-top:30px"><label>Status</label> <input type="text" name="status" /></p>
+		<p class="guide">Wrong story, bro</p>
+		<p class="forms" style="margin-top:30px"><label>Message</label> <input type="text" name="message" /></p>
+		<p class="guide">Wrong story, bro</p>
+		<p style="margin-top: 50px; text-align: right; font-size: 14px; margin-right: 20px">
+				<span class="indicator">
+						<img src="/images/spinner.gif" />
+						<span class="indic-msg">Publishing...</span>
+				</span>
+				<span class="modal-actions">
+						<button>Publish</button> or <a class="modal-cancel" href="#">close</a>
+				</span>
+		</p>
+	</div>
+
+</div>
+

@@ -487,7 +487,7 @@ ul.modOptions li a.modlink {
 .mod-go-profile	{ background:		url("/images/icons/user.png") center left no-repeat; }
 .mod-send-pm	{ background:		url("/images/icons/email.png") center left no-repeat; }
 .mod-go-channel	{ background:		url("/images/icons/group.png") center left no-repeat; }
-
+.mod-go-tap	{ background:		url("/images/icons/email_open.png") center left no-repeat; }
 .mod-ban-user	{ background:		url("/images/icons/delete.png") center left no-repeat; }
 .mod-unban-user	{ background:		url("/images/icons/accept.png") center left no-repeat; }
 

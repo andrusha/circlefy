@@ -92,7 +92,7 @@ class Facebook extends BaseModel {
         if (isset($this->fetched_info[$uid]))
             return $this->fetched_info[$uid];
 
-        $url = 'https://graph.facebook.com/'.$uid.'?wrap_access_token=' . urlencode($access_token);
+        $url = 'https://graph.facebook.com/'.$uid.'?access_token=' . urlencode($access_token);
         $info = json_decode(file_get_contents($url), true);
 
         $this->fetched_info[$uid] = $info;

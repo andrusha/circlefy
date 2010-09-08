@@ -43,4 +43,32 @@ class Group extends BaseModel {
 
         return $gid;
     }
+
+    /*
+        Returns group members
+        $online = true - online, false - offline, null - whatever
+    */
+    public function getMembers($gid, $online = null) {
+        if ($online !== null) {
+            $join = "
+                INNER JOIN TEMP_ONLINE tmo
+                        ON tmo.uid = g.uid";
+            $where = " AND tmo.online = ".($online ? 1 : 0)." ";
+        }
+
+        $query = "
+            SELECT g.uid
+              FROM group_members g
+                {$join}
+             WHERE g.gid = #gid#
+                {$where}";
+
+        $users = array();
+        $result = $this->db->query($query, array('gid' => $gid));
+        if ($result->num_rows)
+            while($res = $result->fetch_assoc())
+                $users[] = intval($res['uid']);
+
+        return $users;
+    }
 };

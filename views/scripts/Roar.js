@@ -94,7 +94,9 @@ var Roar = new Class({
 		});
 		this.items.push(item.addEvent('click', remove));
 
-		if (this.options.duration) {
+        item.set('over', false);
+		
+        if (this.options.duration) {
             var duration = this.options.duration;
             if (options.duration)
                 duration = options.duration;
@@ -102,14 +104,17 @@ var Roar = new Class({
 			var over = false;
 			var trigger = (function() {
 				trigger = null;
-				if (!over) remove();
+				if (!item.over) remove();
 			}).delay(duration);
 			item.addEvents({
 				mouseover: function() {
-					over = true;
+					item.over = true;
 				},
-				mouseout: function() {
-					over = false;
+				mouseout: function(e) {
+                    var fromOutside = !e.relatedTarget.getParents('div.roar').length;
+                    if (!fromOutside)
+                        return;
+					item.over = false;
 					if (!trigger) remove();
 				}
 			});
@@ -180,8 +185,8 @@ var Roar = new Class({
 
         //dirty chrome hack (cuz it returns document width without scrollbars)
         if (Browser.Engine.webkit) {
-            margin.x += 15;
-            //margin.y += 15;
+            margin.x = 20;
+            margin.y = 20;
         }
 		this.moveTo({
 			left: (this.position.x == 'right')
