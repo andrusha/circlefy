@@ -168,5 +168,18 @@
 			<# end; #>
 		</ul>
 
+        <ul id="template-suggestions">
+            <li style="padding-left: 0;">
+                <input id="sugg_all" name="suggest_all" type="checkbox" checked>
+                <label for="sugg_all">All</label>
+            </li>
+            <# for (var sugg from this): #>
+            <li>
+                <input id="sugg_<#: sugg.gid #>" name="suggest" type="checkbox" value="<#: sugg.gid #>" checked>
+                <label for="sugg_<#: sugg.gid #>"><#: sugg.gname #></label>
+            </li>
+            <# end; #>
+        </ul>
+
 </div>
 

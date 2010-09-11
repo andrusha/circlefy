@@ -27,6 +27,7 @@ $allowedModules = array(
     'new_message_handler' => false,
 
 	//These are modules which must have a session to be accessed
+    'group_suggest' => true,
 	'delete_tap' => true,
     'facebook' => true,
     'search_people' => true,

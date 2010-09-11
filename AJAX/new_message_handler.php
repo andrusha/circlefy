@@ -41,8 +41,7 @@ class chat_functions{
         if($tap->checkDuplicate($msg, $uid))
             return array('dupe' => true);
 
-        $group = new Group();
-        $gid = $group->gidFromSymbol($symbol);
+        $gid = Group::fromSymbol($symbol)->gid;
 
         $cid = $tap->add($uid, $uname, $addr, $gid, $msg);
         $tap_array = $tap->getTap($cid);
@@ -70,29 +69,25 @@ class chat_functions{
         Notify all group viewers, that there is new tap
     */
     private function notifyViewers($tapper_uid, $gid, $tap_array) {
-        $message = json_encode(array('action' => 'tap.new', 'gid' => intval($gid),
-            'exclude' => array(intval($tapper_uid)), 'data' => $tap_array));
-        $fp = fsockopen('localhost', 3333, $errno, $errstr, 30);
-        fwrite($fp, $message."\r\n");
-        fclose($fp);
+        $message = array('action' => 'tap.new', 'gid' => intval($gid),
+            'exclude' => array(intval($tapper_uid)), 'data' => $tap_array);
+        Comet::send('message', $message);
     }
     
     /*
         Notify all group members, that there is new tap
     */
     private function notifyMembers($tapper_uid, $gid, $tap_array) {
-        $group = new Group();
-        $users = $group->getMembers($gid, true);
+        $group = new Group($gid);
+        $users = $group->getMembers(true);
 
         $text = Taps::makePreview($tapText);
         $data = array('gname' => $tap_array['gname'], 'greal_name' => $tap_array['symbol'], 
                       'uname' => $tap_array['uname'], 'ureal_name' => $tap_array['real_name'],
                       'text'  => $tap_array['chat_text']);
-        $message = json_encode(array('action' => 'notify.tap.new',
+        $message = array('action' => 'notify.tap.new',
             'gid' => intval($gid), 'users' => $users,
-            'exclude' => array(intval($tapper_uid)), 'data' => $data));
-        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        fwrite($fp, $message."\r\n");
-        fclose($fp);
+            'exclude' => array(intval($tapper_uid)), 'data' => $data);
+        Comet::send('message', $message);
     }
 };

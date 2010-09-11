@@ -47,37 +47,16 @@ class Convos extends BaseModel {
     }
 
     /*
-        Set convo active, if it already exists
-
-        Returns true|false depending on existence of convo
-    */
-    private function setActive($uid, $mid) {
-        $query = "UPDATE active_convo
-                     SET active = 1
-                   WHERE uid = #uid#
-                     AND mid = #mid#
-                   LIMIT 1";
-        $this->db->query($query, array('uid' => $uid, 'mid' => $mid));
-        return $this->db->affected_rows == 1;
-    }
-
-    /*
-        Add active convo to specified user
-    */
-    private function addActive($uid, $mid) {
-        $query = "INSERT 
-                    INTO active_convo
-                        (mid, uid, active)
-                 VALUES (#mid#, #uid#, 1)";
-        $this->db->query($query, array('uid' => $uid, 'mid' => $mid));
-    }
-
-    /*
         Make conversation active for specified user
     */
     public function makeActive($uid, $mid) {
-        if (!$this->setActive($uid, $mid))
-            $this->addActive($uid, $mid);
+        $query = "INSERT 
+                    INTO active_convo (mid, uid, active)
+                  VALUES (#mid#, #uid#, 1)
+                      ON DUPLICATE KEY
+                  UPDATE active = 1";
+        $this->db->query($query, array('uid' => $uid, 'mid' => $mid));
+        return $this->db->affected_rows == 1;
     }
 
     /*

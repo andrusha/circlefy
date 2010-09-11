@@ -1,8 +1,11 @@
 <?php
+abstract class DBException extends Exception {};
 
-class QueryParamException extends Exception {};
-class NotImplementedException extends Exception {};
-class TransactionException extends Exception {};
+class QueryParamException extends DBException {};
+class NotImplementedException extends DBException {};
+class TransactionException extends DBException {};
+class SQLException extends DBException {};
+class AssertionException extends DBException {};
 
 //This class defines all of the database queries as well as what connection is to be used.
 //The explination of how to set queries is listed below.  The way you set your database connector
@@ -59,6 +62,8 @@ class DB{
                 $this->db = Postgress_Conn::getInstance();
                 break;
         }
+
+        return self::$instance;
      }
      
      protected function Get_Connection($db_type){
@@ -130,7 +135,27 @@ class DB{
         if ($dump)
             var_dump($query);
 
-        return $this->db->query($query);
+        $result = $this->db->query($query);
+
+        if ($this->db->errno) {
+            throw new SQLException('Error '.$this->db->errno.' occured: '.$this->db->error);
+        }
+
+        return $result;
+    }
+
+    /*
+        Formats and inserts a list of values into DB
+    */
+    public function listInsert($query, array $list, $show = false) {
+        if (empty($list))
+            throw new AssertionException('You should insert at least 1 item');
+
+        $formatted = array_map(array($this, 'formatByType'),  $list);
+        $formatted = ' ('.implode('),(', $formatted).')';
+
+        $query = str_ireplace('#values#', $formatted, $query);
+        return $this->query($query, array(), $show);
     }
 
     /*

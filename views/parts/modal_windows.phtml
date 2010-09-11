@@ -18,13 +18,13 @@
 		<p class="forms"><label>Password</label> <input type="password" name="pass" /></p>
 		<p class="guide">Passwords must be at least 4 characters.</p>
         <p class="forms" id="fb-button"><label style="padding-right: 28px">Facebook</label>
-        <fb:login-button id="fb-login-button" show-faces="true" width="300" perms="user_about_me,user_education_history,user_hometown,user_interests,user_likes,user_location,user_work_history,email,read_friendlists,user_groups,publish_stream"></fb:login-button>
+        <fb:login-button id="fb-login-button" show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button>
             <span id="fb-checkbox" style="display:none">
                 <input type="checkbox" name="fb_connect">Bind your new account to facebook
             </span>
         </p>
         <p class="guide">There is some issue with your fb-account</p>
-		<p style="margin-top: 50px; text-align: right; font-size: 14px; margin-right: 20px">
+		<p class="modal-actions">
 				<span class="indicator">
 						<img src="/images/spinner.gif" />
 						<span class="indic-msg">Signing you up...</span>
@@ -73,7 +73,7 @@
 		<p class="guide">Wrong story, bro</p>
 		<p class="forms" style="margin-top:30px"><label>Message</label> <input type="text" name="message" /></p>
 		<p class="guide">Wrong story, bro</p>
-		<p style="margin-top: 50px; text-align: right; font-size: 14px; margin-right: 20px">
+		<p class="modal-menu">
 				<span class="indicator">
 						<img src="/images/spinner.gif" />
 						<span class="indic-msg">Publishing...</span>
@@ -83,6 +83,32 @@
 				</span>
 		</p>
 	</div>
+
+<!-- Channel suggestion dialog -->
+    <div id="modal-channel-suggestion" class="modal-window">
+        <h2>Channel suggestions</h2>
+        <p>You may be interested in following channels:</p>
+        <div id="suggestions">
+            <span class="indicator">
+                <img src="/images/spinner.gif" />
+                <span class="indic-msg">Fetching possible suggestions...</span>
+            </span>
+            <span class="fail">
+                Sorry, no suggestions for you today
+            </span>
+            <ul>
+            </ul>
+        </div>
+        <p class="modal-menu" style="margin-top: 15px;">
+            <span class="indicator">
+                <img src="/images/spinner.gif" />
+                <span class="indic-msg">Joining...</span>
+            </span>
+            <span class="modal-actions">
+                <button>Join channels</button> or <a href="#" class="modal-cancel">close</a>
+            </span>
+        </p>
+    </div>
 
 </div>
 

@@ -130,11 +130,9 @@ class tap_deleter {
     */
     private function notifyAll($gid, $cid) {
         $data = array('gid' => intval($gid), 'cid' => intval($cid));
-        $message = json_encode(array('action' => 'tap.delete', 'data' => $data, 'cid' => $cid));
+        $message = array('action' => 'tap.delete', 'data' => $data, 'cid' => $cid);
 
-        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        fwrite($fp, $message."\r\n");
-        fclose($fp);
+        Comet::send('message', $message);
     }
 };
 

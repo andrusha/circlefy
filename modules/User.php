@@ -1,19 +1,31 @@
 <?php
-
+abstract class UserException extends Exception {};
+class UserInfoException extends UserException {};
 
 /*
 All user operations, e.g login in, information
 */
 class User extends BaseModel {
+    private $uid = null;
+
     private $loggedIn = false;
     private $session_started = false;
 
-    public function __construct() {
+    public function __construct($uid = null) {
         parent::__construct();
         if (!$this->session_started) {
             session_start();
             $this->serssion_started = true;
         }
+
+        $this->uid = $uid;
+    }
+
+    public function __get($key) {
+        if ($key == 'uid')
+            return $this->uid;
+
+        throw new UserInfoException("Unknown data named '$key'");
     }
 
     /*

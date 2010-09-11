@@ -82,6 +82,29 @@ class Facebook extends BaseModel {
 
         return $binded;
     }
+
+    /*
+        Returns and cache some information fetched from facebook
+    */
+    private function getSomething($type, $uid, $access_token) {
+         if (isset($this->fetched_info[$uid][$type]))
+            return $this->fetched_info[$uid][$type];
+
+        if ($type == 'user') {
+            $add = '';
+        } else {
+            $add = "/$type";
+            $selector = 'data';
+        }
+
+        $url = 'https://graph.facebook.com/'.$uid.$add.'?access_token=' . urlencode($access_token);
+        $info = json_decode(file_get_contents($url), true);
+        if (isset($selector))
+            $info = $info[$selector];
+
+        $this->fetched_info[$uid][$type] = $info;
+        return $info;
+   }
     
     /*
         Returns all user information provided to us
@@ -89,14 +112,7 @@ class Facebook extends BaseModel {
         e.g. id, name, first_name, last_name, link, gender, locale
     */
     public function getUserInfo($uid, $access_token) {
-        if (isset($this->fetched_info[$uid]))
-            return $this->fetched_info[$uid];
-
-        $url = 'https://graph.facebook.com/'.$uid.'?access_token=' . urlencode($access_token);
-        $info = json_decode(file_get_contents($url), true);
-
-        $this->fetched_info[$uid] = $info;
-        return $info;
+        return $this->getSomething('user', $uid, $access_token);
     }
 
     /*
@@ -104,9 +120,38 @@ class Facebook extends BaseModel {
         each friend is assoc array (name, id)
     */
     public function getUserFriends($uid, $access_token) {
-        $url = 'https://graph.facebook.com/'.$uid.'/friends?access_token='.urlencode($access_token);
-        $info = json_decode(file_get_contents($url), true);
-        return $info['data'];
+        return $this->getSomething('friends', $uid, $access_token);
+    }
+
+    /*
+        Returns a assoc array of user likes
+        (name, category, id, creation_time)
+    */
+    public function getLikes($uid, $access_token) {
+        return $this->getSomething('likes', $uid, $access_token);
+    }
+
+    /*
+        Returns a list of user books
+        (name, category, id, creation_time)
+    */
+    public function getBooks($uid, $access_token) {
+        return $this->getSomething('books', $uid, $access_token);
+    }
+
+    /*
+        Returns a list of user movies
+        (name, category, id, creation_time)
+    */
+    public function getMovies($uid, $access_token) {
+        return $this->getSomething('movies', $uid, $access_token);
+    }
+
+    /*
+        User groups
+    */
+    public function getGroups($uid, $access_token) {
+        return $this->getSomething('groups', $uid, $access_token);
     }
 
     /*

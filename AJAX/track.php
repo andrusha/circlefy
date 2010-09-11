@@ -74,12 +74,9 @@ EOF;
 
     private function notifyFriend($info, $uid, $fuid, $status) {
         $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
-        $message = json_encode(array('action' => 'notify.follower', 'users' => array(intval($fuid)),
-                                     'data' => $data));
+        $message = array('action' => 'notify.follower', 'users' => array(intval($fuid)), 'data' => $data);
 
-        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        fwrite($fp, $message."\r\n");
-        fclose($fp);
+        Comet::send('message', $message);
     }
 
 }	

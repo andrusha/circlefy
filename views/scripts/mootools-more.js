@@ -96,7 +96,184 @@ Acknowledgements:
 
 */
 
-(function(){this.Template=new Class({Implements:Options,options:{pattern:"raccoon",path:"",suffix:""},regexps:{raccoon:{pattern:/<#[:|=]?(.*?)#>/g,outkey:":",include:"="},asp:{pattern:/<%[=|@]?(.*?)%>/g,outkey:"=",include:"@"},php:{pattern:/<\?[=|@]?(.*?)\?>/g,outkey:"=",include:"@"}},forEachExp:/for\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*\{\s*([^¬]*?)\s*\}/g,eachExp:/each\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*\{\s*([^¬]*?)\s*\}/g,shortTags:/(each|for|if|else|while)+(.*):/g,shortEnds:/end(for|if|while|each)?;/g,initialize:function(b){this.setOptions(b);var d=this.options.pattern,a=this.regexps,c=a.raccoon;if($type(d)=="object"){this.pattern=d.pattern||c.pattern;this.outkey=d.outkey||c.outkey;this.includes=d.include||c.include;}else{this.pattern=a[d].pattern||c.pattern;this.outkey=a[d].outkey||c.raccoon.outkey;this.includes=a[d].include||c.include;}},parseShortTags:function(a){return a.replace(this.shortTags,function(c,b,d){return[b=="else"?"} ":"",b,d,"{"].join("");}).replace(this.shortEnds,"}").replace(/%AND%/g,"&&").replace(/%OR%/g,"||");},parseForFrom:function(a){return a.replace(this.forEachExp,function(d,e,c,b){return["for (var _ITERATOR_ = 0, _ARRAYLENGTH_ = ",c,".length; _ITERATOR_ < _ARRAYLENGTH_; _ITERATOR_++){\n","\tvar ",e," = ",c,"[_ITERATOR_];\n\t",b,"\n}"].join("");});},parseEachFrom:function(a){return a.replace(this.eachExp,function(d,e,c,b){return["var _ITERATOR_ = ",c,".reverse().length;\nwhile(_ITERATOR_--){","\tvar ",e," = ",c,"[_ITERATOR_];\n\t",b,"\n}"].join("");});},escape:function(a){return a.replace(/'/g,"%%LIT_QUOT_SING%%").replace(/"/g,"%%LIT_QUOT_DB%%").replace(/\r|\n/g,"%%LIT_NEW_LINE%%");},unescape:function(a){return a.replace(/%%LIT_QUOT_SING%%/g,"'").replace(/%%LIT_QUOT_DB%%/g,'"').replace(/%%LIT_NEW_LINE%%/g,"\n");},build:function(g,f){var c=this,e,b,d=this.outkey,a=this.includes;g=this.escape(this.parseEachFrom(this.parseForFrom(this.parseShortTags(g))));g=g.replace(this.pattern,function(i,j){j=c.unescape(j);var h,k;if(i.charAt(2)==d){h=["buffer.push(",j,");\n"];}else{if(i.charAt(2)==a){k=c.process(j.trim().replace(/"|'/g,""),f);h=['buffer.push("',c.escape(k),'");\n'];}else{h=[j.replace(/^\s+|\s+$/g,""),"\n"];}}return['");\n',h.join(""),'buffer.push("'].join("");});return["var $ = this, buffer = [], print = function(data){ buffer.push(data); },\n","include = function(src){ buffer.push($._include(src, $)); };\n",'\nbuffer.push("',g,'");\n','return buffer.join("");\n'].join("");},peek:function(a){return this.build(a);},parse:function(e,d){var b=this;d._include=function(g,f){return b.escape(b.process(g,f));};var c=this.build(e,d),a=new Function(c).apply(d);delete d._include;return this.unescape(a);},process:function(b,c){var a=[this.options.path,b,".",this.options.suffix].join("");b=new File(a);if(!b.exists()){throw new Error("Cannot open template "+a);}var d=b.open("r").read();return this.parse(d,c);}});})();
+(function() {
+    this.Template = new Class({
+        Implements:Options,
+        
+        options: {
+            pattern:"raccoon",
+            path:"",
+            suffix:""
+        },
+
+        regexps: {
+            raccoon : {
+                pattern:/<#[:|=]?(.*?)#>/g,
+                outkey:":",
+                include:"="
+            },
+            asp: {
+                pattern:/<%[=|@]?(.*?)%>/g,
+                outkey:"=",
+                include:"@"
+            },
+            php: {
+                pattern:/<\?[=|@]?(.*?)\?>/g,
+                outkey:"=",
+                include:"@"
+            }
+        },
+        forEachExp: /for\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*\{\s*([^¬]*?)/g,
+        eachExp: /each\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*\{\s*([^¬]*?)/g,
+        shortTags: /(each|for|if|else|while)+(.*):/g,
+        shortEnds:/end(for|if|while|each)?;/g,
+        
+        initialize: function(b) {
+            this.setOptions(b);
+            var d=this.options.pattern,
+                a=this.regexps,
+                c=a.raccoon;
+                
+            if($type(d)=="object") {
+                this.pattern=d.pattern||c.pattern;
+                this.outkey=d.outkey||c.outkey;
+                this.includes=d.include||c.include;
+            } else {
+                this.pattern=a[d].pattern||c.pattern;
+                this.outkey=a[d].outkey||c.raccoon.outkey;
+                this.includes=a[d].include||c.include;
+            }
+        },
+        
+        parseShortTags: function(a) {
+            return a.replace(
+                  this.shortTags,
+                    function(c,b,d) {
+                        return[b=="else"?"} ":"",b,d,"{"].join("");
+                    }
+                ).replace(this.shortEnds,"}")
+                 .replace(/%AND%/g,"&&")
+                 .replace(/%OR%/g,"||");
+        },
+        
+        parseForFrom: function(a) {
+            return a.replace(
+                    this.forEachExp,
+                    function(d,e,c,b) {
+                        return["for (var _ITERATOR_ = 0, _ARRAYLENGTH_ = ",
+                               c, //source name
+                               ".length; _ITERATOR_ < _ARRAYLENGTH_; _ITERATOR_++){\n",
+                               "\tvar ",
+                               e, //var name
+                               " = ",
+                               c, //source name
+                               "[_ITERATOR_];\n\t",
+                               b, //inner code
+                              ].join("");
+                    }
+                );
+        },
+        
+        parseEachFrom: function(a) {
+            return a.replace(
+                    this.eachExp,
+                    function(d,e,c,b) {
+                        return["var _ITERATOR_ = ",
+                               c, //source name
+                               ".reverse().length;\nwhile(_ITERATOR_--){",
+                               "\tvar ",
+                               e, //var name
+                               " = ",
+                               c, //source name
+                               "[_ITERATOR_];\n\t",
+                               b //inner code
+                              ].join("");
+                    }
+                );
+        },
+        
+        escape: function(a) {
+            return a.replace(/'/g,"%%LIT_QUOT_SING%%")
+                    .replace(/"/g,"%%LIT_QUOT_DB%%")
+                    .replace(/\r|\n/g,"%%LIT_NEW_LINE%%");
+        },
+        
+        unescape: function(a) {
+            return a.replace(/%%LIT_QUOT_SING%%/g,"'")
+                    .replace(/%%LIT_QUOT_DB%%/g,'"')
+                    .replace(/%%LIT_NEW_LINE%%/g,"\n");
+        },
+        
+        build: function(g,f) {
+            var c=this,
+                e,
+                b,
+                d=this.outkey,
+                a=this.includes;
+
+            g=this.escape(g);
+            g=g.replace(
+                this.pattern,
+                function(i,j){
+                    j = c.parseEachFrom(
+                            c.parseForFrom(
+                                c.parseShortTags(
+                                    c.unescape(j))));
+                    
+                    var h,k;
+                    if(i.charAt(2)==d){
+                        h=["buffer.push(",j,");\n"];
+                    } else {
+                        if(i.charAt(2)==a) {
+                            k=c.process(j.trim().replace(/"|'/g,""),f);
+                            h=['buffer.push("',c.escape(k),'");\n'];
+                        } else {
+                            h=[j.replace(/^\s+|\s+$/g,""),"\n"];
+                        }
+                    }
+                    
+                    return['");\n',h.join(""),'buffer.push("'].join("");
+                }
+            );
+            
+            return["var $ = this, buffer = [], print = function(data){ buffer.push(data); },\n","include = function(src){ buffer.push($._include(src, $)); };\n",'\nbuffer.push("',g,'");\n','return buffer.join("");\n'].join("");
+        },
+        
+        peek: function(a) {
+            return this.build(a);
+        },
+        
+        parse: function(e,d) {
+            var b=this;
+
+            d._include = function(g,f){
+                var p = b.process(g,f);
+                var e = b.escape(p);
+                return e;
+            };
+            
+            var c=this.build(e,d),
+                a=new Function(c);
+            a = a.apply(d);
+                
+            delete d._include;
+            
+            return this.unescape(a);
+        },
+        
+        process: function(b,c) {
+            var a=[this.options.path,b,".",this.options.suffix].join("");
+            b=new File(a);
+            if(!b.exists()) {
+                throw new Error("Cannot open template "+a);
+            }
+            
+            var d=b.open("r").read();
+            
+            return this.parse(d,c);
+        }
+    });
+})();
 
 /* Tips */
 

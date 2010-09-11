@@ -1,4 +1,67 @@
 <?php
+//some debug stuff
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+function exceptionHandler($e) {
+    echo <<<EOF
+<style type="text/css">
+/* <![CDATA[ */
+
+table, td, th
+{
+    border-color: black;
+    border-style: solid;
+}
+
+table
+{
+    border-width: 0 0 1px 1px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 600px;
+}
+
+td, th
+{
+    margin: 0;
+    padding: 4px;
+    border-width: 1px 1px 0 0;
+}
+
+/* ]]> */
+</style>
+EOF;
+
+    echo '<table align="center" style="margin-top: 40px">';
+    echo "<tr><th colspan=2>Exception #{$e->getCode()}</th></tr>";
+    echo "<tr><th>Line</td><th>File</td></tr>";
+    echo "<tr><td>{$e->getLine()}</td><td>{$e->getFile()}</td></tr>";
+    echo "<tr><th colspan=2>Description</td></tr>";
+    echo "<tr><td colspan=2>{$e->getMessage()}</td></tr>";
+    echo "<tr><th colspan=2>Trace</td></tr>";
+    echo "<tr><th>Line</td><th>File</td></tr>";
+    foreach ($e->getTrace() as $t) {
+        echo "<tr><td>{$t['line']}</td><td>{$t['file']}</td></tr>";
+        echo "<tr><td></td><td>";
+        
+        echo "<table>";
+        echo "<tr><th>Function</th><th>Args</th></tr>";
+        echo "<tr><td rowspan=".(count($t['args'])+1).">{$t['function']}</td><td ".
+            (empty($t['args']) ? '' : "style='display: none'") . "></td></tr>";
+        foreach ($t['args'] as $a) {
+            echo "<tr><td>".var_export($a, true)."</td></tr>";
+        }
+        echo "</table>";
+
+        echo "</td></tr>";
+    }
+    echo '</table>';
+}
+
+set_exception_handler('exceptionHandler');
+
 function __autoload($classname){
 	require_once(dirname(__FILE__).'/modules/'.$classname.'.php');
 }
@@ -49,5 +112,7 @@ define("ADMIN_GLOBAL",$_SESSION['admin']);
 
 define("FBAPPID",'e31fd60bbbc576ac7fd96f69215268d0');
 define("FBAPPSECRET",'6692d8984d00d3f67ee81bf31637970e');
+
+define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user_interests,user_likes,user_location,user_work_history,email,read_friendlists,user_groups,publish_stream');
 
 define("ROOT","/");

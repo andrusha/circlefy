@@ -20,6 +20,10 @@ var _modal = _tap.register({
                 self.show('modal-facebook-status');
                 _modal.facebook.show(cid, symbol);
             },
+            'modal.show.suggestions': function (chain) {
+                self.show('modal-channel-suggestion');
+                _modal.suggestions.show(chain);
+            },
             'modal.hide': this.hide.bind(this)
         });
     },
@@ -232,7 +236,7 @@ _modal.signup = _tap.register({
             data: {'action': 'check'},
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);
-                if (response.success) {
+                if (response.success){
                     self.fb_fname.set('value', response.data.fname);
                     self.fb_lname.set('value', response.data.lname);
                 } else {
@@ -293,7 +297,12 @@ _modal.signup = _tap.register({
                 },
                 onSuccess: function(){
                     indic_msg.set('text', 'Logging you in..');
-                    window.location.reload();
+                    if (facebook) {
+                        self.publish('modal.show.suggestions', [ function () {
+                            window.location.reload();
+                        }]);
+                    } else 
+                        window.location.reload();
                 }
             }).send();
         } else {
@@ -305,6 +314,9 @@ _modal.signup = _tap.register({
     },
 });
 
+/*
+ * Facebook account integration
+*/
 _modal.facebook = _tap.register({
     init: function() {
         var form = this.form = $('modal-facebook-status'),
@@ -369,6 +381,115 @@ _modal.facebook = _tap.register({
                 indic.setStyle('display', 'none');
                 self.publish('modal.hide', []);
             }
+        }).send();
+    }
+});
+
+/*
+    Channels suggestion
+*/
+_modal.suggestions = _tap.register({
+    init: function () {
+        var self = this;
+
+        this.suggest = $('suggestions');
+        this.form = $('modal-channel-suggestion');
+
+        //this is a callback function, called after all shit
+        this.chain = function () {
+            self.publish('modal.hide');
+        };
+
+        $$('a.suggestions').addEvent('click', function () {
+            self.publish('modal.show.suggestions', []);
+        });
+
+        this.form.getElement('button').addEvent('click', this.send.toHandler(this));
+    },
+
+    show: function (chain) {
+        var self = this,
+            indic = self.suggest.getElement('span.indicator'),
+            list = self.suggest.getElement('ul'),
+            fail = self.suggest.getElement('span.fail');
+
+        if (chain)
+            this.chain = chain;
+
+        new Request({
+            url: '/AJAX/group_suggest.php',
+            data: {
+                action: 'get'    
+            },
+            onRequest: function() {
+                indic.setStyle('display', 'block');
+            },
+            onSuccess: function() {
+                indic.setStyle('display', 'none');
+
+                var response = JSON.decode(this.response.text);
+                if (response.success == 0 || response.data.length == 0) {
+                    //we have no suggestions
+                    fail.setStyle('display', 'block');
+                    return;
+                }
+
+                var items = _template.parse('suggestions', response.data);
+                items = Elements.from(items);
+                items.inject(list);
+
+                if (list.getSize().y > 300)
+                    self.suggest.setStyle('height', 300);
+
+                var allBox = list.getElement('input#sugg_all'),
+                    boxes = list.getElements('input[name="suggest"]');
+                allBox.addEvent('click', function () {
+                    var state = allBox.get('checked');
+                    boxes.each(
+                        function (i) {
+                            i.set('checked', state);
+                        });
+                });
+
+                boxes.addEvent('click', function (i) {
+                     if (!i.target.get('checked'))
+                        allBox.set('checked', false);
+                     else if ( boxes.every(function (i) { return i.get('checked'); }) )
+                        allBox.set('checked', true);
+                });
+            }
+        }).send();
+    },
+
+    send: function () {
+        var indic = this.form.getElement('p.modal-menu').getElement('span.indicator'),
+            list = this.suggest.getElement('ul'),
+            gids = [],
+            self = this;
+
+        list.getElements('input[name="suggest"]').each( function (i) {
+            if (i.get('checked'))
+                gids.push(i.get('value')*1);
+        });
+
+        if (!gids) {
+            this.publish('modal.hide', []);
+        }
+         
+        new Request({
+           url: '/AJAX/join_group.php', 
+           data: {
+               action: 'bulk',
+               gids: gids
+           },
+           onRequest: function () {
+               indic.setStyle('display', 'block');
+           },
+           onSuccess: function () {
+               indic.setStyle('display', 'none');
+               var response = JSON.decode(this.response.text);
+               self.chain();
+           }
         }).send();
     }
 });

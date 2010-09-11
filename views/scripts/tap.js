@@ -53,7 +53,8 @@ var _template = {
         'suggest.group': 'template-suggest-group',
         'list.member': 'template-list-member',
         'error': 'template-error',
-        'number': 'template-notification-number'
+        'number': 'template-notification-number',
+        'suggestions': 'template-suggestions'
     },
 
 	/*

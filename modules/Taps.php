@@ -26,13 +26,18 @@ class Taps extends BaseModel {
               '#anon#' => filter registred/anonymous users
     */
     public function filterTapIds($filter, $params) {
+        if (!function_exists('substitute')) {
+            function substitute(&$item, $key, array $params) {
+                $item = strtr($item, $params);
+            }
+        }
+
         $joins = array(
             'meta' => 'JOIN special_chat_meta scm ON scm.mid = sc.mid',
             'members' => 'JOIN group_members gm ON gm.gid = scm.gid',
             'logins' => 'JOIN login l ON l.uid = sc.uid'
         );
 
-        //default filter, may be altered, so move it inside switches
         $toJoin = $where = array();
         switch ($filter) {
             case 'aggr_groups':
@@ -78,9 +83,7 @@ class Taps extends BaseModel {
 
         //replace all variables with real values
         $where = array_unique($where);
-        //this ugly, I know, but no way you can use array_map
-        for ($i = 0; $i < count($where); $i++)
-            $where[$i] = strtr($where[$i], $params);
+        array_walk($where, 'substitute', $params);
 
         $toJoin = ' '.implode(' ', $toJoin).' ';
         if ($where)

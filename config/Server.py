@@ -160,7 +160,7 @@ class MessageConnection(object):
                 #message response, init_message, typing events
                 data = frame['response']
                 uname = frame['uname']
-                cid = frame['cid']
+                cid = int(frame['cid'])
                 pic = frame.get('pic_small', '')
 
                 response = {'cid': cid, 'data': data, 'uname': uname, 'pic': pic}
@@ -181,6 +181,8 @@ class MessageConnection(object):
                 exclude = frame.get('exclude', None)
                 users_list = self.makeList(users, cid, gid, exclude)
                 self.sendToUsers(users_list, type, frame['data'])
+            else:
+                logging.error("Warning! Bad Packet!")
 
             return True
         

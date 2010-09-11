@@ -29,8 +29,7 @@ class rss extends Base{
         $taps = new Taps();
 
         if ($_GET['type'] == 'group') {
-            $group = new Group();
-            $gid = $group->gidFromSymbol($symbol);
+            $gid = Group::fromSymbol($symbol)->gid;
 
             $params = array('#outside#' => '1, 2', '#gid#' => $gid);
             $data_taps = $taps->getFiltered('ind_group', $params);

@@ -115,10 +115,8 @@ EOF;
         $response = $msg;
         $response = str_replace('"','\"',$response);
 
-        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        $insert_string = '{"cid":"'.$cid.'","action":"'.$action.'","response":"'.$response.'","uname":"'.$uname.'","init_tapper":"'.$init_tapper.'","pic_small":"'.$small_pic.'"}'."\r\n";
-        fwrite($fp,$insert_string);
-        fclose($fp);
+        Comet::send('message', array('cid' => $cid, 'action' => $action, 'response' => $response,
+            'uname' => $uname, 'init_tapper' => $init_tapper, 'pic_small' => $small_pic));
 
         $msg = strip_tags($msg);
 		$msg = addslashes($msg);
@@ -162,12 +160,9 @@ EOF;
         $text = Taps::makePreview($respText);
         $data = array('cid' => intval($cid), 'uname' => $info['uname'],
             'ureal_name' => $info['real_name'], 'text' => $text);
-        $fp = fsockopen("localhost", 3333, $errno, $errstr, 30);
-        $insert_string = json_encode(
-            array('action' => 'notify.convo.response', 'users' => $users, 
-            /*'cid' => intval($cid), */'exclude' => array(intval($uid)), 'data' => $data));
-        fwrite($fp, $insert_string."\r\n");
-        fclose($fp);
+
+        Comet::send('message', array('action' => 'notify.convo.response', 'users' => $users, 
+            'exclude' => array(intval($uid)), 'data' => $data));
 	}
 
 	private function notify_user($init_tapper,$msg,$uname,$cid,$email){
