@@ -35,14 +35,15 @@ var _modal = _tap.register({
         var self = this;
         //this ugly thing is to chain modal windows together
         if ($$('div.modal-window.show').length && !ignore) {
-            this.hide();
+            this.hide(true);
             (function () { self.show(name, true)}).delay(510);
             return;
         }
 
         var modalForm = $(name);
         this.curtain.set('styles', {
-            'opacity': '0.7'
+            'opacity': '0.7',
+            'display': 'block'
         });
 
         this.curtain.addClass('show');
@@ -63,8 +64,11 @@ var _modal = _tap.register({
     /*
         Hides any visible modal window
     */
-    hide: function() {
+    hide: function(keep_curtain) {
         var self = this;
+
+        if (!keep_curtain)
+            var keep_curtain = false;
 
         var modalForm = $$('div.modal-window.show')[0];
         if (!modalForm)
@@ -73,7 +77,11 @@ var _modal = _tap.register({
         var myEffects = new Fx.Morph(modalForm, {duration: 500, transition: Fx.Transitions.Sine.easeOut});
             
         myEffects.chain( function() {
-            $$(self.curtain, modalForm).removeClass('show')
+            modalForm.removeClass('show');
+            if (!keep_curtain) {
+                self.curtain.removeClass('show');
+                self.curtain.setStyle('display', 'none')
+            }
         });
 
         myEffects.start({
