@@ -83,7 +83,8 @@ EOF;
 				$_SESSION['admin'] = 0;
 
 
-        $userClass = new User();
+        $userClass = new User(intval($_SESSION['uid']));
+        $userClass->makeOnline();
 
         //Get user info
         $res = $userClass->getInfo($uid);
@@ -100,76 +101,22 @@ EOF;
         $active_convos = $convosClass->getActive($uid);
 		$this->set($active_convos,'active_convos');
 	
-	
-		//START group setting creation
-		$group_list_query = <<<EOF
-			SELECT COUNT(scm.gid) as message_count,GROUP_ON.count,t2.descr AS topic,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
-			FROM group_members AS t1
-			JOIN groups AS t2 ON t2.gid=t1.gid
-			LEFT JOIN GROUP_ONLINE AS GROUP_ON ON GROUP_ON.gid=t1.gid
-			LEFT JOIN special_chat_meta AS scm ON scm.gid=t1.gid
-			WHERE t1.uid={$uid}
-			GROUP BY scm.gid
-EOF;
-                $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
-                                $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
+        $group_list = Group::listByUser($userClass, false, true);
+//        Group::bulkOnline($group_list);
 
+        $group_formatted = array();
+        foreach ($group_list as $group) {
+            $info = $group->info;
+            $gid = $group->gid;
+            $info['display_symbol'] = $info['symbol'];
+            $info['online_count'] = $info['count'];
+            $info['message_count'] = 65535;
+            $info['total_count'] = 65535;
+            $info['tapd'] = 0;
 
-
-		while($res = $groups_you_are_in->fetch_assoc()){
-			$gid = $res['gid'];
-			$gname = $res['gname'];
-			$pic_36 = $res['pic_36'];
-			$symbol = $res['symbol'];
-			$connected = $res['connected'];
-			$admin = $res['admin'];
-			$topic = $res['topic'];
-			$tapd = $res['tapd'];
-			$online_count = $res['count'];
-			$favicon = $res['favicon'];
-			$message_count = $res['message_count'];
-
-			$real_symbol[0] = $symbol;
-			$symbol = explode('.',$symbol);
-			if($symbol[1] != 'com' && $symbol[1] != 'edu') $add = ' '.$symbol[1];
-			$topic = stripslashes($topic);
-			$display_symbol = ucwords($symbol[0].$add);
-			$add = null;
-			
-			
-			$my_groups_array[$gid] = array(
-				'gid' => $gid,
-				'gname' => $gname,
-				'topic' => $topic,
-				'pic_36' => $pic_36,
-				'symbol' => $real_symbol,
-				'display_symbol' => $gname,
-				'favicon' => $favicon,
-				'type' => $connected,
-				'online_count' => $online_count,
-				'tapd' => $tapd,
-				'admin' => $admin,
-				'message_count' => $message_count,
-				'total_count' => null,
-			);
-			$gid_list .= $gid.',';
-		}
-		$gid_list = substr($gid_list,0,-1);
-
-		$group_member_count_query = <<<EOF
-		SELECT COUNT(uid) AS member_count,gid,uid FROM group_members AS gm WHERE gid IN ({$gid_list}) GROUP BY gid;
-EOF;
-
-                $this->db_class_mysql->set_query($group_member_count_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
-                $group_count_res = $this->db_class_mysql->execute_query('get_users_groups');
-
-		if($group_count_res->num_rows)
-		while($res = $group_count_res->fetch_assoc()){
-			$count = $res['member_count'];
-			$gid = $res['gid'];
-			$my_groups_array[$gid]['total_count'] = $count;
-		}
-                $this->set($my_groups_array,'your_groups');	
+            $group_formatted[$gid] = $info;
+        }
+        $this->set($group_formatted,'your_groups');	
 
 		$people_query = <<<EOF
 		SELECT f.fuid,l.uname,l.pic_36 AS small_pic,l.fname,l.lname FROM friends AS f 
@@ -216,52 +163,10 @@ EOF;
 /////////////////////////////////////////////////////////////////////////////
 //START misc tasks - Including, getting max file id, creating channel id, etc
 /////////////////////////////////////////////////////////////////////////////
-$groups_you_are_in->data_seek(0);
 
 //START set the session uid for Orbited
 $this->set($_SESSION['uid'],'pcid');
 //END set the session uid for Orbited
-
-
-$update_temp_online_query = <<<EOF
-	UPDATE TEMP_ONLINE SET timeout = 0,cid = "$push_channel_id" WHERE uid = $uid
-EOF;
-
-$this->db_class_mysql->set_query($update_temp_online_query,'TEMP_ONLINE_UPDATE','UPDATES users TEMP_ONLINE status');
-$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_UPDATE');
-
-if(!$this->db_class_mysql->db->affected_rows){
-	$gid_count = 0;
-	while($res = $groups_you_are_in->fetch_assoc() ){
-		$gid_string .= $res['gid'].',';
-		$gid_count++;
-	}
-	$gid_string = substr($gid_string,0,-1);
-
-	$insert_temp_online_query = <<<EOF
-	INSERT INTO TEMP_ONLINE(uid,cid,gids) values($uid,"$push_channel_id","$gid_string");
-EOF;
-	$this->db_class_mysql->set_query($insert_temp_online_query,'TEMP_ONLINE_INSERT','INSERTS users TEMP_ONLINE status');
-	$TEMP_ONLINE_results = $this->db_class_mysql->execute_query('TEMP_ONLINE_INSERT');
-
-	//START gid presence updateding
-	$query_string = "UPDATE GROUP_ONLINE SET online = online+1 WHERE gid IN($gid_string)";
-	$this->db_class_mysql->set_query($query_string,'GROUP_ONLINE_UPDATE','Updates group online presence');
-	$GROUP_ONLINE_results = $this->db_class_mysql->execute_query('GROUP_ONLINE_UPDATE');
-
-
-	if($this->db_class_mysql->db->affected_rows != $gid_count){
-		$groups_you_are_in->data_seek(0);
-		while($res = $groups_you_are_in->fetch_assoc() ){
-			$gid = $res['gid'];
-			$insert_string = "INSERT INTO GROUP_ONLINE(gid,online) values($gid,1);";
-			$this->db_class_mysql->set_query($insert_string,'GROUP_ONLINE_INSERT','INSERTS users GROUP_ONLINE status');
-			$GROUP_ONLINE_results = $this->db_class_mysql->execute_query('GROUP_ONLINE_INSERT');
-		}
-	}
-	//END gid presence updating
-}
-$groups_you_are_in->data_seek(0);
 
 //START initial user stuff
 			if($_COOKIE['profile_edit'])
@@ -311,95 +216,4 @@ EOF;
 	$this->set($trending_group_data,'trending_groups');
 
 	}
-
-	function checkIfGroupExists($groupName){
-		$check_group_query = <<<EOF
-			select gname from groups where gname = '{$groupName}'
-EOF;
-		$this->db_class_mysql->set_query($check_group_query,'check_group_query',"Chck if exists group");
-		$check_group_exists = $this->db_class_mysql->execute_query('check_group_query');
-		//$check_group_exists = $this->mysqli->query($check_group_query);
-		return ($check_group_exists->num_rows > 0);
-
-	}
-    
-    function checkIfSymbolExists($symbol){
-        $check_symbol_query = <<<EOF
-            select symbol from groups where symbol = '{$symbol}'
-EOF;
-        $this->db_class_mysql->set_query($check_symbol_query,'check_symbol_query',"Chck if exists symbol");
-        $check_symbol_exists = $this->db_class_mysql->execute_query('check_symbol_query');
-        return ($check_symbol_exists->num_rows > 0);
-
-    }
-
-	function create_group($gname,$symbol,$descr,$focus,$email_suffix,$private,$invite,$old_name,$country,$state,$region,$town){
-		$uid = $_SESSION["uid"];
-		$uname = $_SESSION["uname"];
-
-		$create_group_query = <<<EOF
-		INSERT INTO groups(gname,symbol,gadmin,descr,focus,private,invite_only,email_suffix,country,state,region,town,created)
-		values("$gname","$symbol",$gadmin,"$descr","$focus",$private,$invite_only,$email_suffix,"$country","$state","$region","$town",NOW())
-EOF;
-	  $create_group_results = $this->mysqli->query($create_group_query);
-	  $last_id = $this->mysqli->query($this->last_id);
-	  $last_id = $last_id->fetch_assoc();
-        $last_id = $last_id['last_id'];
-		$gid = $last_id;
-
-		$GROUP_ONLINE_query = <<<EOF
-		INSERT INTO GROUP_ONLINE(gid) values($gid)
-EOF;
-                $this->mysqli->query($GROUP_ONLINE_query);
-
-		if($gadmin != 0){
-			$add_me_as_admin_query = <<<EOF
-			INSERT INTO group_members(uid,gid,admin) values({$gadmin},{$gid},1)
-EOF;
-            $this->mysqli->query($add_me_as_admin_query);
-		}
-
-	}
-    
-    function createSymbol($string, $existingSymbols=array()){
-        
-        //Cleaning
-        $string = strtolower($string);
-        $allowedChars = "abcdefghijklmnopqrstuvwxyz_ ";
-        $exploded_allowed = str_split($allowedChars);
-        $exploded = str_split($string);
-        foreach($exploded as $key=>$value):
-            if(in_array($value, $exploded_allowed)){
-                $cleanString .= $value;
-            }
-        endforeach;
-            
-        //Sacar espacios
-        $string_exploded = explode(" ", $cleanString);
-        
-        //si tiene una sola palabra, usar la palabra como simbolo
-        if(count($string_exploded) == 1){
-            $retArray[] = $cleanString;
-        //Sino fabricar acronimo
-        }else{
-            foreach($string_exploded as $key=>$value):    
-                $acronym .= $value{0};
-            endforeach;
-            $retArray[] = $acronym;
-            //underscored
-            $retArray[] =  implode("_", $string_exploded);
-        }
-        
-        foreach($retArray as $key=>$posibleSymbol){
-            if(!in_array($posibleSymbol, $existingSymbols)){
-                $found = true;
-                return $posibleSymbol;
-            }    
-        }
-        if(!$found){
-            return implode("_", $string_exploded) . rand(1000000, 9999999);
-        }
-    }
-
 }
-?>

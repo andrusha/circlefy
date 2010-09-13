@@ -27,16 +27,14 @@ if ($type == 'user') {
 } else if ($type == 'facebook') {
     $fb = new Facebook();
 
-    $fb_info = $fb->infoFromCookies();
-    $fbid = intval($fb_info['uid']);
-    $exists = $fb->userExists($fbid);
+    $exists = $fb->exists();
     
     if ($exists)
         echo SUCCESS;
     else {
-        $user_info = $fb->getUserInfo($fbid, $fb_info['access_token']);
+        $user_info = $fb->info;
         $data = array(
-            'fb_uid' => $fbid,
+            'fb_uid' => $fb->fuid,
             'uname' => $user_info['id'],
             'fname' => $user_info['first_name'],
             'lname' => $user_info['last_name']);

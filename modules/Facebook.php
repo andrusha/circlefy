@@ -1,4 +1,6 @@
 <?php
+abstract class FacebookException extends Exception {};
+class FacebookDataException extends FacebookException {};
 
 /*
     All facebook operations, login, create user,
@@ -8,8 +10,30 @@ class Facebook extends BaseModel {
     private $parsed_cookie = null;
     private $fetched_info = array();
 
+    private $fuid = null;
+    private $access_token = null;
+
     public function __construct() {
         parent::__construct();
+
+        if ($info = $this->infoFromCookies()) {
+            $this->fuid = intval($info['uid']);
+            $this->access_token = $info['access_token'];
+        }
+    }
+    
+    /*
+        Basic interface
+    */
+    public function __get($key) {
+        $mname = 'getUser'.ucfirst($key);
+        if (method_exists($this, $mname)) {
+            return $this->$mname();
+        } else if ($key == 'fuid') {
+            return $this->fuid;
+        }
+
+        throw new FacebookDataException("Can not find any facebook info related to '$key'");
     }
 
     /*
@@ -40,33 +64,26 @@ class Facebook extends BaseModel {
     /*
         Check if user with provided facebook uid exists
     */
-    public function userExists($fb_uid) {
+    public function exists() {
+        if (!$this->fuid)
+            return false;
+
         $query = "
             SELECT uid
               FROM login
              WHERE fb_uid = #fb_uid#
              LIMIT 1";
         
-        $result = $this->db->query($query, array('fb_uid' => $fb_uid));
+        $result = $this->db->query($query, array('fb_uid' => $this->fuid));
         $exists = $result->num_rows == 1;
 
         return $exists;
     }
 
     /*
-        Checks if current FB account is binded
-    */
-    public function binded() {
-        $info = $this->getInfoStraight();
-        $fbid = intval($info->id);
-    
-        return $this->userExists($fbid);
-    }
-
-    /*
         Checks if account is already binded
     */
-    public function bindedByUID($uid) {
+    public function isUserBinded(User $user) {
         $query = "
             SELECT fb_uid
               FROM login
@@ -74,7 +91,7 @@ class Facebook extends BaseModel {
              LIMIT 1";
         
         $binded = false;
-        $result = $this->db->query($query, array('uid' => $uid));
+        $result = $this->db->query($query, array('uid' => $user->uid));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
             $binded = $result['fb_uid'] != 0;
@@ -86,18 +103,21 @@ class Facebook extends BaseModel {
     /*
         Returns and cache some information fetched from facebook
     */
-    private function getSomething($type, $uid, $access_token) {
-         if (isset($this->fetched_info[$uid][$type]))
-            return $this->fetched_info[$uid][$type];
+    private function getSomething($type, $id) {
+         if (isset($this->fetched_info[$id][$type]))
+            return $this->fetched_info[$id][$type];
 
-        if ($type == 'user') {
+        //Primary info, works without additional specificator
+        $primary = array('user', 'group');
+
+        if (in_array($type, $primary)) {
             $add = '';
         } else {
             $add = "/$type";
             $selector = 'data';
         }
 
-        $url = 'https://graph.facebook.com/'.$uid.$add.'?access_token=' . urlencode($access_token);
+        $url = 'https://graph.facebook.com/'.$id.$add.'?access_token=' . urlencode($this->access_token);
         $info = json_decode(file_get_contents($url), true);
         if (isset($selector))
             $info = $info[$selector];
@@ -111,78 +131,72 @@ class Facebook extends BaseModel {
         by facenook oauth
         e.g. id, name, first_name, last_name, link, gender, locale
     */
-    public function getUserInfo($uid, $access_token) {
-        return $this->getSomething('user', $uid, $access_token);
+    public function getUserInfo() {
+        return $this->getSomething('user', $this->fuid);
     }
 
     /*
         Returns a list of user friend,
         each friend is assoc array (name, id)
     */
-    public function getUserFriends($uid, $access_token) {
-        return $this->getSomething('friends', $uid, $access_token);
+    public function getUserFriends() {
+        return $this->getSomething('friends', $this->fuid);
     }
 
     /*
         Returns a assoc array of user likes
         (name, category, id, creation_time)
     */
-    public function getLikes($uid, $access_token) {
-        return $this->getSomething('likes', $uid, $access_token);
+    public function getUserLikes() {
+        return $this->getSomething('likes', $this->fuid);
     }
 
     /*
         Returns a list of user books
         (name, category, id, creation_time)
     */
-    public function getBooks($uid, $access_token) {
-        return $this->getSomething('books', $uid, $access_token);
+    public function getUserBooks() {
+        return $this->getSomething('books', $this->fuid);
     }
 
     /*
         Returns a list of user movies
         (name, category, id, creation_time)
     */
-    public function getMovies($uid, $access_token) {
-        return $this->getSomething('movies', $uid, $access_token);
+    public function getUserMovies() {
+        return $this->getSomething('movies', $this->fuid);
     }
 
     /*
         User groups
     */
-    public function getGroups($uid, $access_token) {
-        return $this->getSomething('groups', $uid, $access_token);
+    public function getUserGroups() {
+        return $this->getSomething('groups', $this->fuid);
     }
 
     /*
-        Returns info about user signed by cookies
+        Get group info
     */
-    public function getInfoStraight() {
-        $cookie = $this->infoFromCookies();
-        if (!$cookie)
-            return false;
-
-        return array_merge($cookie, $this->getUserInfo(intval($cookie['uid']), $cookie['access_token']));
+    public function getGroupInfo($gid) {
+        return $this->getSomething('group', $gid);
     }
 
     /*
         Fills user profile with info, we can fetch from
         facebook profile, e.g. gender, profile pic
     */
-    public function bindToFacebook($uid) {
-        $info = $this->getInfoStraight();
+    public function bindToFacebook(User $user) {
+        $info = $this->getUserInfo();
         if (!$info)
             return false;
 
-        $fbid = intval($info['id']);
-
         //download & resize userpics
         $pics_dir = PROFILE_PIC_PATH;
-        $big_name = $pics_dir.$fbid.'.jpg';
-        $big_url = 'http://graph.facebook.com/'.$fbid.'/picture?type=large';
+        $big_name = $pics_dir.$this->fuid.'.jpg';
+        $big_url = 'http://graph.facebook.com/'.$this->fuid.'/picture?type=large';
         file_put_contents($big_name, file_get_contents($big_url));
 
-        list($big_name, $i180, $i100, $i36) = Images::makeUserpics($fbid, $big_name, $pics_dir);
+        list($big_name, $i180, $i100, $i36) = Images::makeUserpics($this->fuid, $big_name, $pics_dir);
 
         //update user info
         $query = "
@@ -197,15 +211,15 @@ class Facebook extends BaseModel {
              WHERE uid = #uid#
              LIMIT 1";
         $this->db->query($query, array('fname' => $info['first_name'], 'lname' => $info['last_name'],
-            'fb_uid' => $fbid, 'big_name' => $big_name, 'i180' => $i180, 'i100' => $i100, 'i36' => $i36,
-            'uid' => $uid));
+            'fb_uid' => $this->fuid, 'big_name' => $big_name, 'i180' => $i180, 'i100' => $i100, 'i36' => $i36,
+            'uid' => $user->uid));
         $ok = $this->db->affected_rows == 1;
 
         if (!$ok)
             return false;
     
         //mass-follow fb-friends
-        $this->followFriends($uid);
+        $this->followFriends($user);
 
         return true;
     }
@@ -213,14 +227,13 @@ class Facebook extends BaseModel {
     /*
         Mass-follows your facebook friends
     */
-    public function followFriends($uid) {
-        $info = $this->getInfoStraight();
-        if (!$info)
+    public function followFriends(User $user) {
+        if (!$this->fuid)
             return false;
         
-        $fbid = intval($info['id']);
-
-        $friends = $this->getUserFriends($fbid, $info['access_token']);
+        $friends = $this->getUserFriends();
+        if (empty($friends))
+            return true;
         
         $fb_fids = array();
         foreach($friends as $x)
@@ -238,6 +251,7 @@ class Facebook extends BaseModel {
         while ($res = $result->fetch_assoc())
             $fids[] = intval($res['uid']);
 
+        $uid = $user->uid;
         $friends = new Friends();
         $ok = $friends->follow($uid, $fids);
 
@@ -251,18 +265,14 @@ class Facebook extends BaseModel {
         message, picture, link, name, caption, description, source
     */
     public function postStatus(array $status) {
-        $info = $this->getInfoStraight();
-        if (!$info)
+        if (!$this->fuid)
             return false;
         
-        $fbid = intval($info['id']);
-        $access_token = $info['access_token'];
-
-        $url = "https://graph.facebook.com/$fbid/feed";
-        $post = array_merge($status, array('access_token' => $access_token));
+        $url = "https://graph.facebook.com/{$this->fuid}/feed";
+        $post = array_merge($status, array('access_token' => $this->access_token));
 
         $curl = new Curl();
-        var_dump($curl->open($url, $post));
+        $curl->open($url, $post);
 
         return true;
     }

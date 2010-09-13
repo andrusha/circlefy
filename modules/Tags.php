@@ -63,6 +63,10 @@ class Tags extends BaseModel {
         $this->inited = true;
     }
 
+    public function getGroupId() {
+        return $this->tagGroupId;
+    }
+
     /*
         So, it simply returns a list of tags
         and corresponding tag id's for them
@@ -77,10 +81,6 @@ class Tags extends BaseModel {
         unset($tags['del']);
 
         return $tags;
-    }
-
-    public function getGroupId() {
-        return $this->tagGroupId;
     }
 
     /*
@@ -193,7 +193,7 @@ class Tags extends BaseModel {
              WHERE tag IN (#taglist#)";
 
         $tags = array();
-        $result = $this->db->query($query, array('taglist' => $taglist), true);
+        $result = $this->db->query($query, array('taglist' => $taglist));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
                 $tags[ intval($res['tag_id']) ] = $res['tag'];
@@ -219,7 +219,7 @@ class Tags extends BaseModel {
     private function insertIntoGroup(array $idlist) {
         if (!function_exists('merge_items')) {
             function merge_items(&$item, $key, $toMerge) {
-                $item = array_merge((array)$toMerge, (array)$item);
+                $item = array(intval($toMerge), intval($item));
             }
         }
         
@@ -275,15 +275,16 @@ class Tags extends BaseModel {
         Filter tag groups by tags, sorted in order, that most
         relevant group comes first
 
-        @return array (tag => relevancy, tag => relevancy)
+        @return array (tag_group_id => array(relevancy, tags), ...)
     */
-    public static function filterGroupsByTags(array $taglist) {
+    public static function filterGroupsByTags(array $taglist, $trashold = 0) {
         $db = DB::getInstance()->Start_Connection('mysql');
 
-        $query = '
-            SELECT id, relevancy
+        $query = " 
+            SELECT id, relevancy, tags
               FROM (
-                    SELECT tag_group_id AS id, COUNT(tg.tag_id) AS relevancy
+                    SELECT tag_group_id AS id, COUNT(tg.tag_id) AS relevancy,
+                           GROUP_CONCAT(t.tag SEPARATOR ', ') AS tags
                       FROM tags_group tg
                      INNER
                       JOIN tags t
@@ -291,16 +292,42 @@ class Tags extends BaseModel {
                      WHERE t.tag IN (#taglist#)
                      GROUP
                         BY tag_group_id
+                    HAVING relevancy > #trashold#
                    ) i
              ORDER 
-                BY relevancy DESC';
+                BY relevancy DESC";
 
         $groups = array();
-        $result = $db->query($query, array('taglist' => $taglist));
+        $result = $db->query($query, array('taglist' => $taglist, 'trashold' => $trashold));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
-                $groups[ intval($res['id']) ] = $res['relevancy'];
+                $groups[ intval($res['id']) ] = array($res['relevancy'], $res['tags']);
 
         return $groups;
+    }
+
+    /*
+        Returns a bunch of unique tags, matched by group id's
+    */
+    public static function getTagsByGroups(array $groupids) {
+        $db = DB::getInstance()->Start_Connection('mysql');
+
+        $query = '
+            SELECT t.tag_id, t.tag
+              FROM tags t
+             INNER
+              JOIN tags_group tg
+                ON t.tag_id = tg.tag_id
+             WHERE tg.tag_group_id IN (#groupids#)
+             GROUP
+                BY t.tag_id';
+
+        $tags = array();
+        $result = $db->query($query, array('groupids' => $groupids));
+        if ($result->num_rows)
+            while ($res = $result->fetch_assoc())
+                $tags[] = $res['tag'];
+
+        return $tags;
     }
 };

@@ -7,15 +7,16 @@ require_once('../api.php');
 
 $action = $_POST['action'];
 $uid = intval($_SESSION['uid']);
+$user = new User($uid);
 
 $obj = new facebook_ajax();
 
 switch ($action) {
     case 'bind':
-        $result = $obj->bind($uid);
+        $result = $obj->bind($user);
         break;
     case 'check':
-        $result = $obj->checkWithInfo($uid);
+        $result = $obj->checkWithInfo($user);
         break;
     case 'share':
         $message = $_POST['message'];
@@ -35,36 +36,36 @@ class facebook_ajax {
         $this->fb = new Facebook();
     }
 
-    public function bind($uid) {
-        $ok = $this->fb->bindToFacebook($uid);
+    public function bind(User $user) {
+        $ok = $this->fb->bindToFacebook($user);
 
-        $check = $this->check($uid);
+        $check = $this->check($user);
         if (!$check['success'])
             return $check;
 
         return array('success' => $ok);
     }
 
-    public function check($uid) {
-        if ($this->fb->bindedByUID($uid)) {
+    public function check(User $user) {
+        if ($this->fb->isUserBinded($user)) {
             return array('success' => false, 'reason' => 'already binded');
         }
 
-        if ($this->fb->binded()) {
+        if ($this->fb->exists()) {
             return array('success' => false, 'reason' => 'binded by someone');
         }
 
         return array('success' => true);
     }
 
-    public function checkWithInfo($uid) {
-        $check = $this->check($uid);
+    public function checkWithInfo(User $user) {
+        $check = $this->check($user);
         if (!$check['success'])
             return $check;
 
-        $info = $this->fb->getInfoStraight();
+        $info = $this->fb->info;
         $data = array(
-            'fb_uid' => $info['uid'],
+            'fb_uid' => $this->fb->fuid,
             'uname' => $info['id'],
             'fname' => $info['first_name'],
             'lname' => $info['last_name']);

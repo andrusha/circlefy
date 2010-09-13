@@ -175,8 +175,8 @@
             </li>
             <# for (var sugg from this): #>
             <li>
-                <input id="sugg_<#: sugg.gid #>" name="suggest" type="checkbox" value="<#: sugg.gid #>" checked>
-                <label for="sugg_<#: sugg.gid #>"><#: sugg.gname #></label>
+                <input id="sugg_<#: sugg.gid #>" name="suggest" type="checkbox" value="<#: sugg.gid #>" title="<#: sugg.gname  #>" checked>
+                <label for="sugg_<#: sugg.gid #>"><#: sugg.symbol #></label>
             </li>
             <# end; #>
         </ul>

@@ -61,13 +61,11 @@ class User extends BaseModel {
            $params = array('uname' => $username, 'pass' => $password);
         } else {
             $fb = new Facebook();
-            $cookie = $fb->infoFromCookies();
-            if (!$cookie)
+            if (!$fb->fuid)
                 return false;
 
-            $fbid = intval($cookie['uid']);
             $where = "fb_uid = #fbid#";
-            $params = array('fbid' => $fbid);
+            $params = array('fbid' => $fb->fuid);
         }
 
         $query = "SELECT uid, uname, fname
@@ -248,7 +246,8 @@ class User extends BaseModel {
             $this->clearCookies();
 
         $fb = new Facebook();
-        $binded = $fb->bindedByUID($uid);
+        $user = new User($uid); //FIXME!!
+        $binded = $fb->isUserBinded($user);
 
         $_SESSION['facebook'] = $binded;
         $_SESSION['uid'] = $uid;
@@ -370,5 +369,20 @@ class User extends BaseModel {
         if ($result->num_rows)
             $stats = $result->fetch_assoc();
         return $stats;
+    }
+
+    /*
+        Makes current user online
+    */
+    public function makeOnline() {
+        $query = "
+            INSERT
+              INTO TEMP_ONLINE (uid, online)
+            VALUES (#uid#, 1)
+                ON DUPLICATE KEY
+            UPDATE online = 1";
+        $this->db->query($query, array('uid' => $this->uid));
+
+        return $this->db->affected_rows == 1;
     }
 };

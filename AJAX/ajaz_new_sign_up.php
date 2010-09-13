@@ -32,11 +32,11 @@ class ajaz_new_sign_up{
 	function process_sign_up($uname,$fname,$lname,$email,$pass,$facebook){
 		$uid = $_SESSION['uid'];
 
-        $user = new User();
+        $user = new User($uid);
         $user->userificateGuest($uid, $uname, $fname, $lname, $email, $pass);
         if ($facebook) {
             $fb = new Facebook();
-            $fb->bindToFacebook($uid);
+            $fb->bindToFacebook($user);
         }
 
         $this->send_welcome_mail();

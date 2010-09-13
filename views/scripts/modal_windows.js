@@ -317,7 +317,6 @@ _modal.signup = _tap.register({
             $$($H(this.signupData).getValues().filter(function(item){
                     return !item.retrieve('passed');
             })).fireEvent('blur', [e]);
-            this.submitForm();
         }
     },
 });
@@ -430,6 +429,7 @@ _modal.suggestions = _tap.register({
                 action: 'get'    
             },
             onRequest: function() {
+                list.set('html', '');
                 indic.setStyle('display', 'block');
             },
             onSuccess: function() {
