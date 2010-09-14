@@ -1,7 +1,4 @@
 <?php
-abstract class UserException extends Exception {};
-class UserInfoException extends UserException {};
-
 /*
 All user operations, e.g login in, information
 */

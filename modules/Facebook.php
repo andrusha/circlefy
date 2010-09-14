@@ -1,7 +1,4 @@
 <?php
-abstract class FacebookException extends Exception {};
-class FacebookDataException extends FacebookException {};
-
 /*
     All facebook operations, login, create user,
     check user for already exists, etc

@@ -51,6 +51,7 @@ class filter_functions {
     function filter($type,$search,$outside,$id,$flag,$more,$anon) {
         $uid = intval($_SESSION['uid']);
         $params = array();
+        $current_user = new User($uid);
 
         if ($more)
             $params['#start_from#'] = $more;
@@ -78,16 +79,18 @@ class filter_functions {
             case   1:
                 $filter = 'ind_group';
                 $params['#gid#'] = intval($id);
+                Action::log($current_user, 'group', 'view', array('gid' => intval($id)));
                 break;
             case   2:
                 $filter = 'personal';
                 $params['#uid#'] = intval($id);
+                Action::log($current_user, 'user', 'view', array('uid' => intval($id)));
                 break;
         }
 
         $taps = new Taps();
         $data = $taps->getFiltered($filter, $params);
-       
+
         return array('results' => True, 'data' => $data);
     }
 

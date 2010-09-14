@@ -1,8 +1,4 @@
 <?php
-class UnknownServerException extends Exception {};
-class PacketFormatException extends Exception {};
-class SocketException extends Exception {};
-
 /*
     A little workaround above comet-server
     to unify interface, error-handling, etc

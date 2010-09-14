@@ -54,6 +54,9 @@ class public_tap extends Base{
         $this->set($stats,'stats');
 		$this->set($active,'active_convo');
         $this->set($tapper, 'user');
+
+        $current_user = new User($uid);
+        Action::log($current_user, 'tap', 'view', array('mid' => $mid));
     }
     
     /*

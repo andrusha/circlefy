@@ -67,7 +67,7 @@ $private = $private;
 							<span class="count"><? if($group['admin']) echo "<span title='Moderator'>&#10070;</span>" ?></span>
 							<img src="/group_pics/<?=$group['favicon']?>" title="<?$group['gname']?>" />&nbsp;
 							<a href="/channel/<?= $group['symbol'] ?>" class="names inblock-public ellipsis"><?= $group['gname'] ?></a>
-							<span class="public-user-group-count"><?=rand(1,199)?></span>
+							<span class="public-user-group-count"><?= $group['taps_count'] ?></span>
 						</li>
 						<?php
 								endforeach;

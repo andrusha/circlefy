@@ -62,13 +62,17 @@ EOF;
 
 set_exception_handler('exceptionHandler');
 
-function __autoload($classname){
-	require_once(dirname(__FILE__).'/modules/'.$classname.'.php');
+define('BASE_PATH', realpath(dirname(__FILE__)).'/');
+
+function __autoload($classname) {
+    if (substr($classname, -9) == 'Exception')
+        require_once(BASE_PATH.'modules/Exceptions.php');
+    else
+    	require_once(dirname(__FILE__).'/modules/'.$classname.'.php');
 }
 
 session_start();
 
-define('BASE_PATH', realpath(dirname(__FILE__)).'/');
 
 define("METRIC_KEY","05a951428ed5199e27d52356aae83a22");
 
@@ -116,3 +120,9 @@ define("FBAPPSECRET",'6692d8984d00d3f67ee81bf31637970e');
 define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user_interests,user_likes,user_location,user_work_history,email,read_friendlists,user_groups,publish_stream');
 
 define("ROOT","/");
+
+//group creation options
+define("G_ONLINE_COUNT", 1 << 0);
+define("G_TAPS_COUNT",   1 << 1);
+define("G_USERS_COUNT",  1 << 2);
+define("G_EXTENDED",     1 << 3);

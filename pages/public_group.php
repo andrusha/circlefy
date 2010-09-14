@@ -193,7 +193,9 @@ EOF;
         $res = $this->db_class_mysql->execute_query('responses_count')->fetch_assoc();
         $this->set($res['responses_count'], 'responses_count');
 //END responses count
-
+        
+        $current_user = new User(intval($_SESSION['uid']));
+        Action::log($current_user, 'group', 'view', array('gid' => $gid));
     }
 
     private function get_popular_members($gid){

@@ -1,12 +1,4 @@
 <?php
-abstract class DBException extends Exception {};
-
-class QueryParamException extends DBException {};
-class NotImplementedException extends DBException {};
-class TransactionException extends DBException {};
-class SQLException extends DBException {};
-class AssertionException extends DBException {};
-
 //This class defines all of the database queries as well as what connection is to be used.
 //The explination of how to set queries is listed below.  The way you set your database connector
 //depends on the flag that either your Base class has or your page has.  
@@ -167,8 +159,11 @@ class DB{
         else
             $name = $matches;
 
+        //format by type now support NULLs
+        /*
         if (!isset($this->params[$name]))
             throw new QueryParamException('Undefined `'.$name.'` parameter');
+        */
 
         $value = $this->params[$name];
         return $this->formatByType($value);
@@ -184,6 +179,8 @@ class DB{
         } else if (is_int($value) || is_float($value)) {
             //int values don't need to be escaped
             return strval($value);
+        } else if ($value === null) {
+            return 'NULL';
         } else {
             //escape all special chars in string
             return "'".$this->db->real_escape_string($value)."'";

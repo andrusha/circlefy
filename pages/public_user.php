@@ -95,60 +95,21 @@ EOF;
 			$this->set($res['online'],'user_online');
 		}
 	
-		//START group setting creation
-		$group_list_query = <<<EOF
-		SELECT COUNT(scm.gid) as message_count,t2.symbol,t2.connected,t1.tapd,t1.inherit,t2.pic_36,t2.favicon,t2.gname,t1.gid,t1.admin
-		FROM group_members AS t1
-		LEFT JOIN groups AS t2 ON t2.gid=t1.gid
-		LEFT JOIN special_chat_meta AS scm ON scm.gid=t1.gid
-		WHERE t1.uid={$uid}
-		GROUP BY t2.gid
-EOF;
-                $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
-                                $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
-
-		if($groups_you_are_in->num_rows)
-		while($res = $groups_you_are_in->fetch_assoc()){
-			$gid = $res['gid'];
-			$gname = $res['gname'];
-			$pic_36 = $res['pic_36'];
-			$favicon = $res['favicon'];
-			$symbol = $res['symbol'];
-			$connected = $res['connected'];
-			$tapd = $res['tapd'];
-			$admin = $res['admin'];
-			$message_count = $res['message_count'];
-
-			//Process
-			if(strlen($gname) > 25)
-				$gname = substr($gname,0,25).'..'; 
-
-			$my_groups_array[] = array(
-					'gid' => $gid,
-					'gname' => $gname,
-					'pic_36' => $pic_36,
-					'favicon' => $favicon,
-					'symbol' => $symbol,
-					'display_symbol' => $gname,
-					'type' => $connected,
-					'tapd' => $tapd,
-					'admin' => $admin,
-					'message_count' => $message_count
-				);
-			}
-			$this->set($my_groups_array,'your_groups');	
-
-
         $taps = new Taps();
 
 		$data_taps = $taps->getFiltered('personal', array('#uid#' => $uid, '#outside#' => '1, 2'));
 		$this->set($data_taps, 'user_bits');
 
-        $user = new User();
+        $user = new User(intval($uid));
         $stats = $user->getStats($uid);
-
 		$this->set($stats,'stats');
-		//END stats
+
+        $groups = GroupsList::byUser($user, G_EXTENDED | G_TAPS_COUNT);
+        $groups_info = $groups->filterInfo('info');
+        $this->set($groups_info, 'your_groups');	
+
+        $current_user = new User(intval($_SESSION['uid']));
+        Action::log($current_user, 'user', 'view', array('uid' => intval($uid)));
 
 		//START set the session uid for Orbited
                 $this->set($_SESSION['uid'],'pcid');

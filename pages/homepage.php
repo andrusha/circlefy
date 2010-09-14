@@ -84,7 +84,8 @@ EOF;
 
 
         $userClass = new User(intval($_SESSION['uid']));
-        $userClass->makeOnline();
+//      We actually make user online/offline in Server.py
+//       $userClass->makeOnline();
 
         //Get user info
         $res = $userClass->getInfo($uid);
@@ -101,8 +102,7 @@ EOF;
         $active_convos = $convosClass->getActive($uid);
 		$this->set($active_convos,'active_convos');
 	
-        $group_list = Group::listByUser($userClass, false, true);
-//        Group::bulkOnline($group_list);
+        $group_list = GroupsList::byUser($userClass, G_EXTENDED | G_ONLINE_COUNT | G_USERS_COUNT);
 
         $group_formatted = array();
         foreach ($group_list as $group) {
@@ -110,8 +110,9 @@ EOF;
             $gid = $group->gid;
             $info['display_symbol'] = $info['symbol'];
             $info['online_count'] = $info['count'];
+            $info['total_count'] = $info['members_count'];
+            //stub, cuz actually unused
             $info['message_count'] = 65535;
-            $info['total_count'] = 65535;
             $info['tapd'] = 0;
 
             $group_formatted[$gid] = $info;
