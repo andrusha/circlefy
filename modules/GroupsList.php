@@ -32,6 +32,10 @@ class GroupsList implements IteratorAggregate, Countable {
 
         $this->groups = $groups;
     }
+    
+    public function asArray() {
+        return $this->groups;
+    }
 
     /*
         Used for filtering group info into array
@@ -77,7 +81,7 @@ class GroupsList implements IteratorAggregate, Countable {
     */
     public static function byKeywords(array $keywords, User $user = null) {
         if (empty($keywords))
-            return array();
+            return array(new GroupsList(array()), array());
 
         $db = DB::getInstance()->Start_Connection('mysql');
         
@@ -86,11 +90,12 @@ class GroupsList implements IteratorAggregate, Countable {
         //even if tag groups empty, try to fetch groups
         //by symbol matching
         if (empty($tagGroups)) {
-            $where = 'symbol IN (#keywords#)';
+            $where = '(symbol IN (#keywords#) OR gname IN (#keywords#))';
             $params = array('keywords' => $keywords);
         } else {
             $where = '(tag_group_id IN (#tagidlist#)
-                       OR symbol IN (#keywords#))';
+                       OR symbol IN (#keywords#)
+                       OR gname IN (#keywords#))';
             $params = array('tagidlist' => array_keys($tagGroups), 'keywords' => $keywords);
         }
 
@@ -100,11 +105,12 @@ class GroupsList implements IteratorAggregate, Countable {
         //add his tags+symbols to matched_keywords
         if ($user !== null) {
             $gids = $tagGroupIDs = array();
-            foreach(GroupList::byUser($user) as $group) {
+            foreach(GroupsList::byUser($user) as $group) {
                 $gids[] = $group->gid;
                 $info = $group->info;
                 $tagGroupIDs[] = intval($info['tag_group_id']);
                 $matched_keywords[] = $info['symbol'];
+                $matched_keywords[] = $info['gname'];
             }
 
             if (!empty($gids)) {
@@ -139,6 +145,7 @@ class GroupsList implements IteratorAggregate, Countable {
                         explode(', ', $tagGroups[$tgid][1]));
                 } else {
                     $matched_keywords[] = $res['symbol'];
+                    $matched_keywords[] = $res['gname'];
                 }
             }
         $matched_keywords = array_unique($matched_keywords);
@@ -318,7 +325,7 @@ class GroupsList implements IteratorAggregate, Countable {
         }
 
         if (empty($fgids))
-            return array();
+            return new GroupsList(array());
 
         $fb = new Facebook();
 
@@ -329,11 +336,11 @@ class GroupsList implements IteratorAggregate, Countable {
             $symbol = Taps::makePreview($info['name'], 250);
             $gname = makeGName($info['name']);
             $tags = extractTags($info['name'], $info['description'], $info['category']);
+            $picture = isset($info['picture']) ? Images::fetchAndMake(D_GROUP_PIC_PATH, $info['picture'], "$fgid.jpg") : array();
+            $favicon = isset($info['link']) ? Images::getFavicon($info['link'], D_GROUP_PIC_PATH."/fav_$fgid.ico") : null;
 
-            //TODO: picture
-            
             $group = false;
-            $group = Group::create($creator, $gname, $symbol, $descr, $tags);
+            $group = Group::create($creator, $gname, $symbol, $descr, $tags, $picture, $favicon);
             if ($group !== false)
                 $groups[] = $group;
         }
@@ -366,5 +373,13 @@ class GroupsList implements IteratorAggregate, Countable {
         $db->query($query, array('gids' => $gids));
 
         return $db->affected_rows == count($gids);
+    }
+
+    public static function merge() {
+        $merged = array();
+        foreach (func_get_args() as $arg) {
+            $merged = array_merge($merged, $arg->asArray());
+        }
+        return new GroupsList($merged);
     }
 };

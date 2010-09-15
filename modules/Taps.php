@@ -31,7 +31,6 @@ class Taps extends BaseModel {
                 $item = strtr($item, $params);
             }
         }
-
         $joins = array(
             'meta' => 'JOIN special_chat_meta scm ON scm.mid = sc.mid',
             'members' => 'JOIN group_members gm ON gm.gid = scm.gid',

@@ -61,7 +61,7 @@
 	<?php if($your_groups) foreach ($your_groups as $group): ?>
 	<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
 	data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
-	data-symbol="<?= $group['symbol'][0] ?>"
+	data-symbol="<?= $group['symbol'] ?>"
 	data-topic="<?= $group['topic']?>"
 	data-online_count="<?= $group['online_count'] ?>"
 	data-total_count="<?= $group['total_count'] ?>"

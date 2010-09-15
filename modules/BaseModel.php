@@ -1,5 +1,4 @@
 <?php
-
 abstract class BaseModel {
     protected $db;
 

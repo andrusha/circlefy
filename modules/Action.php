@@ -1,5 +1,4 @@
 <?php
-
 /*
     Stuff for logging user actions
     (group view, profile view, tap response, etc)

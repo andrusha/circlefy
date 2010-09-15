@@ -431,6 +431,7 @@ _modal.suggestions = _tap.register({
             onRequest: function() {
                 list.set('html', '');
                 indic.setStyle('display', 'block');
+                fail.setStyle('display', 'none');
             },
             onSuccess: function() {
                 indic.setStyle('display', 'none');

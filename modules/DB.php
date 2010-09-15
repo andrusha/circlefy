@@ -3,7 +3,7 @@
 //The explination of how to set queries is listed below.  The way you set your database connector
 //depends on the flag that either your Base class has or your page has.  
 
-class DB{
+class DB {
     //There are 2 methods of setting queries:
     //  #1. One is by using the method set_query(); in each page to set $query_list dynamically for each page
     //    #2. Creating the array statically by doing $query_list['name_of_query'] = "SELECT * FROM user etc";

@@ -127,20 +127,34 @@ class Group extends BaseModel {
         
         @returns Group | bool
     */
-    public static function create(User $creator, $gname, $symbol, $descr, array $tags) {
+    public static function create(User $creator, $gname, $symbol, $descr, array $tags, array $images = array(), $favicon = null) {
         $db = DB::getInstance()->Start_Connection('mysql');
 
         $db->startTransaction();
         $ok = true;
 
+        $data = array('gname' => $gname, 'symbol' => $symbol, 'descr' => $descr,
+            'uid' => $creator->uid);
+        $addFields = $addVals = '';
+        if (count($images) == 4) {
+            $addFields = ', pic_full, pic_180, pic_100, pic_36';
+            $addVals = ', #pfull#, #p180#, #p100#, #p36#';
+            $data = array_merge($data, array('pfull' => $images[0],
+                'p180' => $images[1], 'p100' => $images[2], 'p36' => $images[3]));
+        }
+
+        if ($favicon !== null) {
+            $addFields .= ', favicon';
+            $addVals .= ', #fav#';
+            $data['fav'] = $favicon;
+        }
+
         //insert group info into groups
         $query = "
             INSERT
-              INTO groups (gname, symbol, gadmin, descr, created)
-            VALUES (#gname#, #symbol#, #uid#, #descr#, NOW())";
-        $ok = $ok && $db->query($query,
-            array('gname' => $gname, 'symbol' => $symbol, 'descr' => $descr,
-                  'uid' => $creator->uid));
+              INTO groups (gname, symbol, gadmin, descr, created{$addFields})
+            VALUES (#gname#, #symbol#, #uid#, #descr#, NOW(){$addVals})";
+        $ok = $ok && $db->query($query, $data);
 
         $gid = $db->insert_id;
 

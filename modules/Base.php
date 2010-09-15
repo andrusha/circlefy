@@ -1,5 +1,4 @@
 <?php
-
 	abstract class Base{
 
 		protected $errors = array(); //Any errors will be reported here
