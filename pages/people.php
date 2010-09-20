@@ -1,17 +1,13 @@
 <?php
 
 class people extends Base{
-	function __default(){
-	}
+	function __default(){}
 	
 	public function __toString(){
 		return "Homepage Object";
 	}
 	
 	function __construct() {
-	
-		$this->view_output = "HTML";
-		$this->db_type = "mysql";
 		$this->page_name = "people";
 		$this->need_login = 1;
 		$this->need_db = 1;
@@ -19,30 +15,20 @@ class people extends Base{
 		parent::__construct();
 		$uid = $_SESSION['uid'];
 
-        $peoples = new Friends();
-        $user = new User();
-
-		$this->set($peoples->followingCount($uid),'tracked_count');
-		$this->set($peoples->followersCount($uid),'track_count');
+		$this->set($this->user->followingCount(),'tracked_count');
+		$this->set($this->user->followersCount(),'track_count');
 
         $users = array();
-		if(!$_GET['q'])	
-            $users = $peoples->getFollowing($uid);
+		if(!$_GET['q'])
+            $users = UsersList::getFollowing($this->user, true);
 		else
-            $users = $peoples->getFollowers($uid);
+            $users = UsersList::getFollowers($this->user, true);
         
-        foreach($users as $fuid => $user_info) {
-            $friend = array_intersect_key($user_info, 
-                array_flip(array('uname', 'fname', 'lname', 'pic_100', 'last_chat')));
-            $friend['fuid'] = $fuid;
-            $friend['stats'] = $user->getStats($fuid);
-            $friend['friend'] = 1;
-            if (!$friend['last_chat'])
-                $friend['last_chat'] = "*This user has not tap'd yet*;";
+        $this->set($users->getStats()
+                         ->getRelations($this->user)
+                         ->filter('info'),
+                   'peoples');
 
-            $friend_data[$fuid] = $friend;
-        }
-        $this->set($friend_data,'peoples');
         $this->set($_GET['q'], 'q');
     }
 };

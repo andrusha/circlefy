@@ -266,6 +266,7 @@ _modal.signup = _tap.register({
         var indic = this.modalForm.getElement('span.indicator');
         var indic_msg = indic.getElement('span.indic-msg');
         var facebook = this.modalForm.getElement('input[name="facebook"]').get('value');
+        var uname = this.signupData.uname.get('value');
 
         if (this.signupData.fb.getProperty('checked'))
             this.checkFacebook();
@@ -281,12 +282,18 @@ _modal.signup = _tap.register({
                 var name = this.signupData.name.get('value');
                 var fname = name.substring(0, name.indexOf(' '));
                 var lname = name.substring(name.indexOf(' ')+1, name.length);
+
+                if (!fname)
+                    fname = uname;
+
+                if (!lname)
+                    lname = uname;
             }
 
             new Request({
                 url: '/AJAX/ajaz_new_sign_up.php',
                 data: {
-                    uname: this.signupData.uname.get('value'),
+                    uname: uname,
                     email: this.signupData.email.get('value'),
                     pass: this.signupData.pass.get('value'),
                     fname: fname,

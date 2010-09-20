@@ -34,8 +34,7 @@ class profile extends Base{
 EOF;
 
 
-                        $this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
-                        $geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
+                        $geo_list_results = $this->db->query($geo_list_query);
                         while($res = $geo_list_results->fetch_assoc()){
 				$abbr2 = strtolower($res['abbr2']);
 				$name = $res['Country'];
@@ -59,9 +58,7 @@ EOF;
 EOF;
 
 
-				$this->db_class_mysql->set_query($get_profile_query,'get_edit_profile','This is getting the users profile contents');
-		
-				$edit_profile_results = $this->db_class_mysql->execute_query('get_edit_profile');
+				$edit_profile_results = $this->db->query($get_profile_query);
 
 				$res =  $edit_profile_results->fetch_assoc();
 				$uname = $res['uname'];
@@ -102,8 +99,7 @@ EOF;
 			$count_messages = <<<EOF
 			SELECT COUNT(*) AS message_count FROM special_chat WHERE uid = {$uid}
 EOF;
-			$this->db_class_mysql->set_query($count_messages,'count_messages','Counts amount of messages a user has for a stat');
-			$count_results = $this->db_class_mysql->execute_query('count_messages');
+			$count_results = $this->db->query($count_messages);
 			if($count_results->num_rows)
 			$res = $count_results->fetch_assoc();
 				$message_count = $res['message_count'];
@@ -112,8 +108,7 @@ EOF;
 			SELECT COUNT(*) AS resp_count FROM chat WHERE uid = {$uid}
 EOF;
 
-			$this->db_class_mysql->set_query($count_resp,'count_resp','Counts amount of responses a user has for a stat');
-			$count_results = $this->db_class_mysql->execute_query('count_resp');
+			$count_results = $this->db->query($count_resp);
 			if($count_results->num_rows)
 			$res = $count_results->fetch_assoc();
                                 $resp_count = $res['resp_count'];
@@ -121,8 +116,7 @@ EOF;
 			$count_group = <<<EOF
                         SELECT COUNT(*) AS group_count FROM group_members WHERE uid = {$uid}
 EOF;
-                        $this->db_class_mysql->set_query($count_group,'count_group','Counts amount of groups a user has for a stat');
-                        $count_results = $this->db_class_mysql->execute_query('count_group');
+                        $count_results = $this->db->query($count_group);
 			if($count_results->num_rows)
                         $res = $count_results->fetch_assoc();
                                 $group_count = $res['group_count'];

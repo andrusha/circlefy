@@ -18,7 +18,7 @@ $fname = $_POST['fname'];
 $lname = $_POST['lname'];
 $email = $_POST['email'];
 $pass = $_POST['pass'];
-$facebook = $_POST['facebook'];
+$facebook = $_POST['facebook'] == 'true' ? true : false;
 
 if($flag == 'normal' || $flag == 'signup_function();'){
 	$sign_up_results = $sign_up_object->process_sign_up($uname,$fname,$lname,$email,$pass,$facebook);

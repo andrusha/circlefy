@@ -10,11 +10,6 @@ class Group extends BaseModel {
     */
     private $taglist = null;
 
-    /*
-        array with some useful group data
-    */
-    private $data = array();
-
     private $gid = null;
 
     /*
@@ -24,7 +19,7 @@ class Group extends BaseModel {
             array to auto-initialize group
     */
     public function __construct($gid = null) {
-        parent::__construct();
+        parent::__construct(array('gid', 'tags', 'info', 'members'), array('info', 'members'));
     
         if (is_array($gid)) {
             $this->data = $gid;

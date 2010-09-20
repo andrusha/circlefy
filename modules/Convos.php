@@ -9,6 +9,8 @@ class Convos extends BaseModel {
         parent::__construct();
     }
 
+    public function __get($key) {}
+
     /*
         Returns active conversations
     */

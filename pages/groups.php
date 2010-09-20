@@ -67,8 +67,7 @@ EOF;
 			SELECT cn.abbr2,cn.name AS Country FROM country_translate AS cn WHERE cn.abbr2 != '-' LIMIT 249;
 EOF;
 
-			$this->db_class_mysql->set_query($geo_list_query,'geo_list_query','Populates Geo List');
-			$geo_list_results = $this->db_class_mysql->execute_query('geo_list_query');
+			$geo_list_results = $this->db->query($geo_list_query);
 			while($res = $geo_list_results->fetch_assoc()){
 			$abbr2 = $res['abbr2'];
 			$name = $res['name'];
@@ -81,12 +80,10 @@ EOF;
 			}
 			$this->set($init_geo_data,'init_geo_data');
 
-			$this->db_class_mysql->set_query($connected_group_query,'get_connected_groups','This gets the status and attributes of all connected groups to display to the user');
-				$connected_groups_results = $this->db_class_mysql->execute_query('get_connected_groups');
+				$connected_groups_results = $this->db->query($connected_group_query);
 				$this->set($connected_groups_results,'connected_groups');
 
-			$this->db_class_mysql->set_query($group_random_pick,'get_random_groups',"Getting random 'relevanct' groups");
-			$rand_group_results = $this->db_class_mysql->execute_query('get_random_groups');
+			$rand_group_results = $this->db->query($group_random_pick);
 
 			while($res = $rand_group_results->fetch_assoc()){
 				$gid = $res['gid'];
@@ -111,8 +108,7 @@ EOF;
 			$this->set($random_groups,'random_group_results');
 
 
-			$this->db_class_mysql->set_query($get_group_query,'get_groups',"get_groups");
-			$group_results = $this->db_class_mysql->execute_query('get_groups');
+			$group_results = $this->db->query($get_group_query);
 
                         while($res = $group_results->fetch_assoc()){
 				$gid = $res['gid'];
@@ -164,8 +160,7 @@ EOF;
                         JOIN special_chat_meta AS scm ON oscm.gid = scm.gid
                         GROUP BY scm.gid
 EOF;
-			$this->db_class_mysql->set_query($group_message_count,'group_count',"Get's message count for groups");
-			$message_count_results = $this->db_class_mysql->execute_query('group_count');
+			$message_count_results = $this->db->query($group_message_count);
 
                         if($message_count_results->num_rows)
                         while($res = $message_count_results->fetch_assoc() ) {
@@ -188,8 +183,7 @@ EOF;
                         ON c.cid = sc.cid
                 WHERE sm.gid IN ( {$gid_list} )
                 GROUP BY sm.gid";
-            $this->db_class_mysql->set_query($group_responses_count, 'responses_count', 'Returns number of responses for all taps in channel');
-            $responses_count_result = $this->db_class_mysql->execute_query('responses_count');
+            $responses_count_result = $this->db->query($group_responses_count);
             
             if ($responses_count_result->num_rows) 
             while ($res = $responses_count_result->fetch_assoc()) {
@@ -202,8 +196,7 @@ EOF;
 		$this->set($groups,'group_results');
 
 
-                        $this->db_class_mysql->set_query($group_list_query,'get_users_groups',"This gets the initial lists of users groups so he can search within his groups");
-                	        $groups_you_are_in = $this->db_class_mysql->execute_query('get_users_groups');
+                	        $groups_you_are_in = $this->db->query($group_list_query);
                         $this->set($groups_you_are_in,'your_groups');
 
 
@@ -214,8 +207,7 @@ EOF;
 		$check_group_query = <<<EOF
 			select gname from groups where gname = '{$groupName}'
 EOF;
-		$this->db_class_mysql->set_query($check_group_query,'check_group_query',"Chck if exists group");
-		$check_group_exists = $this->db_class_mysql->execute_query('check_group_query');
+		$check_group_exists = $this->db->query($check_group_query);
 		//$check_group_exists = $this->mysqli->query($check_group_query);
 		return ($check_group_exists->num_rows > 0);
 		

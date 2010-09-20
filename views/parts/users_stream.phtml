@@ -1,0 +1,42 @@
+<ul class="bodylist <?= empty($people_list) ? 'empty' : '' ?>">
+    <?php 
+        if (!empty($people_list)):
+            foreach ($people_list as $person):
+                $stats = $person['stats'];
+    ?>
+    <li id="pid_<?= $person['uid'] ?>" class="container list-item" 
+        data-id="<?= $person['uid'] ?>" data-uname="<?= $person['uname'] ?>">
+        <?php if ($person['friend']): ?>
+        <button class="untrack">untrack</button>
+        <?php else: ?>
+        <button class="track">track</button>
+        <?php endif; ?>
+        <img src="/user_pics/<?= $person['big_pic'] ?>" class="avatar" />
+        <h2>
+            <a href="/user/<?= $person['uname'] ?>" title="<?= $person['uname'] ?>">
+                <?= $person['real_name'] ?></a> 
+            <span class="nick"><?= $person['uname'] ?></span>
+        </h2>
+        <p class="headline"><?= !empty($person['last_chat']) ? $person['last_chat'] : "*This user has not tap'd yet*" ?></p>
+        <p class="stats">
+            <strong><?= $stats['taps'] ?></strong> Taps sent, 
+            <strong><?= $stats['responses'] ?></strong> Responses received, and
+            <strong><?= $stats['groups'] ?></strong> Groups joined.
+        </p>
+    </li>
+    <?php
+            endforeach;
+        else:
+    ?>
+    <li class="notice">
+    
+        <p><?php if ($tracker): ?>
+        No one's tracking you.
+        <?php else: ?>
+        You're tracking no one.
+        <?php endif; ?></p>
+    </li>
+    <?php
+        endif;
+    ?>
+</ul>

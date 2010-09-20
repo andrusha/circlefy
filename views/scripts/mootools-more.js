@@ -412,6 +412,7 @@ var TextOverlay = new Class({
         if(!element && !overtext){
             return false;
         }
+        this.visible = true;
         this.element = document.id(element);
         this.overtext = document.id(overtext);
         this.setOptions(options);

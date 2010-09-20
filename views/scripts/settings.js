@@ -156,7 +156,7 @@ _settings.account = _tap.register({
 
 });
 
-var _picture = _tap.register({
+_settings.picture = _tap.register({
 
 	mixins: 'errors',
 

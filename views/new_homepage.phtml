@@ -38,11 +38,9 @@ if (is_array($your_groups)) {
 
 $_SESSION['upic'] = $user_pic_100;
 
-$is_guest = intval($_SESSION['guest']) == 1 ? true : false;
-
 $all_your_groups_topic = "Aggregate feed of all of the channels";
 $public_groups_topic = "This is a place where you can discover what's being said in real-time from all channels, even if you're not apart of them";
-if (!$is_guest) {    
+if ($feed_type == 'all') {    
     $groups_descr = $all_your_groups_topic;
     $start_gid = "all";
     $groups_topic = "All Your Channels";
@@ -51,11 +49,6 @@ if (!$is_guest) {
     $start_gid = "public";
     $groups_topic = "Discover";
 }
-
-/*
-$fb = new Facebook();
-var_dump($fb->getInfoStraight());
-*/
 ?>
 <!doctype html>
 <html>

@@ -1,5 +1,4 @@
 <?php
-
 //get the session and the api module call
 $session = $_SESSION['uid'];
 $find_api_module = $_SERVER['REQUEST_URI'];

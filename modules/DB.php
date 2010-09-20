@@ -33,7 +33,7 @@ class DB {
     private function __construct() {}
 
     function __destruct() {
-        if ($this->transactions != 0)
+        if ($this->transactions > 0)
             throw new TransactionException('You forgot to commit or rollback transactions');
     }
 

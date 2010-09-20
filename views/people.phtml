@@ -78,48 +78,8 @@ $tracker = $q;
 						</span>
 					</div>
 					<div class="body">
-						<ul class="bodylist <?= empty($_t[$people_list]) ? 'empty' : '' ?>">
-							<?php 
-								if (!empty($_t[$people_list])):
-									foreach ($_t[$people_list] as $person):
-                                        $stats = $person['stats'];
-							?>
-							<li id="pid_<?= $person['fuid'] ?>" class="container list-item" 
-								data-id="<?= $person['fuid'] ?>" data-uname="<?= $person['uname'] ?>">
-								<?php if ($person['friend']): ?>
-								<button class="untrack">untrack</button>
-								<?php else: ?>
-								<button class="track">track</button>
-								<?php endif; ?>
-								<img src="/user_pics/<?= $person['pic_100'] ?>" class="avatar" />
-								<h2>
-									<a href="/user/<?= $person['uname'] ?>" title="<?= $person['uname'] ?>">
-										<?= $person['fname'] ?> <?= trim($person['lname']) ?></a> 
-									<span class="nick"><?= $person['uname'] ?></span>
-								</h2>
-								<p class="headline"><?= $person['last_chat'] ?></p>
-								<p class="stats">
-									<strong><?= $stats['taps'] ?></strong> Taps sent, 
-									<strong><?= $stats['responses'] ?></strong> Responses received, and
-									<strong><?= $stats['groups'] ?></strong> Groups joined.
-								</p>
-							</li>
-							<?php
-									endforeach;
-								else:
-							?>
-							<li class="notice">
-							
-								<p><?php if ($tracker): ?>
-								No one's tracking you.
-								<?php else: ?>
-								You're tracking no one.
-								<?php endif; ?></p>
-							</li>
-							<?php
-								endif;
-							?>
-						</ul>
+                    <?  $people_list = $peoples;
+                        include(USERS_STREAM); ?>
 					</div>
 				</div>
 

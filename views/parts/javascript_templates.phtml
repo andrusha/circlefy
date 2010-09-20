@@ -5,16 +5,34 @@
                                 if (!tap.uname) continue;
                 #>
                 <li id="tid_<#: tap.cid #>" class="container"
-                        data-id="<#: tap.cid #>" data-uid="<#: tap.uid #>" data-user="<#: tap.uname #>">
+                    data-id="<#: tap.cid #>"
+                    data-uid="<#: tap.uid #>"
+                    data-user="<#: tap.uname #>"
+                    data-private="<#: tap.private #>">
+
                         <a href="/user/<#: tap.uname #>">
                                 <img class="avatar" alt="<#: tap.uname #>" src="/user_pics/<#: tap.pic_100 #>" />
                         </a>
+
                         <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.uname) ? '' : 'offline' #>">
-                                <a href="/user/<#: tap.uname #>"><#: tap.uname #></a>,
+                                <a href="/user/<#: tap.uname #>"><#: tap.uname #></a>
+                                <# if (tap.private == 1): #>
+                                    <span style="font-size:16px">&#x279e;</span> <a href="/user/<#: tap.to_uname #>"><#: tap.to_uname #></a>
+                                <# endif; #>
+                                ,
                                 <a href="/tap/<#: tap.cid #>" class="date" data-timestamp="<#: tap.chat_timestamp_raw #>">
                                         <#: tap.chat_timestamp #>
                                 </a>
-				<a href="/channel/<#: tap.symbol #>"><img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" /></a>
+
+                        <# if (tap.private != 1): #>
+            				<a href="/channel/<#: tap.symbol #>">
+                                <img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" />
+                            </a>
+                        <# else: #>
+            				<a href="/user/<#: tap.to_uname #>">
+                                <img class="aggr-favicons" src="/user_pics/<#: tap.to_pic_100 #>" title="<#: tap.to_real_name #>" style="height: 30px; width: 30px" />
+                            </a>
+                        <# endif; #>
                         </p>
                         
                     <a href="#" class="tap-resp-count" title="view responses">
@@ -178,6 +196,34 @@
                 <input id="sugg_<#: sugg.gid #>" name="suggest" type="checkbox" value="<#: sugg.gid #>" title="<#: sugg.gname  #>" checked>
                 <label for="sugg_<#: sugg.gid #>"><#: sugg.symbol #></label>
             </li>
+            <# end; #>
+        </ul>
+
+        <ul id="template-users">
+            <# for (var person from this): #>
+                <li id="pid_<#: person.uid #>" class="container list-item" 
+                    data-id="<#: person.uid #>"
+                    data-uname="<#: person.uname #>">
+
+                    <# if (person.friend): ?>
+                        <button class="untrack">untrack</button>
+                    <# else: #>
+                        <button class="track">track</button>
+                    <# endif; #>
+
+                    <img src="/user_pics/<#: person.pic_100 #>" class="avatar" />
+                    <h2>
+                        <a href="/user/<#: person.uname #>" title="<#: person.uname #>">
+                            <#: person.real_name #></a> 
+                        <span class="nick"><#: person.uname #></span>
+                    </h2>
+                    <p class="headline"><#: person.last_chat #></p>
+                    <p class="stats">
+                        <strong><#: person.stats.taps #></strong> Taps sent, 
+                        <strong><#: person.stats.responses #></strong> Responses received, and
+                        <strong><#: person.stats.groups #></strong> Groups joined.
+                    </p>
+                </li>
             <# end; #>
         </ul>
 

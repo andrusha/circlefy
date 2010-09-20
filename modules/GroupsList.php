@@ -5,14 +5,7 @@
 
     It also chaches different results
 */
-class GroupsList implements IteratorAggregate, Countable {
-    /*
-        Array of groups, used in traversal, etc
-
-        Should be initialized before class usage
-    */
-    private $groups = array();
-
+class GroupsList extends Collection {
     /*
         Uses temporary caches user groups,
         may be handy in a lot types of queries
@@ -25,50 +18,8 @@ class GroupsList implements IteratorAggregate, Countable {
         You should use static initializers instead of
         constructions by yourself
     */
-    private function __construct(array $groups) {
-        //it actually may by empty
-        //if (empty($groups)) 
-        //    throw new GroupInitializeException('You can not init group list with empty array');
-
-        $this->groups = $groups;
-    }
-    
-    public function asArray() {
-        return $this->groups;
-    }
-
-    /*
-        Used for filtering group info into array
-
-        @param $key string
-    */
-    public function filterInfo($key) {
-        //foreach instead of array_walk because
-        //array_walk replaces objects
-        $result = array();
-        foreach($this->groups as $group) {
-            if ($key == 'gid') {
-                $result[] = $group->gid;
-            } else if ($key == 'info') {
-                $result[] = $group->info;
-            } else {
-                if (!isset($group->info[$key]))
-                    throw new GroupsDataException("Could not find '$key' in group info");
-                $result[] = $group->info[$key];
-            }
-        }
-
-        return $result;
-    }
-
-    //make object countable
-    public function count() {
-        return count($this->groups);
-    }
-
-    //workaround for foreach
-    public function getIterator() {
-        return new ArrayIterator($this->groups);
+    protected function __construct(array $groups) {
+        parent::__construct($groups, 'GroupsList');
     }
 
     /*
@@ -244,7 +195,7 @@ class GroupsList implements IteratorAggregate, Countable {
             return;
 
         $db = DB::getInstance()->Start_Connection('mysql');
-        $gids = $groups->filterInfo('gid');
+        $gids = $groups->filter('gid');
 
         $query = '
             SELECT gid, COUNT(gid) AS members_count
@@ -316,8 +267,11 @@ class GroupsList implements IteratorAggregate, Countable {
                 //this are usually somewhat realted to
                 $result = array();
                 preg_match_all('/<(?P<tagname>[abi])(?:\s[^>]*?)?>(?P<info>.*?)<\/(?P=tagname)>/i', $descr, $result, PREG_PATTERN_ORDER);
-                foreach ($result['info'] as $tag)
-                    $tags[] = trim($tag);
+                foreach ($result['info'] as $tag) {
+                    $tag = trim($tag);
+                    if (strlen($tag) < 128)
+                        $tags[] = $tag;
+                }
                 
                 $tags = array_unique($tags);
                 return $tags;
@@ -362,7 +316,7 @@ class GroupsList implements IteratorAggregate, Countable {
 
         $db = DB::getInstance()->Start_Connection('mysql');
 
-        $gids = $groups->filterInfo('gid');
+        $gids = $groups->filter('gid');
 
         $status = $online ? ' + 1 ' : ' - 1 ';
         $query = "
@@ -375,11 +329,4 @@ class GroupsList implements IteratorAggregate, Countable {
         return $db->affected_rows == count($gids);
     }
 
-    public static function merge() {
-        $merged = array();
-        foreach (func_get_args() as $arg) {
-            $merged = array_merge($merged, $arg->asArray());
-        }
-        return new GroupsList($merged);
-    }
 };

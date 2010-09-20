@@ -95,11 +95,18 @@ _tap.mixin({
             admin = options.admin,
 			online_count = options.online_count,
 			total_count = options.total_count;
+
+        var template = (
+            ' <img class="favicon-stream-title" src="{fav}" /> {t}' +
+            (online_count !== null && total_count !== null ?
+             '<span class="visitor_count" title="viewers online/total"><span class="viewers_online">{oc}</span> / {tc}</span>' :
+             '') + 
+            ' <a href="{u}">view profile</a>');
+
         this.feedType.set('text', type);
         title = (!url) 
             ? title 
-            : ' <img class="favicon-stream-title" src="{fav}" /> {t} <span class="visitor_count" title="viewers online/total"><span class="viewers_online">{oc}</span> / {tc}</span> <a href="{u}">view profile</a>'
-            .substitute({fav: favicon, t: title, u: url, oc: online_count, tc: total_count});
+            : template.substitute({fav: favicon, t: title, u: url, oc: online_count, tc: total_count});
 
         if (!!admin) title = ['<span title="Moderator" class="moderator-title">&#10070;</span> ', title, '<a href="{u}">manage channel</a>'.substitute({u: admin})].join('');
         this.title.set('html', title);
@@ -213,9 +220,13 @@ var _stream = _tap.register({
 
     init: function() {
 		this.enableLoadMore();
-		//this.setLoadMore(id, feed, keyword);
-		this.setLoadMore(_vars.filter.gid, {}, null);
+
+        this.id = _vars.filter.gid;
+        this.type = 'channels';
+        this.feed = {};
+        this.keyword = null;
         this.loadmore_count = 0;
+
         this.setStreamVars();
         this.subscribe({
             'list.item': this.setStream.bind(this),
@@ -237,7 +248,9 @@ var _stream = _tap.register({
 		3. info (obj) additional group/feedtype data
 	*/
     setStream: function(type, id, info) {
-        if (type == 'channels') return this.changeFeed(id, info);
+        if (['channels', 'peoples', 'private'].contains(type))
+            return this.changeFeed(type, id, info);
+
         return this;
     },
 
@@ -251,17 +264,59 @@ var _stream = _tap.register({
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
         4. more (int) if you want to load more
 	*/
-    changeFeed: function(id, feed, keyword, more, anon) {
+    changeFeed: function(type, id, feed, keyword, more, anon) {
         var self = this,
             data = {type: null};
 
-        self.id = id;
+        this.type = type;
+        this.id = id;
+        this.feed = feed;
+        this.keyword = keyword;
 
-        switch (id) {
-            case 'all': data.type = 11; break;
-            case 'public': data.type = 100; break;
-            case 'personal': data.type = 2; data.id = _vars.filter.uid; break;
-            default: data.type = 1; data.id = id;
+        var prefix = ''; //urls prefix
+        if (type == 'channels') {
+            prefix = 'channel';
+            switch (id) {
+                case 'all':
+                    data.type = 11;
+                    break;
+
+                case 'public':
+                    data.type = 100;
+                    break;
+
+                default:
+                    data.type = 1;
+                    data.id = id;
+            }
+        } else if (type == 'peoples') {
+            prefix = 'user';
+            feed.admin = false;
+            feed.online_count = null;
+            feed.total_count = null;
+            switch (id) {
+                case 'all':
+                    data.type = 22;
+                    break;
+
+                default:
+                    data.type = 2;
+                    data.id = id;
+           }
+        } else if (type == 'private') {
+            prefix = 'user';
+            feed.admin = false;
+            feed.online_count = null;
+            feed.total_count = null;
+            switch (id) {
+                case 'all':
+                    data.type = 33;
+                    break;
+
+                default:
+                    data.type = 3;
+                    data.id = id;
+            }
         }
 
         var tapbox = $('taptext');
@@ -300,11 +355,11 @@ var _stream = _tap.register({
             onRequest: this.showLoader.bind(this),
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);
-                if (self.id != 'personal')
+                if (!feed.hide)
                     self.setTitle({
                         title: keyword ? ['"', keyword, '" in ', feed.name].join('') : feed.name,
     //					favicon: data.type == 1 ? $$('#gid_'+id+' img.favicon-img')[0].src : '',
-                        url: feed.symbol ? '/channel/' + feed.symbol : null,
+                        url: feed.symbol ? '/'+prefix+'/' + feed.symbol : null,
                         type: keyword ? 'search' : 'feed',
                         desc: feed.topic,
                         admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
@@ -314,8 +369,7 @@ var _stream = _tap.register({
 
                 if (response) self.parseFeed(response);
                 self.hideLoader();
-                self.publish('feed.changed', id.test(/^(public|all)$/) ? id : 'group_' + id);
-				self.setLoadMore(id, feed, keyword);
+                self.publish('feed.changed', ['public', 'all'].contains(id) ? id : 'group_' + id);
 				self.enableLoadMore();
                 self.enableLoadLess();
             }
@@ -328,7 +382,7 @@ var _stream = _tap.register({
         if (loadless) {
             loadless.addEvent('click',function(){
                     self.loadmore_count = self.loadmore_count - 10;
-                    self.changeFeed(self.loadmore_gid,self.loadmore_feed,self.loadmore_keyword,self.loadmore_count);
+                    self.changeFeed(self.type, self.id, self.feed, self.keyword, self.loadmore_count);
             });
         }
 	},
@@ -339,18 +393,10 @@ var _stream = _tap.register({
         if (loadmore) {
             loadmore.addEvent('click',function(){
                     self.loadmore_count = self.loadmore_count + 10;
-                    self.changeFeed(self.loadmore_gid,self.loadmore_feed,self.loadmore_keyword,self.loadmore_count);
+                    self.changeFeed(self.type, self.id, self.feed, self.keyword, self.loadmore_count);
             });
         }
 	},
-
-	setLoadMore: function( gid, feed, keyword) {
-		var self = this;
-		//console.log(gid, feed, keyword);
-		self.loadmore_gid = gid;
-		self.loadmore_feed = feed;
-		self.loadmore_keyword = keyword;
-	}
 });
 
 /*
@@ -670,8 +716,9 @@ var _responses = _tap.register({
 
 				var txtPopup = "<ul class='modOptions'>";
 				txtPopup += "<li><a href='/user/"+t_uname+"' class='modlink mod-go-profile'>View <b>"+t_uname+"</b> profile</a></li>";
-				txtPopup += "<li><a href='#' class='modlink mod-send-pm'>Send <b>" + t_uname + "</b> a Private Message</a></li>";
-				txtPopup += "<li><a href='/channel/" + t_symbol  + "' class='modlink mod-go-channel'>Go to channel <b>" + t_gname + "</b></a></li>";
+				txtPopup += "<li><a href='/user/"+t_uname+"?pm' class='modlink mod-send-pm'>Send <b>" + t_uname + "</b> a Private Message</a></li>";
+                if (t_symbol)
+    				txtPopup += "<li><a href='/channel/" + t_symbol  + "' class='modlink mod-go-channel'>Go to channel <b>" + t_gname + "</b></a></li>";
 				txtPopup += "<li><a href='/tap/" + data_cid  + "' class='modlink mod-go-tap'>View this discussion</b></a></li>";
 				if (t_delete_permission=="owner") {
 					txtPopup = txtPopup + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
@@ -1008,9 +1055,9 @@ var _tapbox = _tap.register({
 		3. data (obj) additional data for the item
 	*/
     handleTapBox: function(type, id, data) {
-        if (type !== 'channels') return;
+        if (!(['channels', 'private'].contains(type))) return;
         this.changeOverlay(id, data.name);
-        this.changeSendTo(data.name, data.symbol, id);
+        this.changeSendTo(data.name, data.symbol, id, type);
     },
 
 	/*
@@ -1041,8 +1088,9 @@ var _tapbox = _tap.register({
 		2. symbol (string) the symbol of the group
 		3. id (string) the id of the group
 	*/
-    changeSendTo: function(name, symbol, id) {
-        this.sendTo = [name, symbol, 0, id].join(':');
+    changeSendTo: function(name, symbol, id, type) {
+        type = type ? type : 'groups';
+        this.sendTo = {name: name, symbol: symbol, type: type, id: id};
         return this;
     },
 
@@ -1057,7 +1105,7 @@ var _tapbox = _tap.register({
             url: '/AJAX/new_message_handler.php',
             data: {
                 msg: this.msg.get('value'),
-                to_box: JSON.encode([this.sendTo])
+                to: this.sendTo
             },
             onSuccess: this.parseSent.bind(this)
         }).send();
@@ -1174,6 +1222,9 @@ _live.stream = _tap.register({
         var cids = [].combine($splat(this.stream)).combine($splat(this.convos)),
                 uids = [].combine($splat(this.people || [])),
                 gids = [].combine($splat(this.groups || []));
+        if (!(cids.length || uids.length || gids.length))
+            return;
+
         this.publish('push.send', {
             cids: cids.join(','),
             uids: uids.join(','),
@@ -1444,7 +1495,8 @@ _live.notifications = _tap.register({
         this.subscribe({
             'push.data.notify.convo.response': this.newConvoResponse.bind(this),
             'push.data.notify.tap.new': this.newTap.bind(this),
-            'push.data.notify.follower': this.newFollower.bind(this)
+            'push.data.notify.follower': this.newFollower.bind(this),
+            'push.data.notify.private': this.newPrivate.bind(this)
         });
     },
 
@@ -1468,7 +1520,7 @@ _live.notifications = _tap.register({
         greal_name = data['greal_name'];
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
-        text = data['text']
+        text = data['chat_text'];
 
         _notifications.alert('<span class="notification-title icon-tap">New tap</span>',
             '<a href="/user/'+uname+'">' + ureal_name +
@@ -1501,6 +1553,22 @@ _live.notifications = _tap.register({
     	_notifications.items.getLast().addEvent('click', function() {
         	document.location.replace('http://tap.info/user/'+uname);
     	});
+    },
+
+    newPrivate: function(data) {
+        cid = data['cid'];
+        uname = data['uname'];
+        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+        text = data['chat_text'];
+
+        _notifications.alert('<span class="notification-title icon-private">New PM</span>',
+            '<a href="/user/'+uname+'">' + ureal_name +
+            '</a> send\'s you a private message "' + text + '"!');
+
+    	_notifications.items.getLast().addEvent('click', function() {
+        	document.location.replace('http://tap.info/tap/'+cid);
+    	});
+
     }
 });
 

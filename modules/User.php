@@ -1,191 +1,125 @@
 <?php
 /*
-All user operations, e.g login in, information
+    All user operations, e.g login in, information
 */
 class User extends BaseModel {
     private $uid = null;
+    private $guest = false;
 
     private $loggedIn = false;
     private $session_started = false;
 
-    public function __construct($uid = null) {
-        parent::__construct();
+    /*
+        @param array|id $info full info for cache or just uid
+    */
+    public function __construct($info) {
+        parent::__construct(
+            array('uid', 'uname', 'ip', 'addr', 'guest', 'info', 'fullInfo', 'stats'),
+            array('info', 'fullInfo', 'stats'));
+
         if (!$this->session_started) {
             session_start();
             $this->serssion_started = true;
         }
 
-        $this->uid = $uid;
+        if ($info === null)
+            throw new UserInfoException('You should specify id before using this class');
+        else if (is_array($info)) {
+            $this->uid = $info['uid'];
+            $this->data = $info;
+        } else
+            $this->uid = intval($info);
     }
 
+    public function setGuest($guest) {
+        $this->guest = $guest;
+    }
+
+    public function setStats($stats) {
+        $this->data['stats'] = $stats;
+        //hacky, but useful
+        $this->data['info']['stats'] = $stats;
+    }
+
+    public function setInfo($key, $val) {
+        $this->data['info'][$key] = $val;
+    }
+
+    /*
+        You can get:
+        uid | uname | ip - addr | guest
+        info | fullInfo | stats
+
+        All info with get methods caching
+    */
     public function __get($key) {
-        if ($key == 'uid')
-            return $this->uid;
+        $current = $this->uid == $_SESSION['uid'];
+
+        switch ($key) {
+            case 'uid':
+                return $this->uid;
+
+            case 'uname':
+                if ($current)
+                    return $_SESSION['uname'];
+                else
+                    return $this->info['uname'];
+
+            case 'ip':
+            case 'addr':
+                if ($current)
+                    return $_SERVER['REMOTE_ADDR'];
+                else
+                    return $this->info['ip'];
+
+            case 'guest':
+                return $this->guest;
+
+            default:
+                $name = 'get'.ucfirst($key);
+                if (method_exists($this, $name)) {
+                    if (!isset($this->data[$key]))
+                        $this->data[$key] = $this->$name();
+
+                    return $this->data[$key];
+                }
+        }
 
         throw new UserInfoException("Unknown data named '$key'");
     }
 
     /*
-        Perform identification routine (not user/pass authorization)
-        loggin in user again if guest/user
+        Returns user id by user name
+
+        @param $uname string
+        @returns User
     */
-    public function identify() {
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-    
-        //if user already logged in - do nothing
-        if ($_SESSION['guest'] == 0 && isset($_SESSION['uid'])) {
-            $this->loggedIn = true;
-            return true;
-        }
+    public static function fromUname($uname) {
+        $db = DB::getInstance()->Start_Connection('mysql');
 
-        //if user have cookies from previous session, log him in
-        if ($this->bypassLogin()) {
-            return true;
-        }
-
-        //if nothing helps, make him guest
-        $this->makeGuest();
-        return false;
-    }
-
-    /*
-        Check if username & password is right
-        and then logging user in
-    */
-    public function logIn($username, $password, $set_cookies = true, $auto_login = false, $with_facebook = false) {
-        if (!$with_facebook) {
-           $where = "uname = #uname# AND pass = MD5(#pass#)";
-           $params = array('uname' => $username, 'pass' => $password);
-        } else {
-            $fb = new Facebook();
-            if (!$fb->fuid)
-                return false;
-
-            $where = "fb_uid = #fbid#";
-            $params = array('fbid' => $fb->fuid);
-        }
-
-        $query = "SELECT uid, uname, fname
+        $query = "SELECT uid
                     FROM login
-                   WHERE {$where}
-                     AND ban = 0
+                   WHERE uname = #uname#
                    LIMIT 1";
-        $result = $this->db->query($query, $params);
-
+        $user = null;
+        $result = $db->query($query, array('uname' => $uname));
         if ($result->num_rows) {
-            $this->loggedIn = true;
-
             $result = $result->fetch_assoc();
-            $hash = $this->makeHash();
-            if ($set_cookies)
-                $this->setUserCookies(intval($result['uid']), $result['uname'], $result['fname'], $hash, $auto_login);
-
-            return true;
+            $user = new User(intval($result['uid']));
         }
-        return false;
-    }
-
-    public function logInWithFacebook() {
-        return $this->logIn('', '', true, true, true);
-    }
-
-    /*
-        Logged in user by his cookie hash
-    */
-    public function bypassLogin() {
-        if (!$_COOKIE['auto_login'] || 
-            !isset($_COOKIE['uid']) ||
-            !isset($_COOKIE['rand_hash']) ||
-            isset($_COOKIE['GUEST_uid']))
-            return false;
-
-        $uid = intval($_COOKIE['uid']);
-        $hash = $this->db->real_escape_string($_COOKIE['rand_hash']);
-        $query = "SELECT uid, uname, fname
-                    FROM login
-                   WHERE uid = #uid#
-                     AND hash = #hash#
-                   LIMIT 1";
-        $result = $this->db->query($query, array('uid' => $uid, 'hash' => $hash));
-        if ($result->num_rows) {
-            $this->loggedIn = true;
-
-            $result = $result->fetch_assoc();
-            $hash = $this->makeHash();
-            $this->setUserCookies(intval($result['uid']), $result['uname'], $result['fname'], $hash, true);
-
-            return true;
-        }
-        return false;
+        return $user;
     }
 
     /*
         Logs out user
     */
-    public function logOut($uid) {
+    public function logOut() {
         $query = "UPDATE login
                      SET hash = ''
                    WHERE uid = #uid#";
-        $this->db->query($query, array('uid' => $uid));
-        $this->clearCookies();
+        $this->db->query($query, array('uid' => $this-> uid));
+        Auth::clearCookies();
         session_destroy();
-    }
-
-    /*
-        Makes current user guest
-    */
-    public function makeGuest() {
-        
-        if ($_COOKIE['GUEST_uid'] && $_COOKIE['GUEST_hash']) {
-            $uid = $_COOKIE['GUEST_uid'];
-            $uname = $_COOKIE['GUEST_uname'];
-            $hash = $_COOKIE['GUEST_hash'];
-        } else {
-            list($uid, $uname, $hash) = $this->createGuest();
-            
-            setcookie('GUEST_uid', $uid, time()+36000);					
-            setcookie('GUEST_uname', $uname, time()+36000);
-            setcookie('GUEST_hash', $hash, time()+36000);
-        }
-        $this->setUserCookies($uid, $uname, 'guest', $hash, false, false);
-        $_SESSION['guest'] = 1;
-    }
-
-    /*
-        Yeah, it returns max uid from login table
-    */
-    public function getMaxId() {
-        $query = "SELECT MAX(uid)+1 AS max
-                    FROM login";
-        $result = $this->db->query($query)->fetch_assoc();
-        return intval($result['max']);
-    }
-
-    /*
-        Creates new guest-user and returns info about it
-    */
-    private function createGuest() {
-        $hash = $this->makeHash();
-        $uname = 'Guest'.$this->getMaxId();
-        $ip = $_SERVER['REMOTE_ADDR'];
-
-        $query = "INSERT
-                    INTO login (`hash`,`uname`,`last_login`, `ip`, `anon`, `email`)
-                  VALUES (#hash#, #uname#, CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, #hash#)";
-        $result = $this->db->query($query, array('hash' => $hash, 'uname' => $uname, 'ip' => $ip));
-        
-        if ($this->db->affected_rows != 1)
-            return null;
-
-        $uid = $this->db->insert_id;
-        
-        //Setting up default account
-        $this->db->query("INSERT INTO profile (uid, language) VALUES (#uid#, 'English')", array('uid' => $uid));
-        $this->db->query("INSERT INTO settings (uid) VALUES (#uid#)", array('uid' => $uid));
-        $this->db->query("INSERT INTO notifications (uid) VALUES (#uid#)", array('uid' => $uid));
-        $this->db->query("INSERT INTO TEMP_ONLINE (uid) VALUES (#uid#)", array('uid' => $uid));
-
-        return array($uid, $uname, $hash);
     }
 
     /*
@@ -205,8 +139,8 @@ class User extends BaseModel {
             'lname' => $lname, 'pass' => $pass, 'email' => $email, 'uid' => $uid));
         
         if ($this->db->affected_rows == 1) {
-            $hash = $this->makeHash();
-            $this->setUserCookies($uid, $uname, $fname, $hash, true);
+            $hash = Auth::makeHash();
+            Auth::setCookies($uid, $uname, $fname, $hash, true);
 
             return true;
         }
@@ -215,89 +149,18 @@ class User extends BaseModel {
     }
 
     /*
-        Returns purely random hash
-    */
-    private function makeHash() {
-        $abc = range('a', 'z');
-        $rand_str = '';
-        for ($i = 0; $i < 16; $i++)
-            $rand_str .= array_rand($abc);
-
-        return md5($rand_str);
-    }
-
-    /*
-        Sets all cookies & session variables needs to user after login
-    */
-    private function setUserCookies($uid, $uname, $real_name, $hash, $auto_login, $clear = true) {
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $query = "UPDATE login
-                     SET last_login = CURRENT_TIMESTAMP(),
-                         ip = INET_ATON(#ip#),
-                         hash = #hash#
-                   WHERE uid = #uid#
-                   LIMIT 1";
-        $this->db->query($query, array('ip' => $ip, 'hash' => $hash, 'uid' => $uid));
-        
-        if ($clear)
-            $this->clearCookies();
-
-        $fb = new Facebook();
-        $user = new User($uid); //FIXME!!
-        $binded = $fb->isUserBinded($user);
-
-        $_SESSION['facebook'] = $binded;
-        $_SESSION['uid'] = $uid;
-        $_SESSION['uname'] = $uname;
-        $_SESSION['real_name'] = $real_name;
-        setcookie("uid", $uid, time()+36000000);
-        setcookie("rand_hash", $hash, time()+36000000);
-        setcookie("uname", $uname, time()+36000000);
-        setcookie("auto_login", $auto_login, time()+36000000);
-    }
-
-    /*
-        Delete all user-related cookies
-    */
-    public function clearCookies() {
-        foreach (array('uid', 'uname', 'real_name', 'guest') as $i)
-            $_SESSION[$i] = NULL;
-
-        foreach (array('uid', 'rand_hash', 'uname', 'auto_login',
-                       'GUEST_hash', 'GUEST_uid', 'GUEST_uname') as $i)
-            setcookie($i, NULL, time() - 3600);
-    }
-
-    /*
-        Returns user id by user name
-    */
-    public function uidFromUname($uname) {
-        $query = "SELECT uid
-                    FROM login
-                   WHERE uname = #uname#
-                   LIMIT 1";
-        $uid = null;
-        $result = $this->db->query($query, array('uname' => $uname));
-        if ($result->num_rows) {
-            $result = $result->fetch_assoc();
-            $uid = intval($result['uid']);
-        }
-        return $uid;
-    }
-
-    /*
         Returns info about user
         userpics, username, help, real name, email, private settings
     */
-    public function getInfo($uid) {
+    public function getInfo() {
         $query = "SELECT uname, GET_REAL_NAME(fname, lname, uname) AS real_name,
                          pic_100 AS big_pic, pic_36 AS small_pic, help,
-                         email, private
+                         email, private, ip, uid
                     FROM login
                    WHERE uid = #uid#
                    LIMIT 1";
         $info = array();
-        $result = $this->db->query($query, array('uid' => $uid));
+        $result = $this->db->query($query, array('uid' => $this->uid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
         return $info;
@@ -306,18 +169,25 @@ class User extends BaseModel {
     /*
         User information from profile table too, like about, etc
     */
-    public function getFullInfo($uid) {
-        $query = "SELECT l.uname, GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
-                         l.pic_100 AS big_pic, l.pic_36 AS small_pic, l.help,
-                         p.about
+    public function getFullInfo($online = false) {
+        $fields = $joins = '';
+        if ($online) {
+            $fields = ', tpo.online';
+            $joins = 'LEFT JOIN TEMP_ONLINE tpo ON tpo.uid = l.uid';
+        }
+
+        $query = "SELECT l.uid, l.uname, GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
+                         l.pic_100 AS big_pic, l.pic_36 AS small_pic, l.help, l.private,
+                         p.about, p.country, p.zip{$fields}
                     FROM login l
                    INNER
                     JOIN profile p
                       ON p.uid = l.uid
+                   {$joins}
                    WHERE l.uid = #uid#
                    LIMIT 1";
         $info = array();
-        $result = $this->db->query($query, array('uid' => $uid));
+        $result = $this->db->query($query, array('uid' => $this->uid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
         return $info;
@@ -334,7 +204,7 @@ class User extends BaseModel {
         
         array('taps' => , 'responses' => , 'groups' => )
     */
-    public function getStats($uid) {
+    public function getStats() {
         $query = "
          SELECT COUNT(i.mid) AS taps,
                 SUM(i.count) AS responses,
@@ -362,7 +232,7 @@ class User extends BaseModel {
                 ) AS i";
 
         $stats = array();
-        $result = $this->db->query($query, array('uid' => $uid));
+        $result = $this->db->query($query, array('uid' => $this->uid));
         if ($result->num_rows)
             $stats = $result->fetch_assoc();
         return $stats;
@@ -381,5 +251,80 @@ class User extends BaseModel {
         $this->db->query($query, array('uid' => $this->uid));
 
         return $this->db->affected_rows == 1;
+    }
+
+    /*
+        Returns number of friends
+
+        $youFollowing = true - you following
+        $youFollowing = false - follows you
+
+        $uid - your uid
+    */
+    private function friendsCount($youFollowing = true) {
+        $identifier = $youFollowing ? 'uid' : 'fuid';
+        $query = "
+            SELECT COUNT(*) AS count
+              FROM friends AS f
+             WHERE f.{$identifier} = #uid#";
+        $result = $this->db->query($query, array('uid' => $this->uid))->fetch_assoc();
+        return intval($result['count']);
+    }
+
+    public function followingCount() {
+        return $this->friendsCount(true);
+    }
+
+    public function followersCount() {
+        return $this->friendsCount(false);
+    }
+
+    /*
+        Follows user or list of users
+
+        @param User|UsersList $friend 
+    */    
+    public function follow($friends) {
+        if ($friends instanceof UsersList) {
+            $values = '';
+            foreach($friends as $friend)
+                $values .= ",({$this->uid}, {$friend->uid}, NOW())";
+            $values = substr($values, 1);
+        } else if ($friends instanceof User) {
+            $values = "({$this->uid}, {$friends->uid}, NOW())"; 
+        }
+
+        $query = "INSERT
+                    INTO friends (uid, fuid, time_stamp)
+                  VALUES {$values}";
+
+        $okay = $this->db->query($query)->affected_rows >= 1;
+        return $okay;
+    }
+
+    /*
+        Unfollows user
+    */
+    public function unfollow(User $friend) {
+        $query = "DELETE
+                    FROM friends
+                   WHERE fuid = #friend#
+                     AND uid = #you#
+                   LIMIT 1";
+        $okay = $this->db->query($query, array('you' => $this->uid, 'friend' => $friend->uid))->affected_rows == 1;
+        return $okay;
+    }
+    
+    /*
+        Check if user following you or not
+    */
+    public function following(User $friend) {
+        $query = "SELECT fuid
+                    FROM friends
+                   WHERE fuid = #friend#
+                     AND uid = #you#
+                   LIMIT 1";
+        $okay = $this->db->query($query, array('you' => $this->uid, 'friend' => $friend->uid))->num_rows == 1;
+        return $okay;
     }
 };

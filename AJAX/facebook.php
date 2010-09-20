@@ -47,7 +47,7 @@ class facebook_ajax {
     }
 
     public function check(User $user) {
-        if ($this->fb->isUserBinded($user)) {
+        if (Facebook::isBinded($user)) {
             return array('success' => false, 'reason' => 'already binded');
         }
 

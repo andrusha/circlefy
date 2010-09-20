@@ -58,27 +58,28 @@
 			<a href="#" class="names inblock ellipsis">all your channels</a>
 		</li>
 
-	<?php if($your_groups) foreach ($your_groups as $group): ?>
-	<li id="gid_<?= $group['gid'] ?>" class="panel-item" 
-	data-id="<?= $group['gid'] ?>" data-name="<?= $group['display_symbol'] ?>"
-	data-symbol="<?= $group['symbol'] ?>"
-	data-topic="<?= $group['topic']?>"
-	data-online_count="<?= $group['online_count'] ?>"
-	data-total_count="<?= $group['total_count'] ?>"
-	<?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
-	<span class="count"></span>
-	<a href="#" class="names inblock ellipsis" 
-	alt="<?= ($group['admin'] ? 'You are a moderator of this channel.' : '') ?>"
-	title="<?= ($group['admin'] ? 'You are a moderator of this channel.' : '') ?>">
-	<?= ($group['admin'] ? '&#10070; ' : '') ?>
-	<?= strtolower($group['display_symbol']) ?>
-	</a>
-	<span class="favicon">
-	<span class="online-group-count" title="number of users online"><?=$group['online_count']?></span>
-	<img class="favicon-img" src="/group_pics/<?=$group['favicon'];?>" />
-	</span>	
-	</li>
-	<?php endforeach; ?>
+	<? if($your_groups) foreach ($your_groups as $group): ?>
+        <li id="gid_<?= $group['gid'] ?>" class="panel-item" 
+            data-id="<?= $group['gid'] ?>"
+            data-name="<?= $group['symbol'] ?>"
+            data-symbol="<?= $group['symbol'] ?>"
+            data-topic="<?= $group['topic']?>"
+            data-online_count="<?= $group['count'] ?>"
+            data-total_count="<?= $group['members_count'] ?>"
+            <?= ($group['admin'] ? 'data-admin="yes"' : '') ?>>
+
+            <span class="count"></span>
+
+            <a href="#" class="names inblock ellipsis" 
+               alt="<?= ($group['admin'] ? 'You are a moderator of this channel.' : '') ?>"
+               title="<?= ($group['admin'] ? 'You are a moderator of this channel.' : '') ?>"><?= ($group['admin'] ? '&#10070; ' : '') ?><?= strtolower($group['symbol']) ?></a>
+
+            <span class="favicon">
+                <span class="online-group-count" title="number of users online"><?=$group['count']?></span>
+                <img class="favicon-img" src="/group_pics/<?=$group['favicon'];?>" />
+            </span>	
+        </li>
+	<? endforeach; ?>
 	<li class="notify">To find and join more channels to tap, use the search bar at the top of the page</li>
 	</ul>
 	<ul id="panel-convos" class="panel" data-name="convos">
@@ -101,26 +102,58 @@
 	<?php endif; ?>
 	</ul>
 	<ul id="panel-people" class="panel"
-	data-action="add contacts" data-action-href="/people" data-name="people">
-	<li>All your people</li>
-	<?php if($your_friends) : ?>
-	<?php foreach ($your_friends as $person): ?>
-	<a href="/user/<?=$person['friend_uname']?>">
-	<li class="people-contact-list"><img src='/user_pics/<?=$person['friend_pic']?>' 
-	title="<?=$person['friend_uname'].' :: '.$person['friend_fname'].' '.$person['friend_lname']?>">
-	</li>
-	</a>
-	<?php
-	endforeach;
-		else:
-	?>
-	<li class="notify">You have no contacts</li>
-	<? endif; ?>
+    	data-action="add contacts"
+        data-action-href="/people"
+        data-name="peoples">
+
+        <? if($your_friends) : ?>
+            <li id="users_all" class="people-contact-list" style="float: none"
+                data-id="all"
+                data-name="All your people"
+                data-topic="Aggregate feed of all your friends">All your people</li>
+
+            <? foreach ($your_friends as $person): ?>
+                <li class="people-contact-list" id="uid_<?=$person['uid']?>" 
+                    data-id="<?=$person['uid']?>"
+                    data-name="<?=$person['fname']?>'s tapstream"
+                    data-uname="<?=$person['uname']?>"
+                    data-topic="Aggregate feed of <?=$person['uname']?> taps">
+                    <img src='/user_pics/<?=$person['small_pic']?>'
+                         title="<?=$person['uname'].' :: '.$person['real_name']?>">
+                </li>
+        <?
+            endforeach;
+        else:
+        ?>
+            <li class="notify">You have no contacts</li>
+        <? endif; ?>
 
 	</ul>
-	<ul id="panel-direct" class="panel" data-name="direct">
-	<li class="notify">You have no messages</li>
+
+	<ul id="panel-direct" class="panel"
+        data-name="private">
+
+        <? if ($your_private) : ?>
+            <li id="private_all" class="people-contact-list" style="float: none"
+                data-id="all"
+                data-name="Inbox"
+                data-topic="All your private messages">Inbox</li>
+
+            <? foreach ($your_private as $person): ?>
+                 <li class="people-contact-list" id="pid_<?=$person['uid']?>" 
+                    data-id="<?=$person['uid']?>"
+                    data-name="You & <?=$person['fname']?>'s private inbox"
+                    data-uname="<?=$person['uname']?>"
+                    data-topic="Your private conversations with <?=$person['uname']?>">
+                    <img src='/user_pics/<?=$person['small_pic']?>'
+                         title="Your PM's with <?=$person['real_name']?>">
+                </li>
+        <?     endforeach;
+           else: ?>
+        	<li class="notify">You have no messages</li>
+        <? endif; ?>
 	</ul>
+
 	</div>
 <? endif; // if show_lists ?>
 

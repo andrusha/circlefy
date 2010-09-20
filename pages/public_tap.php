@@ -1,34 +1,33 @@
 <?php
 
 class public_tap extends Base{
-
-	protected $text;
-	protected $top;
-	
-	function __default(){
-	}
+	function __default(){}
 	
 	public function __toString(){
 		return "Public User Object";
 	}
 	
 	function __construct(){
-				
-		$this->view_output = "HTML";
-		$this->db_type = "mysql";
 		$this->need_login = 1;
 		$this->need_db = 1;
-		$this->need_filter = 1;
-		$this->input_debug_flag = 0;
 		$this->page_name = "public_tap";
 	
 		parent::__construct();
 		
 		$mid = intval($_GET['mid']);
-        $uid = intval($_SESSION['uid']);
     
         $taps = new Taps();
-        $tap = $taps->getTap($mid);
+        $tap = $taps->getTap($mid, true, true);
+
+        if ($tap['private'] || empty($tap))
+            if (($tap['uid'] != $this->user->uid && $tap['to_uid'] != $this->user->uid) || empty($tap)) {
+                $this->set(array(), 'tap');
+                $this->set(array(), 'involved');
+                header('location: /');
+                return;
+            }
+
+
 		$responses = $taps->getResponses($mid);
         $last_resp = end($responses);
         $tap['responses'] = $responses;
@@ -37,26 +36,20 @@ class public_tap extends Base{
         $tap['last_resp'] = $last_resp['chat_text'];
         $involved = $this->makeInvolved($responses);
 
-        $tapper_id = intval($tap['uid']);
-
-        $user = new User();
-        $stats = $user->getStats($tapper_id);
-        $tapper = $user->getFullInfo($tapper_id);
+        $tapper = new User(intval($tap['uid']));
 
         $convo = new Convos();
-        $active = $convo->getStatus($uid, $mid);
+        $active = $convo->getStatus($this->user->uid, $mid);
 
 		$this->set($tap, 'tap');
 		$this->set($mid,'cid');
         $this->set($involved, 'involved');
-		$this->set($uid,'uid');
-		$this->set($uid,'pcid');
-        $this->set($stats,'stats');
+		$this->set($this->user->uid,'uid');
 		$this->set($active,'active_convo');
-        $this->set($tapper, 'user');
+        $this->set($tapper->stats,'stats');
+        $this->set($tapper->fullInfo, 'user');
 
-        $current_user = new User($uid);
-        Action::log($current_user, 'tap', 'view', array('mid' => $mid));
+        Action::log($this->user, 'tap', 'view', array('mid' => $mid));
     }
     
     /*

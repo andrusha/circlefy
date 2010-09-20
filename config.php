@@ -91,6 +91,7 @@ define("OK_TOPBAR",BASE_PATH."views/parts/ok_topbar.phtml");
 define("OK_FOOTER",BASE_PATH."views/parts/ok_footer.phtml");
 define("MODAL_WINDOWS",BASE_PATH."views/parts/modal_windows.phtml");
 define("TAP_STREAM", BASE_PATH."views/parts/tap_stream.phtml");
+define("USERS_STREAM", BASE_PATH."views/parts/users_stream.phtml");
 
 define("JAVASCRIPT_TEMPLATES",BASE_PATH."views/parts/javascript_templates.phtml");
 define("LOGIN",BASE_PATH."views/parts/login.phtml");
@@ -126,3 +127,8 @@ define("G_ONLINE_COUNT", 1 << 0);
 define("G_TAPS_COUNT",   1 << 1);
 define("G_USERS_COUNT",  1 << 2);
 define("G_EXTENDED",     1 << 3);
+
+define("U_FOLLOWING",    1 << 0);
+define("U_FOLLOWERS",    1 << 1);
+define("U_LAST_CHAT",    1 << 2);
+define("U_BY_UNAME",     1 << 3);

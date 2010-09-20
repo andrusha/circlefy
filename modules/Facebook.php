@@ -79,8 +79,16 @@ class Facebook extends BaseModel {
 
     /*
         Checks if account is already binded
+
+        @param int|User $user
+
+        @return bool
     */
-    public function isUserBinded(User $user) {
+    public static function isBinded($user) {
+        $db = DB::getInstance()->Start_Connection('mysql');
+
+        $uid = $user instanceof User ? $user->uid : $user;
+
         $query = "
             SELECT fb_uid
               FROM login
@@ -88,7 +96,7 @@ class Facebook extends BaseModel {
              LIMIT 1";
         
         $binded = false;
-        $result = $this->db->query($query, array('uid' => $user->uid));
+        $result = $db->query($query, array('uid' => $user->uid));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
             $binded = $result['fb_uid'] != 0;
@@ -244,13 +252,11 @@ class Facebook extends BaseModel {
         if ($result->num_rows == 0)
             return false;
         
-        $fids = array();
+        $friends = array();
         while ($res = $result->fetch_assoc())
-            $fids[] = intval($res['uid']);
+            $friends[] = intval($res['uid']);
 
-        $uid = $user->uid;
-        $friends = new Friends();
-        $ok = $friends->follow($uid, $fids);
+        $ok = $user->follow(UsersList::fromUids($friends));
 
         return $ok;
     }

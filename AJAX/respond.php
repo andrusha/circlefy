@@ -15,7 +15,6 @@ EOF;
 session_start();
 require('../config.php');
 require('../api.php');
-require('../modules/User.php');
 
 
 if($cb_enable){
@@ -154,8 +153,8 @@ EOF;
             while ($res = $result->fetch_assoc())
                 $users[] = intval($res['uid']);
 
-        $userClass = new User();
-        $info = $userClass->getInfo($uid);        
+        $user = new User($uid);
+        $info = $user->info;        
 
         $text = Taps::makePreview($respText);
         $data = array('cid' => intval($cid), 'uname' => $info['uname'],

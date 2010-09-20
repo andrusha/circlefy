@@ -6,8 +6,6 @@
 */
 require('../config.php');
 require('../api.php');
-require('../modules/User.php');
-require('../modules/Friends.php');
 
 session_start();
 
@@ -20,31 +18,34 @@ if($fid && isset($state)){
 }
 
 class friend_functions{
+    function tap_friend($fid, $state){
+        $you = new User(intval($_SESSION['uid']));
+        $friend = new User(intval($fid));
 
-    private $mysqli;
-    private $last_id = "SELECT LAST_INSERT_ID() AS last_id;";
-    private $results;
-
-    function __construct(){
-        $this->mysqli =  new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE);
-    }
-
-    function tap_friend($fid,$state){
-
-        $uid = $_SESSION['uid'];
-        $uname = $_SESSION['uname'];
-
-        $fid = $this->mysqli->real_escape_string($fid);
-        $state = $this->mysqli->real_escape_string($state);
-
-        $user = new User();
-        $info = $user->getInfo($uid);
-        $friend_info = $user->getInfo($fid);
-
-        $friends = new Friends();
+        $info = $you->info;
+        $finfo = $friend->info;
 
 		if($state == 1 && !$friend_info['private']){
-            $friends->follow($uid, $fid);
+            $you->follow($friend);
+		} else {
+            $you->unfollow($friend);
+		}
+
+        $results = json_encode(array('success' => 1));
+        $this->notifyFriend($info, $you->uid, $friend->uid, $state);
+
+        return $results;
+	}
+
+    private function notifyFriend($info, $uid, $fuid, $status) {
+        $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
+        $message = array('action' => 'notify.follower', 'users' => array(intval($fuid)), 'data' => $data);
+
+        Comet::send('message', $message);
+    }
+
+/*
+TODO:
 
 			$to = $friend_info['email'];
             $subject = "{$uname} now has you on tap.";
@@ -61,22 +62,6 @@ EOF;
 
             if($this->mysqli->query($email_check_query)->num_rows)	
                 mail($to,$subject,$body,$from);
-		} else {
-            $friends->unfollow($uid, $fid);
-		}
+*/
 
-        $results = json_encode(array('success' => 1));
-
-        $this->notifyFriend($info, $uid, $fid, $will_be_friends);
-
-        return $results;
-	}
-
-    private function notifyFriend($info, $uid, $fuid, $status) {
-        $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
-        $message = array('action' => 'notify.follower', 'users' => array(intval($fuid)), 'data' => $data);
-
-        Comet::send('message', $message);
-    }
-
-}	
+};

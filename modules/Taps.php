@@ -9,13 +9,16 @@ class Taps extends BaseModel {
         parent::__construct();
     }
 
+    public function __get($key) {}
+
     /*
         Returns list of tap_id's (mids) that meets
         filter requirements, we can actually combine
         filters as we want, but it not implemented by now
         
         $filter selected filter type for query
-        'aggr_groups' | 'ind_group' | 'public' | 'personal'
+        'aggr_groups' | 'ind_group' | 'public' | 'personal' |
+        'aggr_personal' | 'private' | 'aggr_private'
 
         $params array of params related to that filter
         array('#uid#' => user id
@@ -24,6 +27,8 @@ class Taps extends BaseModel {
               '#search#' => if we searching something
               '#start_from#' => start from in LIMIT
               '#anon#' => filter registred/anonymous users
+              '#from#' => user who sent PM
+              '#to#' => user who recieve PM
     */
     public function filterTapIds($filter, $params) {
         if (!function_exists('substitute')) {
@@ -34,7 +39,8 @@ class Taps extends BaseModel {
         $joins = array(
             'meta' => 'JOIN special_chat_meta scm ON scm.mid = sc.mid',
             'members' => 'JOIN group_members gm ON gm.gid = scm.gid',
-            'logins' => 'JOIN login l ON l.uid = sc.uid'
+            'logins' => 'JOIN login l ON l.uid = sc.uid',
+            'friends' => 'JOIN friends f ON sc.uid = f.fuid'
         );
 
         $toJoin = $where = array();
@@ -42,20 +48,48 @@ class Taps extends BaseModel {
             case 'aggr_groups':
                 $toJoin[] = 'meta';
                 $toJoin[] = 'members';
-                $where[] = 'gm.uid = #uid#';
+                $where[]  = 'gm.uid = #uid#';
                 break;
 
             case 'ind_group':
                 $toJoin[] = 'meta';
-                $where[] = 'scm.gid = #gid#';
+                $where[]  = 'scm.gid = #gid#';
                 break;
 
             case 'public':
-                //it's ok for public anyway
+                $toJoin[] = 'meta';
+                $where[]  = 'scm.private = 0';
+                break;
+
+            case 'aggr_personal':
+                $toJoin[] = 'friends';
+                $toJoin[] = 'meta';
+                $where[]  = 'f.uid = #uid#';
+                $where[]  = 'scm.private = 0';
                 break;
 
             case 'personal':
-                $where[] = 'sc.uid = #uid#';
+                $toJoin[] = 'meta';
+                $where[]  = 'sc.uid = #uid#';
+                $where[] = 'scm.private = 0';
+                break;
+
+            case 'aggr_private':
+                $toJoin[] = 'meta';
+                $where[]  = '(
+                                 (sc.uid = #uid# AND scm.uid IS NOT NULL)
+                                     OR
+                                 (scm.uid = #uid#)
+                             ) AND scm.private = 1';
+                break; 
+
+            case 'private':
+                $toJoin[] = 'meta';
+                $where[]  = '(
+                                 (sc.uid = #from# AND scm.uid = #to#)
+                                     OR
+                                 (sc.uid = #to# AND scm.uid = #from#)
+                             ) AND scm.private = 1';
                 break;
         }
 
@@ -114,13 +148,13 @@ class Taps extends BaseModel {
 
         $filter, $params described in $this->filterTapIds
     */
-    public function getFiltered($filter, $params) {
+    public function getFiltered($filter, $params, $group_info = true, $user_info = false) {
         $idList = $this->filterTapIds($filter, $params);
 
         if (!count($idList))
             return array();
 
-        $taps = $this->getTaps($idList);
+        $taps = $this->getTaps($idList, $group_info, $user_info);
         $responses = $this->lastResponses($idList);
         
         //we need to join our last responses with taps by id
@@ -142,14 +176,34 @@ class Taps extends BaseModel {
 
         $tap_id int|array
     */
-    public function getTaps($tap_ids) {
+    public function getTaps($tap_ids, $group_info = true, $user_info = false) {
+        $join = $fields = '';
+
+        if ($group_info) {
+            $join = '
+              LEFT 
+              JOIN groups g
+                ON g.gid = scm.gid';
+            $fields = 'g.gname, g.symbol, g.favicon,';
+        }
+
+        if ($user_info) {
+            $join .= '
+                LEFT
+                JOIN login l2
+                  ON l2.uid = scm.uid';
+            $fields .= 'l2.uid AS to_uid, l2.uname AS to_uname,
+                GET_REAL_NAME(l2.fname, l2.lname, l2.uname) AS to_real_name,
+                l2.pic_100 AS to_pic_100, ';
+        }
+
         //default responses info (count, last_resp, resp_uname) set to null
         $query = "
             SELECT sc.mid AS cid, sc.chat_text, UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp_raw,
                    UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp, sc.uid, l.uname,
                    GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name, l.pic_100,
-                   tmo.online AS user_online, scm.gid, g.gname, g.symbol, g.favicon,
-                   0 AS count, NULL AS last_resp, NULL AS resp_uname
+                   tmo.online AS user_online, scm.gid, {$fields}
+                   0 AS count, NULL AS last_resp, NULL AS resp_uname, scm.private
               FROM special_chat sc
              INNER
               JOIN login l
@@ -160,9 +214,7 @@ class Taps extends BaseModel {
              INNER
               JOIN special_chat_meta scm
                 ON scm.mid = sc.mid
-             INNER
-              JOIN groups g
-                ON g.gid = scm.gid
+               {$join}
              WHERE sc.mid IN (#tap_ids#)";
         $taps = array();
 
@@ -179,8 +231,8 @@ class Taps extends BaseModel {
 
         $tap_id int
     */
-    public function getTap($tap_id) {
-        $taps = $this->getTaps($tap_id);
+    public function getTap($tap_id, $group_info = true, $user_info = false) {
+        $taps = $this->getTaps($tap_id, $group_info, $user_info);
         if ($taps) {
             //first element of array,
             //there obiously should be only one
@@ -194,48 +246,56 @@ class Taps extends BaseModel {
     /*
         Creates new tap, return tap_id (cid/mid)
     */
-    public function add($uid, $uname, $addr, $gid, $text) {
+    private function add(User $from, $gid, $touid, $text) {
         $this->db->startTransaction();
-        $ok = true;
 
-        //requires to get proper cid (OBSOLETE)
-        $query = "INSERT
-                    INTO channel (uid)
-                  VALUES (#uid#)";
-        $ok = $ok && $this->db->query($query, array('uid' => $uid));
+        $cid = 0;
+        try {
+            //requires to get proper cid (OBSOLETE)
+            $query = "INSERT
+                        INTO channel (uid)
+                      VALUES (#uid#)";
+            $this->db->query($query, array('uid' => $from->uid));
 
-        $cid = $this->db->insert_id;
+            $cid = $this->db->insert_id;
 
-        //makes tap appears online (OBSOLETE)
-        $query = "INSERT
-                    INTO TAP_ONLINE (cid)
-                  VALUES (#cid#)";
-        $ok = $ok && $this->db->query($query, array('cid' => $cid));
+            //makes tap appears online (OBSOLETE)
+            $query = "INSERT
+                        INTO TAP_ONLINE (cid)
+                      VALUES (#cid#)";
+            $this->db->query($query, array('cid' => $cid));
 
-        $query = "INSERT
-                    INTO special_chat (cid, uid, uname, chat_text, ip)
-                  VALUES (#cid#, #uid#, #uname#, #chat_text#, INET_ATON(#ip#))";
-        $ok = $ok && $this->db->query($query, array('cid' => $cid, 'uid' => $uid, 'uname' => $uname,
-            'chat_text' => $text, 'ip' => $addr));
+            $query = "INSERT
+                        INTO special_chat (cid, uid, uname, chat_text, ip)
+                      VALUES (#cid#, #uid#, #uname#, #chat_text#, INET_ATON(#ip#))";
+            $this->db->query($query, array('cid' => $cid, 'uid' => $from->uid, 'uname' => $from->uname,
+                'chat_text' => $text, 'ip' => $from->addr));
 
-        //fulltext table duplicates everything
-        $ok = $ok && $this->db->query(str_replace('special_chat', 'special_chat_fulltext', $query),
-            array('cid' => $cid, 'uid' => $uid, 'uname' => $uname, 'chat_text' => $text,
-                'ip' => $addr));
+            //fulltext table duplicates everything
+            $this->db->query(str_replace('special_chat', 'special_chat_fulltext', $query),
+                array('cid' => $cid, 'uid' => $from->uid, 'uname' => $from->uname, 'chat_text' => $text,
+                    'ip' => $from->addr));
 
-        $query = "INSERT
-                    INTO special_chat_meta (mid, gid, connected, uid)
-                   VALUE (#cid#, #gid#, 1, #uid#)";     
-        $ok = $ok && $this->db->query($query, array('cid' => $cid, 'gid' => $gid, 'uid' => $uid));
-
-        if ($ok)
-            $this->db->commit();
-        else {
+            $query = "INSERT
+                        INTO special_chat_meta (mid, gid, connected, uid, private)
+                       VALUE (#cid#, #gid#, 1, #uid#, #private#)";
+            $this->db->query($query, array('cid' => $cid, 'gid' => $gid, 'uid' => $touid, 'private' => $touid !== null));
+        } catch (SQLException $e) {
             $this->db->rollback();
-            throw new Exception('We have some DB problem out there');
+            throw $e;
         }
 
+        $this->db->commit();
+
         return $cid;
+    }
+
+    public function toGroup(Group $group, User $user, $text) {
+        return $this->add($user, $group->gid, null, $text);
+    }
+
+    public function toUser(User $from, User $to, $text) {
+        return $this->add($from, null, $to->uid, $text);
     }
 
     /*

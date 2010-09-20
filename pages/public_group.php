@@ -34,8 +34,7 @@ class public_group extends Base {
 	ON GO.gid = g.gid
 	WHERE g.symbol = '{$symbol}' LIMIT 1;
 EOF;
-        $this->db_class_mysql->set_query($get_gid_query, 'get_gid', "This query gets a specific gid for the public group");
-        $gid_result = $this->db_class_mysql->execute_query('get_gid');
+        $gid_result = $this->db->query($get_gid_query);
 
         if (!$gid_result->num_rows)
             header('Location: http://tap.info?error=no_public_group');
@@ -53,8 +52,7 @@ EOF;
         //is requested
         $requested = false;
         $q = "SELECT status FROM group_members WHERE gid = '{$gid}' AND uid = '{$_SESSION['uid']}'";
-        $this->db_class_mysql->set_query($q, 'get_status', "status = 1");
-        $request_results = $this->db_class_mysql->execute_query('get_status');
+        $request_results = $this->db->query($q);
         $res = $request_results->fetch_assoc();
 
         //-1 - empty
@@ -97,8 +95,7 @@ EOF;
 EOF;
 
 
-        $this->db_class_mysql->set_query($get_member_count, 'get_member_count', "This query gets a specific gid for the public group");
-        $count_results = $this->db_class_mysql->execute_query('get_member_count');
+        $count_results = $this->db->query($get_member_count);
         $res = $count_results->fetch_assoc();
         $total_count = $res['total_count'];
         $this->set($total_count, 'total_count');
@@ -111,8 +108,7 @@ ON l.uid = gm.uid
 WHERE gm.gid = {$gid} AND admin <> 0;
 EOF;
 
-        $this->db_class_mysql->set_query($admin_list_query, 'admin_list', "This gets the list of admins for a specific group");
-        $admin_list_results = $this->db_class_mysql->execute_query('admin_list');
+        $admin_list_results = $this->db->query($admin_list_query);
 
         $user_admin = false;
         while ($res = $admin_list_results->fetch_assoc()) {
@@ -154,8 +150,7 @@ EOF;
 
 //START member count
         $count_group_member_query = "SELECT COUNT(uid) AS member_count FROM group_members WHERE gid = {$gid}";
-        $this->db_class_mysql->set_query($count_group_member_query, 'member_count', "This query gets a group member count");
-        $count_member_result = $this->db_class_mysql->execute_query('member_count');
+        $count_member_result = $this->db->query($count_group_member_query);
         $res = $count_member_result->fetch_assoc();
         $member_count = $res['member_count'];
         $this->set($member_count, 'member_count');
@@ -175,8 +170,7 @@ EOF;
             SELECT COUNT(sm.gid) AS taps_count
             FROM special_chat_meta AS sm 
             WHERE sm.gid = {$gid}";
-        $this->db_class_mysql->set_query($taps_count_sql, 'taps_count', 'Returns overall number of taps in channel');
-        $res = $this->db_class_mysql->execute_query('taps_count')->fetch_assoc();
+        $res = $this->db->query($taps_count_sql)->fetch_assoc();
         $this->set($res['taps_count'], 'taps_count');
 //END taps count
 
@@ -189,13 +183,11 @@ EOF;
             INNER JOIN chat AS c
                     ON c.cid = sc.cid
             WHERE sm.gid = {$gid} ";
-        $this->db_class_mysql->set_query($responses_count_sql, 'responses_count', 'Returns number of responses for all taps in channel');
-        $res = $this->db_class_mysql->execute_query('responses_count')->fetch_assoc();
+        $res = $this->db->query($responses_count_sql)->fetch_assoc();
         $this->set($res['responses_count'], 'responses_count');
 //END responses count
         
-        $current_user = new User(intval($_SESSION['uid']));
-        Action::log($current_user, 'group', 'view', array('gid' => $gid));
+        Action::log($this->user, 'group', 'view', array('gid' => $gid));
     }
 
     private function get_popular_members($gid){
@@ -207,8 +199,7 @@ JOIN login AS l ON l.uid = sc.uid
 WHERE scm.gid = {$gid}
 GROUP BY sc.uid ORDER BY count DESC LIMIT 9;
 EOF;
-        $this->db_class_mysql->set_query($popular_members_query, 'popular_members', "This query gets a groups active members");
-        $popular_members_results = $this->db_class_mysql->execute_query('popular_members');
+        $popular_members_results = $this->db->query($popular_members_query);
         while ($res = $popular_members_results->fetch_assoc()) {
             $member = $res['uname'];
             $pic_36 = $res['pic_36'];
@@ -236,8 +227,7 @@ WHERE scm.gid = {$gid}
 GROUP BY c.cid ORDER BY count DESC LIMIT 5;
 EOF;
 
-        $this->db_class_mysql->set_query($popular_taps_query, 'popular_taps', "This query gets a groups popular taps");
-        $popular_taps_results = $this->db_class_mysql->execute_query('popular_taps');
+        $popular_taps_results = $this->db->query($popular_taps_query);
         if ($popular_taps_results->num_rows)
             while ($res = $popular_taps_results->fetch_assoc()) {
                 $tap = $res['chat_text'];

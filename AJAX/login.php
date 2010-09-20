@@ -19,14 +19,13 @@ if ($type == 'user') {
         exit();
     }
 
-    $class = new User();
-    if ($class->logIn($user, $password, false))
+    if (Auth::logIn($user, $password, false) !== null)
         echo SUCCESS;
     else
         echo FUCKED_UP;
+
 } else if ($type == 'facebook') {
     $fb = new Facebook();
-
     $exists = $fb->exists();
     
     if ($exists)

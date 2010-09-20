@@ -123,11 +123,15 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 					</div>
 					<div class="body">
                         <?php
-                            $_taps = array($tap);
-                            $dont_show_more = true;
-                            $show_responses = true;
-                            include(TAP_STREAM);
+                            if (!empty($tap)) {
+                                $_taps = array($tap);
+                                $dont_show_more = true;
+                                $show_responses = true;
+                                include(TAP_STREAM);
+                            } else {
                         ?>
+                            
+                        <? } ?>
 					</div>
 				</div>
 

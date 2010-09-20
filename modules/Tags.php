@@ -39,6 +39,8 @@ class Tags extends BaseModel {
         $this->commit();
     }
 
+    public function __get($key) {}
+
     /*
         Fetch tags from DB
     */
@@ -147,40 +149,42 @@ class Tags extends BaseModel {
             return;
 
         $this->db->startTransaction();
-        $ok = true;
 
-        if ($this->tagGroupId === null) {
-            $this->tagGroupId = $this->createGroup();
-        }
+        try {
+            if ($this->tagGroupId === null) {
+                $this->tagGroupId = $this->createGroup();
+            }
 
-        //insert new tags
-        if (!empty($this->tags['new'])) {
-            $existing = $this->tagIdsByTaglist($this->tags['new']);
-            $toInsert = array_udiff($this->tags['new'], $existing, 'strcasecmp');
-            $existing = array_keys($existing); //leave only keys
-            
-            $inserted = array();
-            if (!empty($toInsert))
-                $inserted = array_keys($this->insertTags($toInsert));
+            //insert new tags
+            if (!empty($this->tags['new'])) {
+                $existing = $this->tagIdsByTaglist($this->tags['new']);
+                $toInsert = array_udiff($this->tags['new'], $existing, 'strcasecmp');
+                $existing = array_keys($existing); //leave only keys
+                
+                $inserted = array();
+                if (!empty($toInsert))
+                    $inserted = array_keys($this->insertTags($toInsert));
 
-            $ok = $ok && $this->insertIntoGroup(array_merge($existing, $inserted));
-        }
+                $this->insertIntoGroup(array_merge($existing, $inserted));
+            }
 
-        //delete old ones
-        if (!empty($this->tags['del'])) {
-            $toDelete = $this->tags['del'];
-            $ok = $ok && $this->deleteFromGroup($toDelete);
-        }
-
-        if ($ok) {
-            $this->db->commit();
-
-            $this->tags['new'] = array();
-            $this->tags['del'] = array();
-        } else
+            //delete old ones
+            if (!empty($this->tags['del'])) {
+                $toDelete = $this->tags['del'];
+                $this->deleteFromGroup($toDelete);
+            }
+        } catch (SQLException $e) {
             $this->db->rollback();
+            return false;
+            throw $e;
+        }
 
-        return $ok;
+        $this->db->commit();
+
+        $this->tags['new'] = array();
+        $this->tags['del'] = array();
+
+        return true;
     }
 
     /*

@@ -7,6 +7,10 @@ html, body {
     -moz-outline-style: none !important;
 }
 
+.hidden {
+    display: none;
+}
+
 a {
   outline: none !important;
 }
@@ -1513,6 +1517,7 @@ div.form #preview.blank {
 
 #menus div.item {
 	display: none;
+    margin-top: 20px;
 }
 
 #menus div.item.selected {

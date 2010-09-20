@@ -41,7 +41,8 @@ var _list = _tap.register({
 		this.list.addEvents({
 			'click:relay(span.action)': this.actionClick.toHandler(this),
 			'click:relay(a.tab)': this.changeList.toHandler(this),
-			'click:relay(li.panel-item)': this.itemClick.toHandler(this)
+			'click:relay(li.panel-item)': this.itemClick.toHandler(this),
+            'click:relay(li.people-contact-list)': this.itemClick.toHandler(this),
 		});
 		this.subscribe({
 			'convos.updated': this.moveItem.bind(this),
@@ -98,11 +99,22 @@ var _list = _tap.register({
 					admin: !!el.getData('admin')
 				};
 				break;
+
 			case 'convos':
 				data = {
 					user: el.getData('user')
 				};
 				break;
+
+            case 'private':
+            case 'peoples':
+                data = {
+                    symbol: el.getData('uname'),
+                    name: el.getData('name'),
+                    topic: el.getData('topic'),
+                    uid: el.getData('uid')
+                };
+                break;
 		}
 		this.publish('list.item', [type, id, data]);
 	},
