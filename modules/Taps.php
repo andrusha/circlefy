@@ -17,8 +17,9 @@ class Taps extends BaseModel {
         filters as we want, but it not implemented by now
         
         $filter selected filter type for query
-        'aggr_groups' | 'ind_group' | 'public' | 'personal' |
-        'aggr_personal' | 'private' | 'aggr_private'
+        'aggr_groups'   | 'ind_group'     | 'public' 
+        'personal'      | 'aggr_personal' | 'private'
+        'aggr_private'  | 'aggr_all'      | 'convos_all'
 
         $params array of params related to that filter
         array('#uid#' => user id
@@ -37,10 +38,12 @@ class Taps extends BaseModel {
             }
         }
         $joins = array(
-            'meta' => 'JOIN special_chat_meta scm ON scm.mid = sc.mid',
-            'members' => 'JOIN group_members gm ON gm.gid = scm.gid',
-            'logins' => 'JOIN login l ON l.uid = sc.uid',
-            'friends' => 'JOIN friends f ON sc.uid = f.fuid'
+            'meta'         => 'INNER JOIN special_chat_meta scm ON scm.mid = sc.mid',
+            'members'      => 'JOIN group_members gm ON gm.gid = scm.gid',
+            'members_left' => 'LEFT JOIN group_members gm ON gm.gid = scm.gid',
+            'logins'       => 'INNER JOIN login l ON l.uid = sc.uid',
+            'friends'      => 'JOIN friends f ON sc.uid = f.fuid',
+            'convo'        => 'JOIN active_convo ac ON sc.mid = ac.mid'
         );
 
         $toJoin = $where = array();
@@ -71,7 +74,7 @@ class Taps extends BaseModel {
             case 'personal':
                 $toJoin[] = 'meta';
                 $where[]  = 'sc.uid = #uid#';
-                $where[] = 'scm.private = 0';
+                $where[]  = 'scm.private = 0';
                 break;
 
             case 'aggr_private':
@@ -90,6 +93,17 @@ class Taps extends BaseModel {
                                      OR
                                  (sc.uid = #to# AND scm.uid = #from#)
                              ) AND scm.private = 1';
+                break;
+
+            case 'aggr_all':
+                $toJoin[] = 'meta';
+                $toJoin[] = 'members_left';
+                $where[]  = '(gm.uid = #uid# OR (((sc.uid = #uid# AND scm.uid IS NOT NULL) OR (scm.uid = #uid#)) AND scm.private = 1))';
+                break;
+
+            case 'convos_all':
+                $toJoin[] = 'convo';
+                $where[]  = 'ac.uid = #uid#';
                 break;
         }
 

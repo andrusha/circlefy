@@ -13,6 +13,8 @@ type -
     22 = AGGR Personal
     3 = IND Private
     33 = AGGR Private
+    4 = AGGR Channels & Private
+    5 = AGGR Convos
 search - 
     optional if you provide a search term for the feed
 outside - 
@@ -105,6 +107,14 @@ class filter_functions {
                 $params['#from#'] = $uid;
                 $params['#to#'] = intval($id);
                 break;
+            case  4:
+                $group_info = true;
+                $user_info = true;
+                $filter = 'aggr_all';
+                $params['#uid#'] = $uid;
+            case  5:
+                $filter = 'convos_all';
+                $params['#uid#'] = $uid;
         }
 
         $taps = new Taps();

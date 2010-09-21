@@ -88,6 +88,50 @@ var _list = _tap.register({
         if (this.items)
     		this.items.removeClass('selected');
 		el.addClass('selected');
+        data = {
+            name: el.getData('name'),
+            topic: el.getData('topic')
+        };
+		switch (id){
+            case 'feed':
+                type = 'channels';
+                id   = 'feed';
+                break;
+
+			case 'channels':
+                type = 'channels';
+                id   = 'all';
+				break;
+
+			case 'peoples':
+                type = 'peoples';
+                id   = 'all';
+                break;
+
+            case 'convos':
+                type = 'channels';
+                id   = 'convos';
+                break;
+
+            case 'inbox':
+                type = 'private';
+                id   = 'all';
+                break;
+
+            case 'public':
+                type = 'channels';
+                id   = 'public';
+                break;
+		}
+		this.publish('list.item', [type, id, data]);
+	},
+/*	itemClick: function(el, e){
+		var type = el.getParent('ul').getData('name'),
+			id = el.getData('id'),
+			data = {};
+        if (this.items)
+    		this.items.removeClass('selected');
+		el.addClass('selected');
 		switch (type){
 			case 'channels':
 				data = {
@@ -117,7 +161,7 @@ var _list = _tap.register({
                 break;
 		}
 		this.publish('list.item', [type, id, data]);
-	},
+	},*/
 
 	/*
 	method: addItem()

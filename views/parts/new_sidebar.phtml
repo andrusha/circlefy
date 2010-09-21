@@ -3,42 +3,53 @@
 
  <div id="lists" class="section container">
 
-                <ul id="panel-groups" class="panel selected"
-                data-action="manage" data-action-href="/channels" data-name="channels">
+    <ul id="panel-groups" class="panel selected"
+        data-action="manage"
+        data-action-href="/channels"
+        data-name="channels">
 
-                <li id="gid_public" class="<? echo isset($start_gid) && $start_gid == 'public' ? 'selected ' : ''?>panel-item" data-topic="<?= $public_groups_topic ?>"
-                data-id="public" data-name="Discover Taps">
-                        <span class="count"></span>
-                        <a href="#" class="names inblock ellipsis">Your feed</a>
-                </li>
+        <li id="feed" class="<? echo !isset($start_gid) || $start_gid == 'all' ? 'selected ' : ''?>panel-item"
+            data-topic="Aggregate feed of all your groups & private messages"
+            data-id="feed"
+            data-name="Your feed">
+            <a href="#" class="names inblock ellipsis">Your feed</a>
+        </li>
 
-                <li id="gid_all" class="<? echo !isset($start_gid) || $start_gid == 'all' ? 'selected ' : ''?>panel-item" data-topic="<?= $all_your_groups_topic ?>"
-                 data-id="all" data-name="All Your Channels">
-                        <span class="count"></span>
-                        <a href="#" class="names inblock ellipsis">Followed Channels</a>
-                </li>
+        <li id="gid_all" class="panel-item"
+            data-topic="<?= $all_your_groups_topic ?>"
+            data-id="channels"
+            data-name="All Your Channels">
+            <a href="#" class="names inblock ellipsis">Followed Channels</a>
+        </li>
 
-		<li id="users_all" class="people-contact-list" style="float: none"
-                data-id="all"
-                data-name="All your people"
-                data-topic="Aggregate feed of all your friends">Followed People</li>
+		<li id="users_all" class="panel-item"
+            data-id="peoples"
+            data-name="All your people"
+            data-topic="Aggregate feed of all your friends">
+            <a href="#" class="names inblock ellipsis">Followed People</a>
+        </li>
 
-		 <li id="private_all" class="people-contact-list" style="float: none"
-                data-id="all"
-                data-name="Inbox"
-                data-topic="All your private messages">Followed Conversations</li>
+        <li id="convos_all" class="panel-item"
+            data-id="convos"
+            data-name="Inbox"
+            data-topic="All your private messages">
+            <a href="#" class="names inblock ellipsis">Followed Conversations</a>
+        </li>
 
-		 <li id="private_all" class="people-contact-list" style="float: none"
-                data-id="all"
-                data-name="Inbox"
-                data-topic="All your private messages">Inbox</li>
+		<li id="private_all" class="panel-item"
+            data-id="inbox"
+            data-name="Inbox"
+            data-topic="All your private messages">
+            <a href="#" class="names inblock ellipsis">Inbox</a>
+        </li>
 
-                <li id="gid_public" class="panel-item" data-topic="<?= $public_groups_topic ?>"
-                data-id="public" data-name="Discover Taps">
-                        <span class="count"></span>
-                        <a href="#" class="names inblock ellipsis">discover</a>
-                </li>
-
+        <li id="gid_public" class="<? echo isset($start_gid) && $start_gid == 'public' ? 'selected ' : ''?>panel-item"
+            data-topic="<?= $public_groups_topic ?>"
+            data-id="public"
+            data-name="Discover Taps">
+            <a href="#" class="names inblock ellipsis">Discover tap</a>
+        </li>
+    </ul>
 </div>
 
 <div id="filter" class="section">

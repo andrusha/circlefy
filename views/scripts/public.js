@@ -289,6 +289,14 @@ var _stream = _tap.register({
                     data.type = 100;
                     break;
 
+                case 'feed':
+                    data.type = 4;
+                    break;
+
+                case 'convos':
+                    data.type = 5;
+                    break;;
+
                 default:
                     data.type = 1;
                     data.id = id;

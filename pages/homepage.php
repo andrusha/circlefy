@@ -29,8 +29,8 @@ class homepage extends Base {
         $taps = new Taps();
         if (!$this->user->guest) {
             $params = array('#outside#' => '1, 2', '#uid#' => $this->user->uid);
-            $filter = 'aggr_groups';
-            $data = $taps->getFiltered($filter, $params);
+            $filter = 'aggr_all';
+            $data = $taps->getFiltered($filter, $params, true, true);
             $this->set('all', 'feed_type');
         }
 
