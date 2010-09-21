@@ -586,6 +586,7 @@ float:right;}
 
 .last-resp{
 display:inline-block;
+float:left;
 }
 
 .public-tap-favicon{
