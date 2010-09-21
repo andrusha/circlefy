@@ -102,6 +102,7 @@ if ($feed_type == 'all') {
 		?>
 			<div id="content">
 
+				<!--
 				<form id="tapbox" action="" class="section active">
 					<div id="tapto">choose a channel to tap</div>
 					<span class="counter">240</span>
@@ -109,6 +110,7 @@ if ($feed_type == 'all') {
 					<button id="tapsend" tabindex="3" type="submit" class="">tap!</button>
 					<span id="no-group-selected"><b>You need to tap to a channel!</b> Tap to a channel by clicking on the channel tab or searching for new channels to tap</span>
 				</form>
+				-->
 
 				<div id="tapstream" class="section description">
 					<div class="header">
@@ -121,7 +123,7 @@ if ($feed_type == 'all') {
 						</h2>
 						<span class="stream-name"><?=$groups_topic?> <?php if(isset($facebook_loginUrl)): ?><a href="<?php echo $facebook_loginUrl; ?>">Login to facebook to see your other channels</a><?php endif; ?></span>
 					</div>
-					<div class="description" style="background: lightgrey; padding:15px;"><?= $groups_descr ?></div>
+					<div class="description" style="padding:15px;"><?= $groups_descr ?></div>
 					<div class="body">
                         <?php
                             $_taps = $groups_bits;
