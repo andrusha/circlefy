@@ -51,8 +51,15 @@ abstract class Base{
         if ($this->need_login || true) {
             $this->userActions();
 
-            $this->set($this->user->guest, 'ok_user');
+            $this->set(intval($this->user->guest), 'ok_user');
             $this->set($this->user->uid, 'pcid');      //for Orbited
+            $this->set(
+                array_intersect_key(
+                    $this->user->info,
+                    array_flip(
+                        array('uname', 'uid', 'fb_uid', 'real_name',
+                              'big_pic', 'small_pic', 'guest', 'fb_uid')))
+                , 'me');
         }
     }
 

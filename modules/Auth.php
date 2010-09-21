@@ -17,23 +17,16 @@ abstract class Auth {
         header('Cache-Control: no-store, no-cache, must-revalidate');
     
         //if user already logged in - do nothing
-        if ($_SESSION['guest'] == 0 && isset($_SESSION['uid'])) {
-            $uid = intval($_SESSION['uid']);
-            $user = new User($uid);
-            $user->setGuest(false);
-            return $user;
-        }
+        if ($_SESSION['user'])
+            return $_SESSION['user'];
 
         //if user have cookies from previous session, log him in
-        if ($uid = Auth::bypass()) {
-            $user = new User($uid);
-            $guest = $_SESSION['guest'];
-            $user->setGuest($guest);
-            return $user;
-        }
+        $user = Auth::bypass();
 
-        $user = Auth::makeGuest();
-        $user->setGuest(true);
+        if ($user === null)
+            $user = Auth::createGuest();
+
+        $_SESSION['user'] = $user;
         return $user;
     }
 
@@ -69,10 +62,17 @@ abstract class Auth {
             $result = $result->fetch_assoc();
             $hash = Auth::makeHash();
             $uid = intval($result['uid']);
-            if ($set_cookies)
-                Auth::setCookies($uid, $result['uname'], $result['fname'], $hash, $auto_login);
 
-            return new User($uid);
+            $user = new User($uid);
+            $user->getInfo();
+
+            if ($set_cookies) {
+                Auth::setCookies($user->uid, $hash, $user->guest);
+                $user->hash = $hash;
+            }
+
+            $_SESSION['user'] = $user;
+            return $user; 
         }
 
         return null;
@@ -86,22 +86,9 @@ abstract class Auth {
     }
 
     /*
-        Makes current user guest
-
-        @return User
-    */
-    private static function makeGuest() {
-        list($uid, $uname, $hash) = Auth::createGuest();
-        Auth::setCookies($uid, $uname, 'guest', $hash, false, false);
-        $_SESSION['guest'] = 1;
-
-        return new User($uid);
-    }
-
-    /*
         Creates new guest-user and returns info about it
 
-        @return array
+        @return User
     */
     private static function createGuest() {
         $db = DB::getInstance()->Start_Connection('mysql');
@@ -115,8 +102,8 @@ abstract class Auth {
         $uname = 'Guest'.$result['max'];
 
         $query = "INSERT
-                    INTO login (`hash`,`uname`,`last_login`, `ip`, `anon`, `email`)
-                  VALUES (#hash#, #uname#, CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, #hash#)";
+                    INTO login (hash, uname, fname, last_login, ip, anon, email)
+                  VALUES (#hash#, #uname#, 'guest', CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, #hash#)";
         $result = $db->query($query, array('hash' => $hash, 'uname' => $uname, 'ip' => $ip));
         
         if ($db->affected_rows != 1)
@@ -130,37 +117,34 @@ abstract class Auth {
         $db->query("INSERT INTO notifications (uid) VALUES (#uid#)", array('uid' => $uid));
         $db->query("INSERT INTO TEMP_ONLINE (uid) VALUES (#uid#)", array('uid' => $uid));
 
-        return array($uid, $uname, $hash);
+        $user = new User($uid);
+        $user->getInfo();
+        Auth::setCookies($uid, $hash, true);
+
+        return $user; 
     }
 
     /*
         Logged in user by his cookie hash
 
-        @return int uid
+        @return User 
     */
     private static function bypass() {
         if (!$_COOKIE['auto_login'] || 
             !isset($_COOKIE['uid']) ||
             !isset($_COOKIE['rand_hash']))
-            return false;
-
-        $db = DB::getInstance()->Start_Connection('mysql');
+            return null;
 
         $uid = intval($_COOKIE['uid']);
-        $hash = $db->real_escape_string($_COOKIE['rand_hash']);
-        $query = "SELECT uid, uname, fname
-                    FROM login
-                   WHERE uid = #uid#
-                     AND hash = #hash#
-                   LIMIT 1";
-        $result = $db->query($query, array('uid' => $uid, 'hash' => $hash));
-        if ($result->num_rows) {
-            $result = $result->fetch_assoc();
-            $hash = Auth::makeHash();
-            $uid = intval($result['uid']);
-            Auth::setCookies($uid, $result['uname'], $result['fname'], $hash, true);
+        $hash = $_COOKIE['rand_hash'];
+        $user = new User($uid);
+        $user->getInfo();
 
-            return $uid;
+        if ($user->hash == $hash) {
+            $new_hash = Auth::makeHash();
+            Auth::setCookies($user->uid, $hash, $user->guest);
+
+            return $user;
         }
 
         return null;
@@ -169,7 +153,7 @@ abstract class Auth {
     /*
         Sets all cookies & session variables needs to user after login
     */
-    public static function setCookies($uid, $uname, $real_name, $hash, $auto_login, $clear = true) {
+    public static function setCookies($uid, $hash, $guest, $auto_login = true, $clear = true) {
         $db = DB::getInstance()->Start_Connection('mysql');
 
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -184,12 +168,8 @@ abstract class Auth {
         if ($clear)
             Auth::clearCookies();
 
-        $binded = Facebook::isBinded($uid);
-
-        $_SESSION['facebook'] = $binded;
         $_SESSION['uid'] = $uid;
-        $_SESSION['uname'] = $uname;
-        $_SESSION['real_name'] = $real_name;
+        $_SESSION['guest'] = $guest;
         setcookie("uid", $uid, time()+36000000);
         setcookie("rand_hash", $hash, time()+36000000);
         setcookie("auto_login", $auto_login, time()+36000000);
@@ -199,7 +179,7 @@ abstract class Auth {
         Delete all user-related cookies
     */
     public static function clearCookies() {
-        foreach (array('uid', 'uname', 'real_name', 'guest') as $i)
+        foreach (array('uid', 'guest') as $i)
             $_SESSION[$i] = NULL;
 
         foreach (array('uid', 'rand_hash', 'auto_login') as $i)

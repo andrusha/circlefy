@@ -4,7 +4,6 @@
 */
 class User extends BaseModel {
     private $uid = null;
-    private $guest = false;
 
     private $loggedIn = false;
     private $session_started = false;
@@ -14,7 +13,7 @@ class User extends BaseModel {
     */
     public function __construct($info) {
         parent::__construct(
-            array('uid', 'uname', 'ip', 'addr', 'guest', 'info', 'fullInfo', 'stats'),
+            array('uid', 'ip', 'addr', 'info', 'fullInfo', 'stats'),
             array('info', 'fullInfo', 'stats'));
 
         if (!$this->session_started) {
@@ -29,10 +28,6 @@ class User extends BaseModel {
             $this->data = $info;
         } else
             $this->uid = intval($info);
-    }
-
-    public function setGuest($guest) {
-        $this->guest = $guest;
     }
 
     public function setStats($stats) {
@@ -59,12 +54,6 @@ class User extends BaseModel {
             case 'uid':
                 return $this->uid;
 
-            case 'uname':
-                if ($current)
-                    return $_SESSION['uname'];
-                else
-                    return $this->info['uname'];
-
             case 'ip':
             case 'addr':
                 if ($current)
@@ -72,10 +61,11 @@ class User extends BaseModel {
                 else
                     return $this->info['ip'];
 
-            case 'guest':
-                return $this->guest;
-
             default:
+                foreach ($this->allowedArrays as $all)
+                    if (isset($this->data[$all][$key]))
+                        return $this->data[$all][$key];
+
                 $name = 'get'.ucfirst($key);
                 if (method_exists($this, $name)) {
                     if (!isset($this->data[$key]))
@@ -86,6 +76,16 @@ class User extends BaseModel {
         }
 
         throw new UserInfoException("Unknown data named '$key'");
+    }
+
+    /*
+        Does not update associated table
+    */
+    public function __set($key, $val) {
+        if (in_array($key, $this->allowedArrays))
+            $this->data[$key] = $val;
+        else
+            $this->data['info'][$key] = $val;
     }
 
     /*
@@ -135,12 +135,15 @@ class User extends BaseModel {
                          anon = 0
                    WHERE uid = #uid#
                    LIMIT 1";
-        $this->db->query($query, array('uname' => $uname, 'fname' => $fname,
-            'lname' => $lname, 'pass' => $pass, 'email' => $email, 'uid' => $uid));
+        $data = array('uname' => $uname, 'fname' => $fname,
+            'lname' => $lname, 'pass' => $pass, 'email' => $email, 'uid' => $uid);
+        $this->db->query($query, $data);
+
+        $this->data['info'] = array_merge($this->data['info'], $data);
         
         if ($this->db->affected_rows == 1) {
             $hash = Auth::makeHash();
-            Auth::setCookies($uid, $uname, $fname, $hash, true);
+            Auth::setCookies($uid, $hash, false);
 
             return true;
         }
@@ -155,7 +158,7 @@ class User extends BaseModel {
     public function getInfo() {
         $query = "SELECT uname, GET_REAL_NAME(fname, lname, uname) AS real_name,
                          pic_100 AS big_pic, pic_36 AS small_pic, help,
-                         email, private, ip, uid
+                         email, private, ip, uid, anon AS guest, hash, fb_uid
                     FROM login
                    WHERE uid = #uid#
                    LIMIT 1";
@@ -163,6 +166,10 @@ class User extends BaseModel {
         $result = $this->db->query($query, array('uid' => $this->uid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
+
+        array_walk($info, array($this, 'typeCast'), array('uid', 'private', 'guest', 'fb_uid'));
+
+        $this->data['info'] = $info;
         return $info;
     }
 
@@ -178,7 +185,7 @@ class User extends BaseModel {
 
         $query = "SELECT l.uid, l.uname, GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
                          l.pic_100 AS big_pic, l.pic_36 AS small_pic, l.help, l.private,
-                         p.about, p.country, p.zip{$fields}
+                         l.anon AS guest, l.fb_uid, p.about, p.country, p.zip{$fields}
                     FROM login l
                    INNER
                     JOIN profile p
@@ -190,6 +197,11 @@ class User extends BaseModel {
         $result = $this->db->query($query, array('uid' => $this->uid));
         if ($result->num_rows)
             $info = $result->fetch_assoc();
+
+        array_walk($info, array($this, 'typeCast'), 
+            array('uid', 'private', 'guest', 'fb_uid', 'zip', 'online'));
+
+        $this->data['fullInfo'] = $info;
         return $info;
     }
 
@@ -235,6 +247,10 @@ class User extends BaseModel {
         $result = $this->db->query($query, array('uid' => $this->uid));
         if ($result->num_rows)
             $stats = $result->fetch_assoc();
+
+        $stats = array_map($stats, 'intval');
+
+        $this->data['stats'] = $stats;
         return $stats;
     }
 

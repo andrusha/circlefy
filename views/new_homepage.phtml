@@ -61,16 +61,13 @@ if ($feed_type == 'all') {
 
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript">
-		window._vars = {
-			uid: "<?= $pcid ?>",
-            anon: <?=$ok_user ? 0 : 1?>,
-            fb: <?=$_SESSION['facebook'] ? 1 : 0?>,
-			uname: "<?= $_SESSION['uname'] ?>",
-			stream: JSON.decode('<?= json_encode($inits) ?>'),
-			convos: JSON.decode('<?= json_encode($convos) ?>'),
-			people: JSON.decode('<?= json_encode($people) ?>'),
-			groups: JSON.decode('<?= json_encode($groups) ?>'),
-			groupsOnline: JSON.decode('<?= json_encode($groups_online) ?>'),
+        window._vars = {
+            user: <?= json_encode($me) ?>,
+            stream: <?= json_encode($inits) ?>,
+            convos: <?= json_encode($convos) ?>,
+            people: <?= json_encode($people) ?>,
+            groups: <?= json_encode($groups) ?>,
+            groupsOnline: <?= json_encode($groups_online) ?>,
             sendTo: "public:public:0:0",
             filter: {
                 gid: "<?=$start_gid?>",
@@ -78,7 +75,7 @@ if ($feed_type == 'all') {
                     name: "<?=$groups_topic?>"
                 }
             }
-		};
+        };
 	</script>
 	<script type="text/javascript" src="/views/scripts/push.js"></script>
 	<script type="text/javascript" src="/views/scripts/public.js"></script>

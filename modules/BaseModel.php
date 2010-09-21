@@ -5,10 +5,10 @@ abstract class BaseModel implements ArrayAccess {
     protected $data = array();
 
     //specify allowed class members to get
-    private $allowed = array();
+    protected $allowed = array();
 
     //specify allowed info in $data
-    private $allowedArrays = array();
+    protected $allowedArrays = array();
 
     public function __construct(array $allowed = array(), array $allowedArrays = array()) {
         $this->db = DB::getInstance();
@@ -39,4 +39,13 @@ abstract class BaseModel implements ArrayAccess {
     public function offsetGet ($offset) { }
     public function offsetSet ($offset, $value) { }
     public function offsetUnset ($offset) { }
+
+    /*
+        Cast provided fields into int
+        use with array_walk
+    */
+    protected function typeCast(&$val, $key, array $fields) {
+        if (in_array($key, $fields))
+            $val = intval($val);
+    }
 };
