@@ -1683,13 +1683,13 @@ ul.stream span.show-resp-count{
 	border: 1px solid #C3D2DF;
 }
 
+
 #lists li span.remove-convo {
 	float:right;
-	font-weight:bold;
 	height:10px;
-	padding: 3px 13px 12px 12px;
-	width:46px;
-	background:red;
+	padding: 3px 9px 8px 9px;
+    opacity: 0.7;
+    background: red;
 	
     -moz-border-radius: 10px 10px 10px 10px;
 	border-bottom-left-radius: 10px 10px;
@@ -1984,4 +1984,25 @@ ul.stream .group_mod_controls a {
 	text-decoration: none;
 	color: #ff0000;
 	border: 0px;
+}
+
+span.count-notify {
+    position: absolute;
+    margin-top: -7px;
+    background-color: red;
+    height: 18px;
+    padding: 2px 4px;
+    -moz-border-radius: 16px 16px 16px 16px;
+	border-bottom-left-radius: 16px 16px;
+	border-bottom-right-radius: 16px 16px;
+	border-top-left-radius: 16px 16px;
+	border-top-right-radius: 16px 16px;
+}
+
+span#taps-count {
+    margin-left: 20px;
+}
+
+span#private-count {
+    margin-left: 125px;
 }

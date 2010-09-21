@@ -96,9 +96,9 @@ class chat_functions{
         Comet::send('message', $message);
 
         //yeah, it also throws event to display tap in feed
-/*        $message = array('action' => 'tap.new',
+        $message = array('action' => 'tap.new',
             'users' => array($to->uid), 'data' => $tap_array);
-        Comet::send('message', $message);*/
+        Comet::send('message', $message);
    }
 
     /*

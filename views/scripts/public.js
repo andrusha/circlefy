@@ -108,6 +108,9 @@ _tap.mixin({
             ? title 
             : template.substitute({fav: favicon, t: title, u: url, oc: online_count, tc: total_count});
 
+        if (options.user)
+            title += '<a href="'+url+'?pm" title="send private message">send pm</a>';
+
         if (!!admin) title = ['<span title="Moderator" class="moderator-title">&#10070;</span> ', title, '<a href="{u}">manage channel</a>'.substitute({u: admin})].join('');
         this.title.set('html', title);
 
@@ -274,6 +277,7 @@ var _stream = _tap.register({
         this.keyword = keyword;
 
         var prefix = ''; //urls prefix
+        var user = false;
         if (type == 'channels') {
             prefix = 'channel';
             switch (id) {
@@ -294,6 +298,7 @@ var _stream = _tap.register({
             feed.admin = false;
             feed.online_count = null;
             feed.total_count = null;
+            user = true;
             switch (id) {
                 case 'all':
                     data.type = 22;
@@ -364,7 +369,8 @@ var _stream = _tap.register({
                         desc: feed.topic,
                         admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
                         online_count: feed.online_count,
-                        total_count: feed.total_count
+                        total_count: feed.total_count,
+                        user: user
                     });
 
                 if (response) self.parseFeed(response);
@@ -1383,10 +1389,12 @@ _live.taps = _tap.register({
             'push.data.tap.delete': this.deleteTap.bind(this),
             'feed.changed': this.clearPushed.bind(this)
         });
+        this.counter = $('taps-count');
         this.notifier.addEvent('click', function(e) {
             e.stop();
             self.showPushed();
             self.hideNotifier();
+            self.counter.addClass('hidden');
         });
         if (this.streamer) this.streamer.addEvent('click', this.toggleNotifier.toHandler(this));
 
@@ -1454,6 +1462,7 @@ _live.taps = _tap.register({
         notifier.set('text', [
             count, 'new', count == 1 ? 'tap.' : 'taps.', 'Click here to load them.'
         ].join(' '));
+        this.counter.set('text', count);
         notifier.addClass('notify');
     },
 
