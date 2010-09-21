@@ -810,6 +810,7 @@ var _responses = _tap.register({
         if (!box.retrieve('loaded')) this.loadResponse(parent.getData('id'), box);
         if (!chat.retrieve('extended')) this.extendResponse(chat, counter, overlay);
         box.scrollTo(0, box.getScrollSize().y);
+        chat.focus();
         return this;
     },
 
