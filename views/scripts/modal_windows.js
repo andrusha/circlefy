@@ -342,7 +342,7 @@ _modal.facebook = _tap.register({
             status_preview = this.status_preview = preview.getElement('span.fb_message'),
             message_preview = this.message_preview = preview.getElement('div.caption');
 
-        var name = $('you').getElement('strong').get('text');
+        var name = _vars.user.real_name; 
 
         preview.getElement('a.fb_name').set('text', name);
 

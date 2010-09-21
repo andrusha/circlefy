@@ -8,8 +8,7 @@ require('../api.php');
 
 $cid = $_POST['cid'];
 $response = $_POST['response'];
-$uname = $_SESSION['uname'];
+$user = unserialize($_SESSION['user']);
 
-Comet::send('message', array('cid' => $cid, 'action' => 'typing', 'response' => $response, 'uname' => $uname));
+Comet::send('message', array('cid' => $cid, 'action' => 'typing', 'response' => $response, 'uname' => $user->uname));
 echo 1;
-?>

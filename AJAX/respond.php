@@ -81,7 +81,7 @@ EOF;
             return array('dupe' => true);
 	
 		$uid = $_SESSION["uid"];
-		$uname = $_SESSION["uname"];
+		$uname = unserialize($_SESSION["user"])->uname;
 
 		$this->add_active($mid,$uid);
 	
@@ -108,7 +108,7 @@ EOF;
 
 		
         $small_pic = $_POST['small_pic'];
-        $small_pic = 'small_'.$small_pic;
+        $small_pic = $small_pic;
 
         $action = "response";
         $response = $msg;

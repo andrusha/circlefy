@@ -10,12 +10,13 @@ abstract class BaseModel implements ArrayAccess {
     //specify allowed info in $data
     protected $allowedArrays = array();
 
-    public function __construct(array $allowed = array(), array $allowedArrays = array()) {
+    public function __construct() {
+        $this->connect();
+    }
+
+    protected function connect() {
         $this->db = DB::getInstance();
         $this->db->Start_Connection('mysql');
-
-        $this->allowed = $allowed;
-        $this->allowedArrays = $allowedArrays;
     }
 
     abstract public function __get($key);

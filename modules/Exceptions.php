@@ -38,6 +38,7 @@ class GroupDataException extends GroupException {};
 //User.php
 abstract class UserException extends Exception {};
 class UserInfoException extends UserException {};
+class AuthException extends UserException {};
 
 //Actions exceptions
 //Actions.php

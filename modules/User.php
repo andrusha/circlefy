@@ -2,24 +2,16 @@
 /*
     All user operations, e.g login in, information
 */
-class User extends BaseModel {
+class User extends BaseModel implements Serializable {
     private $uid = null;
-
-    private $loggedIn = false;
-    private $session_started = false;
+    protected $allowed = array('uid', 'ip', 'addr', 'info', 'fullInfo', 'stats');
+    protected $allowedArrays = array('info', 'fullInfo', 'stats');
 
     /*
         @param array|id $info full info for cache or just uid
     */
     public function __construct($info) {
-        parent::__construct(
-            array('uid', 'ip', 'addr', 'info', 'fullInfo', 'stats'),
-            array('info', 'fullInfo', 'stats'));
-
-        if (!$this->session_started) {
-            session_start();
-            $this->serssion_started = true;
-        }
+        parent::__construct();
 
         if ($info === null)
             throw new UserInfoException('You should specify id before using this class');
@@ -28,6 +20,15 @@ class User extends BaseModel {
             $this->data = $info;
         } else
             $this->uid = intval($info);
+    }
+
+    public function serialize() {
+        return serialize(array($this->data, $this->uid));
+    }
+
+    public function unserialize($data) {
+        $this->connect();
+        list($this->data, $this->uid) = unserialize($data);
     }
 
     public function setStats($stats) {
@@ -111,18 +112,6 @@ class User extends BaseModel {
     }
 
     /*
-        Logs out user
-    */
-    public function logOut() {
-        $query = "UPDATE login
-                     SET hash = ''
-                   WHERE uid = #uid#";
-        $this->db->query($query, array('uid' => $this-> uid));
-        Auth::clearCookies();
-        session_destroy();
-    }
-
-    /*
         This thing makes current guest a full-featured user
     */
     public function userificateGuest($uid, $uname, $fname, $lname, $email, $pass) {
@@ -142,9 +131,7 @@ class User extends BaseModel {
         $this->data['info'] = array_merge($this->data['info'], $data);
         
         if ($this->db->affected_rows == 1) {
-            $hash = Auth::makeHash();
-            Auth::setCookies($uid, $hash, false);
-
+            Auth::setSession($this);
             return true;
         }
 

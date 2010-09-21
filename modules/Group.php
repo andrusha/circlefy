@@ -11,6 +11,8 @@ class Group extends BaseModel {
     private $taglist = null;
 
     private $gid = null;
+    protected $allowed = array('gid', 'tags', 'info', 'members');
+    protected $allowedArrays = array('info', 'members');
 
     /*
         gid =
@@ -19,7 +21,7 @@ class Group extends BaseModel {
             array to auto-initialize group
     */
     public function __construct($gid = null) {
-        parent::__construct(array('gid', 'tags', 'info', 'members'), array('info', 'members'));
+        parent::__construct();
     
         if (is_array($gid)) {
             $this->data = $gid;

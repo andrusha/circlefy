@@ -18,16 +18,13 @@ abstract class Auth {
     
         //if user already logged in - do nothing
         if ($_SESSION['user'])
-            return $_SESSION['user'];
+            return unserialize($_SESSION['user']);
 
-        //if user have cookies from previous session, log him in
-        $user = Auth::bypass();
+        return Auth::createGuest();
+    }
 
-        if ($user === null)
-            $user = Auth::createGuest();
-
-        $_SESSION['user'] = $user;
-        return $user;
+    public static function logOut() {
+        session_destroy();
     }
 
     /*
@@ -36,7 +33,7 @@ abstract class Auth {
 
         @return User
     */
-    public static function logIn($username, $password, $set_cookies = true, $auto_login = false, $with_facebook = false) {
+    public static function logIn($username, $password, $with_facebook = false) {
         if (!$with_facebook) {
            $where = "uname = #uname# AND pass = MD5(#pass#)";
            $params = array('uname' => $username, 'pass' => $password);
@@ -60,18 +57,12 @@ abstract class Auth {
 
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
-            $hash = Auth::makeHash();
-            $uid = intval($result['uid']);
 
-            $user = new User($uid);
+            $user = new User(intval($result['uid']));
             $user->getInfo();
 
-            if ($set_cookies) {
-                Auth::setCookies($user->uid, $hash, $user->guest);
-                $user->hash = $hash;
-            }
+            Auth::setSession($user);
 
-            $_SESSION['user'] = $user;
             return $user; 
         }
 
@@ -82,7 +73,7 @@ abstract class Auth {
         @return User
     */
     public static function logInWithFacebook() {
-        return Auth::logIn('', '', true, true, true);
+        return Auth::logIn('', '', true);
     }
 
     /*
@@ -93,7 +84,6 @@ abstract class Auth {
     private static function createGuest() {
         $db = DB::getInstance()->Start_Connection('mysql');
 
-        $hash = Auth::makeHash();
         $ip = $_SERVER['REMOTE_ADDR'];
 
         $query = "SELECT MAX(uid)+1 AS max
@@ -102,12 +92,12 @@ abstract class Auth {
         $uname = 'Guest'.$result['max'];
 
         $query = "INSERT
-                    INTO login (hash, uname, fname, last_login, ip, anon, email)
-                  VALUES (#hash#, #uname#, 'guest', CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, #hash#)";
-        $result = $db->query($query, array('hash' => $hash, 'uname' => $uname, 'ip' => $ip));
+                    INTO login (uname, fname, last_login, ip, anon, email)
+                  VALUES (#uname#, 'guest', CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, NULL)";
+        $result = $db->query($query, array('uname' => $uname, 'ip' => $ip));
         
         if ($db->affected_rows != 1)
-            return null;
+            throw new AuthException('Something went wrong in guest user creation');
 
         $uid = $db->insert_id;
         
@@ -119,83 +109,26 @@ abstract class Auth {
 
         $user = new User($uid);
         $user->getInfo();
-        Auth::setCookies($uid, $hash, true);
+        Auth::setSession($user);
 
         return $user; 
     }
 
     /*
-        Logged in user by his cookie hash
-
-        @return User 
-    */
-    private static function bypass() {
-        if (!$_COOKIE['auto_login'] || 
-            !isset($_COOKIE['uid']) ||
-            !isset($_COOKIE['rand_hash']))
-            return null;
-
-        $uid = intval($_COOKIE['uid']);
-        $hash = $_COOKIE['rand_hash'];
-        $user = new User($uid);
-        $user->getInfo();
-
-        if ($user->hash == $hash) {
-            $new_hash = Auth::makeHash();
-            Auth::setCookies($user->uid, $hash, $user->guest);
-
-            return $user;
-        }
-
-        return null;
-    }
-
-    /*
         Sets all cookies & session variables needs to user after login
     */
-    public static function setCookies($uid, $hash, $guest, $auto_login = true, $clear = true) {
+    public static function setSession(User $user) {
         $db = DB::getInstance()->Start_Connection('mysql');
 
         $ip = $_SERVER['REMOTE_ADDR'];
         $query = "UPDATE login
                      SET last_login = CURRENT_TIMESTAMP(),
-                         ip = INET_ATON(#ip#),
-                         hash = #hash#
+                         ip = INET_ATON(#ip#)
                    WHERE uid = #uid#
                    LIMIT 1";
-        $db->query($query, array('ip' => $ip, 'hash' => $hash, 'uid' => $uid));
+        $db->query($query, array('ip' => $ip, 'uid' => $user->uid));
         
-        if ($clear)
-            Auth::clearCookies();
-
-        $_SESSION['uid'] = $uid;
-        $_SESSION['guest'] = $guest;
-        setcookie("uid", $uid, time()+36000000);
-        setcookie("rand_hash", $hash, time()+36000000);
-        setcookie("auto_login", $auto_login, time()+36000000);
+        $_SESSION['uid'] = $user->uid;
+        $_SESSION['user'] = serialize($user);
     }
-
-    /*
-        Delete all user-related cookies
-    */
-    public static function clearCookies() {
-        foreach (array('uid', 'guest') as $i)
-            $_SESSION[$i] = NULL;
-
-        foreach (array('uid', 'rand_hash', 'auto_login') as $i)
-            setcookie($i, '', time() - 360000);
-    }
-
-    /*
-        Returns purely random hash
-    */
-    public static function makeHash() {
-        $abc = range('a', 'z');
-        $rand_str = '';
-        for ($i = 0; $i < 16; $i++)
-            $rand_str .= array_rand($abc);
-
-        return md5($rand_str);
-    }
-
 };

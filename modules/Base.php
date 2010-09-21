@@ -51,8 +51,6 @@ abstract class Base{
         if ($this->need_login || true) {
             $this->userActions();
 
-            $this->set(intval($this->user->guest), 'ok_user');
-            $this->set($this->user->uid, 'pcid');      //for Orbited
             $this->set(
                 array_intersect_key(
                     $this->user->info,
@@ -61,6 +59,10 @@ abstract class Base{
                               'big_pic', 'small_pic', 'guest', 'fb_uid')))
                 , 'me');
         }
+    }
+
+    protected function __destruct() {
+        $_SESSION['user'] = serialize($this->user);
     }
 
     /*
@@ -75,7 +77,7 @@ abstract class Base{
            $this->user = Auth::identify();
    
  		if ($_GET['logout'] && !$_POST['uname']){
-			$this->user->logOut();
+			Auth::logOut();
             header("location: /");
             exit();
 		}

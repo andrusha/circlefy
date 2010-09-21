@@ -542,7 +542,7 @@ var _responses = _tap.register({
 	rCounter: 0,
 
     init: function() {
-        if (!_vars.uid && !_vars.uname) {
+        if (!_vars.user) {
             _body.addEvent('click:relay(a.tap-resp-count)', function() {
                 window.location = '/';
             });
@@ -729,7 +729,7 @@ var _responses = _tap.register({
 				if (t_delete_permission=="owner") {
 					txtPopup = txtPopup + "<li><a href='#' class='modlink mod-delete-tap' data-cid='"+data_cid+"'>Delete this tap</a></li>";
 				}
-                if (data.options.owner && _vars.fb)
+                if (data.options.owner && _vars.user.fb_uid)
                     txtPopup += "<li><a href='#' class='modlink mod-facebook-status' data-cid='"+data_cid+"' data-symbol='"+t_symbol+"'>Share on Facebook</a></li>";
 				txtPopup = txtPopup + "</ul>";
 				var txtTitle = "Tap #" + data_cid;
@@ -946,7 +946,7 @@ var _responses = _tap.register({
                 parent = chatbox.getParent('li'),
                 cid = parent.getData('id'),
                 uid = parent.getData('uid'),
-                pic = $$('#you img.avatar')[0].src.split('/')[4].split('_')[1],
+                pic = _vars.user.small_pic, 
                 data = {
                     user: parent.getData('user'),
                     message: parent.getElement('p.tap-body').get('html')
@@ -997,7 +997,7 @@ var _tapbox = _tap.register({
 
     init: function() {
         this.tapbox = $('tapbox');
-        if ((!_vars.uid && !_vars.uname) || !this.tapbox) return;
+        if ((!_vars.user) || !this.tapbox) return;
         this.overlayMsg = $('tapto');
         this.msg = $('taptext');
 
@@ -1128,7 +1128,7 @@ var _tapbox = _tap.register({
             var item = Elements.from(_template.parse('taps', resp.new_msg));
             this.publish('tapbox.sent', item);
         }
-        if (resp.your_first && _vars.anon)
+        if (resp.your_first && _vars.user.guest)
             this.publish('modal.show.sign-notify', []);
     }
 

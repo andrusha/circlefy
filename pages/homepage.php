@@ -10,14 +10,6 @@ class homepage extends Base {
 	
 		parent::__construct();
 
-        //Get user info
-        $info = $this->user->info;
-        $this->set($this->user->uname, 'user');
-        $this->set($info['small_pic'],'user_pic');
-        $this->set($info['big_pic'],'user_pic_100');
-		$this->set($info['help'],'help');
-        $this->set($info['real_name'], 'real_name');
-
         $convosClass = new Convos();
         $active_convos = $convosClass->getActive($this->user->uid);
 		$this->set($active_convos,'active_convos');

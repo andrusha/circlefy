@@ -14,7 +14,7 @@
                                 <img class="avatar" alt="<#: tap.uname #>" src="/user_pics/<#: tap.pic_100 #>" />
                         </a>
 
-                        <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.uname) ? '' : 'offline' #>">
+                        <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.user.uname) ? '' : 'offline' #>">
                                 <a href="/user/<#: tap.uname #>"><#: tap.uname #></a>
                                 <# if (tap.private == 1): #>
                                     <span style="font-size:16px">&#x279e;</span> <a href="/user/<#: tap.to_uname #>"><#: tap.to_uname #></a>

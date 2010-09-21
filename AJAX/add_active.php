@@ -9,11 +9,9 @@ EOF;
 
 session_start();
 require('../config.php');
-require('../sql.php');
 require('../api.php');
-require('../modules/Convos.php');
 
-$uid = $_SESSION['uid'];
+$uid = intval($_SESSION['uid']);
 $mid = $_POST['cid'];
 
 if (intval($mid)) {
