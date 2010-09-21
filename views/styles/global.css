@@ -304,8 +304,8 @@ input.basic.error, select.basic.error {
 }
 
 .logo-slim {
-    width: 55px !important;
-    height: 55px !important;
+    width:56px !important;
+    height: 48px !important;
     background: url("/images/flat/tap_block_small.png") bottom #fffa00 !important;
     position: relative;
 }
@@ -501,7 +501,7 @@ color:white;
 
 #content .section .header h2 {
 	border:1px solid #222;
-	background: #fffa00;
+	background: white;
 	color: #101010;
 	float: left;
 	font-size: 16px;
@@ -675,13 +675,11 @@ float:right;
 }
 
 #infobox button {
-	float: right;
-	cursor: pointer;
-	font-size: 12px;
-	padding: 5px;
-	background: #fffc66;
-	border: none;
-	margin-left: 10px;
+cursor: pointer;
+float: right;
+font-size: 11px;
+margin-left: 10px;
+padding: 5px;
 }
 
 #infobox button:hover {
@@ -695,6 +693,13 @@ float:right;
 	border-top-right-radius: 6px 6px;*/
 	background: lightgray;
 	padding: 15px;
+	background: lightGrey;
+	border: 1px solid #AAA;
+	border-bottom-left-radius: 3px 3px;
+	border-bottom-right-radius: 3px 3px;
+	border-top-left-radius: 3px 3px;
+	border-top-right-radius: 3px 3px;
+	padding: 4px 2px;
 }
 
 #tapto {
@@ -785,14 +790,19 @@ float:right;
 	cursor: pointer;
 	font-size: 14px;
 	padding: 3px;
-	background: #fffc66;
 	width: 60px;
-	border: 1px solid #fffa00;
-	margin-left: 10px;
+	margin-left: 23px;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	cursor: pointer;
+	font-family: 'helvetica neue', arial, sans-serif;
+	font-size: 15px;
+	line-height: 20px;
 }
 
 #tapsend:hover {
 	background: #fffa00;
+	background: #DDD url(http://s.twimg.com/a/1285026911/images/buttons/bg-btn.gif) repeat-x scroll 0px 0px;
 }
 
 .header span.stream-name span.visitor_count, span.visitor_count {
@@ -868,16 +878,18 @@ vertical-align:-15%;
 
 ul.stream li.paginator {
     padding: 5px 0px;
-    margin: 0;
+    margin: 0 auto;
 	font-size: 24px;
 	background: #222222;
 	color: #ACB19B;
 	cursor:pointer;
 	text-align: center;
+	width:680px;
+	height:18px;
 }
 
 ul.stream li.paginator:hover {
-	background: #444444;
+	background: #ccc;
 }
 
 ul.stream li.paginator p {
@@ -980,6 +992,20 @@ ul.stream .tap-resp.typing .last-resp {
 	display: none;
 }
 
+ul.stream .last-resp strong{
+background-color: #ffa;
+background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-9dfe92083011731d.gif);
+background-position: 0% 50%;
+background-repeat: no-repeat;
+border-bottom-left-radius: 5px 5px;
+border-bottom-right-radius: 5px 5px;
+border-top-left-radius: 5px 5px;
+border-top-right-radius: 5px 5px;
+padding:2px 2px 2px 6px;
+
+}
+
+
 ul.stream .tap-resp-count {
 	text-decoration: none;
 }
@@ -1069,7 +1095,7 @@ div.responses .overlay {
 	float: right;
 	font-size: 12px;
 	color: #ACB19B;
-	margin-top: -37px;
+	margin-top: -44px;
 	width: 560px;
 	padding: 1px 30px 10px 1px;
 	color:#627AAD;
@@ -1086,8 +1112,8 @@ div.responses .resizer {
 }
 
 div.responses .chatbox {
-	background: #D8DEC2;
-	border: none;
+	background: #fff;
+	border:1px solid black; 
 	padding: 14px 30px 5px 5px;
 	font-size: 12px;
 	float: right;
@@ -1596,20 +1622,19 @@ div.form #preview.blank {
 	padding: 0;
 	list-style: none;
 	font-size: 12px;
-	border-bottom: 2px solid #fffa00;
+	border-bottom: 2px solid #C3D2DF;
 }
 
 #lists ul.selected {
 	display: block;
 }
 
-.follow_button{
+.join, ul.stream li.paginator, .follow_button{
 background-color: #C3DD82;
 background: #dee url(http://d1vgw4v7ja2ido.cloudfront.net/-b44d0948a4b53532.gif) repeat-x 0% 0%;
 /*background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-a31fc8b100788bfd.gif);*/
 border-bottom: 1px solid #648517;
 /*border-color: #8CB332 #8CB332 #648517;*/
-color: blue;
 text-shadow: #D4ED95 0px 1px;
     -moz-border-radius: 3px 3px 3px 3px;
 border-bottom-left-radius: 3px 3px;
@@ -1750,7 +1775,7 @@ list-style:none;
 }
 
 #lists li.selected a {
-background-color:#fe9;
+background-color:#C3D2DF;
 background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-9dfe92083011731d.gif);
 background-position: 0% 50%;
 background-repeat: no-repeat;
