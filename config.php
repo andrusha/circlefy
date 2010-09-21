@@ -87,6 +87,7 @@ define("D_DATABASE","rewrite2");
 
 define("OK_HEADER",BASE_PATH."views/parts/ok_header.phtml");
 define("OK_SIDEBAR",BASE_PATH."views/parts/ok_sidebar.phtml");
+define("NEW_SIDEBAR",BASE_PATH."views/parts/new_sidebar.phtml");
 define("OK_TOPBAR",BASE_PATH."views/parts/ok_topbar.phtml");
 define("OK_FOOTER",BASE_PATH."views/parts/ok_footer.phtml");
 define("MODAL_WINDOWS",BASE_PATH."views/parts/modal_windows.phtml");

@@ -1,0 +1,42 @@
+<div id="sidebar">
+
+
+ <div id="lists" class="section container">
+
+                <ul id="panel-groups" class="panel selected"
+                data-action="manage" data-action-href="/channels" data-name="channels">
+
+                <li id="gid_public" class="<? echo isset($start_gid) && $start_gid == 'public' ? 'selected ' : ''?>panel-item" data-topic="<?= $public_groups_topic ?>"
+                data-id="public" data-name="Discover Taps">
+                        <span class="count"></span>
+                        <a href="#" class="names inblock ellipsis">discover</a>
+                </li>
+
+                <li id="gid_all" class="<? echo !isset($start_gid) || $start_gid == 'all' ? 'selected ' : ''?>panel-item" data-topic="<?= $all_your_groups_topic ?>"
+                 data-id="all" data-name="All Your Channels">
+                        <span class="count"></span>
+                        <a href="#" class="names inblock ellipsis">Followed Channels</a>
+                </li>
+
+		<li id="users_all" class="people-contact-list" style="float: none"
+                data-id="all"
+                data-name="All your people"
+                data-topic="Aggregate feed of all your friends">Followed People</li>
+
+		 <li id="private_all" class="people-contact-list" style="float: none"
+                data-id="all"
+                data-name="Inbox"
+                data-topic="All your private messages">Followed Conversations</li>
+
+		 <li id="private_all" class="people-contact-list" style="float: none"
+                data-id="all"
+                data-name="Inbox"
+                data-topic="All your private messages">Inbox</li>
+</div>
+
+<div id="filter" class="section">
+                <p class="inblock ellipsis">search <span class="title">all your channels</span> <a href="#" class="clear">clear</a></p>
+                <input id="filterkey" type="text" class="basic" />
+</div>
+
+</div>
