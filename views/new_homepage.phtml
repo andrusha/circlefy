@@ -95,10 +95,11 @@ if ($feed_type == 'all') {
 
 	<div id="main">
 
-			<? $show_lists = true;
-               $show_search = true;
-			   include(OK_SIDEBAR); ?>
-
+		<?
+		$show_lists  = true;
+                $show_search = true;
+	        include(NEW_SIDEBAR);
+		?>
 			<div id="content">
 
 				<form id="tapbox" action="" class="section active">
