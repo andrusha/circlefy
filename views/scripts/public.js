@@ -1292,16 +1292,42 @@ _live.typing = _tap.register({
     },
 
     showTyping: function(tid, user) {
-        var timeout, indicator, parent = $('tid_' + tid);
+        var indicator, parent = $('tid_' + tid), self = this;
         if (!parent) return;
+
         indicator = parent.getElement('span.tap-resp');
-        timeout = indicator.retrieve('timeout');
-        if (timeout) $clear(timeout);
-        indicator.addClass('typing');
-        timeout = (function() {
-            indicator.removeClass('typing');
+
+        var users = indicator.retrieve('users') || new Hash();
+        users.set(user, users.get(user) + 1);
+        indicator.store('users', users);
+
+        (function() {
+            var users = indicator.retrieve('users');
+            users.set(user, users.get(user) - 1);
+            indicator.store('users', users);
+
+            self.redrawIndicator(indicator);
         }).delay(2000);
-        indicator.store('timeout', timeout);
+
+        this.redrawIndicator(indicator);
+    },
+
+    redrawIndicator: function(indic) {
+        var users = indic.retrieve('users');
+        if (users.every(function (val) { return val == 0; })) { 
+            indic.removeClass('typing');
+            return;
+        }
+
+        var writers = users.filter(function (val) { return val > 0; }).getKeys();
+        if (writers.length >= 2) {
+            var last = writers.pop();
+            writers = writers.join(', ') + ' & ' + last;
+        } else
+            writers = writers.pop();
+
+        indic.getElement('span.indicator').set('text', writers + ' typing...');
+        indic.addClass('typing');
     }
 
 });
