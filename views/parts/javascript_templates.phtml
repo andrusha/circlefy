@@ -17,12 +17,11 @@
                         <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.user.uname) ? '' : 'offline' #>">
                                 <a href="/user/<#: tap.uname #>"><#: tap.uname #></a>
                                 <# if (tap.private == 1): #>
-                                    <span style="font-size:16px">&#x279e;</span> <a href="/user/<#: tap.to_uname #>"><#: tap.to_uname #></a>
+                                    <span style="font-size:16px">-></span> <a href="/user/<#: tap.to_uname #>"><#: tap.to_uname #></a>
+                                <# else: #>
+                                    ,
+                                    <a href="/tap/<#: tap.cid #>" class="date"><#: tap.real_name #></a>
                                 <# endif; #>
-                                ,
-                                <a href="/tap/<#: tap.cid #>" class="date" data-timestamp="<#: tap.chat_timestamp_raw #>">
-                                        <#: tap.chat_timestamp #>
-                                </a>
 
                         <# if (tap.private != 1): #>
             				<a href="/channel/<#: tap.symbol #>">
@@ -119,10 +118,10 @@
                                 <p>Nothing yet! Try tapping this feed...</p>
                         </li>
                         <li id="loadmore-template" class="paginator">
-                                <p>&#9660;</p>
+                                <p>Older Taps</p>
                         </li>
                         <li id="loadless-template" class="paginator">
-                                <p>&#9650;</p>
+                                <p>New Taps</p>
                         </li>
                 </ul>
 

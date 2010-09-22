@@ -1,15 +1,16 @@
 <ul id="taps" class="stream <?= empty($_taps) ? "empty" : "" ?>">
     <?php if (isset($show_less)): ?>
             <li id="loadless" class="paginator">
-                <p>&#9650;</p>
+                <p>New Taps</p>
             </li>
     <?php endif; ?>
 <?php
 if (!empty($_taps)):
-    foreach ($_taps as $tap):
+    $last_id = count($_taps) - 1;
+    foreach ($_taps as $id => $tap):
         $show_resp = isset($show_responses) && isset($tap['responses']);
 ?>
-        <li id="tid_<?= $tap['cid'] ?>" class="container"
+        <li id="tid_<?= $tap['cid'] ?>" class="container<?= $id == $last_id ? ' last' : '' ?>"
             data-id="<?= $tap['cid'] ?>"
             data-uid="<?= $tap['uid'] ?>"
             data-user="<?= $tap['uname'] ?>"
@@ -19,15 +20,16 @@ if (!empty($_taps)):
                      src="/user_pics/<?= $tap['pic_100'] ?>"/>
             </a>
 
-            <p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $_SESSION['uname']) ? '" title="online"' : 'offline' ?>">
+            <p class="tap-from <?= ($tap['user_online'] || $tap['uname'] == $me['uname']) ? '" title="online"' : 'offline' ?>">
                 <a href="/user/<?= $tap['uname'] ?>"><?= trim($tap['uname'])?></a>
                 <? if ($tap['private'] == 1): ?>
-                    <span style="font-size:16px">&#x279e;</span> <a href="/user/<?= $tap['to_uname'] ?>"><?= $tap['to_uname'] ?></a>
+                    <span style="font-size:16px">-></span> <a href="/user/<?= $tap['to_uname'] ?>"><?= $tap['to_uname'] ?></a>
+                <? else: ?>
+                    ,
+                    <a href="/tap/<?= $tap['cid'] ?>"
+                        class="date">
+                    <?= $tap['real_name'] ?>
                 <? endif; ?>
-                ,
-                <a href="/tap/<?= $tap['cid'] ?>" class="date"
-                   data-timestamp="<?= $tap['chat_timestamp_raw'] ?>">
-                <?= $tap['chat_timestamp'] ?>
                 </a>
 
                 <? if ($tap['private'] != 1): ?>
@@ -91,7 +93,7 @@ if (!empty($_taps)):
 <?php endforeach; ?>
     <?php if (!isset($dont_show_more) && count($_taps) >= 10): ?>
             <li id="loadmore" class="paginator">
-                <p>&#9660;</p>
+                <p>Older Taps</p>
             </li>
     <?php endif; ?>
 <?php else: ?>

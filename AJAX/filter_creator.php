@@ -108,11 +108,11 @@ class filter_functions {
                 $params['#to#'] = intval($id);
                 break;
             case  4:
-                $group_info = true;
-                $user_info = true;
+                $group_info = $user_info = true;
                 $filter = 'aggr_all';
                 $params['#uid#'] = $uid;
             case  5:
+                $user_info = $group_info = true;
                 $filter = 'convos_all';
                 $params['#uid#'] = $uid;
         }

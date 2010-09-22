@@ -61,7 +61,7 @@ abstract class Base{
         }
     }
 
-    protected function __destruct() {
+    public function __destruct() {
         $_SESSION['user'] = serialize($this->user);
     }
 

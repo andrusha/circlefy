@@ -37,13 +37,16 @@ class Taps extends BaseModel {
                 $item = strtr($item, $params);
             }
         }
+
+        $distinct = false;
         $joins = array(
             'meta'         => 'INNER JOIN special_chat_meta scm ON scm.mid = sc.mid',
             'members'      => 'JOIN group_members gm ON gm.gid = scm.gid',
             'members_left' => 'LEFT JOIN group_members gm ON gm.gid = scm.gid',
             'logins'       => 'INNER JOIN login l ON l.uid = sc.uid',
             'friends'      => 'JOIN friends f ON sc.uid = f.fuid',
-            'convo'        => 'JOIN active_convo ac ON sc.mid = ac.mid'
+            'convo'        => 'JOIN active_convo ac ON sc.mid = ac.mid',
+            'convo_left'   => 'LEFT JOIN active_convo ac ON sc.mid = ac.mid'
         );
 
         $toJoin = $where = array();
@@ -96,9 +99,12 @@ class Taps extends BaseModel {
                 break;
 
             case 'aggr_all':
+                $distinct = true;
                 $toJoin[] = 'meta';
                 $toJoin[] = 'members_left';
-                $where[]  = '(gm.uid = #uid# OR (((sc.uid = #uid# AND scm.uid IS NOT NULL) OR (scm.uid = #uid#)) AND scm.private = 1))';
+                $toJoin[] = 'convo_left';
+                $where[]  = '(gm.uid = #uid# OR ac.uid = #uid#
+                              OR ((sc.uid = #uid# OR scm.uid = #uid#) AND scm.private = 1))';
                 break;
 
             case 'convos_all':
@@ -138,8 +144,9 @@ class Taps extends BaseModel {
         else
             $where = '';
 
+        $distinct = $distinct ? 'DISTINCT' : '';
         $query = "
-            SELECT sc.mid
+            SELECT {$distinct} sc.mid
               FROM special_chat sc
             {$toJoin}
             {$where}
@@ -420,7 +427,7 @@ class Taps extends BaseModel {
     public function lastResponses($tap_ids) {
         $query = "
             SELECT c2.cid, c2.chat_text AS last_resp, c1.count, l.uname AS resp_uname,
-                   GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name 
+                   GET_REAL_NAME(l.fname, l.lname, l.uname) AS resp_real_name
               FROM (
                     SELECT MAX(mid) AS mid, COUNT(mid) AS count
                       FROM chat c
