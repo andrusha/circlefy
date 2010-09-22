@@ -1991,6 +1991,13 @@ div.sideinfo li p.body {
     height: 35px;
     margin-top: -35px;
     clear: both;
+	background: #EEC;
+border: 1px solid #AAA;
+border-bottom-left-radius: 8px 8px;
+border-top-left-radius: 8px 8px;
+border-top-right-radius: 8px 8px;
+color:black;
+margin-bottom:20px;
 }
 
 #footer .nav {
@@ -1998,12 +2005,13 @@ div.sideinfo li p.body {
 }
 
 #footer .nav a {
+	color:black;
 	margin-right: 20px;
 	text-decoration: none;
 }
 
 #footer .nav a:hover {
-	color: #fffa00;
+	color: #aaa;
 }
 
 #templates {
