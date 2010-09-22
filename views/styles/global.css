@@ -317,6 +317,24 @@ input.basic.error, select.basic.error {
 	border:1px solid #222;
 }
 
+.nav-slim .signup-button{
+background: #777;
+border:2px solid black;
+border-bottom-left-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-top-left-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+margin-left: 4px;
+padding: 5px 6px 6px;
+text-decoration: none;
+background-image: url(http://s.twimg.com/a/1285108869/images/toggle_down_light.png);
+background-position: 98% 50%;
+background-repeat: no-repeat;
+padding: 12px 19px 10px 8px;
+line-height:50%;
+color:#EEE !important;
+}
+
 .nav-slim {
     position: relative;
 }

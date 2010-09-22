@@ -305,8 +305,29 @@ div.modal-window.show {
         background: #EEFDEB;
 }
 
+.modal-cancel {
+font-size:11px;
+}
+
 .modal-window button {
         font-size: 16px;
+	background: #39D url(http://s.twimg.com/a/1285108869/images/bg-btn-blue.png) repeat-x scroll 0px 0px;
+	border: 1px solid #39D;
+	border-bottom-left-radius: 4px 4px;
+	border-bottom-right-radius: 4px 4px;
+	border-top-left-radius: 4px 4px;
+	border-top-right-radius: 4px 4px;
+	color: white;
+	font-size: 11px;
+	font-weight: bold;
+	margin: 0px 5px 0px 0px;
+	padding: 4px 10px 5px;
+	text-shadow: #39D 0px -1px 0px;
+	cursor:pointer;
+}
+
+.modal-window button:hover {
+	background: #39D url() repeat-x scroll 0px 0px;
 }
 
 #suggestions span.fail {
