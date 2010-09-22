@@ -14,8 +14,8 @@ _tap.mixin({
 	name: 'lists',
 
 	setListVars: function() {
-        var sidebar = this.sidebar = $('sidebar');
-		var list = this.list = sidebar.getElements('#lists');
+        var sidebar = this.sidebar = $('supernav');
+		var list = this.list = sidebar.getElements('#lists2');
 		this.header = sidebar.getElements('#tab-name');
 		this.action = sidebar.getElements('#list-action');
 		this.panels = list.getElements('ul')[0];

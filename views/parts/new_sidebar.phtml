@@ -1,7 +1,7 @@
-<div id="sidebar">
+<div id="supernav">
 
 
- <div id="lists" class="section container">
+ <div id="lists2" class="section container">
 
     <ul id="panel-groups" class="panel selected"
         data-action="manage"
@@ -36,6 +36,13 @@
             <a href="#" class="names inblock ellipsis">Followed Conversations</a>
         </li>
 
+        <li id="gid_public" class="<? echo isset($start_gid) && $start_gid == 'public' ? 'selected ' : ''?>panel-item"
+            data-topic="<?= $public_groups_topic ?>"
+            data-id="public"
+            data-name="Discover Taps">
+            <a href="#" class="names inblock ellipsis">Discover</a>
+        </li>
+
 		<li id="private_all" class="panel-item"
             data-id="inbox"
             data-name="Inbox"
@@ -43,18 +50,12 @@
             <a href="#" class="names inblock ellipsis">Inbox</a>
         </li>
 
-        <li id="gid_public" class="<? echo isset($start_gid) && $start_gid == 'public' ? 'selected ' : ''?>panel-item"
-            data-topic="<?= $public_groups_topic ?>"
-            data-id="public"
-            data-name="Discover Taps">
-            <a href="#" class="names inblock ellipsis">Discover tap</a>
-        </li>
     </ul>
 </div>
-
+<!--
 <div id="filter" class="section">
                 <p class="inblock ellipsis">search <span class="title">all your channels</span> <a href="#" class="clear">clear</a></p>
                 <input id="filterkey" type="text" class="basic" />
 </div>
-
+-->
 </div>

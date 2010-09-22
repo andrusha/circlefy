@@ -1,3 +1,14 @@
+
+<div id="stream_options">
+	<span id="stream_options_note">Stream Options:</span>
+	<a href="" id="streamer" class="floater follow_button" alt="pause live streaming" title="pause live streaming"></a>
+	<a href="#" id="anon_filter" class="floater follow_button" alt="Filter guests" title="Filter guests"><b>User View:</b><br/>Registred users</a>
+	<a href="#" id="anon_filter" class="floater follow_button" alt="Filter guests" title="Filter guests"><b>Member View:</b><br/>Official Members</a>
+	<a href="#" id="anon_filter" class="floater follow_button" alt="Filter guests" title="Filter guests"><b>Anonymous View:</b><br/>Visible Members</a>
+	<a href="#" id="anon_filter" class="floater follow_button" alt="Filter guests" title="Filter guests"><b>Geo View:</b><br/>World</a>
+</div>
+
+
 <ul id="taps" class="stream <?= empty($_taps) ? "empty" : "" ?>">
     <?php if (isset($show_less)): ?>
             <li id="loadless" class="paginator">

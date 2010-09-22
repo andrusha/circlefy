@@ -90,11 +90,6 @@ if ($feed_type == 'all') {
 
 	<div id="main">
 
-		<?
-		$show_lists  = true;
-                $show_search = true;
-	        include(NEW_SIDEBAR);
-		?>
 			<div id="content">
 
 				<!--
@@ -107,10 +102,14 @@ if ($feed_type == 'all') {
 				</form>
 				-->
 
+				<?
+				$show_lists  = true;
+				$show_search = false;
+				include(NEW_SIDEBAR);
+				?>
+
 				<div id="tapstream" class="section description">
 					<div class="header">
-						<a href="" id="streamer" class="floater" alt="pause live streaming" title="pause live streaming"></a>
-                        <a href="#" id="anon_filter" class="floater" alt="Filter guests" title="Filter guests">Registred users</a>
 						<a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 						<h2 class="header-title">
 							<img src="/images/flat/loader.gif" />
