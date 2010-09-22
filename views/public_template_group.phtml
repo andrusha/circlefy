@@ -40,14 +40,11 @@ $admin = in_array($_SESSION['uname'], array_map("map_admins", !empty($admins) ? 
     <script type="text/javascript" src="/views/scripts/tap.js"></script>
     <script type="text/javascript">
         window._vars = {
-            uid: "<?= $pcid ?>",
-            anon: <?=$ok_user ? 0 : 1?>,
-            fb: <?=$_SESSION['facebook'] ? 1 : 0?>,
-            uname: "<?= $_SESSION['uname'] ?>",
-            stream: JSON.decode('<?= json_encode($inits) ?>'),
+            user: <?= json_encode($me) ?>,
+            stream: <?= json_encode($inits) ?>,
             convos: [],
-            people: JSON.decode('<?= json_encode($people) ?>'),
-            groups: JSON.decode('<?= json_encode($groups) ?>'),
+            people: <?= json_encode($people) ?>,
+            groups: <?= json_encode($groups) ?>,
             sendTo: "<?= $gname ?>:<?= $symbol ?>:0:<?= $gid ?>",
             filter: {
                 gid: "<?= $gid ?>",
