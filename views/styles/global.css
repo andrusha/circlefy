@@ -497,6 +497,9 @@ color:white;
 
 	padding: 15px 10px;
     height: 20px;
+border-bottom-left-radius: 8px 8px;
+border-top-left-radius: 8px 8px;
+border-top-right-radius: 8px 8px;
 }
 
 #content .section .header h2 {
@@ -548,8 +551,16 @@ color:white;
 }
 
 #content .section.description .description {
-	background: #C3D2DF;
+	background: #EEC;
 	display: block;
+	margin-top:2px;
+	  -moz-border-radius: 8px 8px 8px 8px;
+border-bottom-left-radius: 8px 8px;
+border-bottom-right-radius;
+border: 1px solid #aaa;
+border-top-left-radius: 8px 8px;
+border-top-right-radius: 8px 8px;
+
 }
 
 
@@ -1205,6 +1216,14 @@ div.responses .chatbox {
 
 
 #filter {
+	background:#DFEAF4;
+	 -moz-border-radius: 8px 8px 8px 8px;
+border-bottom-left-radius: 8px 8px;
+border-bottom-right-radius;
+border: 1px solid;
+border-top-left-radius: 8px 8px;
+border-top-right-radius: 8px 8px;
+
 	padding: 10px;
 }
 
