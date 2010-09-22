@@ -2050,3 +2050,10 @@ span#taps-count {
 span#private-count {
     margin-left: 125px;
 }
+
+li#feed        { background: url(/images/new_icons/feed.png)     no-repeat right 6px; }
+li#gid_all     { background: url(/images/new_icons/channels.png) no-repeat right 6px; }
+li#users_all   { background: url(/images/new_icons/people.png)   no-repeat right 6px; }
+li#convos_all  { background: url(/images/new_icons/convos.png)   no-repeat right 6px; }
+li#private_all { background: url(/images/new_icons/private.png)  no-repeat right 6px; }
+li#gid_public  { background: url(/images/new_icons/discover.png) no-repeat right 6px; }
