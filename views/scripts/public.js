@@ -426,7 +426,10 @@ var _convos = _tap.register({
 		this.setStreamVars();
         this.subscribe({
 			'list.item': this.setStream.bind(this),
+            /*
+             * We make response active on server-side anyway
 			'responses.sent': this.addConvo.bind(this),
+            */
 			'list.action.remove': this.removeConvo.bind(this),
 			'feed.changed': (function(type){ this.streamType = type; }).bind(this),
             'responses.track': this.addConvo.bind(this),
@@ -956,7 +959,6 @@ var _responses = _tap.register({
                 parent = chatbox.getParent('li'),
                 cid = parent.getData('id'),
                 uid = parent.getData('uid'),
-                pic = _vars.user.small_pic, 
                 data = {
                     user: parent.getData('user'),
                     message: parent.getElement('p.tap-body').get('html')
@@ -965,7 +967,8 @@ var _responses = _tap.register({
             url: '/AJAX/taps/respond.php',
             data: {
                 cid: cid,
-                small_pic: pic,
+                pic: _vars.user.small_pic,
+                big_pic: _vars.user.big_pic,
                 response: chatbox.get('value'),
                 init_tapper: uid || 0,
                 first: !chatbox.retrieve('first') ? 1 : 0
@@ -1550,13 +1553,14 @@ _live.notifications = _tap.register({
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
         text = data['text'];
+        avatar = '/user_pics/'+data['avatar'];
 
-        _notifications.alert('<span class="notification-title icon-response">New response</span>',
-            '<a href="/user/'+uname+'">' + ureal_name + 
-            '</a> says "' + text + '" in <a href="/tap/'+cid+'">conversation</a>!');
+        _notifications.alert('Response from:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
+            '"' + text + '"',
+            {avatar: avatar});
     	
         _notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://tap.info/tap/'+cid);
+        	document.location.replace('http://'+document.domain+'/tap/'+cid);
     	});
     },
 
@@ -1566,14 +1570,14 @@ _live.notifications = _tap.register({
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
         text = data['chat_text'];
+        avatar = '/group_pics/'+data['avatar'];
 
-        _notifications.alert('<span class="notification-title icon-tap">New tap</span>',
-            '<a href="/user/'+uname+'">' + ureal_name +
-            '</a> starts discuss about "' + text + '" in <a href="/channel/'+gname+'">'+
-            greal_name + '</a> channel!');
+        _notifications.alert('New tap:<br><a href="/user/'+uname+'">' + ureal_name +'</a>',
+            '"' + text + '"',
+            {avatar: avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://tap.info/channel/'+gname);
+        	document.location.replace('http://'+document.domain+'/channel/'+gname);
     	});
     },
 
@@ -1581,22 +1585,21 @@ _live.notifications = _tap.register({
         status = data['status'];
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+        avatar = '/user_pics/'+data['avatar'];
 
         var title = '';
         var message = '';
         if (status) {
-            title = '<span class="notification-title icon-user">New follower</span>';
-            message = 'Now <a href="/user/'+uname+'">' + ureal_name +
-                '</a> follows you everywhere in your tap journey!';
+            title = 'New follower:<br><a href="/user/'+uname+'">' + ureal_name + '</a>';
+            message = 'Will follows you everywhere in your tap journey!';
         } else {
-            title = 'Follower gone';
-            message = '<a href="/user/'+uname+'">' + ureal_name +
-                '</a> doesn\'t follow you anymore :(';
+            title = 'Follower gone:<br><a href="/user/'+uname+'">' + ureal_name +'</a>';
+            message = "doesn't follow you anymore :(";
         }
-        _notifications.alert(title, message);
+        _notifications.alert(title, message, {avatar:avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://tap.info/user/'+uname);
+        	document.location.replace('http://'+document.domain+'/user/'+uname);
     	});
     },
 
@@ -1605,13 +1608,14 @@ _live.notifications = _tap.register({
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
         text = data['chat_text'];
+        avatar = '/user_pics/'+data['avatar'];
 
-        _notifications.alert('<span class="notification-title icon-private">New PM</span>',
-            '<a href="/user/'+uname+'">' + ureal_name +
-            '</a> send\'s you a private message "' + text + '"!');
+        _notifications.alert('New PM:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
+            '"' + text + '"',
+            {avatar: avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://tap.info/tap/'+cid);
+        	document.location.replace('http://'+document.domain+'/tap/'+cid);
     	});
 
     }

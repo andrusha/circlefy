@@ -213,11 +213,9 @@ div.form button.action:hover {
     top: 100px;
     padding: 10px;
     border: 7px solid black;
-    -moz-border-radius: 5px 5px 5px 5px;
-	border-bottom-left-radius: 5px 5px;
-	border-bottom-right-radius: 5px 5px;
-	border-top-left-radius: 5px 5px;
-	border-top-right-radius: 5px 5px;
+    -moz-border-radius:    5px;
+	-webkit-border-radius: 5px;
+	border-radius:         5px;
 }
 
 div.modal-window.show {
@@ -313,10 +311,6 @@ font-size:11px;
         font-size: 16px;
 	background: #39D url(http://s.twimg.com/a/1285108869/images/bg-btn-blue.png) repeat-x scroll 0px 0px;
 	border: 1px solid #39D;
-	border-bottom-left-radius: 4px 4px;
-	border-bottom-right-radius: 4px 4px;
-	border-top-left-radius: 4px 4px;
-	border-top-right-radius: 4px 4px;
 	color: white;
 	font-size: 11px;
 	font-weight: bold;
@@ -324,6 +318,9 @@ font-size:11px;
 	padding: 4px 10px 5px;
 	text-shadow: #39D 0px -1px 0px;
 	cursor:pointer;
+	border-radius:          4px;
+	-moz-border-radius:		4px;
+	-webkit-border-radius:	4px;
 }
 
 .modal-window button:hover {
@@ -564,12 +561,6 @@ ul.modOptions li a.modlink {
 
 .mod-delete-tap	{ background:		url("/images/icons/page_white_delete.png") center left no-repeat; }
 
-.notification-title {
-	display:		inline-block;
-	padding-left:	20px;
-	line-height:	20px;
-	text-decoration: none;
-}
 .icon-user	{ background:		url("/images/icons/user.png") center left no-repeat; }
 .icon-tap	{ background:		url("/images/icons/page_add.png") center left no-repeat; }
 .icon-response	{ background:		url("/images/icons/page_add.png") center left no-repeat; }

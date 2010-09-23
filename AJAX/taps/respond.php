@@ -41,11 +41,11 @@ class respond extends Base {
         $msg = strip_tags($msg);
         $tap->addResponse($this->user, $msg);
         
-        $tap->makeActive($this->user);
-        $tap->makeActive($tapper);
+        $tap->makeActive($this->user, 1);
+        $tap->makeActive($tapper, 1);
 
-        $this->pushResponse($tap, $tapper, $_POST['small_pic'], $msg);
-        $this->notify_all($tap, $tapper, $msg);
+        $this->pushResponse($tap, $tapper, $_POST['pic'], $msg);
+        $this->notify_all($tap, $tapper, $msg, $_POST['big_pic']);
 
 		return array('success' => 1);
 	}
@@ -57,7 +57,7 @@ class respond extends Base {
         Comet::send('message', $message);
     }
 
-	private function notify_all(Tap $tap, User $tapper, $text) {
+	private function notify_all(Tap $tap, User $tapper, $text, $avatar) {
         $query = "
             SELECT a.uid
               FROM active_convo a 
@@ -71,15 +71,15 @@ class respond extends Base {
 
         $users = array();
         $result = $this->db->query($query,
-            array('cid' => $tap->id, 'uid' => $tapper->uid));
+            array('cid' => $tap->id, 'uid' => $tapper->uid), true);
 
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
                 $users[] = intval($res['uid']);
 
-        $text = FuncLib::makePreview($respText);
-        $data = array('cid' => intval($cid), 'uname' => $this->user->uname,
-            'ureal_name' => $this->user->real_name, 'text' => $text);
+        $text = FuncLib::makePreview($text);
+        $data = array('cid' => $tap->id, 'uname' => $this->user->uname,
+            'ureal_name' => $this->user->real_name, 'text' => $text, 'avatar' => $avatar);
 
         Comet::send('message', array('action' => 'notify.convo.response', 'users' => $users, 
             'exclude' => array($this->user->uid), 'data' => $data));

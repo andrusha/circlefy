@@ -36,8 +36,19 @@ var Roar = new Class({
 
 	alert: function(title, message, options) {
 		var params = Array.link(arguments, {title: String.type, message: String.type, options: Object.type});
-		var items = [new Element('h3', {'html': $pick(params.title, '')+'<div>click to dismiss</div>'})];
-		if (params.message) items.push(new Element('p', {'html': params.message}));
+		var items = []; 
+        if (params.options.avatar)
+            items.push(new Element('img',
+                {class: 'avatar',
+                 src: params.options.avatar}));
+
+        items.push(new Element('h3',
+            {html: $pick(params.title, '')}));
+
+		if (params.message)
+            items.push(new Element('p',
+                {html: params.message}));
+
 		return this.inject(items, params.options);
 	},
 
@@ -59,9 +70,12 @@ var Roar = new Class({
 			new Element('div', {
 				'class': 'roar-bg',
 				'opacity': 0.7
-			}),
-			elements
-		);
+			}).adopt(
+                new Element('div', {
+                    'class': 'dismiss',
+                    'html': 'click to dismiss'
+                })),
+    		elements);
 
 		var to = {'opacity': 1};
 
@@ -104,7 +118,7 @@ var Roar = new Class({
 			var over = false;
 			var trigger = (function() {
 				trigger = null;
-				if (!item.over) remove();
+//				if (!item.over) remove();
 			}).delay(duration);
 			item.addEvents({
 				mouseover: function() {
@@ -115,7 +129,7 @@ var Roar = new Class({
                     if (!fromOutside)
                         return;
 					item.over = false;
-					if (!trigger) remove();
+//					if (!trigger) remove();
 				}
 			});
 		}

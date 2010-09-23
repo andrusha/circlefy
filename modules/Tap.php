@@ -241,7 +241,7 @@ class Tap extends BaseModel {
                       ON DUPLICATE KEY
                   UPDATE active = #status#";
         $this->db->query($query, array('uid' => $user->uid,
-            'mid' => $this->id, 'status' => $status));
+            'mid' => $this->id, 'status' => $status), true);
         return $this->db->affected_rows == 1;
     }
 

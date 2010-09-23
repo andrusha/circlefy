@@ -5,9 +5,6 @@
 require_once('../../config.php');
 require_once('../../api.php');
 
-define('FUCKED_UP', array('status' => 'NOT_REGISTERED'));
-define('SUCCESS', array('status' => 'REGISTERED'));
-
 class login extends Base {
     public function __construct() {
         $this->need_db = false;
@@ -29,11 +26,11 @@ class login extends Base {
 
     private function normal($uname, $pass) {
         if (!$user || !$pass)
-            return FUCKED_UP;
+            return array('status' => 'NOT_REGISTERED');
 
         if (Auth::logIn($user, $password, false) !== null)
-            return SUCCESS;
-        return FUCKED_UP;
+            return array('status' => 'REGISTERED');
+        return array('status' => 'NOT_REGISTERED');
     }
 
     private function facebook() {
@@ -41,7 +38,7 @@ class login extends Base {
         $exists = $fb->exists();
         
         if ($exists)
-            return SUCCESS;
+            return array('status' => 'REGISTERED');
         else {
             $user_info = $fb->info;
             $data = array(

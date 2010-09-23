@@ -20,7 +20,7 @@ class active extends Base {
         $status = intval($_POST['status']);
         if ($status) {
             $tap = Tap::byId($mid);
-            $tap->makeActive($this->user, status);
+            $tap->makeActive($this->user, $status);
             $this->data = array('successful' => 1, 'data' => $tap->all);
         } else {
             $tap = new Tap($mid);
