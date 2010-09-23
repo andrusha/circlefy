@@ -82,7 +82,7 @@ window.addEvent('domready', function(){
 				    var ls = $('pwrecovery-status');
 				    ls.set('html','<img src="/images/flat/loader.gif" /> Processing...');
 				    new Request({
-						url: '/AJAX/password_recovery.php',
+						url: '/AJAX/user/password_recovery.php',
 						data: data,
 						onRequest: this.showPwrecLoad.bind(this),
 						onSuccess: function(){
@@ -125,7 +125,7 @@ window.addEvent('domready', function(){
 				  var ls = $('pwrecovery-status');
 				  ls.set('html','<img src="/images/flat/loader.gif" /> Processing...');
 				  new Request({
-					    url: '/AJAX/password_recovery.php',
+					    url: '/AJAX/user/password_recovery.php',
 					    data: data,
 					    onRequest: this.showPwResLoad.bind(this),
 					    onSuccess: function(){

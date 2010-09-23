@@ -108,7 +108,7 @@ var _create = _tap.register({
 			return this.showError(el, 'what\'s that symbol? names must only contain letters and numbers');
 		} else {
 			new Request({
-				url: '/AJAX/group_check.php',
+				url: '/AJAX/group/check.php',
 				data: {
 					group_check: true,
 					post: 'name',
@@ -137,7 +137,7 @@ var _create = _tap.register({
 			return this.showError(el, 'what\'s that character? symbols must only contain letters and numbers');
 		} else {
 			new Request({
-				url: '/AJAX/group_check.php',
+				url: '/AJAX/group/check.php',
 				data: {
 					group_check: true,
 					post: 'symbol',
@@ -209,7 +209,7 @@ var _create = _tap.register({
 		if (!this.noErrors()){ $$('.error')[0].style.display = 'block'; return this.fireErrors(); } 
 		this.sending = true;
 		new Request({
-			'url': '/AJAX/group_create.php',
+			'url': '/AJAX/group/create.php',
 			'data': {
 				gname: data.name.get('value'),
 				symbol: data.symbol.get('value'),

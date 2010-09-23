@@ -1,15 +1,9 @@
 <?php
 
 class public_user extends Base{
-	function __default(){}
-	
-	public function __toString(){
-		return "Public User Object";
-	}
-	
 	function __construct(){
 		$this->need_login = 1;
-		$this->need_db = 1;
+		$this->need_db = 0;
 		$this->page_name = "public_user";
 	
 		parent::__construct();
@@ -34,15 +28,17 @@ class public_user extends Base{
             'private' => 'private') as $from => $to)
             $this->set($info[$from], $to);
 	
-        $taps = new Taps();
-
         if (!$private)
             $this->set(
-                $taps->getFiltered('personal', array('#uid#' => $user->uid, '#outside#' => '1, 2')), 
+                TapsList::getFiltered('personal', array('#uid#' => $user->uid, '#outside#' => '1, 2'))
+                        ->lastResponses()
+                        ->filter('all'), 
                 'user_bits');
         else
             $this->set(
-                $taps->getFiltered('private', array('#from#' => $user->uid, '#to#' => $this->user->uid, '#outside#' => '1, 2')), 
+                TapsList::getFiltered('private', array('#from#' => $user->uid, '#to#' => $this->user->uid, '#outside#' => '1, 2'))
+                        ->lastResponses()
+                        ->filter('all'), 
                 'user_bits');
 
         $this->set(

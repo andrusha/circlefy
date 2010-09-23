@@ -1,31 +1,18 @@
 <?php
 
 class public_group extends Base {
-
-    protected $text;
-    protected $top;
-
-    function __default() {
-    }
-
-    public function __toString() {
-        return "Public User Object";
-    }
-
     function __construct() {
         $this->view_output = "HTML";
-        $this->db_type = "mysql";
-        $this->need_login = 1;
         $this->need_db = 1;
-        $this->need_filter = 1;
-        $this->input_debug_flag = 0;
         $this->page_name = "public_template_group";
 
         parent::__construct();
 
-
         $symbol = $_GET['symbol'];
 
+        $group = Group::fromSymbol($symbol);
+        if ($group === null)
+            header('Location: http://tap.info?error=no_public_group');
 
 //START get gid
         $get_gid_query = <<<EOF
@@ -37,7 +24,6 @@ EOF;
         $gid_result = $this->db->query($get_gid_query);
 
         if (!$gid_result->num_rows)
-            header('Location: http://tap.info?error=no_public_group');
 
         $res = $gid_result->fetch_assoc();
         $mapping = array('gid' => 'gid', 'gname' => 'gname', 'type' => 'connected',
@@ -86,8 +72,10 @@ EOF;
         $this->set($gid, 'gid');
         $this->set($descr, 'descr');
         $this->set($online_count, 'online_count');
+        echo 1;
         if (!$gid)
             return False;
+        echo 2;
 //END get gid
 
         $get_member_count = <<<EOF
@@ -143,10 +131,12 @@ EOF;
         else
             $logged_in_id = 0;
 
-        $taps = new Taps();
-        $params = array('#outside#' => '1, 2', '#gid#' => $gid);
-        $data_taps = $taps->getFiltered('ind_group', $params);
-        $this->set($data_taps, 'user_bits');
+        var_dump($group->gid);
+        $this->set(
+            TapsList::getFiltered('ind_group', array('#outside#' => '1, 2', '#gid#' => $group->gid))
+                    ->lastResponses()
+                    ->filter('all')
+            , 'user_bits');
 
 //START member count
         $count_group_member_query = "SELECT COUNT(uid) AS member_count FROM group_members WHERE gid = {$gid}";
@@ -158,12 +148,6 @@ EOF;
 
 
         $this->set($this->get_popular_members($gid), 'popular_members');
-        $this->set($this->get_popular_tags($gid), 'popular_taps');
-
-
-//START set the session uid for Orbited
-        $this->set($_SESSION['uid'], 'pcid');
-//END set the session uid for Orbited
 
 //START taps count
         $taps_count_sql = "
@@ -216,37 +200,4 @@ EOF;
         return $popular_members_data;
     }
 
-
-    private function get_popular_tags($gid){
-        //START get popular taps
-        $popular_taps_query = <<<EOF
-SELECT sc.chat_text,COUNT(c.cid) AS count,scm.mid FROM chat AS c
-JOIN special_chat_meta AS scm ON scm.mid = c.cid
-JOIN special_chat AS sc ON sc.mid = scm.mid
-WHERE scm.gid = {$gid}
-GROUP BY c.cid ORDER BY count DESC LIMIT 5;
-EOF;
-
-        $popular_taps_results = $this->db->query($popular_taps_query);
-        if ($popular_taps_results->num_rows)
-            while ($res = $popular_taps_results->fetch_assoc()) {
-                $tap = $res['chat_text'];
-                $cid = $res['mid'];
-                $count = $res['count'];
-
-                $tap = stripslashes($tap);
-
-                $popular_taps_data[] = array(
-                    'tap' => $tap,
-                    'cid' => $cid,
-                    'count' => $count
-                );
-            }
-//        $this->set($popular_taps_data, 'popular_taps');
-//END get popular taps
-        return $popular_taps_data;
-    }
-
-}
-
-?>
+};

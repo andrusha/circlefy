@@ -41,7 +41,7 @@ var _members = _tap.register({
         var online_state = $('online-checked').checked;
 
         new Request({
-            url: "/AJAX/group_userlist.php",
+            url: "/AJAX/group/users.php",
             data: {gid: _vars.filter.gid,type:0,online_only:online_state},
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);

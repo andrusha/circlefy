@@ -67,7 +67,7 @@ $allowedModules = array(
     'add_catagory' => true,
 	'remove_catagory' => true
 );
-
+/*
 //Check if user has a session
 if ($session)
     $session = true;
@@ -125,7 +125,7 @@ if (!$module_access_status || !$api_access_status) {
     echo json_encode(array('msg' => $access_error_msg));
     exit();
 }
-
+*/
 function api_usage($usage) {
     $usage = json_encode($usage);
     echo $usage;
@@ -142,5 +142,3 @@ function api_json_choose($res, $cb_enable) {
         echo json_encode($res);
 }
 
-
-?>

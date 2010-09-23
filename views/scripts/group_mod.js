@@ -55,7 +55,7 @@ var _groupmod = _tap.register({
 
 		if (confirmPromote) {
 			new Request({
-				url: '/AJAX/group_mod.php',
+				url: '/AJAX/group/mod.php',
 				data: {
 					gid: _vars.filter.gid,
 					target_uid: parent.getData('uid'),
@@ -88,7 +88,7 @@ var _groupmod = _tap.register({
 		var remove = confirm('Are you sure you want to ban this user?');
 		if (remove) {
 			new Request({
-				url: '/AJAX/group_mod.php',
+				url: '/AJAX/group/mod.php',
 				data: {
 					gid: _vars.filter.gid,
 					target_uid: parent.getData('uid'),

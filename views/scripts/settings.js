@@ -133,7 +133,7 @@ _settings.account = _tap.register({
 			privateValue  = 1;
 	
 		new Request({
-			'url': '/AJAX/edit_profile.php',
+			'url': '/AJAX/user/profile/edit.php',
 			'data': {
 				about: data.about.get('value'),
 				fname: data.fname.get('value'),
@@ -198,7 +198,7 @@ _settings.picture = _tap.register({
 		if (!this.pic) return this.showError(this.uploader, 'where\'s your new picture?');
 		this.sending = true;
 		new Request({
-			'url': '/AJAX/edit_profile.php',
+			'url': '/AJAX/user/profile/edit.php',
 			'data': {
 				about: _vars.about,
 				fname: _vars.fname,
@@ -265,7 +265,7 @@ _settings.password = _tap.register({
 		if (!this.noErrors()) return this.fireErrors();
 		this.sending = true;
 		new Request({
-			'url': '/AJAX/password_profile.php',
+			'url': '/AJAX/user/profile/password.php',
 			'data': {
 				old_pass: data.current.get('value'),
 				new_pass: data.newpass.get('value')
@@ -347,7 +347,7 @@ _settings.facebook = _tap.register({
         var self = this,
             data = {'action': 'bind'};
         new Request({
-            url: '/AJAX/facebook.php',
+            url: '/AJAX/user/facebook.php',
             method: 'POST',
             data: data,
             onSuccess: function() {

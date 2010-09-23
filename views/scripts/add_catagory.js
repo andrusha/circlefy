@@ -58,7 +58,7 @@ var _lists = _tap.register({
         
         
         new Request({
-            'url': '/AJAX/add_catagory.php',
+            'url': '/AJAX/group/category/add.php',
             'data': {
                 type: 'editCatagory',
                 name: newname,
@@ -118,7 +118,7 @@ var _lists = _tap.register({
 		var remove = confirm('Are you sure you want to remove this catagory?');
 		if (remove) {
 		new Request({
-			'url': '/AJAX/remove_catagory.php',
+			'url': '/AJAX/group/category/remove.php',
 			'data': {
                         scid: parent.get('catagoryid')
 			},
@@ -160,7 +160,7 @@ var _create = _tap.register({
 		var catagory = $('catagory-add-input').value;
         $('catagory-add-input').set('value', ''); 
 		new Request({
-			'url': '/AJAX/add_catagory.php',
+			'url': '/AJAX/group/category/add.php',
 			'data': {
 				type: 'catagory',
 				name: catagory,

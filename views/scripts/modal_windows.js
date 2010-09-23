@@ -175,7 +175,7 @@ _modal.signup = _tap.register({
             return self.showError(el, 'Username must be at least 4 characters');
         } else {
             new Request({
-                url: '/AJAX/check_signup.php',
+                url: '/AJAX/user/check.php',
                 data: {
                     type: 1,
                     val: el.get('value')
@@ -201,7 +201,7 @@ _modal.signup = _tap.register({
             return self.showError(el, 'Please enter a valid email.');
         } else {
             new Request({
-                url: '/AJAX/check_signup.php',
+                url: '/AJAX/user/check.php',
                 data: {
                     type: 2,
                     val: el.get('value')
@@ -239,7 +239,7 @@ _modal.signup = _tap.register({
 
         this.removeError(el);
         new Request({
-            url: '/AJAX/facebook.php',
+            url: '/AJAX/user/facebook.php',
             method: 'POST',
             data: {'action': 'check'},
             onSuccess: function() {
@@ -291,7 +291,7 @@ _modal.signup = _tap.register({
             }
 
             new Request({
-                url: '/AJAX/ajaz_new_sign_up.php',
+                url: '/AJAX/user/sign_up.php',
                 data: {
                     uname: uname,
                     email: this.signupData.email.get('value'),
@@ -378,7 +378,7 @@ _modal.facebook = _tap.register({
             caption = this.message.get('value');
 
         new Request({
-            url: '/AJAX/facebook.php',
+            url: '/AJAX/user/facebook.php',
             data: {
                 action: 'share',
                 message: message,
@@ -431,7 +431,7 @@ _modal.suggestions = _tap.register({
             this.chain = chain;
 
         new Request({
-            url: '/AJAX/group_suggest.php',
+            url: '/AJAX/group/suggest.php',
             data: {
                 action: 'get'    
             },
@@ -493,7 +493,7 @@ _modal.suggestions = _tap.register({
         }
          
         new Request({
-           url: '/AJAX/join_group.php', 
+           url: '/AJAX/group/join.php', 
            data: {
                action: 'bulk',
                gids: gids

@@ -60,7 +60,7 @@ var _list = _tap.register({
 		var remove = confirm('Are you sure you want to leave this channel?');
 		if (remove) {
 			new Request({
-				url: 'AJAX/leave_group.php',
+				url: 'AJAX/group/leave.php',
 				data: {
 					gid: parent.getData('id')
 				},

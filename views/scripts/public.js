@@ -154,6 +154,7 @@ _tap.mixin({
     parseFeed: function(resp, keep, scrollAndColor) {
         var stream = this.stream;
         if (!keep) stream.empty();
+        resp.data = resp.data.reverse();
         if (resp.results && resp.data) {
             var items = Elements.from(_template.parse('taps', resp.data));
             items.each(function(item) {
@@ -161,7 +162,7 @@ _tap.mixin({
                         el = $(id);
                 if (el) el.destroy();
             });
-			items = $$(items.reverse());
+			items = $$(items);
 
 			if (items.length >= 10 && !keep) ($('loadmore-template').clone()).inject('taps','bottom').setProperty('id', 'loadmore');
 			if(keep) publish_type = 'stream.more'; else publish_type = 'stream.new';
@@ -363,7 +364,7 @@ var _stream = _tap.register({
         
         if (keyword) data.search = keyword;
         new Request({
-            url: '/AJAX/filter_creator.php',
+            url: '/AJAX/taps/filter.php',
             data: data,
             onRequest: this.showLoader.bind(this),
             onSuccess: function() {
@@ -471,7 +472,7 @@ var _convos = _tap.register({
 		var self = this,
 			data = {id_list: id};
 		new Request({
-			url: '/AJAX/loader.php',
+			url: '/AJAX/taps/convo.php',
 			data: data,
 			onRequest: this.showLoader.bind(this),
 			onSuccess: function(){
@@ -512,8 +513,8 @@ var _convos = _tap.register({
 		var self = this;
 		this.publish('convos.updated', 'cid_' + cid)
 		new Request({
-			url: '/AJAX/add_active.php',
-			data: {cid: cid},
+			url: '/AJAX/taps/active.php',
+			data: {cid: cid, status: 1},
 			onSuccess: function() {
                 var response = JSON.decode(this.response.text);
                 if (response.successful) 
@@ -532,8 +533,8 @@ var _convos = _tap.register({
 	removeConvo: function(cid){
 		var self = this;
 		new Request({
-			url: '/AJAX/remove_active.php',
-			data: {cid: cid},
+			url: '/AJAX/taps/active.php',
+			data: {cid: cid, status: 0},
 			onSuccess: function(){
 				self.publish('convos.removed', [cid, 'cid_' + cid]);
 			}
@@ -599,7 +600,7 @@ var _responses = _tap.register({
 		var executingPopup;
 
 		new Request({
-			url: '/AJAX/delete_tap.php',
+			url: '/AJAX/taps/delete.php',
 			data: {
 				cid: delete_cid
 			},
@@ -646,7 +647,7 @@ var _responses = _tap.register({
 		var executingPopup;
 
 		new Request({
-			url: '/AJAX/group_mod.php',
+			url: '/AJAX/group/mod.php',
 			data: {
 				gid: param_gid,
 				target_uid: param_target_uid,
@@ -695,7 +696,7 @@ var _responses = _tap.register({
         var self = this;
         var elem = el;
         new Request({
-            url: '/AJAX/group_mod.php',
+            url: '/AJAX/group/mod.php',
             data: {
 					cid: data_cid,
 					target_uid: data_uid,
@@ -825,7 +826,7 @@ var _responses = _tap.register({
     loadResponse: function(id, box) {
         var self = this;
         new Request({
-            url: '/AJAX/load_responses.php',
+            url: '/AJAX/taps/responses.php',
             data: {cid: id},
             onSuccess: function() {
                 var data = JSON.decode(this.response.text);
@@ -961,7 +962,7 @@ var _responses = _tap.register({
                     message: parent.getElement('p.tap-body').get('html')
                 };
         new Request({
-            url: '/AJAX/respond.php',
+            url: '/AJAX/taps/respond.php',
             data: {
                 cid: cid,
                 small_pic: pic,
@@ -1117,7 +1118,7 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.msg.isEmpty()) return this.msg.focus();
         new Request({
-            url: '/AJAX/new_message_handler.php',
+            url: '/AJAX/taps/new.php',
             data: {
                 msg: this.msg.get('value'),
                 to: this.sendTo
@@ -1297,7 +1298,7 @@ _live.typing = _tap.register({
             chatbox.store('typing', false);
         }).delay(1500);
         chatbox.store('typing', true);
-        new Request({url: '/AJAX/typing.php', data: {cid: id, response: 1}}).send();
+        new Request({url: '/AJAX/user/typing.php', data: {cid: id, response: 1}}).send();
     },
 
     showTyping: function(tid, user) {
@@ -1483,7 +1484,7 @@ _live.taps = _tap.register({
     },
 
     showPushed: function() {
-        _stream.parseFeed({results: true, data: this.pushed.reverse()}, true, true);
+        _stream.parseFeed({results: true, data: this.pushed}, true, true);
         this.clearPushed();
     },
 

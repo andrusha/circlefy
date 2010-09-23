@@ -116,7 +116,7 @@ var _search = _tap.register({
 
 		if(id==0){
 			this.request = new Request({
-					url: '/AJAX/group_create.php',
+					url: '/AJAX/group/create.php',
 					link: 'cancel',
 					onSuccess: function() {
 						window.location = '/channel/'+this.new_keyword;

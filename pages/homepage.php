@@ -10,10 +10,13 @@ class homepage extends Base {
 	
 		parent::__construct();
 
-        $convosClass = new Convos();
-        $active_convos = $convosClass->getActive($this->user->uid);
-		$this->set($active_convos,'active_convos');
+        /*
+		$this->set(
+            TapsList::getFiltered('active', array('#uid#' => $this->user->uid))
+                    ->filter('all')
+            , 'active_convos');
 	
+        
         $this->set(
             GroupsList::byUser($this->user, G_EXTENDED | G_ONLINE_COUNT | G_USERS_COUNT)->filter('info'),
             'your_groups');	
@@ -24,13 +27,14 @@ class homepage extends Base {
 
 		$this->set(
             UsersList::withPM($this->user)->filter('info'),
-            'your_private');
+            'your_private');*/
 
-        $taps = new Taps();
         if (!$this->user->guest) {
             $params = array('#outside#' => '1, 2', '#uid#' => $this->user->uid);
             $filter = 'aggr_all';
-            $data = $taps->getFiltered($filter, $params, true, true);
+            $data = TapsList::getFiltered($filter, $params, true, true)
+                            ->lastResponses()
+                            ->filter('all');
             $this->set('all', 'feed_type');
         }
 
@@ -38,7 +42,9 @@ class homepage extends Base {
             //show all public taps for guests
             $params = array('#outside#' => '1, 2');
             $filter = 'public';  
-            $data = $taps->getFiltered($filter, $params);
+            $data = TapsList::getFiltered($filter, $params, true, true)
+                            ->lastResponses()
+                            ->filter('all');
             $this->set('discover', 'feed_type');
         }
 

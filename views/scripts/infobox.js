@@ -32,7 +32,7 @@ var _infobox = _tap.register({
         var self = this,
                 id = this.button.getData('id');
         new Request({
-            url: '/AJAX/request_join_group.php',
+            url: '/AJAX/group/request.php',
             method: 'post',
             data: {gid: id},
             onSuccess: function() {
@@ -57,7 +57,7 @@ var _infobox = _tap.register({
         var self = this,
                 id = this.button.getData('id');
         new Request({
-            url: '/AJAX/join_group.php',
+            url: '/AJAX/group/join.php',
             method: 'post',
             data: {gid: id},
             onSuccess: function() {
@@ -82,7 +82,7 @@ var _infobox = _tap.register({
         var self = this,
                 id = this.button.getData('id');
         new Request({
-            url: '/AJAX/leave_group.php',
+            url: '/AJAX/group/leave.php',
             data: {gid: id},
             onSuccess: function() {
                 self.button.set({
@@ -102,7 +102,7 @@ var _infobox = _tap.register({
         var self = this,
                 id = this.button.getData('id');
         new Request({
-            url: '/AJAX/track.php',
+            url: '/AJAX/user/track.php',
             data: {
                 fid: id,
                 state: (type) ? 1 : 0

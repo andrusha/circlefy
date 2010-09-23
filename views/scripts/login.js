@@ -56,7 +56,7 @@ var _login = _tap.register({
                 'pass': pass,
                 'type': 'user'};
         new Request({
-            url: '/AJAX/login.php',
+            url: '/AJAX/user/login.php',
             data: data,
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);
@@ -81,7 +81,7 @@ var _login = _tap.register({
             form = this.form;
 
         new Request({
-            url: '/AJAX/login.php',
+            url: '/AJAX/user/login.php',
             data: {'type': 'facebook'},
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);

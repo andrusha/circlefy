@@ -65,10 +65,23 @@ set_exception_handler('exceptionHandler');
 define('BASE_PATH', realpath(dirname(__FILE__)).'/');
 
 function __autoload($classname) {
+    $generics = array('Base', 'BaseModel', 'Collection');
+    $libs = array('DB', 'Action', 'Comet', 'Curl', 'Exceptions', 'FuncLib',
+        'Images', 'Mail');
+    $db = array('MySQL', 'Postgress');
+    $add_path = '';
+    if (in_array($classname, $generics))
+        $add_path = 'Generic/';
+    elseif (in_array($classname, $libs))
+        $add_path = 'Libs/';
+    elseif (in_array($classname, $db))
+        $add_path = 'Libs/DB/';
+
+
     if (substr($classname, -9) == 'Exception')
-        require_once(BASE_PATH.'modules/Exceptions.php');
+        require_once(BASE_PATH.'modules/Libs/Exceptions.php');
     else
-    	require_once(dirname(__FILE__).'/modules/'.$classname.'.php');
+    	require_once(BASE_PATH.'/modules/'.$add_path.$classname.'.php');
 }
 
 session_start();

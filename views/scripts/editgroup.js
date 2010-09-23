@@ -175,7 +175,7 @@ var _edit = _tap.register({
 		if (!this.noErrors()) { $$('.error')[0].style.display = 'block'; return this.fireErrors(); } 
 		this.sending = true;
 		var request = new Request({
-			url: '/AJAX/group_update.php',
+			url: '/AJAX/group/update.php',
 			data: {
 				gid: gid,
 				focus: data.focus.get('value').trim().rtrim(','),

@@ -45,7 +45,7 @@ var _infobox = _tap.register({
 			id = el.getParent('li').getData('id'),
 			type = el.hasClass('track');
 		new Request({
-			url: '/AJAX/track.php',
+			url: '/AJAX/user/track.php',
 			data: {
 				fid: id,
 				state: (type) ? 1 : 0
@@ -108,7 +108,7 @@ var _filter = _tap.register({
 	search: function(keyword){
 		var self = this;
 		new Request({
-			url: '/AJAX/search_people.php',
+			url: '/AJAX/user/search.php',
 			method: 'POST',
 			data: {
 				uname: keyword

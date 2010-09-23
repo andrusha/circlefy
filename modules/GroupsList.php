@@ -229,55 +229,6 @@ class GroupsList extends Collection {
         @returns array(Group, ...)
     */
     public static function bulkCreateFacebook(User $creator, array $fgids) {
-        if (!function_exists('makeGName')) {
-            function makeGName($gname, $limit = 64) {
-                //make words in Camel Case, if there is words
-                if (strpos($gname, ' ') !== false) {
-                    $gname = ucwords(strtolower($gname));
-                    $gname = str_replace(' ', '-', trim($gname));
-                }
-
-                //delete all garbage symbols
-                $gname = preg_replace('/[^a-z0-9\-)]*/i', '', $gname);
-                
-                //if gname length is greater, than DB limit
-                //try to make abbreviation of our words,
-                //if words at least two
-                if (strpos($gname, '-'))
-                    while(strlen($gname) > $limit) {
-                        $gname = preg_replace('/([A-Z])[a-z0-9]+/', '$1', $gname);
-                    }
-                
-                //if even after abbreveation name is greater
-                //our limit, then just cut it
-                $gname = substr($gname, 0, $limit);
-
-                return $gname;
-            }
-        }
-
-        if (!function_exists('extractTags')) {
-            function extractTags($gname, $descr, $category) {
-                $tags = array();
-
-                //category is tag anyway
-                $tags[] = $category;
-
-                //now, let us extract all stuff <b>, <i> & <a> tags
-                //this are usually somewhat realted to
-                $result = array();
-                preg_match_all('/<(?P<tagname>[abi])(?:\s[^>]*?)?>(?P<info>.*?)<\/(?P=tagname)>/i', $descr, $result, PREG_PATTERN_ORDER);
-                foreach ($result['info'] as $tag) {
-                    $tag = trim($tag);
-                    if (strlen($tag) < 128)
-                        $tags[] = $tag;
-                }
-                
-                $tags = array_unique($tags);
-                return $tags;
-            }
-        }
-
         if (empty($fgids))
             return new GroupsList(array());
 
@@ -286,10 +237,10 @@ class GroupsList extends Collection {
         $groups = array();
         foreach ($fgids as $fgid) {
             $info = $fb->getGroupInfo($fgid);
-            $descr = Taps::makePreview(strip_tags($info['description']), 250);
-            $symbol = Taps::makePreview($info['name'], 250);
-            $gname = makeGName($info['name']);
-            $tags = extractTags($info['name'], $info['description'], $info['category']);
+            $descr = FuncLib::makePreview(strip_tags($info['description']), 250);
+            $symbol = FuncLib::makePreview($info['name'], 250);
+            $gname = FuncLib::makeGName($info['name']);
+            $tags = FuncLib::extractTags($info['name'], $info['description'], $info['category']);
             $picture = isset($info['picture']) ? Images::fetchAndMake(D_GROUP_PIC_PATH, $info['picture'], "$fgid.jpg") : array();
             $favicon = isset($info['link']) ? Images::getFavicon($info['link'], D_GROUP_PIC_PATH."/fav_$fgid.ico") : null;
 

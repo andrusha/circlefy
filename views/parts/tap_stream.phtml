@@ -62,8 +62,8 @@ if (!empty($_taps)):
 
             <p class="tap-actions">
                 <span class="last-resp">
-                    <strong><?= (!empty($tap['resp_uname'])) ? $tap['resp_uname'] . ":" : "" ?></strong>
-                    <span class="inblock"><?= $tap['last_resp'] ?></span>
+                    <strong><?= (!empty($tap['last']['resp_uname'])) ? $tap['last']['resp_uname'] . ":" : "" ?></strong>
+                    <span class="inblock"><?= $tap['last']['last_resp'] ?></span>
                 </span>
                 <span class="tap-resp">
                     <span class="indicator">Someone's replying..</span>

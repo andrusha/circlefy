@@ -235,7 +235,7 @@ class User extends BaseModel implements Serializable {
         if ($result->num_rows)
             $stats = $result->fetch_assoc();
 
-        $stats = array_map($stats, 'intval');
+        $stats = array_map('intval', $stats);
 
         $this->data['stats'] = $stats;
         return $stats;
