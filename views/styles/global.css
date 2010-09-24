@@ -241,17 +241,15 @@ a {
 #stream_options{
 color:black;
 display:block;
-margin-top:8px;
-border-bottom:1px dotted #CCC;
 padding:6px;
 /*    background: -webkit-gradient(linear, 80% 100%, 90% 100%, from(#DDD), to(#FFF));*/
-background:#DDD;
+background: #EEF;
+border: 1px solid #CCC;
+border-bottom-left-radius: 8px 8px;
 }
 
 #stream_options_note{
-color:#111;
-font-weight:bold;
-background: #DFEAF4;
+background: white;
 border: 1px solid #AAA;
 
 
@@ -259,14 +257,22 @@ border: 1px solid #AAA;
 -webkit-border-radius:	8px 8px 0px 8px;
 border-radius:          8px 8px 0px 8px;
 
+color: #444;
+display: block;
+float: left;
+font-size: 12px;
+font-weight: bold;
+line-height: 21px;
+margin-right: 7px;
 padding: 5px;
-font-size:12px;
 }
 
 #stream_options #anon_filter{
 color:black;
-background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-a31fc8b100788bfd.gif);
+/*background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-a31fc8b100788bfd.gif);
 background-color:#CCFF66;
+*/
+background-color:#DDD;
 }
 
 #stream_options #anon_filter:hover{
@@ -346,17 +352,20 @@ input.basic.error, select.basic.error {
 }
 
 .logo-slim {
-    width:56px !important;
-    height: 48px !important;
+    width:51px !important;
+    height: 33px !important;
     background: url("/images/flat/tap_block_small.png") bottom #fffa00 !important;
     position: relative;
+    margin-top:1px;
+}
+.logo-slim:hover {
+    background: url("/images/flat/tap_block_small_hover.png") bottom #fffa00 !important;
 }
 
 #logo a {
 	float: left;
 	height: 53px;
 	width: 54px;
-	border:1px solid #222;
 }
 
 .nav-slim .signup-button{
@@ -626,10 +635,11 @@ font-weight:bold;
 #content .section.description .description {
 	background: #EEC;
 	display: block;
-	-moz-border-radius: 8px 0px 0px 8px;
-	-webkit-border-radius:8px 0px 0px 8px;
-    border-top-left-radius: 8px 0px 0px 8px;
-    border: 1px solid #aaa;
+	  -moz-border-radius: 8px 8px 0px 8px;
+border-bottom-right-radius;
+border: 1px solid #aaa;
+border-top-left-radius: 8px 8px;
+
 }
 
 
@@ -766,9 +776,8 @@ padding: 5px;
 }
 
 #tapbox {
-	background: lightgray;
 	padding: 15px;
-	background: lightGrey;
+	background: #EEF;
 	border: 1px solid #AAA;
 
 	-moz-border-radius:	   3px;
@@ -1228,12 +1237,12 @@ color: black;
 cursor: pointer;
 display: block;
 float: left;
-height: 46px;
+height: 35px;
 margin: 0px 0px 0px 4px;
 margin-left: 4px;
 overflow: hidden;
 padding: 8px 5px;
-width: 130px;
+width: 160px;
 }
 
 #lists2 li p {
@@ -1248,7 +1257,7 @@ width: 130px;
 	color: #303030;
 	float: left;
 	font-size: 12px;
-	margin-top: 28px;
+	margin-top: 10px;
 }
 
 
@@ -2163,12 +2172,21 @@ span#private-count {
     margin-left: 125px;
 }
 
+/* UNCOMMENT THIS FOR SIDEBAR POSTIONS 
+li#feed        { background: url(/images/new_icons/feed.png)     no-repeat 120px 14px; }
+li#gid_all     { background: url(/images/new_icons/channels.png) no-repeat 120px 14px; }
+li#users_all   { background: url(/images/new_icons/people.png)   no-repeat 120px 14px; }
+li#convos_all  { background: url(/images/new_icons/convos.png)   no-repeat 140px 14px; }
+li#private_all { background: url(/images/new_icons/private.png)  no-repeat right 6px; width: 30px; }
+li#gid_public  { background: url(/images/new_icons/discover.png) no-repeat right 6px; width: 50px;}
+*/
+
 li#feed        { background: url(/images/new_icons/feed.png)     no-repeat right 6px; }
 li#gid_all     { background: url(/images/new_icons/channels.png) no-repeat right 6px; }
 li#users_all   { background: url(/images/new_icons/people.png)   no-repeat right 6px; }
 li#convos_all  { background: url(/images/new_icons/convos.png)   no-repeat right 6px; }
-li#private_all { background: url(/images/new_icons/private.png)  no-repeat right 6px; width: 30px; }
-li#gid_public  { background: url(/images/new_icons/discover.png) no-repeat right 6px; width: 50px;}
+li#private_all { background: url(/images/new_icons/private.png)  no-repeat right 6px; }
+li#gid_public  { background: url(/images/new_icons/discover.png) no-repeat right 6px; }
 
 /* OLD LIST STUFF I HAD TO PUT BACK IN HERE - Taso */
 
@@ -2217,3 +2235,132 @@ li#gid_public  { background: url(/images/new_icons/discover.png) no-repeat right
 #lists ul.selected {
         display: block;
 }
+
+#lists li.notify:hover {
+        background: transparent !important;
+}
+
+#lists li.notify:hover {
+        background: transparent !important;
+}
+
+#lists li p.from {
+        margin-bottom: 3px;
+        font-weight: bold;
+}
+
+#lists li.selected p.from {
+        color: #fffa00;
+}
+
+#lists li.selected:hover p.from {
+        color: #101010;
+}
+
+#lists li p.body {
+        font-size: 11px;
+        width: 200px;
+}
+
+
+#lists a.tab {
+        width: 30px;
+        height: 30px;
+        background-color: #ACB19B;
+        float: left;
+        margin-right: 5px;
+        margin-bottom: 0;
+        text-decoration: none;
+        color: #101010;
+        font-size: 12px;
+}
+
+#lists a.tab.notify {
+        padding: 5px 2px 5px 35px;
+        width: 20px;
+        height: 20px;
+}
+
+#lists a.selected {
+        background-color: #fffa00 !important;
+}
+
+
+#lists li {
+        color:black;
+        overflow:hidden;
+        border-bottom: 2px solid white;
+        cursor: pointer;
+        padding: 8px 5px;
+        margin: 0;
+}
+
+#lists li p {
+        margin: 0;
+}
+
+#lists li a {
+        text-decoration: none;
+}
+
+#lists li a.names {
+        width: 190px;
+        margin-top: -3px;
+        float:left;
+        color:#303030;
+        font-size: 12px;
+}
+
+
+#lists li img {
+}
+
+
+#lists li span.count, .show-resp-count {
+        color: white;
+        font-weight:bold;
+        position:absolute;
+        height:10px;
+        padding:3px 3px 6px 6px;
+        width:10px;
+        background:red;
+    -moz-border-radius: 10px 10px 10px 10px;
+        border-bottom-left-radius: 10px 10px;
+        border-bottom-right-radius: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        border-top-right-radius: 10px 10px;
+        margin-top:8px;
+        display:none;
+}
+
+#lists li:hover a {
+        color: #101010 !important;
+}
+
+#lists li:hover .new, #lists li:hover .count {
+        color: #101010 !important;
+}
+
+#lists li.notify {
+        cursor: auto;
+        color: #616161 !important;
+}
+
+#lists li.selected a {
+background-color:#C3D2DF;
+background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-9dfe92083011731d.gif);
+background-position: 0% 50%;
+background-repeat: no-repeat;
+border-bottom-left-radius: 5px 5px;
+border-bottom-right-radius: 5px 5px;
+border-top-left-radius: 5px 5px;
+border-top-right-radius: 5px 5px;
+clear: both;
+display: block;
+font-weight: bold;
+padding: 4px 5px 4px 10px;
+        color: black;
+        font-weight:bold;
+}
+
+

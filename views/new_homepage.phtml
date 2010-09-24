@@ -90,6 +90,12 @@ if ($feed_type == 'all') {
 
 	<div id="main">
 
+		<?
+		$show_lists  = true;
+		$show_search = false;
+		include(NEW_SIDEBAR);
+		?>
+
 			<div id="content">
 
 				<!--
@@ -102,11 +108,6 @@ if ($feed_type == 'all') {
 				</form>
 				-->
 
-				<?
-				$show_lists  = true;
-				$show_search = false;
-				include(NEW_SIDEBAR);
-				?>
 
 				<div id="tapstream" class="section description">
 					<div class="header">

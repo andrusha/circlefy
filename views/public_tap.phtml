@@ -46,7 +46,6 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 	<div id="wrapper">
 
 	<? 
-
     include(OK_TOPBAR);
     ?> 
 
@@ -96,20 +95,6 @@ extract($_t, EXTR_PREFIX_SAME, '_');
 		<? include(OK_SIDEBAR); ?>
 
 			<div id="content">
-				<div id="infobox" class="pubgroup section container">
-					<?php /* if (!$logged): ?>
-					<button class="login">login to respond</button>
-					<?php endif;*/  ?>
-					<img src="/user_pics/<?= $user['big_pic'] ?>" class="avatar" />
-					<h2><?= $user['real_name'] ?> <span class="nick"></span></h2>
-					<p class="headline">&#8220;<?=$user['about']?>&#8221;</p>
-					<p class="stats">
-						<strong><?= intval($stats['taps']) ?></strong> Taps sent, 
-						<strong><?= intval($stats['responses']) ?></strong> Responses received, and
-						<strong><?= intval($stats['groups']) ?></strong> Channels joined.
-					</p>
-				</div>
-
 				<div id="tapstream" class="section">
                     <a id="newtaps" href="" class="floater">This feed has 5 new taps! Click here to load them.</a>
 					<div class="header header-non">
