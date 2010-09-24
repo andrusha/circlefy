@@ -74,14 +74,16 @@ class suggest_functions {
         $createLocations = array_keys(array_filter($location_names, array($this, 'byKeywords')));
 
         $this->matched = array_udiff(array_values($interests), $matched_interest, 'strcasecmp');
-        $createLikes = array_rand(array_filter($interests, array($this, 'byKeywords')), 10);
+        $createLikes = array_filter($interests, array($this, 'byKeywords'));
+        if (count($createLikes) > 0)
+            $createLikes = array_rand($createLikes, count($createLikes) > 10 ? 10 : count($createLikes));
 
         //create groups, and get array of it's objects
         $created = GroupsList::merge(
-            GroupsList::bulkCreateFacebook($this->user, $createWork),
-            GroupsList::bulkCreateFacebook($this->user, $createUnivers),
-            GroupsList::bulkCreateFacebook($this->user, $createLocations),
-            GroupsList::bulkCreateFacebook($this->user, $createLikes));
+            GroupsList::bulkCreateFacebook($this->user, $createWork ? $createWork : array()),
+            GroupsList::bulkCreateFacebook($this->user, $createUnivers ? $createUnivers : array()),
+            GroupsList::bulkCreateFacebook($this->user, $createLocations ? $createLocations : array()),
+            GroupsList::bulkCreateFacebook($this->user, $createLikes ? $createLikes : array()));
 
         $suggest = GroupsList::merge($created, $groups_pers, $groups_int)->filter('info');
 
