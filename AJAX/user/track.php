@@ -36,7 +36,7 @@ class friend extends Base {
 	}
 
     private function notifyFriend($info, $uid, $fuid, $status) {
-        $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name']);
+        $data = array('status' => $status, 'uname' => $info['uname'], 'ureal_name' => $info['real_name'], 'avatar' => $info['big_pic']);
         $message = array('action' => 'notify.follower', 'users' => array(intval($fuid)), 'data' => $data);
 
         Comet::send('message', $message);

@@ -1569,8 +1569,8 @@ _live.notifications = _tap.register({
         greal_name = data['greal_name'];
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
-        text = data['chat_text'];
-        avatar = '/group_pics/'+data['avatar'];
+        text = data['text'];
+        avatar = '/user_pics/'+data['avatar'];
 
         _notifications.alert('New tap:<br><a href="/user/'+uname+'">' + ureal_name +'</a>',
             '"' + text + '"',
@@ -1608,7 +1608,7 @@ _live.notifications = _tap.register({
         uname = data['uname'];
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
         text = data['chat_text'];
-        avatar = '/user_pics/'+data['avatar'];
+        avatar = '/user_pics/'+data['pic_100'];
 
         _notifications.alert('New PM:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
             '"' + text + '"',

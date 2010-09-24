@@ -97,7 +97,8 @@ class new_message extends Base {
         $text = FuncLib::makePreview($tapText);
         $data = array('gname' => $tap_array['gname'], 'greal_name' => $tap_array['symbol'], 
                       'uname' => $tap_array['uname'], 'ureal_name' => $tap_array['real_name'],
-                      'text'  => $tap_array['chat_text']);
+                      'text'  => $tap_array['chat_text'],
+                      'avatar' => $tap_array['pic_100'], 'group_avatar' => $tap_array['favicon']);
         $message = array('action' => 'notify.tap.new',
             'gid' => $group->gid, 'users' => $users,
             'exclude' => array($tapper->uid), 'data' => $data);
