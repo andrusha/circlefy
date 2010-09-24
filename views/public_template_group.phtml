@@ -45,7 +45,7 @@ $admin = in_array($_SESSION['uname'], array_map("map_admins", !empty($admins) ? 
             convos: [],
             people: <?= json_encode($people) ?>,
             groups: <?= json_encode($groups) ?>,
-            sendTo: "<?= $gname ?>:<?= $symbol ?>:0:<?= $gid ?>",
+            sendTo: {name: '<?= $gname ?>', symbol:'<?= $symbol ?>', type: 'channels', id: <?= $gid ?>},
             filter: {
                 gid: "<?= $gid ?>",
                 info: {
@@ -142,18 +142,6 @@ $show_search = true;
 include(OK_SIDEBAR); 
 ?>
 
-<?php
-            /* DYNAMIC STYLES */
-if ($topbg == 'dark') {
-    $color_name = '#FFFA00';
-    $color_topbg = '#3C3C3C';
-    $join = 'lightgreen';
-} else {
-    $color_name = '#3C3C3C';
-    $color_topbg = 'white';
-    $join = 'green';
-}
-?>
     <div id="content">
         <div id="infobox" class="pubgroup section container" style="background:<?=$color_topbg?>;">
 

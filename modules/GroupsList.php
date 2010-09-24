@@ -23,6 +23,14 @@ class GroupsList extends Collection {
     }
 
     /*
+        @return Group
+    */
+    public function lastOne() {
+        end($this->data);
+        return current($this->data);
+    }
+
+    /*
         Returns a list of groups, sorted by relevancy,
         after keyword search
 
@@ -117,57 +125,82 @@ class GroupsList extends Collection {
 
         @returns array (Group | int)
     */
-    public static function byUser(User $user, $options = 0, $cached = true) {
-        if (isset(self::$cache['users'][$user->uid][$options]))
-            return self::$cache['users'][$user->uid][$options];
-
+    public static function search($type, array $params, $options = 0)  {
         $db = DB::getInstance()->Start_Connection('mysql');
 
-        $fields = $join = $groups = '';
+        $join   = $group = array();
+        $where  = '';
+        $fields = array('g.gid', 'g.symbol', 'g.gname', 'g.tag_group_id');
+
+        $joins = array(
+            'members'  => 'INNER JOIN group_members gm ON g.gid = gm.gid',
+            'members2' => 'INNER JOIN group_members gm2 ON g.gid = gm2.gid',
+            'meta'     => 'LEFT  JOIN special_chat_meta scm ON scm.gid = g.gid',
+            'online'   => 'LEFT JOIN GROUP_ONLINE AS go ON go.gid = g.gid');
+
+        switch ($type) {
+            case 'byUser':
+                $fields[] = 'gm.admin';
+                $join[]   = 'members';
+                $where    = 'gm.uid = #uid#';
+                break;
+
+            case 'byGroup':
+                $where = 'g.gid = #gid#';
+                break;
+
+            case 'bySymbol':
+                $where = 'g.symbol = #symbol#';
+                break;
+        }
 
         if ($options & G_EXTENDED) {
-            $fields .= ', g.descr AS topic, g.connected, g.pic_36, g.favicon, gm.admin';
+            $fields = array_merge($fields,
+                array('g.descr AS topic', 'g.connected', 'g.pic_100',
+                      'g.pic_36', 'g.favicon', 'g.private'));
         }
 
         //online count option
         if ($options & G_ONLINE_COUNT) {
-           $fields .= ', go.count';
-           $join   .= "LEFT 
-                       JOIN GROUP_ONLINE AS go
-                         ON go.gid = gm.gid\n";
+           $fields[] = 'go.count';
+           $join[]   = 'online';
         }
 
         //taps count would ALWAYS join first
         //IMPORTANT! check conflicts before adding new
         if ($options & G_TAPS_COUNT) {
-            $fields .= ', COUNT(g.gid) AS taps_count';
-            $join   .= "LEFT
-                        JOIN special_chat_meta scm
-                          ON scm.gid = gm.gid\n";
-            $groups = 'GROUP BY g.gid';
+            $fields[] = 'COUNT(g.gid) AS taps_count';
+            $join[]   = 'meta';
+            $group[]  = 'g.gid';
         }
 
         //we can freely join and group by table if there
         //would be only one join
         if (($options & G_USERS_COUNT) && !($options & G_TAPS_COUNT)) {
-            $fields .= ', COUNT(g.gid) AS members_count';
-            $join   .= "INNER
-                         JOIN group_members gm2
-                           ON gm2.gid = gm.gid\n";
-            $groups = 'GROUP BY g.gid';
+            $fields[] = 'COUNT(g.gid) AS members_count';
+            $join[]   = 'members2';
+            $groups[] = 'g.gid';
         }
 
+        $fields = implode(', ', array_unique($fields));
+        $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
+        $group  = array_unique($group);
+        if (count($group) > 1)
+            throw new SQLException('Combinator dont know how to handle multiple GROUP BY');
+        elseif (count($group) == 1)
+            $group = 'GROUP BY '.current($group);
+        else
+            $group = '';
+
         $query = "
-            SELECT g.gid, g.symbol, g.gname, g.tag_group_id {$fields}
+            SELECT {$fields}
               FROM groups g
-             INNER
-              JOIN group_members gm
-                ON g.gid = gm.gid
                {$join}
-             WHERE gm.uid = #uid#
-               {$groups}";
+             WHERE {$where}
+             {$group}";
+
         $groups = array();
-        $result = $db->query($query, array('uid' => $user->uid));
+        $result = $db->query($query, $params);
         if ($result->num_rows)
             while ($res = $result->fetch_assoc()) {
                 $data = array('info' => $res, 'gid' => intval($res['gid']));
@@ -178,10 +211,34 @@ class GroupsList extends Collection {
         $groups = new GroupsList($groups);
 
         //if joins conflict, resolve it
-        if (($options & G_USERS_COUNT) && ($options & G_TAPS_COUNT)) {
-            self::getUsersCount($groups);
-        }
+        if (($options & G_USERS_COUNT) && ($options & G_TAPS_COUNT))
+            $groups->getUsersCount();
 
+        if ($options & G_RESPONSES_COUNT) 
+            $groups->getResponsesCount();
+
+        self::$cache['users'][$user->uid][$options] = $groups;
+        return $groups;
+    }
+
+    /*
+        Fetch groups of specified user, it's kinda contructor
+
+
+        @params $user User user, groups belongs to him we fetching
+        @params $options int options to customize returned info
+
+        allowed options:
+        G_ONLINE_COUNT, G_TAPS_COUNT, G_USERS_COUNT, G_EXTENDED
+
+        @returns array (Group | int)
+    */
+    public static function byUser(User $user, $options = 0, $cached = true) {
+        if (isset(self::$cache['users'][$user->uid][$options]))
+            return self::$cache['users'][$user->uid][$options];
+
+        $groups = self::search('byUser', array('uid' => $user->uid), $options);
+        
         self::$cache['users'][$user->uid][$options] = $groups;
         return $groups;
     }
@@ -190,12 +247,12 @@ class GroupsList extends Collection {
         Updates provided group list, adding to each group
         info about members count
     */
-    public static function getUsersCount(GroupsList &$groups) {
-        if (empty($groups))
-            return;
+    public function getUsersCount() {
+        if (empty($this->data))
+            return $this;
 
         $db = DB::getInstance()->Start_Connection('mysql');
-        $gids = $groups->filter('gid');
+        $gids = $this->filter('gid');
 
         $query = '
             SELECT gid, COUNT(gid) AS members_count
@@ -210,16 +267,48 @@ class GroupsList extends Collection {
             while($res = $result->fetch_assoc())
                 $counts[ intval($res['gid']) ] = intval($res['members_count']);
 
-        //update corresponding tables
-        foreach ($groups as &$group) {
-            $gid = $group->gid;
-            if (isset($counts[$gid]))
-                $group->set('members_count', $counts[$gid]);
+        $this->joinDataById($counts, 'members_count', 0);
+
+        return $this;
+    }
+
+    public function getResponsesCount() {
+        if (empty($this->data))
+            return $this;
+
+        $db = DB::getInstance()->Start_Connection('mysql');
+        $gids = $this->filter('gid');
+
+        $query = "
+            SELECT sm.gid, COUNT(c.mid) AS responses_count
+              FROM special_chat_meta AS sm 
+             INNER
+              JOIN chat AS c
+                ON c.cid = sm.mid
+             WHERE sm.gid IN (#gids#)
+             GROUP
+                BY sm.gid";
+
+        $counts = array();
+        $result = $db->query($query, array('gids' => $gids));
+        if ($result->num_rows)
+            while($res = $result->fetch_assoc())
+                $counts[ intval($res['gid']) ] = intval($res['responses_count']);
+
+        $this->joinDataById($counts, 'responses_count', 0);
+
+        return $this;
+    }
+
+    private function joinDataById(array $data, $name, $default = 0) {
+        foreach ($this->data as &$group) {
+            if (isset($data[$group->gid]))
+                $group->set($name, $data[$group->gid]);
             else
-                $group->set('members_count', 0);
+                $group->set($name, $default);
         }
 
-        return $groups;
+        return $this;
     }
 
     /*

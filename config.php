@@ -137,10 +137,11 @@ define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user
 define("ROOT","/");
 
 //group creation options
-define("G_ONLINE_COUNT", 1 << 0);
-define("G_TAPS_COUNT",   1 << 1);
-define("G_USERS_COUNT",  1 << 2);
-define("G_EXTENDED",     1 << 3);
+define("G_ONLINE_COUNT",    1 << 0);
+define("G_TAPS_COUNT",      1 << 1);
+define("G_USERS_COUNT",     1 << 2);
+define("G_EXTENDED",        1 << 3);
+define("G_RESPONSES_COUNT", 1 << 4);
 
 define("U_FOLLOWING",    1 << 0);
 define("U_FOLLOWERS",    1 << 1);

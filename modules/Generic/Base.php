@@ -34,12 +34,6 @@ abstract class Base{
 
     //The page has access to this variable incase you want to use mysqli/PDO directly and bypass the framework.
 
-    //abstract function __default();
-
-    public function __toString(){
-        return "Base Class";
-    }
-
     protected function __construct(){
         self::set($this->stylesheet,'stylesheet');
         self::set($this->view_output,'output');
@@ -105,13 +99,7 @@ abstract class Base{
             exit();
 		}
     }
-   
-   protected function input_degbug(){
-        foreach($_POST as $key => $val){
-            echo $key." => ".$val."<br/>";
-        }
-    }
-    
+      
     public function set($text,$var){
         $this->data[$var] = $text;
     }

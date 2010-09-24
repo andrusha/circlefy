@@ -59,8 +59,11 @@ class Tap extends BaseModel {
 
         $tap_id int
     */
-    public static function byId($id, $group_info = true, $user_info = false) {
-        return TapsList::getTaps(array($id), $group_info, $user_info)->getFirst();
+    public static function byId($id, $group_info = true, $user_info = false, $last_resp = false) {
+        $taps = TapsList::getTaps(array($id), $group_info, $user_info);
+        if ($last_resp)
+            $taps->lastResponses();
+        return $taps->getFirst();
     }
 
     /*
@@ -116,14 +119,14 @@ class Tap extends BaseModel {
         @return Tap
     */
     public static function toGroup(Group $group, User $user, $text) {
-        return new Tap(Tap::add($user, $group->gid, null, $text));
+        return Tap::byId(Tap::add($user, $group->gid, null, $text), true, false, true);
     }
 
     /*
         @return Tap
     */
     public static function toUser(User $from, User $to, $text) {
-        return new Tap(Tap::add($from, null, $to->uid, $text));
+        return Tap::byId(Tap::add($from, null, $to->uid, $text), true, true, true);
     }
 
     /*
@@ -241,7 +244,7 @@ class Tap extends BaseModel {
                       ON DUPLICATE KEY
                   UPDATE active = #status#";
         $this->db->query($query, array('uid' => $user->uid,
-            'mid' => $this->id, 'status' => $status), true);
+            'mid' => $this->id, 'status' => $status));
         return $this->db->affected_rows == 1;
     }
 
@@ -294,6 +297,7 @@ class Tap extends BaseModel {
         Checks if user left any taps in group
     */
     public static function firstTapInGroup(Group $g, User $u) {
+        $db = DB::getInstance()->Start_Connection('mysql');
         $query = "SELECT sc.metaid
                     FROM special_chat_meta sc
                    INNER
@@ -302,7 +306,7 @@ class Tap extends BaseModel {
                    WHERE sc.gid = #gid#
                      AND s.uid = #uid#
                    LIMIT 1";
-        $result = $this->db->query($query, array('gid' => $g->gid, 'uid' => $u->$uid));
+        $result = $db->query($query, array('gid' => $g->gid, 'uid' => $u->uid));
         $check = $result->num_rows == 0;
         return $check;
     }

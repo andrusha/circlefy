@@ -118,7 +118,7 @@ var Roar = new Class({
 			var over = false;
 			var trigger = (function() {
 				trigger = null;
-//				if (!item.over) remove();
+				if (!item.over) remove();
 			}).delay(duration);
 			item.addEvents({
 				mouseover: function() {
@@ -129,7 +129,7 @@ var Roar = new Class({
                     if (!fromOutside)
                         return;
 					item.over = false;
-//					if (!trigger) remove();
+					if (!trigger) remove();
 				}
 			});
 		}

@@ -24,15 +24,11 @@ $private = $private;
     <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script>
 	<script type="text/javascript">
 		window._vars = {
-			uid: "<?= $pcid ?>",
-            anon: <?=$ok_user ? 0 : 1?>,
-            fb: <?=$_SESSION['facebook'] ? 1 : 0?>,
-            real_name: "<?=$_SESSION['real_name']?>",
-			uname: "<?= $_SESSION['uname'] ?>",
-			stream: JSON.decode('<?= json_encode($inits) ?>'),
+            user: <?=json_encode($me)?>,
+			stream: <?= json_encode($inits) ?>,
 			convos: [],
-			people: JSON.decode('<?= json_encode($people) ?>'),
-			groups: JSON.decode('<?= json_encode($groups) ?>'),
+			people: <?= json_encode($people) ?>,
+			groups: <?= json_encode($groups) ?>,
             filter: {
                 gid: 'personal',
                 uname: '<?=$user?>',

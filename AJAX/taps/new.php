@@ -18,7 +18,6 @@ class new_message extends Base {
         $id     = intval($to['id']);
 
         $msg = $_POST['msg'];
-
         switch ($type) {
             case 'channels':
                 $group = $id ? new Group($id) : Group::fromSymbol($symbol);
@@ -32,24 +31,23 @@ class new_message extends Base {
         }
     }
 
-    function send_private(User $to, $msg) {
+    private function send_private(User $to, $msg) {
         $tap = Tap::toUser($this->user, $to, $msg);
-        $tap_array = $tap->getTap($cid, false, true);
 
         $msg = array(
             'channel_id'  => $cid,
             'time'        => time(),
             'new_channel' => 'true',
-            'new_msg'     => array($tap_array),
+            'new_msg'     => array($tap->all),
             'your_first'  => false);
 
-        $this->notifyPrivate($this->user, $to, $tap_array);
+        $this->notifyPrivate($this->user, $to, $tap->all);
         
         return $msg;
     }
 
-    function create_channel($msg, Group $group) {
-        if(Tap::checkDuplicate($this->user, $msg)
+    private function create_channel(Group $group, $msg) {
+        if (Tap::checkDuplicate($this->user, $msg))
             return array('dupe' => true);
 
         $tap = Tap::toGroup($group, $this->user, $msg);

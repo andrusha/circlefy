@@ -42,6 +42,8 @@ class Group extends BaseModel {
     public function __get($key) {
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
+        } else if (isset($this->data['info'][$key])) {
+            return $this->data['info'][$key];
         } else if (method_exists($this, 'get'.ucfirst($key))) {
             if ($this->gid === null)
                 throw new GroupInitializeException('You should set group id or create new group before fetching data');
@@ -120,6 +122,22 @@ class Group extends BaseModel {
     }
 
     /*
+        @param int|str $g select by gid|symbol
+
+        @return Group
+    */
+    public static function extended($g) {
+        $type = is_int($g) ? 'byGroup' : 'bySymbol';
+        $var  = is_int($g) ? 'gid'     : 'symbol';
+
+        $group =  GroupsList::search($type, array($var => $g),
+                              G_ONLINE_COUNT | G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT | G_EXTENDED)
+                            ->lastOne();
+        $group->set('topic', FuncLib::linkify($group->topic));
+        return $group;
+    }
+
+    /*
         Yeah, right, it simply creates a new group
         
         @returns Group | bool
@@ -192,9 +210,10 @@ class Group extends BaseModel {
     */
     public function getInfo() {
         $query = "
-            SELECT gname, symbol
-              FROM groups
-             WHERE gid = #gid#
+            SELECT g.gid, g.gname, g.symbol, g.descr, g.favicon,
+                   g.pic_100, g.connected, g.private
+              FROM groups g
+             WHERE g.gid = #gid#
              LIMIT 1";
         $info = array();
         $result = $this->db->query($query, array('gid' => $this->gid));
@@ -274,4 +293,19 @@ class Group extends BaseModel {
         return $status;
     }
 
+    public function userStatus(User $u) {
+        $query = "
+            SELECT status
+              FROM group_members
+             WHERE gid = #gid#
+               AND uid = #uid#";
+        $s = -1;
+        $r = $this->db->query($query, array('gid' => $this->gid, 'uid' => $u->uid));
+        if ($r->num_rows) {
+            $r = $r->fetch_assoc();
+            $s = intval($r['status']);
+        }
+
+        return $s;
+    }
 };
