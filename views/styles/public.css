@@ -286,11 +286,12 @@ div.modal-window.show {
 }
 
 .modal-window input {
+	display:block;
         border: 1px solid #ccc;
         padding: 5px;
         float: right;
         margin-right: 50px;
-        width: 300px;
+        width: 21px;
         font-size: 16px;
         margin-bottom: 10px;
 }
@@ -350,8 +351,15 @@ div#suggestions {
 }
 
 #suggestions li {
-    margin-bottom: 10px;
-    padding-left: 10px;
+	-webkit-box-shadow: rgba(1, 0, 0, 0.496094) 1px 1px 2px 1px;
+	cursor: pointer;
+	float: left;
+	font-size: 11px;
+	height: 87px;
+	margin-bottom: 18px;
+	margin-left: 23px;
+	padding: 0px;
+	width: 120px;
 }
 
 #suggestions input {
@@ -359,6 +367,10 @@ div#suggestions {
     margin-right: 10px;
     padding: 0;
     margin-bottom: 0;
+    color: black;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 #suggestions label {
