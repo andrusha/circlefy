@@ -340,6 +340,7 @@ div#suggestions {
     border: 1px black solid;
     color: black;
     padding: 14px;
+    height:300px;
 }
 
 #suggestions ul {
