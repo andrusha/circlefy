@@ -63,6 +63,18 @@ var Roar = new Class({
 			offset[1] = offset[0] + last.offsetHeight + this.options.offset;
 		}
 
+        var rightElem;
+        if (options.group_avatar)
+            rightElem = new Element('img', {
+                'class': 'group_icon',
+                'src': options.group_avatar
+            });
+        else
+            rightElem = new Element('div', {
+                    'class': 'dismiss',
+                    'html': 'click to dismiss'
+                });
+
 		var item = new Element('div', {
 			'class': this.options.className,
 			'opacity': 0
@@ -70,12 +82,7 @@ var Roar = new Class({
 			new Element('div', {
 				'class': 'roar-bg',
 				'opacity': 0.7
-			}).adopt(
-                new Element('div', {
-                    'class': 'dismiss',
-                    'html': 'click to dismiss'
-                })),
-    		elements);
+			}).adopt(rightElem), elements);
 
 		var to = {'opacity': 1};
 

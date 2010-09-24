@@ -1554,10 +1554,11 @@ _live.notifications = _tap.register({
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
         text = data['text'];
         avatar = '/user_pics/'+data['avatar'];
+        group_avatar = '/group_pics/'+data['group_avatar'];
 
         _notifications.alert('Response from:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
             '"' + text + '"',
-            {avatar: avatar});
+            {avatar: avatar, group_avatar: group_avatar});
     	
         _notifications.items.getLast().addEvent('click', function() {
         	document.location.replace('http://'+document.domain+'/tap/'+cid);
@@ -1571,10 +1572,11 @@ _live.notifications = _tap.register({
         ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
         text = data['text'];
         avatar = '/user_pics/'+data['avatar'];
+        group_avatar = '/group_pics/'+data['group_avatar'];
 
         _notifications.alert('New tap:<br><a href="/user/'+uname+'">' + ureal_name +'</a>',
             '"' + text + '"',
-            {avatar: avatar});
+            {avatar: avatar, group_acatar: group_avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
         	document.location.replace('http://'+document.domain+'/channel/'+gname);

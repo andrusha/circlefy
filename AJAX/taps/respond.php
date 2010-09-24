@@ -31,7 +31,7 @@ class respond extends Base {
     }
 
 	private function send_response($msg,$cid,$init_tapper,$first){
-        $tap = new Tap(intval($cid));
+        $tap = Tap::byId(intval($cid));
         $tapper = new User(intval($init_tapper));
 
         if ($tap->responseDupe($tapper, $msg))
@@ -79,7 +79,7 @@ class respond extends Base {
 
         $text = FuncLib::makePreview($text);
         $data = array('cid' => $tap->id, 'uname' => $this->user->uname,
-            'ureal_name' => $this->user->real_name, 'text' => $text, 'avatar' => $avatar);
+            'ureal_name' => $this->user->real_name, 'text' => $text, 'avatar' => $avatar, 'group_avatar' => $tap->favicon);
 
         Comet::send('message', array('action' => 'notify.convo.response', 'users' => $users, 
             'exclude' => array($this->user->uid), 'data' => $data));
