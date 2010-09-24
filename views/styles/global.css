@@ -291,7 +291,8 @@ ul.stream a {
 }
 
 input.basic {
-	background: #616161;
+/*	background: #616161;*/
+	background: #EEE;
 	border-top: 1px solid #2C2C2C;
 	border-left: 1px solid #2C2C2C;
 	border-right: 1px solid #666666;
@@ -306,10 +307,10 @@ input.basic.error {
 }
 
 input.basic, select.basic {
-	border-top: 1px solid #2C2C2C;
-	border-left: 1px solid #2C2C2C;
-	border-right: 1px solid #666666;
-	border-bottom: 1px solid #666666;
+	border-bottom: 2px solid #627AAD;
+	border-left: 2px solid #627AAD;
+	border-right: 2px solid #627AAD;
+	border-top: 2px solid #627AAD;
 	font-size: 12px;
 	padding: 5px;
 }
@@ -430,10 +431,10 @@ background-repeat: no-repeat;
 }
 
 #searchbar {
-	background: #3C3C3C;
+/*	background: #3C3C3C;*/
 	float: left;
 	margin-left: 80px;
-	padding: 10px;
+/*	padding: 10px;*/
 	display: inline;
 }
 
@@ -441,17 +442,17 @@ background-repeat: no-repeat;
 .searchbar-slim {
     position: relative;
     margin-left: 20px !important;
-    padding: 4px !important;
+/*    padding: 4px !important;*/
 
 }
 
 #searchover {
+	color: black;
+	font-size: 22px;
+	margin-top: 2px;
+	padding: 10px;
 	position: absolute;
 	width: 395px;
-	padding: 10px;
-	margin-top: 2px;
-	font-size: 22px;
-	color: #fff;
 }
 
 .searchover-slim {
@@ -476,9 +477,11 @@ color:white;
 }
 
 #search {
+	color:black;
 	width: 400px;
-	padding:10px;
+/*	padding:10px;*/
 	font-size: 18px;
+	font-weight:bold;
 }
 
 #searchsuggest {
@@ -490,8 +493,8 @@ color:white;
 	height: auto;
 	display: none;
 	z-index: 1;
-    top: 42px;
-    margin-left: 79px;
+    top: 34px;
+    margin-left: 71px;
 }
 
 #searchsuggest.on {
@@ -509,9 +512,11 @@ color:white;
 	padding: 5px;
 }
 
-#searchsuggest li.selected {
-	background-color: #fffa00;
+#searchsuggest li.selected, #searchsuggest li.selected h2 {
+	background-color: #EEE;
+	font-weight:bold;
 	cursor: pointer;
+	color:black;
 }
 
 #searchsuggest li.notice {
@@ -1067,7 +1072,7 @@ ul.stream .tap-actions span {
 ul.stream .tap-resp .indicator {
 	color: #627AAD;
 	font-weight:bold;
-	font-size:16px;
+	font-size:12px;
 	display: none;
 }
 
