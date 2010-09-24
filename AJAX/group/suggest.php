@@ -56,14 +56,14 @@ class suggest_functions {
         //make array with keywords
         $interests = array();
         foreach(array_merge($this->fb->books, $this->fb->movies, $this->fb->groups, $this->fb->likes) as $i)
-            $interests[ intval($i['id']) ] = $i['name'];
+            $interests[ intval($i['id']) ] = trim($i['name']);
         
         list($groups_pers, $matched_personal) = GroupsList::byKeywords($personal_keywords, $this->user);
         list($groups_int, $matched_interest) = GroupsList::byKeywords(array_values($interests), $this->user);
-        
+
         //get a list of keywords (names), not matched by current groups
         $this->matched = array_udiff($personal_keywords, $matched_personal, 'strcasecmp');
-        
+
         //get a list of id's of work places for whom we sould create new groups
         $createWork = array_keys(array_filter($work, array($this, 'byKeywords')));
 
@@ -83,8 +83,7 @@ class suggest_functions {
             GroupsList::bulkCreateFacebook($this->user, $createLocations),
             GroupsList::bulkCreateFacebook($this->user, $createLikes));
 
-        $suggest = array_map(array($this, 'extractInfo'), 
-            GroupsList::merge($created, $groups_pers, $groups_int)->asArray());
+        $suggest = GroupsList::merge($created, $groups_pers, $groups_int)->filter('info');
 
         return array('success' => 1, 'data' => $suggest);
     }

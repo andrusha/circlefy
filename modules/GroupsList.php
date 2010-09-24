@@ -68,8 +68,8 @@ class GroupsList extends Collection {
                 $gids[] = $group->gid;
                 $info = $group->info;
                 $tagGroupIDs[] = intval($info['tag_group_id']);
-                $matched_keywords[] = $info['symbol'];
-                $matched_keywords[] = $info['gname'];
+                $matched_keywords[] = trim($info['symbol']);
+                $matched_keywords[] = trim($info['gname']);
             }
 
             if (!empty($gids)) {
@@ -103,8 +103,8 @@ class GroupsList extends Collection {
                     $matched_keywords = array_merge($matched_keywords,
                         explode(', ', $tagGroups[$tgid][1]));
                 } else {
-                    $matched_keywords[] = $res['symbol'];
-                    $matched_keywords[] = $res['gname'];
+                    $matched_keywords[] = trim($res['symbol']);
+                    $matched_keywords[] = trim($res['gname']);
                 }
             }
         $matched_keywords = array_unique($matched_keywords);

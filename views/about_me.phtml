@@ -42,6 +42,7 @@ if ($settings) {
 	<script type="text/javascript" src="/views/scripts/tap.js"></script>
 	<script type="text/javascript">
 		window._vars = {
+            user: <?=json_encode($me)?>,
 			type: "<?= $type ?>",
 			email: "<?= $email ?>",
 			about: "<?= $about ?>",
