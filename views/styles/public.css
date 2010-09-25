@@ -368,11 +368,14 @@ div#suggestions {
 }
 
 #suggestions li img {
-    clear: right;
-    display: inline-block;
-    float: left;
-    margin-left: 5px;
-    margin-top: 5px;
+	clear: right;
+	display: inline-block;
+	float: left;
+	height: 50px;
+	margin-left: 5px;
+	margin-top: 2px;
+	padding: 2px;
+	width: 50px;
 }
 
 #suggestions input {
