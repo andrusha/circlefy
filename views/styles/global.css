@@ -6,6 +6,12 @@ html, body {
     -moz-outline-style: none !important;
 }
 
+input:focus {
+    -moz-box-shadow:        0 0 5px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow:		0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow:         	0 0 5px rgba(0, 0, 0, 0.5);
+}
+
 .hidden {
     display: none;
 }

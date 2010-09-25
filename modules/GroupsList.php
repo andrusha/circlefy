@@ -328,8 +328,8 @@ class GroupsList extends Collection {
             if (strlen($info['name']) > 35)
                 continue;
             $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
-            $symbol  = FuncLib::makePreview($info['name'], 250);
-            $gname   = FuncLib::makeGName($info['name']);
+            $symbol  = FuncLib::makeGName($info['name']);
+            $gname   = FuncLib::makePreview($info['name'], 250);
             $tags    = FuncLib::extractTags($info['name'], $info['description'], $info['category']);
             $pic_url = 'http://graph.facebook.com/'.$fgid.'/picture?type=large';
             $picture = Images::fetchAndMake(D_GROUP_PIC_PATH, $pic_url, "$fgid.jpg");

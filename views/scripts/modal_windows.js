@@ -462,19 +462,34 @@ _modal.suggestions = _tap.register({
                 if (list.getSize().y > 300)
                     self.suggest.setStyle('height', 300);
 
-                var allBox = list.getElement('li[data-id="all"]'),
-                    boxes = list.getElements('li');
-/*
+                var allBox = list.getElement('input[name="suggest_all"]'),
+                    boxes  = list.getElements('input[name="suggest"]');
+
+                list.getElements('li').addEvent('click', function (i) {
+                    this.getElement('input').fireEvent('click');
+                });
+
                 allBox.addEvent('click', function () {
-                    var state = allBox.get('checked');
+                    var state = !allBox.checked;
+                    allBox.checked = state;
+                    this.getParent().toggleClass('selected');
                     boxes.each(
                         function (i) {
                             i.set('checked', state);
                         });
                 });
-*/
-                boxes.addEvent('click', function (i) {
-                    this.toggleClass('selected');
+
+                boxes.addEvent('click', function () {
+                    this.checked = !this.checked;
+                    this.getParent().toggleClass('selected');
+
+                    allBox.checked = false;
+                    allBox.getParent().removeClass('selected');
+
+                    if ( boxes.every(function (i) { return i.get('checked'); }) ) {
+                        allBox.checked = true;
+                        allBox.getParent().addClass('selected');
+                    }
                 });
             }
         }).send();
@@ -486,9 +501,8 @@ _modal.suggestions = _tap.register({
             gids = [],
             self = this;
 
-        list.getElements('li.selected').each( function (i) {
-            if (i.getData('id') != 'all')
-                gids.push(i.getData('id')*1);
+        list.getElements('input[name="suggest"]:checked').each( function (i) {
+            gids.push(i.value*1);
         });
 
         if (!gids) {

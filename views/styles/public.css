@@ -357,14 +357,14 @@ div#suggestions {
 	height: 60px;
 	padding-left: 23px;
 	padding: 0px;
-    border-bottom: 1px solid darkgrey;
     vertical-align: middle;
-	-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 2px 1px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
 	margin-bottom:10px;
 }
 
 #suggestions li.selected {
-    background-color:#EEEECC;
+    background-color:#F0FFED;
 }
 
 #suggestions li img {
@@ -379,7 +379,7 @@ div#suggestions {
 }
 
 #suggestions input {
-    float: left;
+    float: right;
     margin-right: 10px;
     padding: 0;
     margin-bottom: 0;
@@ -391,7 +391,7 @@ div#suggestions {
 
 #suggestions label {
    color: black;
-   font-size: 12px;
+   font-size: 15px;
    font-weight:bold;
    font-weight: normal;
    cursor:pointer;

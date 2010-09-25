@@ -186,13 +186,15 @@
 		</ul>
 
         <ul id="template-suggestions">
-<!--            <li data-id="all">
+            <li class="selected" data-id="all">
                 <label for="sugg_all">All</label>
-            </li>-->
+                <input id="sugg_all" name="suggest_all" type="checkbox" title="Check/uncheck all items" checked>
+            </li>
             <# for (var sugg from this): #>
             <li class="selected" data-id="<#: sugg.gid #>">
                 <img src="/group_pics/<#: sugg.pic_big #>" />
-                <label><#: sugg.symbol #></label>
+                <label for="sugg_<#: sugg.gid #>"><#: sugg.gname #></label>
+                <input id="sugg_<#: sugg.gid #>" name="suggest" type="checkbox" value="<#: sugg.gid #>" title="<#: sugg.symbol #>" checked>
             </li>
             <# end; #>
         </ul>
