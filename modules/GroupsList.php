@@ -325,7 +325,7 @@ class GroupsList extends Collection {
 
         $groups = array();
         foreach ($fb->bulkInfo($fgids) as $fgid => $info) {
-            if (strlen($info['name']) > 150)
+            if (strlen($info['name']) > 35)
                 continue;
             $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
             $symbol  = FuncLib::makePreview($info['name'], 250);

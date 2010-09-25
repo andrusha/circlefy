@@ -352,22 +352,25 @@ div#suggestions {
 }
 
 #suggestions li {
-	-webkit-box-shadow: rgba(1, 0, 0, 0.496094) 1px 1px 2px 1px;
-	-moz-box-shadow: rgba(1, 0, 0, 0.496094) 1px 1px 2px 1px;
 	cursor: pointer;
-	float: left;
 	font-size: 11px;
-	height: 87px;
-	margin-bottom: 18px;
-	margin-left: 23px;
+	height: 60px;
+	padding-left: 23px;
 	padding: 0px;
-	width: 120px;
+    border-bottom: 1px solid darkgrey;
+    vertical-align: middle;
+}
+
+#suggestions li.selected {
+    background-color:#EEEECC;
 }
 
 #suggestions li img {
-    clear: none;
-    display: block;
-    margin: auto;
+    clear: right;
+    display: inline-block;
+    float: left;
+    margin-left: 5px;
+    margin-top: 5px;
 }
 
 #suggestions input {
@@ -383,9 +386,12 @@ div#suggestions {
 
 #suggestions label {
    color: black;
-   font-size: 12px;
-   font-weight: bold;
+   font-size: 17px;
+   font-weight: normal;
    cursor:pointer;
+   margin-left: 15px;
+   float:left;
+   display:block;
 }
 
 #login a.tab {

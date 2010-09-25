@@ -462,8 +462,9 @@ _modal.suggestions = _tap.register({
                 if (list.getSize().y > 300)
                     self.suggest.setStyle('height', 300);
 
-                var allBox = list.getElement('input#sugg_all'),
-                    boxes = list.getElements('input[name="suggest"]');
+                var allBox = list.getElement('li[data-id="all"]'),
+                    boxes = list.getElements('li');
+/*
                 allBox.addEvent('click', function () {
                     var state = allBox.get('checked');
                     boxes.each(
@@ -471,12 +472,9 @@ _modal.suggestions = _tap.register({
                             i.set('checked', state);
                         });
                 });
-
+*/
                 boxes.addEvent('click', function (i) {
-                     if (!i.target.get('checked'))
-                        allBox.set('checked', false);
-                     else if ( boxes.every(function (i) { return i.get('checked'); }) )
-                        allBox.set('checked', true);
+                    this.toggleClass('selected');
                 });
             }
         }).send();
@@ -488,9 +486,9 @@ _modal.suggestions = _tap.register({
             gids = [],
             self = this;
 
-        list.getElements('input[name="suggest"]').each( function (i) {
-            if (i.get('checked'))
-                gids.push(i.get('value')*1);
+        list.getElements('li.selected').each( function (i) {
+            if (i.getData('id') != 'all')
+                gids.push(i.getData('id')*1);
         });
 
         if (!gids) {

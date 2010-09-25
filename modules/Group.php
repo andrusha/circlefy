@@ -210,7 +210,7 @@ class Group extends BaseModel {
     public function getInfo() {
         $query = "
             SELECT g.gid, g.gname, g.symbol, g.descr, g.favicon,
-                   g.pic_100, g.connected, g.private
+                   g.pic_100 AS pic_big, g.connected, g.private
               FROM groups g
              WHERE g.gid = #gid#
              LIMIT 1";
