@@ -247,6 +247,7 @@ background: #EEF;
 border: 1px solid #CCC;
 -moz-border-radius: 0px 0px 0px 8px;
 border-bottom-left-radius: 8px 8px;
+margin-top: -1px;
 }
 
 #stream_options_note{
