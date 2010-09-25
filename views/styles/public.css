@@ -359,6 +359,8 @@ div#suggestions {
 	padding: 0px;
     border-bottom: 1px solid darkgrey;
     vertical-align: middle;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 2px 1px;
+	margin-bottom:10px;
 }
 
 #suggestions li.selected {
