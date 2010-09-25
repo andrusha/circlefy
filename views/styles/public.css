@@ -391,7 +391,8 @@ div#suggestions {
 
 #suggestions label {
    color: black;
-   font-size: 17px;
+   font-size: 12px;
+   font-weight:bold;
    font-weight: normal;
    cursor:pointer;
    margin-left: 15px;
