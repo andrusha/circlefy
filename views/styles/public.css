@@ -353,6 +353,7 @@ div#suggestions {
 
 #suggestions li {
 	-webkit-box-shadow: rgba(1, 0, 0, 0.496094) 1px 1px 2px 1px;
+	-moz-box-shadow: rgba(1, 0, 0, 0.496094) 1px 1px 2px 1px;
 	cursor: pointer;
 	float: left;
 	font-size: 11px;
@@ -361,6 +362,12 @@ div#suggestions {
 	margin-left: 23px;
 	padding: 0px;
 	width: 120px;
+}
+
+#suggestions li img {
+    clear: none;
+    display: block;
+    margin: auto;
 }
 
 #suggestions input {

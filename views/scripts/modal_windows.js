@@ -16,6 +16,7 @@ var _modal = _tap.register({
         this.subscribe({
             'modal.show.signup': function() { self.show('modal-signup') },
             'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
+            'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.facebook-status': function(cid, symbol) {
                 self.show('modal-facebook-status');
                 _modal.facebook.show(cid, symbol);
@@ -120,6 +121,10 @@ _modal.signup = _tap.register({
 
         $$('a.signup-button', 'button.signup-button').addEvent('click', function () {
             self.publish('modal.show.signup', []);
+        });
+
+        $$('a.sign-login-button', 'button.sign-login-button').addEvent('click', function () {
+            self.publish('modal.show.sign-login', []);
         });
     },
 

@@ -80,12 +80,12 @@ class suggest_functions {
 
         //create groups, and get array of it's objects
         $created = GroupsList::merge(
-            GroupsList::bulkCreateFacebook($this->user, $createWork ? $createWork : array()),
-            GroupsList::bulkCreateFacebook($this->user, $createUnivers ? $createUnivers : array()),
-            GroupsList::bulkCreateFacebook($this->user, $createLocations ? $createLocations : array()),
-            GroupsList::bulkCreateFacebook($this->user, $createLikes ? $createLikes : array()));
+            GroupsList::bulkCreateFacebook($this->user, $createWork      ? (array)$createWork      : array()),
+            GroupsList::bulkCreateFacebook($this->user, $createUnivers   ? (array)$createUnivers   : array()),
+            GroupsList::bulkCreateFacebook($this->user, $createLocations ? (array)$createLocations : array()),
+            GroupsList::bulkCreateFacebook($this->user, $createLikes     ? (array)$createLikes     : array()));
 
-        $suggest = GroupsList::merge($created, $groups_pers, $groups_int)->filter('info');
+        $suggest = GroupsList::merge($created, $groups_pers, $groups_int)->unique('gid')->filter('info');
 
         return array('success' => 1, 'data' => $suggest);
     }

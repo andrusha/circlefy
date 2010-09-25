@@ -146,7 +146,6 @@ class Group extends BaseModel {
         $db = DB::getInstance()->Start_Connection('mysql');
 
         $db->startTransaction();
-        $ok = true;
 
         $data = array('gname' => $gname, 'symbol' => $symbol, 'descr' => $descr,
             'uid' => $creator->uid);
@@ -164,32 +163,32 @@ class Group extends BaseModel {
             $data['fav'] = $favicon;
         }
 
-        //insert group info into groups
-        $query = "
-            INSERT
-              INTO groups (gname, symbol, gadmin, descr, created{$addFields})
-            VALUES (#gname#, #symbol#, #uid#, #descr#, NOW(){$addVals})";
-        $ok = $ok && $db->query($query, $data);
+        try {
+            //insert group info into groups
+            $query = "
+                INSERT
+                  INTO groups (gname, symbol, gadmin, descr, created{$addFields})
+                VALUES (#gname#, #symbol#, #uid#, #descr#, NOW(){$addVals})";
+            $db->query($query, $data);
 
-        $gid = $db->insert_id;
+            $gid = $db->insert_id;
 
-        //make group online
-        $query = "
-            INSERT
-              INTO GROUP_ONLINE (gid)
-             VALUES (#gid#)";
-        $ok = $ok && $db->query($query, array('gid' => $gid));
+            //make group online
+            $query = "
+                INSERT
+                  INTO GROUP_ONLINE (gid)
+                 VALUES (#gid#)";
+            $db->query($query, array('gid' => $gid));
 
-        //make creator a group member & admin
-        $query = "
-            INSERT
-              INTO group_members (uid, gid, admin, status)
-            VALUES (#uid#, #gid#, 1, 1)";
-        $ok = $ok && $db->query($query, array('uid' => $creator->uid, 'gid' => $gid));
-
-        if (!$ok) {
+            //make creator a group member & admin
+            $query = "
+                INSERT
+                  INTO group_members (uid, gid, admin, status)
+                VALUES (#uid#, #gid#, 1, 1)";
+            $db->query($query, array('uid' => $creator->uid, 'gid' => $gid));
+        } catch (SQLException $e) {
             $db->rollback();
-            return false;
+            throw $e;
         }
 
         $db->commit();
@@ -197,7 +196,7 @@ class Group extends BaseModel {
         //create Group object & add tags to it
         $data = array('info' => array('gid' => $gid, 'gname' => $gname,
             'symbol' => $symbol, 'descr' => $descr),
-            'gid' => $gid);
+            'gid' => $gid, 'pic_big' => $images[2], 'pic_small' => $images[3]);
         $group = new Group($data);
         $group->tags->addTags($tags);
         $group->commit();

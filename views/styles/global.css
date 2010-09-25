@@ -369,7 +369,7 @@ input.basic.error, select.basic.error {
 	width: 54px;
 }
 
-.nav-slim .signup-button{
+.nav-slim .sign-login-button{
 background: #777;
 border:2px solid black;
 
@@ -388,7 +388,7 @@ line-height:50%;
 color:#EEE !important;
 }
 
-.nav-slim .signup-button:hover{
+.nav-slim .sign-login-button:hover{
 background: #AAA;
 background-image: url(http://s.twimg.com/a/1285108869/images/toggle_down_light.png);
 background-position: 98% 50%;
@@ -411,6 +411,14 @@ background-repeat: no-repeat;
 .nav-slim a {
     color: white !important;
     font-size: 13 !important;
+    display: block;
+    float:left;
+}
+
+.nav-slim img {
+    display: block;
+    float:left;
+    margin-right: 5px;
 }
 
 #nav a {

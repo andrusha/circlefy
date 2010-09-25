@@ -84,7 +84,7 @@ class GroupsList extends Collection {
         }
 
         $query = "
-            SELECT gid, gname, symbol, tag_group_id
+            SELECT gid, gname, symbol, tag_group_id, pic_100 AS pic_big, pic_36 AS pic_small
               FROM groups
              WHERE {$where}
                AND private = 0";
@@ -324,16 +324,18 @@ class GroupsList extends Collection {
         $fb = new Facebook();
 
         $groups = array();
-        foreach ($fgids as $fgid) {
-            $info = $fb->getGroupInfo($fgid);
-            $descr = FuncLib::makePreview(strip_tags($info['description']), 250);
-            $symbol = FuncLib::makePreview($info['name'], 250);
-            $gname = FuncLib::makeGName($info['name']);
-            $tags = FuncLib::extractTags($info['name'], $info['description'], $info['category']);
-            $picture = isset($info['picture']) ? Images::fetchAndMake(D_GROUP_PIC_PATH, $info['picture'], "$fgid.jpg") : array();
-            $favicon = isset($info['link']) ? Images::getFavicon($info['link'], D_GROUP_PIC_PATH."/fav_$fgid.ico") : null;
+        foreach ($fb->bulkInfo($fgids) as $fgid => $info) {
+            if (strlen($info['name']) > 150)
+                continue;
+            $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
+            $symbol  = FuncLib::makePreview($info['name'], 250);
+            $gname   = FuncLib::makeGName($info['name']);
+            $tags    = FuncLib::extractTags($info['name'], $info['description'], $info['category']);
+            $pic_url = 'http://graph.facebook.com/'.$fgid.'/picture?type=large';
+            $picture = Images::fetchAndMake(D_GROUP_PIC_PATH, $pic_url, "$fgid.jpg");
+            $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
+            $favicon = !empty($links) ? Images::getFavicon($links[0], D_GROUP_PIC_PATH."/fav_$fgid.ico") : null;
 
-            $group = false;
             $group = Group::create($creator, $gname, $symbol, $descr, $tags, $picture, $favicon);
             if ($group !== false)
                 $groups[] = $group;

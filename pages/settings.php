@@ -20,6 +20,7 @@ class settings extends Base{
 		$this->need_db = 1;
 
 		parent::__construct();
+        
 
 		$uid = $_SESSION['uid'];
 		//Takes awayfist settings flag

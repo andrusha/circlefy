@@ -52,6 +52,21 @@ abstract class Collection implements IteratorAggregate, Countable {
     }
 
     /*
+        Unique collection by specified key
+
+        @return Collection
+    */
+    public function unique($key) {
+        $uniq = array();
+        foreach($this->data as $val)
+            if (!array_key_exists($val->$key, $uniq))
+                $uniq[ $val->$key ] = $val;
+
+        $this->data = array_values($uniq);
+        return $this;
+    }
+
+    /*
         Merge lists
     */
     public static function merge() {

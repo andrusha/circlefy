@@ -105,6 +105,14 @@ class Facebook extends BaseModel {
         return $binded;
     }
 
+    public function bulkInfo(array $ids) {
+        if (empty($ids))
+            return array();
+
+        $url = 'https://graph.facebook.com/?ids='.implode(',', $ids).'&access_token='.urlencode($this->access_token);
+        return json_decode(file_get_contents($url), true);
+    }
+
     /*
         Returns and cache some information fetched from facebook
     */

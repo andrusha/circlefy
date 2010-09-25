@@ -154,7 +154,7 @@ class UsersList extends Collection {
         $query = "
             SELECT u.uid, u.uname, GET_REAL_NAME(u.fname, u.lname, u.uname) AS real_name,
                    u.fname, u.lname, u.pic_100 AS big_pic, u.pic_36 AS small_pic, u.help,
-                   u.email, u.private, u.ip{$fields}
+                   u.email, u.private, u.ip, u.anon AS guest{$fields}
               FROM friends AS f
              JOIN login AS u
                ON  u.uid = f.{$reverse_ident}

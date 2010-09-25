@@ -23,11 +23,13 @@ switch($r){
                                 <a href="/"  	    <?=$home?>    >home</a>
                                 <a href="/channels"   <?=$groups?>  >channels</a>
                                 <a href="/people"   <?=$people?>  >people</a>
-                                <?php if ($ok_user): ?>
-                                <a href="/settings" <?=$settings?>>settings</a>
-								<a href="/?logout=true">logout</a>
+
+                                <?php if ($me['guest']): ?>
+    								<a href="#" class="sign-login-button">create account or log in</a>
                                 <?php else: ?>
-								<a href="#" class="signup-button">create account</a>
+                                    <img src="/user_pics/<?=$me['small_pic']?>">
+                                    <a href="/settings" <?=$settings?>><?=$me['real_name']?></a>
+    								<a href="/?logout=true">logout</a>
                                 <?php endif; ?>
                         </div>
 
