@@ -245,6 +245,7 @@ padding:6px;
 /*    background: -webkit-gradient(linear, 80% 100%, 90% 100%, from(#DDD), to(#FFF));*/
 background: #EEF;
 border: 1px solid #CCC;
+-moz-border-radius: 0px 0px 0px 8px;
 border-bottom-left-radius: 8px 8px;
 }
 
@@ -648,10 +649,9 @@ font-weight:bold;
 #content .section.description .description {
 	background: #EEC;
 	display: block;
-	  -moz-border-radius: 8px 8px 0px 8px;
-border-bottom-right-radius;
+	  -moz-border-radius: 8px 0px 0px 0px;
 border: 1px solid #aaa;
-border-top-left-radius: 8px 8px;
+border-top-left-radius: 8px;
 
 }
 
@@ -2337,11 +2337,8 @@ li#gid_public  { background: url(/images/new_icons/discover.png) no-repeat right
         padding:3px 3px 6px 6px;
         width:10px;
         background:red;
-    -moz-border-radius: 10px 10px 10px 10px;
-        border-bottom-left-radius: 10px 10px;
-        border-bottom-right-radius: 10px 10px;
-        border-top-left-radius: 10px 10px;
-        border-top-right-radius: 10px 10px;
+    -moz-border-radius: 10px;
+        border-radius: 10px;
         margin-top:8px;
         display:none;
 }
@@ -2364,10 +2361,10 @@ background-color:#C3D2DF;
 background-image: url(http://d1vgw4v7ja2ido.cloudfront.net/-9dfe92083011731d.gif);
 background-position: 0% 50%;
 background-repeat: no-repeat;
-border-bottom-left-radius: 5px 5px;
-border-bottom-right-radius: 5px 5px;
-border-top-left-radius: 5px 5px;
-border-top-right-radius: 5px 5px;
+
+-moz-border-radius: 5px;
+border-radius: 5px;
+
 clear: both;
 display: block;
 font-weight: bold;
