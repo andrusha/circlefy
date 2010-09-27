@@ -28,6 +28,7 @@ class TapsList extends Collection {
               '#anon#'       => filter registred/anonymous users
               '#from#'       => user who sent PM
               '#to#'         => user who recieve PM
+              '#status#'     => filter users by group join status
     */
     private static function filterTapIds($filter, $params) {
         if (!function_exists('substitute')) {
@@ -126,6 +127,11 @@ class TapsList extends Collection {
         if ($params['#outside#']) {
             $toJoin[] = 'meta';
             $where[] = 'scm.connected IN (#outside#)';
+        }
+
+        if ($params['#status#']) {
+            $toJoin[] = 'members';
+            $where[] = 'gm.status = #status#';
         }
 
         $limit = '0, 10';
