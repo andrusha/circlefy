@@ -66,7 +66,7 @@ $private = $res['private'];
 								<span class="help">the name of your channel</span>
 								<span class="error"></span>
 							</label>
-							<input name="name" value="<?= $gname ?>" type="text" disabled="disabled" class="basic full" />
+							<input name="name" value="<?= $gname ?>" type="text" class="basic full" />
 							
 							<label for="symbol">
 								symbol 
@@ -118,6 +118,8 @@ $private = $res['private'];
 								<iframe name="picture-fav" style="display:none;"> </iframe>
 							</form>
 							
+                            <a href="/pending_members?channel=<?=$symbol?>" style="color: black">Pending members</a>
+
 							<div class="buttons">
 								<button class="action">save changes</button> or <a href="/channels">cancel</a>
 							</div>

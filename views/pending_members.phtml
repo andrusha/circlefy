@@ -33,9 +33,8 @@ include(OK_HEADER);
                     <div class="full info">
                     <?php if ($members): ?>
                         <ul id="pending-members">
-                        <?php foreach ($members as $k => $m): ?>
+                        <?php foreach ($members as $m): ?>
                             <li>
-                                <?=$m['gname']?> -
                                 <img src="/user_pics/<?=$m['pic_36']?>"/>
                                 <?=$m['uname']?> <span class="buttons"><button data-uid="<?= $m['uid'] ?>" data-gid="<?= $m['gid'] ?>" class="button accept">Accept</button>
                                 <button data-uid="<?= $m['uid'] ?>" data-gid="<?= $m['gid'] ?>" class="button decline">Decline</button></span>

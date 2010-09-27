@@ -51,7 +51,8 @@ var _edit = _tap.register({
 		var main = this.main = $('create-group');
 		var data = this.data = {
 			focus: main.getElement('input[name="focus"]').store('passed', true),
-			desc: main.getElement('input[name="desc"]').store('passed', true)
+			desc: main.getElement('input[name="desc"]').store('passed', true),
+            name: main.getElement('input[name="name"]').store('passed', true)
 		};
 		for (var key in data){
 			if (this[key + 'Check'] instanceof Function){
@@ -180,6 +181,7 @@ var _edit = _tap.register({
 				gid: gid,
 				focus: data.focus.get('value').trim().rtrim(','),
 				descr: data.desc.get('value'),
+                name: data.name.get('value'),
                 'private': ($('create-group').getElement('input[name="private"]').checked ? 1 : 0)
 			},
 			onRequest: function(){
@@ -189,7 +191,7 @@ var _edit = _tap.register({
 				var response = JSON.decode(this.response.text);
 				$$('.error')[0].style.display = 'none';
 				$$('.notify')[0].style.display = 'block';
-				(function() { window.location = '/channels'}).delay(2000,this);
+//				(function() { window.location = '/channels'}).delay(2000,this);
 			}
 		});
 		if (this.pic) $extend(request.options.data, { pic_hash_name: this.pic });

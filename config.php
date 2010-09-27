@@ -1,6 +1,7 @@
 <?php
 //some debug stuff
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
+//ini_set('error_reporting', E_ALL & E_NOTICE);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
@@ -81,7 +82,7 @@ function __autoload($classname) {
     if (substr($classname, -9) == 'Exception')
         require_once(BASE_PATH.'modules/Libs/Exceptions.php');
     else
-    	require_once(BASE_PATH.'/modules/'.$add_path.$classname.'.php');
+    	require_once(BASE_PATH.'modules/'.$add_path.$classname.'.php');
 }
 
 session_start();
@@ -147,3 +148,5 @@ define("U_FOLLOWING",    1 << 0);
 define("U_FOLLOWERS",    1 << 1);
 define("U_LAST_CHAT",    1 << 2);
 define("U_BY_UNAME",     1 << 3);
+
+define("M_ADMINS",  1 << 0);

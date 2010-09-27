@@ -138,7 +138,6 @@ class UsersList extends Collection {
             $special_where .= " AND u.uname LIKE #uname# ";
         }
 
-
         if ($options & U_LAST_CHAT) {
             $fields .= ', sc.chat_text AS last_chat';
             $join .= "
@@ -168,6 +167,44 @@ class UsersList extends Collection {
             while ($res = $result->fetch_assoc()) {
                 $users[intval($res['uid'])] = new User(array('info' => $res, 'uid' => intval($res['uid'])));
             }
+
+        return new UsersList($users);
+    }
+
+    /*
+        Returns a list of group members
+
+        valid options: M_ADMINS
+    */
+    public static function members(Group $g, $type = '') {
+        $db = DB::getInstance()->Start_Connection('mysql');
+
+        $where = $order = '';
+
+        switch ($type) {
+            case 'admins':
+                $where = 'AND gm.admin > 0';
+                $order = 'ORDER BY gm.admin';
+                break;
+
+            case 'requested':
+                $where = 'AND gm.status = 0 AND gm.admin = 0';
+                break;
+        }
+
+        $query = "
+            SELECT l.uid, l.uname, gm.admin, l.pic_36, gm.gid
+              FROM group_members AS gm
+             INNER
+              JOIN login AS l ON l.uid = gm.uid
+             WHERE gm.gid = #gid#
+                   {$where}
+             {$admin}";
+        $res = $db->query($query, array('gid' => $g->gid));
+        $users = array();
+        if ($res->num_rows) 
+            while ($r = $res->fetch_assoc())
+                $users[intval($r['uid'])] = new User(array('info' => $r, 'uid' => intval($r['uid'])));
 
         return new UsersList($users);
     }

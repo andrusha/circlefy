@@ -114,16 +114,21 @@ class GroupsList extends Collection {
     }
 
     /*
-        Fetch groups of specified user, it's kinda contructor
+        Search groups by params
 
+        @param str $type
+            byUser | byGroup | bySymbol
 
-        @params $user User user, groups belongs to him we fetching
-        @params $options int options to customize returned info
+        @param array $params
+            allowed keys:
+                uid, gid, symbol
 
-        allowed options:
-        G_ONLINE_COUNT, G_TAPS_COUNT, G_USERS_COUNT, G_EXTENDED
+        @param int $options
+            allowed options:
+                G_ONLINE_COUNT | G_TAPS_COUNT | G_USERS_COUNT
+                G_EXTENDED     | G_RESPONSES_COUNT
 
-        @returns array (Group | int)
+        @return GroupsList
     */
     public static function search($type, array $params, $options = 0)  {
         $db = DB::getInstance()->Start_Connection('mysql');
@@ -157,7 +162,8 @@ class GroupsList extends Collection {
         if ($options & G_EXTENDED) {
             $fields = array_merge($fields,
                 array('g.descr AS topic', 'g.connected', 'g.pic_100',
-                      'g.pic_36', 'g.favicon', 'g.private'));
+                      'g.pic_36', 'g.favicon', 'g.private', 'g.invite_only',
+                      'g.invite_priv'));
         }
 
         //online count option
@@ -222,16 +228,13 @@ class GroupsList extends Collection {
     }
 
     /*
-        Fetch groups of specified user, it's kinda contructor
+        Fetch groups of specified user
 
+        @param User $user
+        @param int  $options
+        @param bool $cached 
 
-        @params $user User user, groups belongs to him we fetching
-        @params $options int options to customize returned info
-
-        allowed options:
-        G_ONLINE_COUNT, G_TAPS_COUNT, G_USERS_COUNT, G_EXTENDED
-
-        @returns array (Group | int)
+        @return GroupsList 
     */
     public static function byUser(User $user, $options = 0, $cached = true) {
         if (isset(self::$cache['users'][$user->uid][$options]))

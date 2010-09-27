@@ -15,6 +15,7 @@ require('../../api.php');
 
 
 $gid = $_POST['gid'];
+$name = $_POST['name'];
 $descr = addslashes($_POST['descr']);
 $focus = addslashes($_POST['focus']);
 $email_suff = $_POST['email_suffix'];
@@ -25,7 +26,7 @@ $old_fav_name = $_POST['fav_hash_name'];
 
 if(isset($gid)){
     $group_function = new group_functions();
-    $res = $group_function->create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$old_pic_name,$old_fav_name);
+    $res = $group_function->create_group($gid,$name,$descr,$focus,$email_suffix,$private,$invite,$old_pic_name,$old_fav_name);
     api_json_choose($res,$cb_enable);
 }else{
     api_usage($usage);
@@ -56,7 +57,7 @@ EOF;
         }
 
 
-        function create_group($gid,$descr,$focus,$email_suffix,$private,$invite,$pic_hash_name,$fav_hash_name){
+        function create_group($gid,$name,$descr,$focus,$email_suffix,$private,$invite,$pic_hash_name,$fav_hash_name){
 
                 $uid = $_SESSION["uid"];
                 $uname = $_SESSION["uname"];
@@ -94,6 +95,7 @@ EOF;
 		$create_group_query = <<<EOF
 		UPDATE groups SET
 			gadmin = $gadmin,
+            gname = "$name",
 			descr = "$descr",
 			focus = "$focus",
 			private = $private,

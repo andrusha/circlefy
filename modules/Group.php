@@ -307,4 +307,21 @@ class Group extends BaseModel {
 
         return $s;
     }
+
+    public function checkPermissions(User $u) {
+        $query = "
+            SELECT ((g.gadmin = #uid#) OR (gm.admin > 0)) AS perm
+              FROM groups AS g
+              LEFT
+              JOIN group_members AS gm
+                ON gm.gid = g.gid AND gm.uid = #uid#
+             WHERE g.gid = #gid#";
+        $res = $this->db->query($query, array('gid' => $this->gid, 'uid' => $u->uid));
+        $perm = 0;
+        if ($res->num_rows) {
+            $res = $res->fetch_assoc();
+            $perm = intval($res['perm']);
+        }
+        return $perm;
+    }
 };
