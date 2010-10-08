@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="css/main.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$("#sidebar ul#navigation li:last").addClass("last");
+	$(".stats:last").addClass("last");
+
+});
+</script>
+<title>circlefy - homepage</title>
+</head>
+
+<body>
+
+	<div id="header">
+    	<div class="wrap">
+        	
+            <div class="left">
+            <a href="#" id="logo">circlefy</a>
+            <form>
+            	<input type="text" value="Start or join a conversation" />
+            </form>
+            </div><!--left-->
+            
+            <a href="#" id="access">create account or login</a>
+            
+            <div class="clear"></div>
+            
+        </div><!--wrap-->
+    </div><!--header-->
+    
+    <div id="content">
+    	
+        <h1 class="wide">Manage circle</h1>
+    	
+        <form id="edit">
+        
+        <div id="left">
+        
+			<label>name   <small>what will your circle be called?</small></label>
+            <input type="text" />
+            
+            <label>name   <small>what will your circle be called?</small></label>
+            <input type="text" />
+            
+            <label>name   <small>what will your circle be called?</small></label>
+            <input type="text" />
+            
+            <label>name   <small>what will your circle be called?</small></label>
+            <input type="text" />
+            
+            <label>name   <small>what will your circle be called?</small></label>
+            <input type="text" />
+            
+            <input type="submit" class="load" value="Create new circle" />
+                
+        </div><!--left-->
+        
+        <div id="sidebar">
+        	<label>group type</label>
+            <select>
+            	<option>select</option>
+            </select>
+            
+            <label>authentication type</label>
+            <select>
+            	<option>select</option>
+            </select>
+            
+            <span>official <input type="checkbox" /></span>
+            <span>private <input type="checkbox" /></span>
+                    
+        </div><!--sidebar-->
+        
+        <div class="clear"></div>
+        
+        </form>
+        
+    </div><!--content-->
+    
+    <div id="footer">
+    
+    	<div class="copyright">circlefy &copy; 2010</div>
+        
+        <ul id="footer-navigation">
+        	<li><a href="#">home</a></li>
+            <li><a href="#">login</a></li>
+            <li><a href="#">what's circlefy?</a></li>
+            <li><a href="#">about us</a></li>
+            <li><a href="#">developers</a></li>
+            <li><a href="#">contact</a></li>
+        </ul>
+        
+        <div class="clear"></div>
+    
+    </div><!--footer-->
+
+</body>
+</html>

@@ -10,7 +10,6 @@
 class SeparatorIterator implements Iterator {
     /* @var MySQLi_Result */
     private $result = null;
-    /* @var array */
     private $tables = array();
     private $fields = array();
 
