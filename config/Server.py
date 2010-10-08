@@ -298,31 +298,26 @@ class UserConnection(object):
                 for uniq_conn in self.server.root.user_server.users[uid]:
                     uniq_conn.send_message(response_type, {'id': channel})
 
-        userOnline_query = "UPDATE TEMP_ONLINE SET online = %s WHERE uid = %s" % (status,ouid)
+        userOnline_query = "UPDATE LOW PRIORITY user SET online = %s WHERE id = %s" % (status,ouid)
         self.server.mysql_cursor.execute( userOnline_query )
         self.server.mysql_conn.commit()
 
     def addCountGroup(self,gid_list):
         logging.info("Group %s online" % gid_list)
-        add_query = "UPDATE GROUP_ONLINE SET count = count + 1 WHERE gid IN ( %s )" % (gid_list)
+        add_query = "UPDATE LOW PRIORITIY group SET online_count = online_count + 1 WHERE id IN ( %s )" % (gid_list)
         self.server.mysql_cursor.execute( add_query )
         self.server.mysql_conn.commit()
 
     def minusCountGroup(self,gid_list):
-        minus_query = "UPDATE GROUP_ONLINE SET count = case when count - 1 < 0 then 0 else count - 1 end  WHERE gid IN ( %s )" % (gid_list)
+        minus_query = "UPDATE LOW PRIORITY group SET online_count = case when online_count - 1 < 0 then 0 else online_count - 1 end  WHERE id IN ( %s )" % (gid_list)
         self.server.mysql_cursor.execute( minus_query )
         self.server.mysql_conn.commit()
 
     def minusCountChannel(self,cid_list):
-        minus_query = "UPDATE TAP_ONLINE SET count = count - 1 WHERE cid IN ( %s )" % (cid_list)
-        self.server.mysql_cursor.execute( minus_query )
-        self.server.mysql_conn.commit()
+        pass
 
     def addCountChannel(self,cid_list):
-        add_query = "UPDATE TAP_ONLINE SET count = count + 1 WHERE cid IN ( %s )" % (cid_list)
-        self.server.mysql_cursor.execute( add_query )
-        self.server.mysql_conn.commit()
-    
+        pass
 
     def receivedFrame(self, frame):
         if self.state == "init":
