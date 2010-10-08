@@ -2,38 +2,79 @@
 abstract class BaseModel implements ArrayAccess {
     /*  @var DB  */
     protected $db;
-    protected $data = array();
+
+    //a list of fields
+    public static $fields = array();
 
     //specify allowed class members to get
-    protected $allowed = array();
+    protected static $addit = array();
 
-    //specify allowed info in $data
-    protected $allowedArrays = array();
+    //used for typecasting
+    protected static $intFields = array();
 
-    public function __construct() {
+    //entity ID
+    protected $id = null;
+    protected $data = array();
+
+    public function __construct($id) {
         $this->connect();
+
+        if (is_array($id)) {
+            $this->data = $id;
+            array_walk($id, array($this, 'typeCast'), static::$intFields);
+            $this->id = $id['id'];
+        } else {
+            $this->id = $id;
+        }
     }
 
     protected function connect() {
         $this->db = DB::getInstance();
-        $this->db->Start_Connection('mysql');
     }
-
-    abstract public function __get($key);
 
     /*
         Checks if a key is allowed
     */
     public function offsetExists ($offset) {
-        if (in_array($offset, $this->allowed))
-            return true;
+        //Late Static Binding here
+        return in_array($offset, static::$addit) ||
+               in_array($offset, static::$fields);
+    }
 
-        foreach ($this->allowedArrays as $a)
-            if (isset($this->data[$a]))
-                if (array_key_exists($offset, $this->data[$a]))
-                    return true;
-        
-        return false;
+    public function __get($key) {
+        if ($key == 'id')
+            return $this->id;
+
+        if ($this->offsetExists($key)) {
+            $name = 'get'.ucfirst($key);
+
+            if (isset($this->data[$key]))
+                return $this->data[$key];
+            elseif (method_exists($this, $name)) {
+                if ($this->id === null)
+                    throw new InitializeException('ID should be set before data fetching');
+
+                $this->data[$key] = $this->$name();
+                return $this->data[$key];
+            }
+        }
+
+        throw new DataException("There is no data named `$key` or you are not allowed to get it");
+    }
+
+    /*
+        Warning!
+        It doesn't update corresponding table actually, use with care
+    */
+    public function __set($key, $val) {
+        if ($this->offsetExists($key))
+            $this->data[$key] = $val;
+        else
+            throw new DataException("You are not allowed to set `$key`");
+    }
+
+    public function asArray() {
+        return $this->data;
     }
 
     /* Stubs, you should use __get, __set instead */
@@ -45,7 +86,7 @@ abstract class BaseModel implements ArrayAccess {
         Cast provided fields into int
         use with array_walk
     */
-    protected function typeCast(&$val, $key, array $fields) {
+    protected static function typeCast(&$val, $key, array $fields) {
         if (in_array($key, $fields))
             $val = intval($val);
     }

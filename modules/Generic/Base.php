@@ -1,20 +1,12 @@
 <?php
 abstract class Base{
-
-    protected $errors = array(); //Any errors will be reported here
-
     //These are variables that you should not change.
     protected $data = array();
     protected $page_name;
 
-    //This is the stylesheet that your program will use, you can chose to change 
-    //this style sheet on a per-page basis by setting $this->stylesheet on any page
-    protected $stylesheet = "/main.css";
-
     //This variable lets you chose what type of output the view will show, you can chose to have HTML
     //XML, or JSON output based on 
     protected $view_output = "HTML";
-    protected $db_type = 'mysql';
 
     //These properties are flags
     //For example, if you need a database conncetion, in your page, set $this->need_db = 1 and it will load the DB class
@@ -39,7 +31,7 @@ abstract class Base{
         self::set($this->view_output,'output');
 
         if ($this->need_db)
-            $this->db = DB::getInstance()->Start_Connection($this->db_type);
+            $this->db = DB::getInstance();
 
         //actually, we need user everywhere
         if ($this->need_login || true) {
@@ -77,7 +69,6 @@ abstract class Base{
     private function renderPage($__pagename, $__variables) {
         extract($__variables);
         ob_start();
-        echo "<!-- View Page: " . $__pagename . "-->";
         include($__pagename);
         echo ob_get_clean();
     }

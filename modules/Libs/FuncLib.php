@@ -110,7 +110,7 @@ abstract class FuncLib {
         Try to reduce phrase down to symbol limit,
         saving as much sense as possible
     */
-    public static function makeGName($gname, $limit = 64) {
+    public static function makeSymbol($gname, $limit = 64) {
         //make words in Camel Case, if there is words
         if (strpos($gname, ' ') !== false) {
             $gname = ucwords(strtolower($gname));
@@ -133,6 +133,10 @@ abstract class FuncLib {
         $gname = substr($gname, 0, $limit);
 
         return $gname;
+    }
+
+    public static function addPrefix($prefix, array $strings) {
+        return array_map(function ($x) use ($prefix) { return "$prefix$x"; }, $strings);
     }
 
     /*

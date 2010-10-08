@@ -5,44 +5,14 @@
     with all about Taps & Responses to them
 */
 class Tap extends BaseModel {
-    protected $id = null;
-    protected $allowed = array('id', 'cid', 'uid', 'gid', 'all', 'responses');
-    protected $allowedArarys = array('responses');
 
-    public function __construct($id = null) {
-        parent::__construct();
+    public static $fields = array('id', 'sender_id', 'text', 'time', 'group_id', 'reciever_id');
 
-        if (is_array($id)) {
-            //typecasting & tap formatting
-            array_walk($id, array($this, 'typeCast'),
-                array('cid', 'uid', 'mid', 'user_online', 'gid',
-                      'count', 'private', 'chat_timestamp', 'chat_timestamp_raw'));
-            $this->data = Tap::formatTap($id);
-            $this->id = $id['cid'];
-        } else 
-            $this->id = $id;
-    }
+    public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
-    public function __get($key) {
-        if ($key == 'id')
-            return $this->id;
-        elseif ($key == 'all')
-            return $this->data;
-        else {
-            if (array_key_exists($key, $this->data))
-                return $this->data[$key];
+    protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id');
 
-            $name = 'get'.ucfirst($key);
-            if (method_exists($this, $name)) {
-                $this->data[$key] = $this->$name();
-                return $this->data[$key];
-            }
-        }
-    }
-
-    public function __set($key, $val) {
-        $this->data[$key] = $val;
-    }
+    protected static $addit = array('responses', 'group', 'sender', 'reciever');
 
     /*
         Formats time since & tap text 
@@ -60,7 +30,7 @@ class Tap extends BaseModel {
         $tap_id int
     */
     public static function byId($id, $group_info = true, $user_info = false, $last_resp = false) {
-        $taps = TapsList::getTaps(array($id), $group_info, $user_info);
+        $taps = TapsList::search('byId', array('id' => $id), ($group_info ? T_GROUP_INFO : 0) | T_USER_INFO | ($user_info ? T_USER_RECV : 0));
         if ($last_resp)
             $taps->lastResponses();
         return $taps->getFirst();
@@ -68,65 +38,32 @@ class Tap extends BaseModel {
 
     /*
         Creates new tap, return tap_id (cid/mid)
+
+        @return int
     */
-    private static function add(User $from, $gid, $touid, $text) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+    private static function add(User $from, $text, Group $g = null, User $to = null) {
+        $db = DB::getInstance();
 
-        $db->startTransaction();
+        $id = $this->db->insert('message', 
+            array('sender_id' => $from->id, 'text' => $text,
+                  'group_id' => $g ? $g->id : null,
+                  'reciever_id' => $to ? $to->id : null));
 
-        $cid = 0;
-        try {
-            //requires to get proper cid (OBSOLETE)
-            $query = "INSERT
-                        INTO channel (uid)
-                      VALUES (#uid#)";
-            $db->query($query, array('uid' => $from->uid));
-
-            $cid = $db->insert_id;
-
-            //makes tap appears online (OBSOLETE)
-            $query = "INSERT
-                        INTO TAP_ONLINE (cid)
-                      VALUES (#cid#)";
-            $db->query($query, array('cid' => $cid));
-
-            $query = "INSERT
-                        INTO special_chat (cid, uid, uname, chat_text, ip)
-                      VALUES (#cid#, #uid#, #uname#, #chat_text#, INET_ATON(#ip#))";
-            $db->query($query, array('cid' => $cid, 'uid' => $from->uid, 'uname' => $from->uname,
-                'chat_text' => $text, 'ip' => $from->addr));
-
-            //fulltext table duplicates everything
-            $db->query(str_replace('special_chat', 'special_chat_fulltext', $query),
-                array('cid' => $cid, 'uid' => $from->uid, 'uname' => $from->uname, 'chat_text' => $text,
-                    'ip' => $from->addr));
-
-            $query = "INSERT
-                        INTO special_chat_meta (mid, gid, connected, uid, private)
-                       VALUE (#cid#, #gid#, 1, #uid#, #private#)";
-            $db->query($query, array('cid' => $cid, 'gid' => $gid, 'uid' => $touid, 'private' => $touid !== null));
-        } catch (SQLException $e) {
-            $db->rollback();
-            throw $e;
-        }
-
-        $db->commit();
-
-        return $cid;
+        return $id;
     }
 
     /*
         @return Tap
     */
     public static function toGroup(Group $group, User $user, $text) {
-        return Tap::byId(Tap::add($user, $group->gid, null, $text), true, false, true);
+        return Tap::byId(Tap::add($user, $text, $group, null), true, false, true);
     }
 
     /*
         @return Tap
     */
     public static function toUser(User $from, User $to, $text) {
-        return Tap::byId(Tap::add($from, null, $to->uid, $text), true, true, true);
+        return Tap::byId(Tap::add($from, $text, null, $to), true, true, true);
     }
 
     /*
@@ -136,22 +73,9 @@ class Tap extends BaseModel {
         $this->db->startTransaction();
 
         try {
-            $this->db->query("DELETE FROM special_chat WHERE mid = {$cid}");
-            $this->db->query("DELETE FROM special_chat_meta WHERE mid = {$cid}");
-            $this->db->query("DELETE FROM special_chat_fulltext WHERE mid = {$cid}");
-            
-            //delete responses
-            $this->db->query("DELETE FROM chat WHERE cid = {$cid}");
-
-            //online info for tap
-            $this->db->query("DELETE FROM TAP_ONLINE WHERE cid = {$cid}");
-
-            //old stuff about active convo
-            $this->db->query("DELETE FROM active_convo WHERE mid = {$cid}");
-            $this->db->query("DELETE FROM active_convo_old WHERE mid = {$cid}");
-
-            //no one likes deleted taps :'(
-            $this->db->query("DELETE FROM good WHERE mid = {$mid}");
+            $this->db->query("DELETE FROM conversations WHERE message_id = ".$this->id);
+            $this->db->query("DELETE FROM reply         WHERE message_id = ".$this->id);
+            $this->db->query("DELETE FROM message       WHERE id = ".$this->id);
         } catch (SQLException $e) {
             $this->db->rollback();
             return false;
@@ -162,23 +86,23 @@ class Tap extends BaseModel {
     }
 
     /*
-        Returns bool if tap is duplicate or not
+        Returns bool if last tap from user is duplicate or not
     */
     public static function checkDuplicate(User $u, $text) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
 
-        $query = "SELECT chat_text
-                    FROM special_chat
-                   WHERE uid = #uid#
+        $query = "SELECT text 
+                    FROM message
+                   WHERE user_id = #uid#
                    ORDER
-                      BY mid DESC
+                      BY id DESC
                    LIMIT 1";
-        $result = $db->query($query, array('uid' => $u->uid));
+        $result = $db->query($query, array('uid' => $u->id));
 
         $dupe = false;
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
-            $dupe = $result['chat_text'] == $text;
+            $dupe = $result['text'] == $text;
         }
 
         return $dupe;
@@ -186,52 +110,54 @@ class Tap extends BaseModel {
 
     /*
         Returns responses to tap
+
+        @return array
     */
     public function getResponses() {
+        $fields   = FuncLib::addPrefix('r.', Tap::$replyFields);
+        $fields   = array_merge($fields, FuncLib::addPrefix('u.', User::$fields));
+        $fields   = implode(', ', array_unique($fields));
+
         $query = "
-            SELECT c.mid, c.uid, l.uname, l.pic_36 as small_pic,
-                   GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
-                   c.chat_text, UNIX_TIMESTAMP(c.chat_time) AS chat_time_raw,
-                   UNIX_TIMESTAMP(c.chat_time) AS chat_time, c.anon
-             FROM chat c
+            SELECT {$fields}
+              FROM reply r
             INNER
-             JOIN login l 
-               ON l.uid = c.uid
-            WHERE c.cid = #tap_id#";
+             JOIN user u
+               ON u.id = r.user_id
+            WHERE r.message_id = #tap_id#";
+
         $responses = array();
         $result = $this->db->query($query, array('tap_id' => $this->id));
-        if ($result->num_rows)
-            while ($res = $result->fetch_assoc())
-                $responses[] = Tap::formatTap($res);
+        foreach (DB::getSeparator($result, array('u')) as $line) {
+            $resp = $line['rest'];
+            $resp['user'] = new User($line['u']);
+            $responses[] = $resp;
+        }
         
         return $responses;
     }
 
     public function responseDupe(User $user, $text) {
-        $query = 'SELECT chat_text
-                    FROM chat
-                   WHERE cid = #cid#
-                     AND uid = #uid#
+        $query = 'SELECT text
+                    FROM reply 
+                   WHERE message_id = #cid#
+                     AND user_id = #uid#
                    ORDER
-                      BY mid DESC
+                      BY id DESC
                    LIMIT 1';
-        $result = $this->db->query($query, array('cid' => $this->id, 'uid' => $user->uid));
+        $result = $this->db->query($query, array('cid' => $this->id, 'uid' => $user->id));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
-            if ($text == $result['chat_text'])
+            if ($text == $result['text'])
                 return true;
         }
         return false;
     }
 
     public function addResponse(User $user, $text) {
-        $query = "
-            INSERT
-              INTO chat (cid, uid, uname, chat_text)
-            VALUES (#cid#, #uid#, #uname#, #text#)";
-        $this->db->query($query,
-            array('cid' => $this->id, 'uid' => $user->uid,
-                  'uname' => $user->uname, 'text' => $text));
+        return $this->db->insert('reply', array(
+            'message_id' => $this->id, 'user_id' => $user->id,
+            'text' => $text));
     }
 
     /*
@@ -239,13 +165,13 @@ class Tap extends BaseModel {
     */
     public function makeActive(User $user, $status = 1) {
         $query = "INSERT 
-                    INTO active_convo (mid, uid, active)
+                    INTO conversations (message_id, user_id, active)
                   VALUES (#mid#, #uid#, #status#)
                       ON DUPLICATE KEY
                   UPDATE active = #status#";
-        $this->db->query($query, array('uid' => $user->uid,
-            'mid' => $this->id, 'status' => $status));
-        return $this->db->affected_rows == 1;
+        return $this->db->query($query, array('uid' => $user->id,
+                        'mid' => $this->id, 'status' => $status))
+                    ->affected_rows == 1;
     }
 
     /*
@@ -255,12 +181,12 @@ class Tap extends BaseModel {
     public function getStatus(User $u) {
         $query = "
             SELECT active
-              FROM active_convo
-             WHERE uid = #uid#
-               AND mid = #mid#
+              FROM conversations 
+             WHERE user_id = #uid#
+               AND message_id = #mid#
              LIMIT 1";
         $active = 0;
-        $result = $this->db->query($query, array('uid' => $u->uid, 'mid' => $this->id));
+        $result = $this->db->query($query, array('uid' => $u->id, 'mid' => $this->id));
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
             $active = intval($result['active']);
@@ -274,40 +200,20 @@ class Tap extends BaseModel {
     */
     public function checkPermissions(User $u) {
         $query = "
-            SELECT ((s.uid = #uid#) OR (g.admin = 1)) AS ch 
-              FROM special_chat s
-             INNER
-              JOIN special_chat_meta sc
-                ON sc.mid = s.mid
+            SELECT ((m.user_id = #uid#) OR (gm.permission >= #perm#)) AS ch
+              FROM message m
               LEFT
-              JOIN group_members g 
-                ON g.gid = sc.gid AND g.uid = s.uid
-             WHERE s.mid = #mid#";
+              JOIN group_members gm 
+                ON gm.group_id = m.group_id AND gm.user_id = m.user_id
+             WHERE m.id = #mid#";
         $perm = false;
-        $res = $this->db->query($query, array('uid' => $u->uid, 'mid' => $this->id));
+        $res = $this->db->query($query, array('uid' => $u->id, 'mid' => $this->id,
+                                              'perm' => Group::$permissions['moderator']));
         if ($res->num_rows) {
             $res = $res->fetch_assoc();
             $perm = intval($res['ch']) == 1;
         }
 
         return $perm;
-    }
-
-    /*
-        Checks if user left any taps in group
-    */
-    public static function firstTapInGroup(Group $g, User $u) {
-        $db = DB::getInstance()->Start_Connection('mysql');
-        $query = "SELECT sc.metaid
-                    FROM special_chat_meta sc
-                   INNER
-                    JOIN special_chat s
-                      ON s.mid = sc.mid
-                   WHERE sc.gid = #gid#
-                     AND s.uid = #uid#
-                   LIMIT 1";
-        $result = $db->query($query, array('gid' => $g->gid, 'uid' => $u->uid));
-        $check = $result->num_rows == 0;
-        return $check;
     }
 };

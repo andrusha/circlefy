@@ -10,11 +10,7 @@ abstract class Collection implements IteratorAggregate, Countable {
     */
     protected $data = array();
 
-    //cuz get_called_class only in php >= 5.3.0
-    private static $className;
-
-    protected function __construct(array $data, $className = 'Collection') {
-        self::$className = $className;
+    protected function __construct(array $data) {
         $this->data = $data;
     }
 
@@ -41,12 +37,8 @@ abstract class Collection implements IteratorAggregate, Countable {
         //foreach instead of array_walk because
         //array_walk replaces objects
         $result = array();
-        foreach($this->data as $item) {
-            if (isset($item[$key]))
-                $result[] = $item->$key;
-            else
-                throw new OutOfBoundsException("'$key' is not valid key for data");
-        }
+        foreach($this->data as $item)
+            $result[] = $item->$key;
 
         return $result;
     }
@@ -71,11 +63,31 @@ abstract class Collection implements IteratorAggregate, Countable {
     */
     public static function merge() {
         $merged = array();
-        foreach (func_get_args() as $arg) {
+        foreach (func_get_args() as $arg)
             $merged = array_merge($merged, $arg->asArray());
+
+        $class_name = get_called_class(); 
+        return new $class_name($merged);
+    }
+    
+    public function lastOne() {
+        end($this->data);
+        return current($this->data);
+    }
+
+    public function getFirst() {
+        reset($this->data);
+        return current($this->data);
+    }
+
+    protected function joinDataById(array $data, $name, $default = 0) {
+        foreach ($this->data as &$d) {
+            if (isset($data[$d->id]))
+                $d->$name = $data[$d->id];
+            else
+                $d->$name = $default;
         }
 
-        $class_name = self::$className;
-        return new $class_name($merged);
+        return $this;
     }
 };

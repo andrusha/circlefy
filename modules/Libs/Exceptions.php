@@ -7,6 +7,9 @@
     in it's name
 */
 
+class DataException extends OutOfBoundsException {};
+class InitializeException extends LogicException {};
+
 //Comet server workaround exceptions
 //Comet.php
 abstract class CometException extends Exception {};
@@ -27,12 +30,6 @@ class AssertionException extends DBException {};
 //Facebook.php
 abstract class FacebookException extends Exception {};
 class FacebookDataException extends FacebookException {};
-
-//Group exceptions
-//Group.php
-abstract class GroupException extends Exception {};
-class GroupInitializeException extends GroupException {};
-class GroupDataException extends GroupException {};
 
 //User exceptions
 //User.php

@@ -2,133 +2,67 @@
 /*
     All user operations, e.g login in, information
 */
-class User extends BaseModel implements Serializable {
-    private $uid = null;
-    protected $allowed = array('uid', 'ip', 'addr', 'info', 'fullInfo', 'stats');
-    protected $allowedArrays = array('info', 'fullInfo', 'stats');
+class User extends BaseModel {
+    //ENUM('guest', 'user', 'banned', 'private')
+    public static $types = array('guest' => 1, 'user' => 2, 'banned' => 3, 'private' => 4);
 
-    /*
-        @param array|id $info full info for cache or just uid
-    */
-    public function __construct($info) {
-        parent::__construct();
+    //ENUM('yes','no','new')
+    public static $accepts = array('no' => 0, 'yes' => 1, 'new' => 2);
 
-        if ($info === null)
-            throw new UserInfoException('You should specify id before using this class');
-        else if (is_array($info)) {
-            $this->uid = $info['uid'];
-            $this->data = $info;
-        } else
-            $this->uid = intval($info);
-    }
+    public static $fields = array('id', 'type', 'uname', 'pass', 'email', 'fname',
+        'lname', 'ip', 'last_login', 'online');
 
-    public function serialize() {
-        return serialize(array($this->data, $this->uid));
-    }
+    protected static $intFields = array('id', 'type', 'ip', 'last_login', 'online');
 
-    public function unserialize($data) {
-        $this->connect();
-        list($this->data, $this->uid) = unserialize($data);
-    }
+    protected static $addit = array('stats', 'friend', 'last_chat');
 
-    public function setStats($stats) {
-        $this->data['stats'] = $stats;
-        //hacky, but useful
-        $this->data['info']['stats'] = $stats;
-    }
-
-    public function setInfo($key, $val) {
-        $this->data['info'][$key] = $val;
-    }
-
-    /*
-        You can get:
-        uid | uname | ip - addr | guest
-        info | fullInfo | stats
-
-        All info with get methods caching
-    */
     public function __get($key) {
-        $current = $this->uid == $_SESSION['uid'];
+        if ($key == 'ip' && $this->uid == $_SESSION['uid'])
+            return $_SERVER['REMOTE_ADDR'];
 
-        switch ($key) {
-            case 'uid':
-                return $this->uid;
-
-            case 'ip':
-            case 'addr':
-                if ($current)
-                    return $_SERVER['REMOTE_ADDR'];
-                else
-                    return $this->info['ip'];
-
-            default:
-                foreach ($this->allowedArrays as $all)
-                    if (isset($this->data[$all][$key]))
-                        return $this->data[$all][$key];
-
-                $name = 'get'.ucfirst($key);
-                if (method_exists($this, $name)) {
-                    if (!isset($this->data[$key]))
-                        $this->data[$key] = $this->$name();
-
-                    return $this->data[$key];
-                }
-        }
-
-        throw new UserInfoException("Unknown data named '$key'");
+        return parent::__get($key);
     }
 
     /*
-        Does not update associated table
-    */
-    public function __set($key, $val) {
-        if (in_array($key, $this->allowedArrays))
-            $this->data[$key] = $val;
-        else
-            $this->data['info'][$key] = $val;
-    }
-
-    /*
-        Returns user id by user name
-
-        @param $uname string
-        @returns User
+        @return User
     */
     public static function fromUname($uname) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+        return UsersList::search('byUname', array('uname' => $uname), U_JUST_ID)
+                        ->lastOne();
+    }
 
-        $query = "SELECT uid
-                    FROM login
-                   WHERE uname = #uname#
-                   LIMIT 1";
-        $user = null;
-        $result = $db->query($query, array('uname' => $uname));
-        if ($result->num_rows) {
-            $result = $result->fetch_assoc();
-            $user = new User(intval($result['uid']));
-        }
-        return $user;
+    /*
+        Returns user with full info
+
+        @param int|str $u
+        @return User
+    */
+    public static function init($u) {
+        $type = is_int($u) ? 'byId' : 'byUname';
+        $var  = is_int($u) ? 'id'   : 'uname';
+        return UsersList::search($type, array($var => $u))
+                        ->lastOne();
     }
 
     /*
         This thing makes current guest a full-featured user
     */
-    public function userificateGuest($uid, $uname, $fname, $lname, $email, $pass) {
-        $query = "UPDATE login
+    public function userificate($uname, $fname, $lname, $email, $pass) {
+        $query = "UPDATE user 
                      SET uname = #uname#,
                          fname = #fname#,
                          lname = #lname#,
-                         pass = MD5(#pass#),
+                         pass  = MD5(#pass#),
                          email = #email#,
-                         anon = 0
-                   WHERE uid = #uid#
+                         type  = #type#
+                   WHERE id = #uid#
                    LIMIT 1";
         $data = array('uname' => $uname, 'fname' => $fname,
-            'lname' => $lname, 'pass' => $pass, 'email' => $email, 'uid' => $uid);
+            'lname' => $lname, 'pass' => $pass, 'email' => $email,
+            'uid' => $this->id, 'type' => User::$types['user']);
         $this->db->query($query, $data);
 
-        $this->data['info'] = array_merge($this->data['info'], $data);
+        $this->data = array_merge($this->data, $data);
         
         if ($this->db->affected_rows == 1) {
             Auth::setSession($this);
@@ -139,121 +73,43 @@ class User extends BaseModel implements Serializable {
     }
 
     /*
-        Returns info about user
-        userpics, username, help, real name, email, private settings
-    */
-    public function getInfo() {
-        $query = "SELECT uname, GET_REAL_NAME(fname, lname, uname) AS real_name,
-                         pic_100 AS big_pic, pic_36 AS small_pic, help,
-                         email, private, ip, uid, anon AS guest, hash, fb_uid
-                    FROM login
-                   WHERE uid = #uid#
-                   LIMIT 1";
-        $info = array();
-        $result = $this->db->query($query, array('uid' => $this->uid));
-        if ($result->num_rows)
-            $info = $result->fetch_assoc();
-
-        array_walk($info, array($this, 'typeCast'), array('uid', 'private', 'guest', 'fb_uid'));
-
-        $this->data['info'] = $info;
-        return $info;
-    }
-
-    /*
-        User information from profile table too, like about, etc
-    */
-    public function getFullInfo($online = false) {
-        $fields = $joins = '';
-        if ($online) {
-            $fields = ', tpo.online';
-            $joins = 'LEFT JOIN TEMP_ONLINE tpo ON tpo.uid = l.uid';
-        }
-
-        $query = "SELECT l.uid, l.uname, GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name,
-                         l.pic_100 AS big_pic, l.pic_36 AS small_pic, l.help, l.private,
-                         l.anon AS guest, l.fb_uid, p.about, p.country, p.zip{$fields}
-                    FROM login l
-                   INNER
-                    JOIN profile p
-                      ON p.uid = l.uid
-                   {$joins}
-                   WHERE l.uid = #uid#
-                   LIMIT 1";
-        $info = array();
-        $result = $this->db->query($query, array('uid' => $this->uid));
-        if ($result->num_rows)
-            $info = $result->fetch_assoc();
-
-        array_walk($info, array($this, 'typeCast'), 
-            array('uid', 'private', 'guest', 'fb_uid', 'zip', 'online'));
-
-        $this->data['fullInfo'] = $info;
-        return $info;
-    }
-
-    /*
         Returns user statistics
         taps, responses & following channels count
 
-        Taps & responses counts only for taps
-        in public groups (connected 1, 2)
-
-        $uid - user id
-        
-        array('taps' => , 'responses' => , 'groups' => )
+        array('messages' => , 'responses' => , 'groups' => )
     */
     public function getStats() {
         $query = "
-         SELECT COUNT(i.mid) AS taps,
+         SELECT COUNT(i.mid) AS messages,
                 SUM(i.count) AS responses,
                 (
-                    SELECT COUNT(g.uid) AS groups
-                      FROM group_members AS g
-                     WHERE g.uid = #uid#
+                    SELECT COUNT(gm.group_id) AS groups
+                      FROM group_members AS gm
+                     WHERE gm.user_id = #uid#
                      GROUP
-                        BY g.uid
+                        BY gm.user_id
                 ) AS groups
            FROM (
-                    SELECT s.mid AS mid,
-                           COUNT(c.mid) AS count
-                      FROM special_chat AS s
-                     INNER
-                      JOIN special_chat_meta scm
-                        ON scm.mid = s.mid
+                    SELECT m.id AS mid,
+                           COUNT(r.message_id) AS count
+                      FROM message m
                       LEFT
-                      JOIN chat c
-                        ON c.cid = s.mid
-                     WHERE s.uid = #uid#
-                       AND scm.connected IN (1, 2)
+                      JOIN reply r
+                        ON r.messsage_id = m.id
+                     WHERE m.sender_id = #uid#
                      GROUP
-                        BY (s.mid)
+                        BY m.id
                 ) AS i";
 
         $stats = array();
-        $result = $this->db->query($query, array('uid' => $this->uid));
+        $result = $this->db->query($query, array('uid' => $this->id));
         if ($result->num_rows)
             $stats = $result->fetch_assoc();
 
         $stats = array_map('intval', $stats);
+        //$this->data = array_merge($this->data, $stats);
 
-        $this->data['stats'] = $stats;
         return $stats;
-    }
-
-    /*
-        Makes current user online
-    */
-    public function makeOnline() {
-        $query = "
-            INSERT
-              INTO TEMP_ONLINE (uid, online)
-            VALUES (#uid#, 1)
-                ON DUPLICATE KEY
-            UPDATE online = 1";
-        $this->db->query($query, array('uid' => $this->uid));
-
-        return $this->db->affected_rows == 1;
     }
 
     /*
@@ -261,16 +117,14 @@ class User extends BaseModel implements Serializable {
 
         $youFollowing = true - you following
         $youFollowing = false - follows you
-
-        $uid - your uid
     */
     private function friendsCount($youFollowing = true) {
-        $identifier = $youFollowing ? 'uid' : 'fuid';
+        $identifier = $youFollowing ? 'user_id' : 'friend_id';
         $query = "
-            SELECT COUNT(*) AS count
-              FROM friends AS f
-             WHERE f.{$identifier} = #uid#";
-        $result = $this->db->query($query, array('uid' => $this->uid))->fetch_assoc();
+            SELECT COUNT(user_id) AS count
+              FROM friends
+             WHERE {$identifier} = #uid#";
+        $result = $this->db->query($query, array('uid' => $this->id))->fetch_assoc();
         return intval($result['count']);
     }
 
@@ -288,21 +142,21 @@ class User extends BaseModel implements Serializable {
         @param User|UsersList $friend 
     */    
     public function follow($friends) {
-        if ($friends instanceof UsersList) {
-            $values = '';
-            foreach($friends as $friend)
-                $values .= ",({$this->uid}, {$friend->uid}, NOW())";
-            $values = substr($values, 1);
-        } else if ($friends instanceof User) {
-            $values = "({$this->uid}, {$friends->uid}, NOW())"; 
-        }
-
+        if ($friends instanceof UsersList)
+            $values = array_map(function ($f) {
+                   return array($this->id, $f->id);
+                }, $friends);
+        elseif ($friends instanceof User)
+            $values = array(array($this->id, $friends->id));
+        
         $query = "INSERT
-                    INTO friends (uid, fuid, time_stamp)
-                  VALUES {$values}";
+                    INTO friends (user_id, friend_id)
+                  VALUES #values#
+                      ON DUPLICATE KEY
+                  UPDATE accept = VALUES(accept)";
+        $this->db->listInsert($query, $values);
 
-        $okay = $this->db->query($query)->affected_rows >= 1;
-        return $okay;
+        return $this;
     }
 
     /*
@@ -311,23 +165,37 @@ class User extends BaseModel implements Serializable {
     public function unfollow(User $friend) {
         $query = "DELETE
                     FROM friends
-                   WHERE fuid = #friend#
-                     AND uid = #you#
+                   WHERE friend_id = #friend#
+                     AND user_id = #you#
                    LIMIT 1";
-        $okay = $this->db->query($query, array('you' => $this->uid, 'friend' => $friend->uid))->affected_rows == 1;
-        return $okay;
+        return $this->db->query($query, array('you' => $this->id, 'friend' => $friend->id))->affected_rows == 1;
     }
     
     /*
         Check if user following you or not
     */
     public function following(User $friend) {
-        $query = "SELECT fuid
+        $query = "SELECT friend_id
                     FROM friends
-                   WHERE fuid = #friend#
-                     AND uid = #you#
+                   WHERE friend_id = #friend#
+                     AND user_id = #you#
                    LIMIT 1";
-        $okay = $this->db->query($query, array('you' => $this->uid, 'friend' => $friend->uid))->num_rows == 1;
-        return $okay;
+        return $this->db->query($query, array('you' => $this->id, 'friend' => $friend->id))->num_rows == 1;
     }
+
+    /*
+        Make user a group member
+
+        TODO: Auth
+    */
+    public function join(Group $group) {
+        $query = "
+            INSERT
+              INTO group_members (group_id, user_id)
+            VALUES (#gid#, #uid#)
+                ON DUPLICATE KEY
+            UPDATE permission = VALUE(permission)";
+        return $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id))->affected_rows == 1;
+    }
+
 };

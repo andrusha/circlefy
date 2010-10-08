@@ -4,247 +4,170 @@
     All things, related to taps list
 */
 class TapsList extends Collection {
-    protected function __construct(array $taps) {
-        parent::__construct($taps, 'TapsList');
-    }
 
     /*
-        Returns list of tap_id's (mids) that meets
-        filter requirements, we can actually combine
-        filters as we want, but it not implemented by now
-        
-        $filter selected filter type for query
+        @param str $type
         'aggr_groups'   | 'ind_group'     | 'public' 
         'personal'      | 'aggr_personal' | 'private'
         'aggr_private'  | 'aggr_all'      | 'convos_all'
         'active'
 
-        $params array of params related to that filter
-        array('#uid#'        => user id
-              '#outside#'    => what type of groups to show
-              '#gid#'        => group id
-              '#search#'     => if we searching something
-              '#start_from#' => start from in LIMIT
-              '#anon#'       => filter registred/anonymous users
-              '#from#'       => user who sent PM
-              '#to#'         => user who recieve PM
-              '#status#'     => filter users by group join status
+        @param array $params array of params related to that filter
+        array(uid        => user id
+              gid        => group id
+              search     => if we searching something
+              start_from => start from in LIMIT
+              from       => user who sent PM
+              to         => user who recieve PM
+              id         => tap id
+
+        @param int $options
+            T_LIMIT      - specify limit start from
+            T_SEARCH     - search by msg text
+            T_GROUP_INFO - fetch all group info
+            T_USER_INFO  - fetch only sender info
+            T_USER_RECV  - fetch reciever info
+
+        @return TapsList
     */
-    private static function filterTapIds($filter, $params) {
-        if (!function_exists('substitute')) {
-            function substitute(&$item, $key, array $params) {
-                $item = strtr($item, $params);
-            }
-        }
+    private static function search($type, array $params, $options = 0) {
+        $db = DB::getInstance();
 
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        $distinct = false;
         $joins = array(
-            'meta'         => 'INNER JOIN special_chat_meta scm ON scm.mid = sc.mid',
-            'members'      => 'JOIN group_members gm ON gm.gid = scm.gid',
-            'members_left' => 'LEFT JOIN group_members gm ON gm.gid = scm.gid',
-            'logins'       => 'INNER JOIN login l ON l.uid = sc.uid',
-            'friends'      => 'JOIN friends f ON sc.uid = f.fuid',
-            'convo'        => 'JOIN active_convo ac ON sc.mid = ac.mid',
-            'convo_left'   => 'LEFT JOIN active_convo ac ON sc.mid = ac.mid'
+            'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id',
+            'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
+            'group'     => 'INNER JOIN `group`       g  ON g.id        = m.group_id',
+            'group_l'   => 'LEFT  JOIN `group`       g2 ON g2.id       = m.group_id',
+            'user'      => 'INNER JOIN user          u  ON u.id        = m.sender_id',
+            'user_l'    => 'LEFT  JOIN user          u2 ON u2.id       = m.reciever_id',
+            'friends'   => 'INNER JOIN friends       f  ON m.sender_id = f.friend_id',
+            'convo'     => 'INNER JOIN conversations c  ON m.id        = c.message_id',
+            'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id'
         );
 
-        $toJoin = $where = array();
-        switch ($filter) {
+        $distinct = false;
+        $join = $where = array();
+        $fields = FuncLib::addPrefix('m.', Tap::$fields);
+        
+        switch ($type) {
             case 'aggr_groups':
-                $toJoin[] = 'meta';
-                $toJoin[] = 'members';
-                $where[]  = 'gm.uid = #uid#';
+                $join[]  = 'members';
+                $where[] = 'gm.user_id = #uid#';
                 break;
 
             case 'ind_group':
-                $toJoin[] = 'meta';
-                $where[]  = 'scm.gid = #gid#';
+                $where[] = 'm.group_id = #gid#';
                 break;
 
             case 'public':
-                $toJoin[] = 'meta';
-                $where[]  = 'scm.private = 0';
+                $join[]  = 'group';
+                $where[] = 'm.group_id IS NOT NULL';
+                $where[] = 'g.secret = 0';
                 break;
 
-            case 'aggr_personal':
-                $toJoin[] = 'friends';
-                $toJoin[] = 'meta';
-                $where[]  = 'f.uid = #uid#';
-                $where[]  = 'scm.private = 0';
+            case 'aggr_friends':
+                $join[]  = 'friends';
+                $where[] = 'f.user_id = #uid#';
+                $where[] = 'm.group_id IS NOT NULL';
                 break;
 
-            case 'personal':
-                $toJoin[] = 'meta';
-                $where[]  = 'sc.uid = #uid#';
-                $where[]  = 'scm.private = 0';
+            case 'friend':
+                $where[] = 'm.sender_id = #uid#';
+                $where[] = 'm.group_id IS NOT NULL';
                 break;
 
             case 'aggr_private':
-                $toJoin[] = 'meta';
-                $where[]  = '(sc.uid = #uid# OR scm.uid = #uid#) AND scm.private = 1';
+                $where[] = '((m.sender_id   = #uid# AND m.reciever_id IS NOT NULL) OR '.
+                           '  (m.reciever_id = #uid#))';
                 break; 
 
             case 'private':
-                $toJoin[] = 'meta';
-                $where[]  = '(
-                                 (sc.uid = #from# AND scm.uid = #to#)
-                                     OR
-                                 (sc.uid = #to# AND scm.uid = #from#)
-                             ) AND scm.private = 1';
+                $where[] = '((m.sender_id = #from# AND m.reciever_id = #to#) OR '.
+                           '  (m.sender_id = #to#   AND m.reciever_id = #from#))';
+                break;
+
+            case 'convos_all':
+                $join[]  = 'convo';
+                $where[] = 'c.user_id = #uid#';
+                break;
+
+            case 'active':
+                $join[]  = 'convo';
+                $where[] = 'c.user_id = #uid#';
+                $where[] = 'c.active  = 1';
                 break;
 
             case 'aggr_all':
                 $distinct = true;
-                $toJoin[] = 'meta';
-                $toJoin[] = 'members_left';
-                $toJoin[] = 'convo_left';
-                $where[]  = '(gm.uid = #uid# OR ac.uid = #uid#
-                              OR ((sc.uid = #uid# OR scm.uid = #uid#) AND scm.private = 1))';
+                $join[]   = 'members_l';
+                $join[]   = 'convo_l';
+                $where[]  = '(gm.user_id = #uid# OR c.user_id = #uid# '.
+                            '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
+                            '       m.reciever_id IS NOT NULL))';
                 break;
 
-            case 'convos_all':
-                $toJoin[] = 'convo';
-                $where[]  = 'ac.uid = #uid#';
-                break;
-
-            case 'active':
-                $toJoin[] = 'convo';
-                $where[]  = 'ac.uid = #uid#';
-                $where[]  = 'ac.active = 1';
+            case 'byId':
+                $where[]  = 'm.id = #id#';
                 break;
         }
 
-        if ($params['#search#'])
-            $where[] = "sc.chat_text LIKE '%#search#%'";
+        if ($options & T_SEARCH)
+            $where[] = "m.text LIKE #search#";
 
-        if (isset($params['#anon#'])) {
-            $toJoin[] = 'logins';
-            $where[] = 'l.anon = #anon#';
+        $limit = ($options & T_LIMIT) ? $params['start_from'].', 10' : '0, 10';
+
+        if ($options & T_USER_INFO) {
+            $join[] = 'user';
+            $fields = array_merge($fields, FuncLib::addPrefix('u.', User::$fields));
         }
 
-        if ($params['#outside#']) {
-            $toJoin[] = 'meta';
-            $where[] = 'scm.connected IN (#outside#)';
+        if ($options & T_USER_RECV) {
+            $join[] = 'user_l';
+            $fields = array_merge($fields, FuncLib::addPrefix('u2.', User::$fields));
         }
 
-        if ($params['#status#']) {
-            $toJoin[] = 'members';
-            $where[] = 'gm.status = #status#';
+        if ($options & T_GROUP_INFO) {
+            if (!in_array('group', $join)) {
+                $join[] = 'group_l';
+                $prefix = 'g2.'; 
+            }
+            $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'g.', Group::$fields));
         }
 
-        $limit = '0, 10';
-        if ($params['#start_from#'])
-            $limit = $params['#start_from#'].', 10';
-
-        //get all unique joins from $joins array
-        $toJoin = array_intersect_key($joins,
-            array_flip(array_unique($toJoin)));
-
-        //replace all variables with real values
-        $where = array_unique($where);
-        array_walk($where, 'substitute', $params);
-
-        $toJoin = ' '.implode(' ', $toJoin).' ';
-        if ($where)
-            $where = ' WHERE '.implode(' AND ', $where).' ';
-        else
-            $where = '';
+        //construct and execute query from supplied params
+        $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
+        $where  = implode(' AND ', array_unique($where));
+        $fields = implode(', ', array_unique($fields));
 
         $distinct = $distinct ? 'DISTINCT' : '';
         $query = "
-            SELECT {$distinct} sc.mid
-              FROM special_chat sc
-            {$toJoin}
-            {$where}
+            SELECT {$distinct} {$fields} 
+              FROM message m
+            {$join}
+            WHERE {$where}
              ORDER
-                BY sc.mid DESC
+                BY m.id DESC
              LIMIT {$limit}";
         
-        $mids = array();
-        $result = $db->query($query, array());
-        if ($result->num_rows)
-            while ($res = $result->fetch_assoc())
-                $mids[] = intval($res['mid']);
-        
-        return $mids;
-    }
-
-    /*
-        Returns tap with little formatting
-
-        $tap_id int|array
-
-        @return TapsList
-    */
-    public static function getTaps(array $tap_ids, $group_info = true, $user_info = false) {
-        $join = $fields = '';
-
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        if ($group_info) {
-            $join = '
-              LEFT 
-              JOIN groups g
-                ON g.gid = scm.gid';
-            $fields = 'g.gname, g.symbol, g.favicon,';
-        }
-
-        if ($user_info) {
-            $join .= '
-                LEFT
-                JOIN login l2
-                  ON l2.uid = scm.uid';
-            $fields .= 'l2.uid AS to_uid, l2.uname AS to_uname,
-                GET_REAL_NAME(l2.fname, l2.lname, l2.uname) AS to_real_name,
-                l2.pic_100 AS to_pic_100, ';
-        }
-
-        //default responses info (count, last_resp, resp_uname) set to null
-        $query = "
-            SELECT sc.mid AS cid, sc.chat_text, UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp_raw,
-                   UNIX_TIMESTAMP(sc.chat_timestamp) AS chat_timestamp, sc.uid, l.uname,
-                   GET_REAL_NAME(l.fname, l.lname, l.uname) AS real_name, l.pic_100,
-                   tmo.online AS user_online, scm.gid, {$fields}
-                   0 AS count, NULL AS last_resp, NULL AS resp_uname, scm.private
-              FROM special_chat sc
-             INNER
-              JOIN login l
-                ON l.uid = sc.uid
-              LEFT
-              JOIN TEMP_ONLINE tmo
-                ON tmo.uid = sc.uid
-             INNER
-              JOIN special_chat_meta scm
-                ON scm.mid = sc.mid
-               {$join}
-             WHERE sc.mid IN (#tap_ids#)";
         $taps = array();
+        $result = $db->query($query, $params);
+        //separate group/users info from all stuff
+        foreach (DB::getSeparator($result, array('g', 'g2', 'u', 'u2')) as $line) {
+            $tap = $line['rest'];
 
-        $result = $db->query($query, array('tap_ids' => $tap_ids));
-        if ($result->num_rows)
-            while ($res = $result->fetch_assoc())
-                array_unshift($taps, new Tap($res));
+            if (!empty($line['g']) || !empty($line['g2']))
+                $tap['group'] = new Group($line['g'] ?: $line['g2']);
 
+            if (!empty($line['u']))
+                $tap['sender'] = new User($line['u']);
+
+            if (!empty($tap['u2']))
+                $tap['reciever'] = new User($line['u2']);
+
+            $taps[ intval($tap['id']) ] = new Tap($tap);
+        }
+        
         return new TapsList($taps);
-    }
-
-    /*
-        Returns filtered taps with last response,
-        responses count, etc.
-
-        $filter, $params described in $this->filterTapIds
-
-        @returns
-    */
-    public function getFiltered($filter, array $params, $group_info = true, $user_info = false) {
-        $idList = TapsList::filterTapIds($filter, $params);
-
-        if (!count($idList))
-            return new TapsList(array());
-
-        return TapsList::getTaps($idList, $group_info, $user_info);
     }
 
     /*
@@ -256,51 +179,41 @@ class TapsList extends Collection {
         if (empty($this->data))
             return $this;
 
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
         $tap_ids = $this->filter('id');
+        
+        $fields   = FuncLib::addPrefix('r.', Tap::$replyFields);
+        $fields   = array_merge($fields, FuncLib::addPrefix('u.', User::$fields));
+        $fields[] = 'r1.count';
+        $fields   = implode(', ', array_unique($fields));
 
         $query = "
-            SELECT c2.cid, c2.chat_text AS last_resp, c1.count, l.uname AS resp_uname,
-                   GET_REAL_NAME(l.fname, l.lname, l.uname) AS resp_real_name
+            SELECT {$fields}
               FROM (
-                    SELECT MAX(mid) AS mid, COUNT(mid) AS count
-                      FROM chat c
-                     WHERE cid IN (#ids#)
+                    SELECT MAX(id) AS id, COUNT(id) AS count
+                      FROM reply
+                     WHERE message_id IN (#ids#)
                      GROUP
-                        BY cid
-                   ) AS c1
+                        BY id
+                   ) AS r1
              INNER
-              JOIN chat c2
-                ON c2.mid = c1.mid
+              JOIN reply r
+                ON r.id = r1.id
              INNER
-              JOIN login l
-                ON l.uid = c2.uid";
+              JOIN user u
+                ON u.id = r.user_id";
 
         $responses = array();
         $result = $db->query($query, array('ids' => $tap_ids));
-        if ($result->num_rows)
-            while ($res = $result->fetch_assoc())
-                $responses[ intval($res['cid']) ] = $res;
+        foreach (DB::getSeparator($result, array('u')) as $line) {
+            $resp = $line['rest'];
+            $resp['user'] = new User($line['u']);
 
-        foreach ($this->data as $tap) {
-            if (array_key_exists($tap->id, $responses)) {
-                $tap->last = $responses[$tap->id];
-                $tap->count = $responses[$tap->id]['count'];
-            } else
-                $tap->last = array('count' => 0, 'resp_uname' => null, 'last_resp' => null);
+            $responses[ intval($resp['message_id']) ] = $resp;
         }
+
+        $this->joinDataById($responses, 'responses', array());
 
         return $this;
     }
-
-    /*
-        First tap in a list
-
-        @return Tap
-    */
-    public function getFirst() {
-        reset($this->data);
-        return current($this->data);
-    }
-
 };

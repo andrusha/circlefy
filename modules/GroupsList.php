@@ -15,19 +15,25 @@ class GroupsList extends Collection {
     private static $cache = array();
 
     /*
-        You should use static initializers instead of
-        constructions by yourself
+        Make user member of list of groups
     */
-    protected function __construct(array $groups) {
-        parent::__construct($groups, 'GroupsList');
-    }
+    public function bulkJoin(User $user) {
+        $db = DB::getInstance();
 
-    /*
-        @return Group
-    */
-    public function lastOne() {
-        end($this->data);
-        return current($this->data);
+        //prepare insert arrays from groups and user
+        $list = array_map(function ($group) use ($user) {
+                return array($group->id, $user->id, Group::$permissions['user']);
+            }, $this->data);
+
+        $query = "
+            INSERT
+              INTO group_members (group_id, user_id, permission)
+            VALUES  #values#
+                ON DUPLICATE KEY
+            UPDATE permission = VALUES(permission)";
+        $db->listInsert($query, $list);
+
+        return $this;
     }
 
     /*
@@ -42,19 +48,19 @@ class GroupsList extends Collection {
         if (empty($keywords))
             return array(new GroupsList(array()), array());
 
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
         
         $tagGroups = Tags::filterGroupsByTags($keywords, 2);
        
         //even if tag groups empty, try to fetch groups
         //by symbol matching
         if (empty($tagGroups)) {
-            $where = '(symbol IN (#keywords#) OR gname IN (#keywords#))';
+            $where = '(symbol IN (#keywords#) OR name IN (#keywords#))';
             $params = array('keywords' => $keywords);
         } else {
-            $where = '(tag_group_id IN (#tagidlist#)
-                       OR symbol IN (#keywords#)
-                       OR gname IN (#keywords#))';
+            $where = '(tags_group_id IN (#tagidlist#)
+                    OR symbol        IN (#keywords#)
+                    OR name          IN (#keywords#))';
             $params = array('tagidlist' => array_keys($tagGroups), 'keywords' => $keywords);
         }
 
@@ -65,15 +71,14 @@ class GroupsList extends Collection {
         if ($user !== null) {
             $gids = $tagGroupIDs = array();
             foreach(GroupsList::byUser($user) as $group) {
-                $gids[] = $group->gid;
-                $info = $group->info;
-                $tagGroupIDs[] = intval($info['tag_group_id']);
-                $matched_keywords[] = trim($info['symbol']);
-                $matched_keywords[] = trim($info['gname']);
+                $gids[] = $group->id;
+                $tagGroupIDs[] = $group->tags_group_id;
+                $matched_keywords[] = trim($group->symbol);
+                $matched_keywords[] = trim($group->name);
             }
 
             if (!empty($gids)) {
-                $where .= ' AND gid NOT IN (#gids#) ';
+                $where .= ' AND id NOT IN (#gids#) ';
                 $params = array_merge(array('gids' => $gids), $params);
             }
 
@@ -84,19 +89,18 @@ class GroupsList extends Collection {
         }
 
         $query = "
-            SELECT gid, gname, symbol, tag_group_id, pic_100 AS pic_big, pic_36 AS pic_small
-              FROM groups
+            SELECT ".implode(', ', Group::$fields)."
+              FROM `group`
              WHERE {$where}
-               AND private = 0";
+               AND secret = 0";
 
         $groups = array();
         $result = $db->query($query, $params);
         if ($result->num_rows)
             while ($res = $result->fetch_assoc()) {
-                $data = array('info' => $res, 'gid' => intval($res['gid']));
-                $groups[] = new Group($data);
+                $groups[] = new Group($res);
 
-                $tgid = intval($res['tag_group_id']);
+                $tgid = intval($res['tags_group_id']);
                 //if matched by keyword, then add them to matched_keywords array
                 //else, add symbol
                 if (array_key_exists($tgid, $tagGroups)) {
@@ -104,7 +108,7 @@ class GroupsList extends Collection {
                         explode(', ', $tagGroups[$tgid][1]));
                 } else {
                     $matched_keywords[] = trim($res['symbol']);
-                    $matched_keywords[] = trim($res['gname']);
+                    $matched_keywords[] = trim($res['name']);
                 }
             }
         $matched_keywords = array_unique($matched_keywords);
@@ -116,42 +120,41 @@ class GroupsList extends Collection {
     /*
         Search groups by params
 
-        @param str $type
+        @param str   $type
             byUser | byGroup | bySymbol
 
         @param array $params
-            allowed keys:
-                uid, gid, symbol
+            #uid# | #gid# | #symbol#
 
-        @param int $options
-            allowed options:
-                G_ONLINE_COUNT | G_TAPS_COUNT | G_USERS_COUNT
-                G_EXTENDED     | G_RESPONSES_COUNT
+        @param int   $options
+            G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT | G_JUST_ID
 
         @return GroupsList
     */
     public static function search($type, array $params, $options = 0)  {
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
 
         $join   = $group = array();
         $where  = '';
-        $fields = array('g.gid', 'g.symbol', 'g.gname', 'g.tag_group_id');
+        if ($options & G_JUST_ID)
+            $fields = array('g.id');
+        else
+            $fields = FuncLib::addPrefix('g.', Group::$fields);
 
         $joins = array(
-            'members'  => 'INNER JOIN group_members gm ON g.gid = gm.gid',
-            'members2' => 'INNER JOIN group_members gm2 ON g.gid = gm2.gid',
-            'meta'     => 'LEFT  JOIN special_chat_meta scm ON scm.gid = g.gid',
-            'online'   => 'LEFT JOIN GROUP_ONLINE AS go ON go.gid = g.gid');
+            'members'  => 'INNER JOIN group_members gm  ON g.id = gm.group_id',
+            'members2' => 'INNER JOIN group_members gm2 ON g.id = gm2.group_id',
+            'messages' => 'LEFT  JOIN message m         ON m.group_id = g.id');
 
         switch ($type) {
             case 'byUser':
-                $fields[] = 'gm.admin';
+                $fields[] = 'gm.permission';
                 $join[]   = 'members';
-                $where    = 'gm.uid = #uid#';
+                $where    = 'gm.user_id = #uid#';
                 break;
 
             case 'byGroup':
-                $where = 'g.gid = #gid#';
+                $where = 'g.id = #gid#';
                 break;
 
             case 'bySymbol':
@@ -159,33 +162,20 @@ class GroupsList extends Collection {
                 break;
         }
 
-        if ($options & G_EXTENDED) {
-            $fields = array_merge($fields,
-                array('g.descr AS topic', 'g.connected', 'g.pic_100',
-                      'g.pic_36', 'g.favicon', 'g.private', 'g.invite_only',
-                      'g.invite_priv'));
-        }
-
-        //online count option
-        if ($options & G_ONLINE_COUNT) {
-           $fields[] = 'go.count';
-           $join[]   = 'online';
-        }
-
         //taps count would ALWAYS join first
         //IMPORTANT! check conflicts before adding new
         if ($options & G_TAPS_COUNT) {
-            $fields[] = 'COUNT(g.gid) AS taps_count';
-            $join[]   = 'meta';
-            $group[]  = 'g.gid';
+            $fields[] = 'COUNT(g.id) AS taps_count';
+            $join[]   = 'messages';
+            $group[]  = 'g.id';
         }
 
         //we can freely join and group by table if there
         //would be only one join
         if (($options & G_USERS_COUNT) && !($options & G_TAPS_COUNT)) {
-            $fields[] = 'COUNT(g.gid) AS members_count';
+            $fields[] = 'COUNT(g.id) AS members_count';
             $join[]   = 'members2';
-            $groups[] = 'g.gid';
+            $groups[] = 'g.id';
         }
 
         $fields = implode(', ', array_unique($fields));
@@ -200,7 +190,7 @@ class GroupsList extends Collection {
 
         $query = "
             SELECT {$fields}
-              FROM groups g
+              FROM `group` g
                {$join}
              WHERE {$where}
              {$group}";
@@ -208,11 +198,8 @@ class GroupsList extends Collection {
         $groups = array();
         $result = $db->query($query, $params);
         if ($result->num_rows)
-            while ($res = $result->fetch_assoc()) {
-                $data = array('info' => $res, 'gid' => intval($res['gid']));
-                $groups[] = new Group($data);
-            }
-
+            while ($res = $result->fetch_assoc())
+                $groups[] = new Group($res);
 
         $groups = new GroupsList($groups);
 
@@ -223,7 +210,7 @@ class GroupsList extends Collection {
         if ($options & G_RESPONSES_COUNT) 
             $groups->getResponsesCount();
 
-        self::$cache['users'][$user->uid][$options] = $groups;
+        self::$cache['users'][$user->id][$options] = $groups;
         return $groups;
     }
 
@@ -237,10 +224,10 @@ class GroupsList extends Collection {
         @return GroupsList 
     */
     public static function byUser(User $user, $options = 0, $cached = true) {
-        if (isset(self::$cache['users'][$user->uid][$options]))
-            return self::$cache['users'][$user->uid][$options];
+        if (isset(self::$cache['users'][$user->id][$options]) && $cached)
+            return self::$cache['users'][$user->id][$options];
 
-        $groups = self::search('byUser', array('uid' => $user->uid), $options);
+        $groups = self::search('byUser', array('uid' => $user->id), $options);
         
         self::$cache['users'][$user->uid][$options] = $groups;
         return $groups;
@@ -254,21 +241,21 @@ class GroupsList extends Collection {
         if (empty($this->data))
             return $this;
 
-        $db = DB::getInstance()->Start_Connection('mysql');
-        $gids = $this->filter('gid');
+        $db = DB::getInstance();
+        $gids = $this->filter('id');
 
         $query = '
-            SELECT gid, COUNT(gid) AS members_count
+            SELECT group_id, COUNT(group_id) AS members_count
               FROM group_members
-             WHERE gid IN (#gids#)
+             WHERE group_id IN (#gids#)
              GROUP
-                BY gid';
+                BY group_id';
 
         $counts = array();
         $result = $db->query($query, array('gids' => $gids));
         if ($result->num_rows)
             while($res = $result->fetch_assoc())
-                $counts[ intval($res['gid']) ] = intval($res['members_count']);
+                $counts[ intval($res['group_id']) ] = intval($res['members_count']);
 
         $this->joinDataById($counts, 'members_count', 0);
 
@@ -279,37 +266,26 @@ class GroupsList extends Collection {
         if (empty($this->data))
             return $this;
 
-        $db = DB::getInstance()->Start_Connection('mysql');
-        $gids = $this->filter('gid');
+        $db = DB::getInstance();
+        $gids = $this->filter('id');
 
         $query = "
-            SELECT sm.gid, COUNT(c.mid) AS responses_count
-              FROM special_chat_meta AS sm 
+            SELECT m.group_id, COUNT(m.id) AS responses_count
+              FROM message AS m
              INNER
-              JOIN chat AS c
-                ON c.cid = sm.mid
-             WHERE sm.gid IN (#gids#)
+              JOIN reply AS r
+                ON r.message_id = m.id
+             WHERE m.group_id IN (#gids#)
              GROUP
-                BY sm.gid";
+                BY m.group_id";
 
         $counts = array();
         $result = $db->query($query, array('gids' => $gids));
         if ($result->num_rows)
             while($res = $result->fetch_assoc())
-                $counts[ intval($res['gid']) ] = intval($res['responses_count']);
+                $counts[ intval($res['group_id']) ] = intval($res['responses_count']);
 
         $this->joinDataById($counts, 'responses_count', 0);
-
-        return $this;
-    }
-
-    private function joinDataById(array $data, $name, $default = 0) {
-        foreach ($this->data as &$group) {
-            if (isset($data[$group->gid]))
-                $group->set($name, $data[$group->gid]);
-            else
-                $group->set($name, $default);
-        }
 
         return $this;
     }
@@ -331,47 +307,21 @@ class GroupsList extends Collection {
             if (strlen($info['name']) > 35)
                 continue;
             $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
-            $symbol  = FuncLib::makeGName($info['name']);
-            $gname   = FuncLib::makePreview($info['name'], 250);
+            $symbol  = FuncLib::makeSymbol($info['name'], 64);
+            $gname   = FuncLib::makePreview($info['name'], 128);
             $tags    = FuncLib::extractTags($info['name'], $info['description'], $info['category']);
-            $pic_url = 'http://graph.facebook.com/'.$fgid.'/picture?type=large';
-            $picture = Images::fetchAndMake(D_GROUP_PIC_PATH, $pic_url, "$fgid.jpg");
-            $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
-            $favicon = !empty($links) ? Images::getFavicon($links[0], D_GROUP_PIC_PATH."/fav_$fgid.ico") : null;
 
-            $group = Group::create($creator, $gname, $symbol, $descr, $tags, $picture, $favicon);
-            if ($group !== false)
-                $groups[] = $group;
+            $group    = Group::create($creator, new Group(), $gname, $symbol, $descr, $tags);
+            $groups[] = $group;
+
+            $id = $group->id;
+            $pic_url = 'http://graph.facebook.com/'.$id.'/picture?type=large';
+            $picture = Images::fetchAndMake(D_GROUP_PIC_PATH, $pic_url, "$id.jpg");
+            $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
+            $favicon = !empty($links) ? Images::getFavicon($links[0], D_GROUP_PIC_PATH."/fav_$id.ico") : null;
         }
 
         $groups = new GroupsList($groups);
         return $groups;
     }
-
-    /*
-        Make every group online
-        (no need, python server do that)
-
-        @param $groups array (Group)
-        @param $online bool
-    */
-    public static function makeOnline(GroupsList $groups, $online = true) {
-        if (empty($groups))
-            return false;
-
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        $gids = $groups->filter('gid');
-
-        $status = $online ? ' + 1 ' : ' - 1 ';
-        $query = "
-            UPDATE GROUP_ONLINE go
-               SET go.count = go.count {$status}
-             WHERE go.gid IN (#gids#)";
-
-        $db->query($query, array('gids' => $gids));
-
-        return $db->affected_rows == count($gids);
-    }
-
 };

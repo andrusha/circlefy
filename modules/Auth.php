@@ -17,10 +17,10 @@ abstract class Auth {
         header('Cache-Control: no-store, no-cache, must-revalidate');
     
         //if user already logged in - do nothing
-        if ($_SESSION['user'])
-            return unserialize($_SESSION['user']);
+        if ($_SESSION['uid'])
+            return User::init(intval($_SESSION['uid']));
 
-        return Auth::createGuest();
+        return new User(); //Auth::createGuest(); //haha, fuck guests
     }
 
     public static function logOut() {
@@ -42,24 +42,24 @@ abstract class Auth {
             if (!$fb->fuid)
                 return null;
 
-            $where = "fb_uid = #fbid#";
+            $where = "id = #fbid#";
             $params = array('fbid' => $fb->fuid);
         }
 
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
 
-        $query = "SELECT uid, uname, fname
+        $query = "SELECT id
                     FROM login
                    WHERE {$where}
-                     AND ban = 0
+                     AND type <> #type#
                    LIMIT 1";
+        $params['type'] = User::$types['banned'];
         $result = $db->query($query, $params);
 
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
 
-            $user = new User(intval($result['uid']));
-            $user->getInfo();
+            $user = User::init(intval($result['uid']));
 
             Auth::setSession($user);
 
@@ -77,58 +77,20 @@ abstract class Auth {
     }
 
     /*
-        Creates new guest-user and returns info about it
-
-        @return User
-    */
-    private static function createGuest() {
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        $ip = $_SERVER['REMOTE_ADDR'];
-
-        $query = "SELECT MAX(uid)+1 AS max
-                    FROM login";
-        $result = $db->query($query)->fetch_assoc();
-        $uname = 'Guest'.$result['max'];
-
-        $query = "INSERT
-                    INTO login (uname, fname, last_login, ip, anon, email)
-                  VALUES (#uname#, 'guest', CURRENT_TIMESTAMP(), INET_ATON(#ip#), 1, NULL)";
-        $result = $db->query($query, array('uname' => $uname, 'ip' => $ip));
-        
-        if ($db->affected_rows != 1)
-            throw new AuthException('Something went wrong in guest user creation');
-
-        $uid = $db->insert_id;
-        
-        //Setting up default account
-        $db->query("INSERT INTO profile (uid, language) VALUES (#uid#, 'English')", array('uid' => $uid));
-        $db->query("INSERT INTO settings (uid) VALUES (#uid#)", array('uid' => $uid));
-        $db->query("INSERT INTO notifications (uid) VALUES (#uid#)", array('uid' => $uid));
-        $db->query("INSERT INTO TEMP_ONLINE (uid) VALUES (#uid#)", array('uid' => $uid));
-
-        $user = new User($uid);
-        $user->getInfo();
-        Auth::setSession($user);
-
-        return $user; 
-    }
-
-    /*
         Sets all cookies & session variables needs to user after login
     */
     public static function setSession(User $user) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+        session_start();
+        $db = DB::getInstance();
 
         $ip = $_SERVER['REMOTE_ADDR'];
         $query = "UPDATE login
                      SET last_login = CURRENT_TIMESTAMP(),
                          ip = INET_ATON(#ip#)
-                   WHERE uid = #uid#
+                   WHERE id = #uid#
                    LIMIT 1";
-        $db->query($query, array('ip' => $ip, 'uid' => $user->uid));
+        $db->query($query, array('ip' => $ip, 'uid' => $user->id));
         
-        $_SESSION['uid'] = $user->uid;
-        $_SESSION['user'] = serialize($user);
+        $_SESSION['uid'] = $user->id;
     }
 };

@@ -3,77 +3,36 @@
     All things related to groups (channels)
 */
 class Group extends BaseModel {
-    /*
-        A list of tags, on what current group belongs
+    //a bunch of mappings
 
-        @instance Tags
-    */
-    private $taglist = null;
+    //ENUM('group','school', 'company', 'event', 'location')
+    public static $types = array(
+        'group' => 1, 'school'   => 2, 'company' => 3,
+        'event' => 4, 'location' => 5);
 
-    private $gid = null;
-    protected $allowed = array('gid', 'tags', 'info', 'members');
-    protected $allowedArrays = array('info', 'members');
+    //ENUM('open', 'manual', 'email', 'ip', 'geo')
+    public static $auths = array(
+        'open' => 1, 'manual' => 2, 'email' => 3,
+        'ip'   => 4, 'geo'    => 5);
 
-    /*
-        gid =
-            null for new group creating
-            int to get info from existing group
-            array to auto-initialize group
-    */
-    public function __construct($gid = null) {
-        parent::__construct();
-    
-        if (is_array($gid)) {
-            $this->data = $gid;
-            $this->gid = intval($gid['gid']);
-        } else {
-            $this->gid = $gid;
-        }
-    }
+    //ENUM('public', 'private', 'official')
+    public static $statuses = array(
+        'public' => 1, 'private' => 2, 'official' => 3);
 
-    /*
-        Fancy interface for groups, you should set or
-        group id, before fetching any info
+    //ENUM('blocked','pending','user', 'moderator', 'admin')
+    public static $permissions = array(
+        'blocked'   => 1, 'pending' => 2, 'user' => 3,
+        'moderator' => 4, 'admin'   => 5);
 
-        $object->info    = returns group info
-               ->members = returns all group members
-               ->tags    = returns group tags
-    */
-    public function __get($key) {
-        if (array_key_exists($key, $this->data)) {
-            return $this->data[$key];
-        } else if (isset($this->data['info'][$key])) {
-            return $this->data['info'][$key];
-        } else if (method_exists($this, 'get'.ucfirst($key))) {
-            if ($this->gid === null)
-                throw new GroupInitializeException('You should set group id or create new group before fetching data');
+    public static $fields = array('id', 'parent_id', 'tags_group_id', 'symbol',
+        'name', 'descr', 'created_time', 'type', 'auth', 'status', 'online_count',
+        'secret');
 
-            $name = 'get'.ucfirst($key);
-            $this->data[$key] = $this->$name();
+    protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'created_time',
+        'type', 'auth', 'status', 'online_count', 'secret');
 
-            return $this->data[$key];
-        } else if ($key == 'tags') {
-            if ($this->taglist === null) {
-                $tagId = null;
-                if (!empty($this->data['info']['tag_group_id']))
-                    $tagId = intval($this->data['info']['tag_group_id']);
-                $this->taglist = new Tags($tagId);
-            }
-
-            return $this->taglist;
-        } else if ($key == 'gid') {
-            return $this->gid;
-        }
-
-        throw new GroupDataException("Can not find any group info related to '$key'");
-    }
-
-    /*
-        Set's group->info, but NOT update table
-    */
-    public function set($key, $value) {
-        $this->data['info'][$key] = $value;
-    }
+    protected static $addit = array('tags', 'members', 'taps_count',
+        'members_count', 'responses_count');
 
     /*
         Kinda save changes
@@ -88,37 +47,24 @@ class Group extends BaseModel {
 
     private function updateTagId($tgid) {
         $query = "
-            UPDATE groups
-               SET tag_group_id = #tgid#
-             WHERE gid = #gid#
+            UPDATE `group`
+               SET tags_group_id = #tgid#
+             WHERE id = #id#
              LIMIT 1";
         $this->db->query($query, 
-            array('gid' => $this->gid, 'tgid' => $tgid));
+            array('id' => $this->id, 'tgid' => $tgid));
 
         return $this->db->affected_rows == 1;
     }
 
     /*
-        Creates new group from group symbol
+        Creates new group from group symbol, fetching only id
+
+        @return Group
     */
     public static function fromSymbol($symbol) {
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        $query = "
-            SELECT gid
-              FROM groups
-             WHERE symbol = #symbol#
-             LIMIT 1";
-
-        $result = $db->query($query, array('symbol' => $symbol));
-        if ($result->num_rows) {
-            $result = $result->fetch_assoc();
-            $gid = intval($result['gid']);
-
-            return new Group($gid);
-        }
-
-        return null;
+        return GroupsList::search('bySymbol', array('symbol' => $symbol), G_JUST_ID)
+                         ->lastOne();
     }
 
     /*
@@ -126,12 +72,12 @@ class Group extends BaseModel {
 
         @return Group
     */
-    public static function extended($g) {
+    public static function init($g) {
         $type = is_int($g) ? 'byGroup' : 'bySymbol';
-        $var  = is_int($g) ? 'gid'     : 'symbol';
+        $var  = is_int($g) ? 'id'      : 'symbol';
 
         $group =  GroupsList::search($type, array($var => $g),
-                              G_ONLINE_COUNT | G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT | G_EXTENDED)
+                              G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT)
                             ->lastOne();
         $group->set('topic', FuncLib::linkify($group->topic));
         return $group;
@@ -140,52 +86,24 @@ class Group extends BaseModel {
     /*
         Yeah, right, it simply creates a new group
         
-        @returns Group | bool
+        @returns Group
     */
-    public static function create(User $creator, $gname, $symbol, $descr, array $tags, array $images = array(), $favicon = null) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+    public static function create(User $creator, Group $parent, $name, $symbol, $descr, array $tags,
+                                  $type = 'group', $auth = 'open', $status = 'public', $secret = false) {
+        $db = DB::getInstance();
 
         $db->startTransaction();
 
-        $data = array('gname' => $gname, 'symbol' => $symbol, 'descr' => $descr,
-            'uid' => $creator->uid);
-        $addFields = $addVals = '';
-        if (count($images) == 4) {
-            $addFields = ', pic_full, pic_180, pic_100, pic_36';
-            $addVals = ', #pfull#, #p180#, #p100#, #p36#';
-            $data = array_merge($data, array('pfull' => $images[0],
-                'p180' => $images[1], 'p100' => $images[2], 'p36' => $images[3]));
-        }
-
-        if ($favicon !== null) {
-            $addFields .= ', favicon';
-            $addVals .= ', #fav#';
-            $data['fav'] = $favicon;
-        }
+        $data = array('parent_id' => $parent->id, 'symbol' => $symbol, 'name' => $name,
+            'descr' => $descr, 'type' => Group::$types[$type], 'auth' => Group::$auths[$auth],
+            'status' => Group::$statuses[$status], 'secret' => $secret);
 
         try {
-            //insert group info into groups
-            $query = "
-                INSERT
-                  INTO groups (gname, symbol, gadmin, descr, created{$addFields})
-                VALUES (#gname#, #symbol#, #uid#, #descr#, NOW(){$addVals})";
-            $db->query($query, $data);
+            $id = $db->insert('group', $data);
+            $db->insert('group_members',
+                array('group_id' => $id, 'user_id' => $creator->id,
+                      'permission' => Group::$permissions['admin']));
 
-            $gid = $db->insert_id;
-
-            //make group online
-            $query = "
-                INSERT
-                  INTO GROUP_ONLINE (gid)
-                 VALUES (#gid#)";
-            $db->query($query, array('gid' => $gid));
-
-            //make creator a group member & admin
-            $query = "
-                INSERT
-                  INTO group_members (uid, gid, admin, status)
-                VALUES (#uid#, #gid#, 1, 1)";
-            $db->query($query, array('uid' => $creator->uid, 'gid' => $gid));
         } catch (SQLException $e) {
             $db->rollback();
             throw $e;
@@ -193,10 +111,7 @@ class Group extends BaseModel {
 
         $db->commit();
 
-        //create Group object & add tags to it
-        $data = array('info' => array('gid' => $gid, 'gname' => $gname,
-            'symbol' => $symbol, 'descr' => $descr),
-            'gid' => $gid, 'pic_big' => $images[2], 'pic_small' => $images[3]);
+        $data['id'] = $id;
         $group = new Group($data);
         $group->tags->addTags($tags);
         $group->commit();
@@ -204,124 +119,36 @@ class Group extends BaseModel {
         return $group;
     }
 
-    /*
-        Returns necessary information about group
-    */
-    public function getInfo() {
-        $query = "
-            SELECT g.gid, g.gname, g.symbol, g.descr, g.favicon,
-                   g.pic_100 AS pic_big, g.connected, g.private
-              FROM groups g
-             WHERE g.gid = #gid#
-             LIMIT 1";
-        $info = array();
-        $result = $this->db->query($query, array('gid' => $this->gid));
-        if ($result->num_rows)
-            $info = $result->fetch_assoc();
-
-        return $info;
-    }
 
     /*
         Returns group members
         $online = true - online, false - offline, null - whatever
     */
     public function getMembers($online = null) {
-        if ($online !== null) {
-            $join = "
-                INNER JOIN TEMP_ONLINE tmo
-                        ON tmo.uid = g.uid";
-            $where = " AND tmo.online = ".($online ? 1 : 0)." ";
-        }
-
-        $query = "
-            SELECT g.uid
-              FROM group_members g
-                {$join}
-             WHERE g.gid = #gid#
-                {$where}";
-
-        $users = array();
-        $result = $this->db->query($query, array('gid' => $this->gid));
-        if ($result->num_rows)
-            while($res = $result->fetch_assoc())
-                $users[] = intval($res['uid']);
-
-        return $users;
+        return UsersList::members($this, 'all', $online);
     }
 
     /*
-        Make specified user a group member
+        @return Tags
     */
-    public function join(User $user) {
-        $query = "
-            INSERT
-              INTO group_members (gid, uid, admin, status)
-            SELECT #gid# AS gid, #uid# AS uid, (gadmin = #uid#) AS admin, 1 AS status
-              FROM groups g
-             WHERE g.gid = #gid#
-                ON DUPLICATE KEY
-            UPDATE status = 1,
-                   admin = VALUES(admin)";
-        $this->db->query($query, array('gid' => $this->gid, 'uid' => $user->uid));
-        $status = $this->db->affected_rows == 1;
-
-        return $status;
+    public function getTags() {
+        return new Tags($this->data['tags_group_id'] ?: null);
     }
 
-    /*
-        Make user member of list of groups
-
-        array(Group, Group, ...)
-    */
-    public static function bulkJoin(User $user, array $groups) {
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        $list = array();
-        foreach($groups as $g)
-            $list[] = array($g->gid, $user->uid, 1, 0);
-
+    public function userPermissions(User $u) {
         $query = "
-            INSERT
-              INTO group_members (gid, uid, status, admin)
-            VALUES  #values#
-                ON DUPLICATE KEY
-            UPDATE status = 1";
-        $status = $db->listInsert($query, $list);
-
-        return $status;
-    }
-
-    public function userStatus(User $u) {
-        $query = "
-            SELECT status
+            SELECT permission
               FROM group_members
-             WHERE gid = #gid#
-               AND uid = #uid#";
+             WHERE group_id = #gid#
+               AND user_id = #uid#";
         $s = -1;
-        $r = $this->db->query($query, array('gid' => $this->gid, 'uid' => $u->uid));
+        $r = $this->db->query($query, array('gid' => $this->id, 'uid' => $u->id));
         if ($r->num_rows) {
             $r = $r->fetch_assoc();
-            $s = intval($r['status']);
+            $s = array_flip(Group::$permissions);
+            $s = $s[intval($r['permission'])];
         }
 
         return $s;
-    }
-
-    public function checkPermissions(User $u) {
-        $query = "
-            SELECT ((g.gadmin = #uid#) OR (gm.admin > 0)) AS perm
-              FROM groups AS g
-              LEFT
-              JOIN group_members AS gm
-                ON gm.gid = g.gid AND gm.uid = #uid#
-             WHERE g.gid = #gid#";
-        $res = $this->db->query($query, array('gid' => $this->gid, 'uid' => $u->uid));
-        $perm = 0;
-        if ($res->num_rows) {
-            $res = $res->fetch_assoc();
-            $perm = intval($res['perm']);
-        }
-        return $perm;
     }
 };

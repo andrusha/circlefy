@@ -50,17 +50,17 @@ class Tags extends BaseModel {
             return;
 
         $query = "
-            SELECT t.tag_id, t.tag
+            SELECT t.id, t.tag
               FROM tags_group tg
              INNER
-              JOIN tags t
-                ON t.tag_id = tg.tag_id
-             WHERE tg.tag_group_id = #tgid#";
+              JOIN tag t
+                ON t.id = tg.tag_id
+             WHERE tg.id = #tgid#";
 
         $result = $this->db->query($query, array('tgid' => $this->tagGroupId));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
-                $this->tags[ intval($res['tag_id']) ] = $res['tag'];
+                $this->tags[ intval($res['id']) ] = $res['tag'];
 
         $this->inited = true;
     }
@@ -192,15 +192,15 @@ class Tags extends BaseModel {
     */
     private function tagIdsByTaglist(array $taglist) {
         $query = "
-            SELECT tag_id, tag
-              FROM tags
+            SELECT id, tag
+              FROM tag
              WHERE tag IN (#taglist#)";
 
         $tags = array();
         $result = $this->db->query($query, array('taglist' => $taglist));
         if ($result->num_rows)
             while ($res = $result->fetch_assoc())
-                $tags[ intval($res['tag_id']) ] = $res['tag'];
+                $tags[ intval($res['id']) ] = $res['tag'];
         
         return $tags;
     }
@@ -227,7 +227,7 @@ class Tags extends BaseModel {
             }
         }
         
-        $query = "INSERT INTO tags_group (tag_group_id, tag_id) VALUES #values#";
+        $query = "INSERT INTO tags_group (id, tag_id) VALUES #values#";
 
         //add group id for each item
         array_walk($idlist, 'merge_items', $this->tagGroupId);
@@ -241,7 +241,7 @@ class Tags extends BaseModel {
     */
     private function createGroup() {
         $query = "
-            SELECT (MAX(tag_group_id) + 1) AS id
+            SELECT (MAX(id) + 1) AS id
               FROM tags_group";
 
         $result = $this->db->query($query)->fetch_assoc();
@@ -254,7 +254,7 @@ class Tags extends BaseModel {
         Inserts a tags to DB
     */
     private function insertTags($taglist) {
-        $query = "INSERT INTO tags (tag) VALUES #values#";
+        $query = "INSERT INTO tag (tag) VALUES #values#";
         $this->db->listInsert($query, $taglist);
 
         //ugly, but thing based on last insert id wouldn't work
@@ -282,20 +282,20 @@ class Tags extends BaseModel {
         @return array (tag_group_id => array(relevancy, tags), ...)
     */
     public static function filterGroupsByTags(array $taglist, $trashold = 0) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
 
         $query = " 
             SELECT id, relevancy, tags
               FROM (
-                    SELECT tag_group_id AS id, COUNT(tg.tag_id) AS relevancy,
+                    SELECT tg.id, COUNT(tg.tag_id) AS relevancy,
                            GROUP_CONCAT(t.tag SEPARATOR ', ') AS tags
                       FROM tags_group tg
                      INNER
-                      JOIN tags t
-                        ON t.tag_id = tg.tag_id
+                      JOIN tag t
+                        ON t.id = tg.tag_id
                      WHERE t.tag IN (#taglist#)
                      GROUP
-                        BY tag_group_id
+                        BY tg.id
                     HAVING relevancy > #trashold#
                    ) i
              ORDER 
@@ -314,17 +314,17 @@ class Tags extends BaseModel {
         Returns a bunch of unique tags, matched by group id's
     */
     public static function getTagsByGroups(array $groupids) {
-        $db = DB::getInstance()->Start_Connection('mysql');
+        $db = DB::getInstance();
 
         $query = '
-            SELECT t.tag_id, t.tag
-              FROM tags t
+            SELECT t.id, t.tag
+              FROM tag t
              INNER
               JOIN tags_group tg
-                ON t.tag_id = tg.tag_id
-             WHERE tg.tag_group_id IN (#groupids#)
+                ON t.id = tg.tag_id
+             WHERE tg.id IN (#groupids#)
              GROUP
-                BY t.tag_id';
+                BY t.id';
 
         $tags = array();
         $result = $db->query($query, array('groupids' => $groupids));
