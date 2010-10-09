@@ -123,7 +123,7 @@ _modal.signup = _tap.register({
             self.publish('modal.show.signup', []);
         });
 
-        $$('a.sign-login-button', 'button.sign-login-button').addEvent('click', function () {
+        $('access').addEvent('click', function () {
             self.publish('modal.show.sign-login', []);
         });
     },

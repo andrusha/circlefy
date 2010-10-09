@@ -1,0 +1,219 @@
+.modal-window input:focus {
+    -moz-box-shadow:        0 0 5px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow:		0 0 5px rgba(0, 0, 0, 0.15);
+    box-shadow:         	0 0 5px rgba(0, 0, 0, 0.15);
+}
+#curtain {
+	display: none;
+	position: absolute;
+	background: #000;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+	top: 0;
+}
+
+div#curtain.show {
+    display: block;
+}
+
+#modal-container {
+    width: 500px;
+    margin: auto;
+}
+
+.modal-window {
+    display: none;
+    position: fixed;
+    width: 500px;
+    z-index: 11;
+    background: #F2F2F2;
+    top: 100px;
+    padding: 10px;
+    border: 7px solid black;
+    -moz-border-radius:    5px;
+	-webkit-border-radius: 5px;
+	border-radius:         5px;
+}
+
+div.modal-window.show {
+    display: block;
+}
+
+.modal-window .modal-menu {
+    margin-top: 50px;
+    text-align: right;
+    font-size: 14px;
+    margin-right: 20px;
+}
+
+#modal-sign-notify {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.modal-actions {
+    color: #656565;
+    font-size: 14px;
+}
+       
+.modal-window h2 {
+    border-bottom: 2px solid #ccc;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 4px;
+}
+
+.modal-window p {
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #656565;
+}
+
+.modal-window a {
+    color: #000000;
+    font-weight: bold;
+}
+
+.modal-window span.indicator {
+    display: none;
+}
+
+.modal-window p.forms {
+    margin-top: 10px;
+    padding-left: 30px;
+    clear: both;
+}
+
+.modal-window label {
+    font-size: 16px;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #3088ED;
+}
+
+.modal-window p.guide, .modal-window2 p.guide {
+    display: none;
+    margin-top: -5px;
+    text-align: right;
+    padding-right: 60px;
+    margin-bottom: 10px;
+    clear: both;
+    color: #F12C46;
+}
+
+.modal-window input {
+	display:block;
+    border: 1px solid #ccc;
+    padding: 5px;
+    float: right;
+    margin-right: 50px;
+    width: 300px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.modal-window input.error {
+    background: #FDEBEB;
+}
+
+.modal-window input.passed {
+    background: #EEFDEB;
+}
+
+.modal-cancel {
+    font-size:11px;
+}
+
+.modal-window button {
+    font-size: 16px;
+	background: #39D url(http://s.twimg.com/a/1285108869/images/bg-btn-blue.png) repeat-x scroll 0px 0px;
+	border: 1px solid #39D;
+	color: white;
+	font-size: 11px;
+	font-weight: bold;
+	margin: 0px 5px 0px 0px;
+	padding: 4px 10px 5px;
+	text-shadow: #39D 0px -1px 0px;
+	cursor:pointer;
+	border-radius:          4px;
+	-moz-border-radius:		4px;
+	-webkit-border-radius:	4px;
+}
+
+.modal-window button:hover {
+	background: #39D url() repeat-x scroll 0px 0px;
+}
+
+#suggestions span.fail {
+    color: darkgray;
+    font-size: 14px;
+    display: none;
+}
+
+div#suggestions {
+    overflow: auto;
+    background-color: white;
+    border: 1px black solid;
+    color: black;
+    padding: 14px;
+    height:300px;
+}
+
+#suggestions ul {
+    color: black;
+    font-size: 14px;
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+#suggestions li {
+	cursor: pointer;
+	font-size: 11px;
+	height: 60px;
+	padding-left: 23px;
+	padding: 0px;
+    vertical-align: middle;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
+	margin-bottom:10px;
+}
+
+#suggestions li.selected {
+    background-color:#F0FFED;
+}
+
+#suggestions li img {
+	clear: right;
+	display: inline-block;
+	float: left;
+	height: 50px;
+	margin-left: 5px;
+	margin-top: 2px;
+	padding: 2px;
+	width: 50px;
+}
+
+#suggestions input {
+    float: right;
+    margin-right: 10px;
+    padding: 0;
+    margin-bottom: 0;
+    color: black;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#suggestions label {
+    color: black;
+    font-size: 15px;
+    font-weight:bold;
+    font-weight: normal;
+    cursor:pointer;
+    margin-left: 15px;
+    float:left;
+    display:block;
+}

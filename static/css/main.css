@@ -1,6 +1,14 @@
 @charset "UTF-8";
 /* CSS Document */
 
+:focus {
+    -moz-outline-style: none !important;
+}
+
+a {
+    outline: none !important;
+}
+
 *, body {
 	margin:0;
 	padding:0;
@@ -889,4 +897,7 @@ h1.wide {
 }
 #footer-navigation li a:hover {
 	text-decoration:underline;
+}
+#templates {
+	display: none;
 }
