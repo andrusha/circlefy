@@ -10,7 +10,7 @@ class MySQL
   static public function getInstance() 
 	  { 
 	  if ( self::$instance == null ) 
-		  self::$instance = new mysqli('p:'.D_ADDR,D_USER,D_PASS,D_DATABASE); 
+		  self::$instance = new mysqli(D_ADDR,D_USER,D_PASS,D_DATABASE); 
 		  return self::$instance; 
 	  } 
 }

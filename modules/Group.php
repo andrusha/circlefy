@@ -24,12 +24,12 @@ class Group extends BaseModel {
         'blocked'   => 1, 'pending' => 2, 'user' => 3,
         'moderator' => 4, 'admin'   => 5);
 
-    public static $fields = array('id', 'parent_id', 'tags_group_id', 'symbol',
-        'name', 'descr', 'created_time', 'type', 'auth', 'status', 'online_count',
-        'secret');
+    public static $fields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
+        'symbol', 'name', 'descr', 'created_time', 'type', 'auth', 'status',
+        'online_count', 'secret');
 
-    protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'created_time',
-        'type', 'auth', 'status', 'online_count', 'secret');
+    protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
+        'created_time', 'type', 'auth', 'status', 'online_count', 'secret');
 
     protected static $addit = array('tags', 'members', 'taps_count',
         'members_count', 'responses_count');
@@ -38,9 +38,9 @@ class Group extends BaseModel {
         Kinda save changes
     */
     public function commit() {
-        if ($this->taglist !== null) {
-           $this->taglist->commit();
-           $tgid = $this->taglist->getGroupId();
+        if ($this->tags->getGroupId() !== null) {
+           $this->tags->commit();
+           $tgid = $this->tags->getGroupId();
            $this->updateTagId($tgid);
         }
     }
@@ -89,7 +89,7 @@ class Group extends BaseModel {
         @returns Group
     */
     public static function create(User $creator, Group $parent, $name, $symbol, $descr, array $tags,
-                                  $type = 'group', $auth = 'open', $status = 'public', $secret = false) {
+                                  $type = 'group', $auth = 'open', $status = 'public', $secret = 0) {
         $db = DB::getInstance();
 
         $db->startTransaction();

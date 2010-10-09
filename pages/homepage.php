@@ -1,15 +1,9 @@
 <?php
 
 class homepage extends Base {
-    function __default() {}
+    protected $need_login = true;
 
-	function __construct() {
-		$this->need_login = 1;
-		$this->need_db = 1;
-        $this->page_name = "new_homepage";
-	
-		parent::__construct();
-
+	function __invoke() {
         /*
 		$this->set(
             TapsList::getFiltered('active', array('#uid#' => $this->user->uid))
@@ -27,7 +21,7 @@ class homepage extends Base {
 
 		$this->set(
             UsersList::withPM($this->user)->filter('info'),
-            'your_private');*/
+            'your_private');
 
         if (!$this->user->guest) {
             $params = array('#outside#' => '1, 2', '#uid#' => $this->user->uid);
@@ -48,7 +42,7 @@ class homepage extends Base {
             $this->set('discover', 'feed_type');
         }
 
-        $this->set($data, 'groups_bits');
+        $this->set($data, 'groups_bits');*/
 	}
 
 };

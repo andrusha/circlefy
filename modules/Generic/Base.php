@@ -1,62 +1,50 @@
 <?php
-abstract class Base{
-    //These are variables that you should not change.
+abstract class Base {
+    //template variables
     protected $data = array();
-    protected $page_name;
+    private   $page_name;
+    protected $debug = null;
 
-    //This variable lets you chose what type of output the view will show, you can chose to have HTML
-    //XML, or JSON output based on 
+    //HTML | JSON
     protected $view_output = "HTML";
 
     //These properties are flags
-    //For example, if you need a database conncetion, in your page, set $this->need_db = 1 and it will load the DB class
-    //and give you a database connection
     protected $need_db    = false;
     protected $need_login = false;
 
-    /*
-        @var DB
-    */
+    /* @var DB */
     protected $db;
 
-    /*
-        @var User
-    */
+    /* @var User */
     protected $user;
 
-    //The page has access to this variable incase you want to use mysqli/PDO directly and bypass the framework.
+    //calls after object creation
+    abstract public function __invoke();
 
-    protected function __construct(){
-        self::set($this->stylesheet,'stylesheet');
-        self::set($this->view_output,'output');
+    /*
+        @param string|null $template null for JSON
+    */
+    public function __construct($template = null) {
+        $this->page_name = $template;
+
+        if (DEBUG)
+            $this->debug = FirePHP::getInstance(true);
 
         if ($this->need_db)
             $this->db = DB::getInstance();
 
         //actually, we need user everywhere
-        if ($this->need_login || true) {
+        if ($this->need_login || true)
             $this->userActions();
-
-            $this->set(
-                array_intersect_key(
-                    $this->user->info,
-                    array_flip(
-                        array('uname', 'uid', 'fb_uid', 'real_name',
-                              'big_pic', 'small_pic', 'guest', 'fb_uid')))
-                , 'me');
-        }
     }
 
-    /*
-        Here we would save userinfo into session variable (cachelike)
-        and then make templater to work
-    */
     public function __destruct() {
-        $_SESSION['user'] = serialize($this->user);
+        if (DEBUG)
+            DB::getInstance()->flush_log();
 
         switch($this->view_output){
             case 'HTML':
-                $this->data['_t'] = $this->data; //compatability
+                $this->set($this->user->asArray(), 'me');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;
             
@@ -77,29 +65,25 @@ abstract class Base{
         Create user, based on possible actions on it, like login/logout, etc
     */
     private function userActions() {
-        if (!empty($_POST['uname']) && !empty($_POST['pass']) && empty($_POST['fb_login']))
-           $this->user = Auth::logIn($_POST['uname'], $_POST['pass']);
-        else if ($_POST['fb_login'] == '1')
-           $this->user = Auth::logInWithFacebook();
-        else
-           $this->user = Auth::identify();
-   
- 		if ($_GET['logout'] && !$_POST['uname']){
+ 		if (isset($_GET['logout']) && !$_POST['uname']){
 			Auth::logOut();
             header("location: /");
             exit();
 		}
+
+        if (!empty($_POST['uname']) && !empty($_POST['pass']) && $_POST['action'] == 'login_basic')
+           $this->user = Auth::logIn($_POST['uname'], $_POST['pass']);
+        else if ($_POST['fb_login'] == '1' && $_POST['action'] == 'login_basic')
+           $this->user = Auth::logInWithFacebook();
+        else
+           $this->user = Auth::identify();
     }
       
-    public function set($text,$var){
+    public function set($text, $var){
         $this->data[$var] = $text;
     }
 
     public function get(){
         return $this->data;
-    }
-
-    public function page(){
-        return $this->page_name;
     }
 };

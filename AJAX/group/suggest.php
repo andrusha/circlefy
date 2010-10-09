@@ -4,127 +4,79 @@
         modal_windows.js
 */
 
-require('../../config.php');
-require('../../api.php');
-
-$action = $_POST['action'];
-
-$obj = new suggest_functions();
-switch ($action) {
-    case 'get':
-        $result = $obj->get();
-        break;
-}
-
-echo json_encode($result);
-
-class suggest_functions {
+class ajax_suggest extends Base {
+    protected $view_output = 'JSON';
     private $fb = null;
-    private $user = null;
 
-    //cuz we haven't clousures
-    private $matched = array();
-
-    public function __construct() {
+    public function __invoke() {
         $this->fb = new Facebook();
-        $this->user = new User(intval($_SESSION['uid']));
+
+        $action = $_POST['action'];
+
+        if ($action == 'get')
+            $result = $this->suggest();
+
+        $this->data = $result ?: array('fail');
     }
 
-    public function get() {
-        //here we create aggregate list of all possible suggestions
-        //according following order:
-        //Work Places + University + Location + Hometown + Birthday  + Books + Movies + Groups
+    private function suggest() {
+        // I. Fetch FB-info
         $info = $this->fb->info;
 
-        $work = $this->getWork();
-        $univers = $this->getUnivers();
+        // II. Make keywords
+        // in following order (work -> education -> location -> hometown -> 10 random likes)
+        $keywords = array();
+        foreach (array('work' => 'employer','education' => 'school', 
+                       'location' => 'location', 'hometown' => 'hometown') as $first => $second)
+            if (!empty($info[$first]) && $first == $second)
+                $keywords[ intval($info[$first]['id']) ] = $info[$first]['name'];
+            elseif (!empty($info[$first]) && $first != $second)
+                foreach ($info[$first] as $i)
+                    $keywords[ intval($i[$second]['id']) ] = $i[$second]['name'];
 
-        $locations = $location_names = array();
-        if (!empty($info['location'])) {
-            $locations = array_merge($locations, explode(', ', $info['location']['name']), array($info['location']['name']));
-            $location_names[ intval($info['location']['id']) ] = $info['location']['name'];
-        }
-
-        if (!empty($info['hometown'])) {
-            $locations = array_merge($locations, explode(', ', $info['hometown']['name']), array($info['hometown']['name']));
-            $location_names[ intval($info['hometown']['id']) ] = $info['hometown']['name'];
-        }
-
-        //personal should have more priority
-        $personal_keywords = array_merge(array_values($work), array_values($univers), $locations);
-
-        //make array with keywords
+        // Select 10 or less random likes
         $interests = array();
         foreach(array_merge($this->fb->books, $this->fb->movies, $this->fb->groups, $this->fb->likes) as $i)
             $interests[ intval($i['id']) ] = trim($i['name']);
-        
-        list($groups_pers, $matched_personal) = GroupsList::byKeywords($personal_keywords, $this->user);
-        list($groups_int, $matched_interest) = GroupsList::byKeywords(array_values($interests), $this->user);
 
-        //get a list of keywords (names), not matched by current groups
-        $this->matched = array_udiff($personal_keywords, $matched_personal, 'strcasecmp');
+        $interests = array_intersect_key(
+                            $interests,
+                            array_flip(
+                                array_rand($interests,
+                                           count($interests) > GROUPS_FROM_LIKES ? GROUPS_FROM_LIKES : count($interests))));
+       
+        // because array_merge rewrites numeric keys
+        $keywords = $keywords + $interests;
 
-        //get a list of id's of work places for whom we sould create new groups
-        $createWork = array_keys(array_filter($work, array($this, 'byKeywords')));
+        // III. Search groups by FB ID
+        $foundByFBID = GroupsList::search('byFbIDs', array('fbids' => array_keys($keywords)));
 
-        //get a list of id's of schools we want to create
-        $createUnivers = array_keys(array_filter($univers, array($this, 'byKeywords')));
+        if (DEBUG) $this->debug->log($keywords, 'keywords_before');
+        // IV. Search by keywords (unmatched by FB ID)
+        $keywords = array_diff_key($keywords, array_flip($foundByFBID->filter('fb_id')));
+        if (DEBUG) $this->debug->log($keywords, 'keywords_after');
+        list($found, $match) = GroupsList::byKeywords($keywords, $this->user);
 
-        //get a list of id's for locations [hometown, current location]
-        $createLocations = array_keys(array_filter($location_names, array($this, 'byKeywords')));
+        // V. Create new groups from unamtched keywords
+        $match  = array_udiff($keywords, $match, 'strcasecmp');
+        $create = array_filter($keywords,
+                      function ($x) use ($match) {
+                          return in_array($x, $match);
+                      });
 
-        $this->matched = array_udiff(array_values($interests), $matched_interest, 'strcasecmp');
-        $createLikes = array_filter($interests, array($this, 'byKeywords'));
-        if (count($createLikes) > 0)
-            $createLikes = array_rand($createLikes, count($createLikes) > 10 ? 10 : count($createLikes));
+        if (DEBUG) {
+            $this->debug->log($keywords, 'keywords');
+            $this->debug->log($found,    'founded');
+            $this->debug->log($match,    'matched');
+            $this->debug->log($create,   'create');
+        }
 
-        //create groups, and get array of it's objects
-        $created = GroupsList::merge(
-            GroupsList::bulkCreateFacebook($this->user, $createWork      ? (array)$createWork      : array()),
-            GroupsList::bulkCreateFacebook($this->user, $createUnivers   ? (array)$createUnivers   : array()),
-            GroupsList::bulkCreateFacebook($this->user, $createLocations ? (array)$createLocations : array()),
-            GroupsList::bulkCreateFacebook($this->user, $createLikes     ? (array)$createLikes     : array()));
+        $created = GroupsList::bulkCreateFacebook($this->user, array_keys($create));
 
-        $suggest = GroupsList::merge($created, $groups_pers, $groups_int)->unique('gid')->filter('info');
+        // VI. Return aggregated result
+        $suggest = GroupsList::merge($created, $found)->unique('id')->asArrayAll();
 
         return array('success' => 1, 'data' => $suggest);
-    }
-
-    private function byKeywords($val) {
-        return in_array($val, $this->matched);
-    }
-
-    /*
-        Returns a list of user workplaces
-    */
-    private function getWork()  {
-        $info = $this->fb->info;
-        $work = array();
-        if (!empty($info['work']))
-            foreach ($info['work'] as $w)
-                $work[intval($w['employer']['id'])] = $w['employer']['name'];
-
-        return $work;        
-    }
-
-    /*
-        Returns a list of user educational schools
-    */
-    private function getUnivers() {
-        $info = $this->fb->info; 
-        $univers = array();
-        if (!empty($info['education']))
-            foreach ($info['education'] as $e)
-                $univers[ intval($e['school']['id']) ] = $e['school']['name'];
-
-        return $univers;
-    }
-
-    /*
-        extracts all relevant info from group objects
-    */
-    private function extractInfo(Group $item) {
-        return $item->info;
     }
 };
 

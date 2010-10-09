@@ -9,10 +9,10 @@ class User extends BaseModel {
     //ENUM('yes','no','new')
     public static $accepts = array('no' => 0, 'yes' => 1, 'new' => 2);
 
-    public static $fields = array('id', 'type', 'uname', 'pass', 'email', 'fname',
+    public static $fields = array('id', 'fb_id', 'type', 'uname', 'pass', 'email', 'fname',
         'lname', 'ip', 'last_login', 'online');
 
-    protected static $intFields = array('id', 'type', 'ip', 'last_login', 'online');
+    protected static $intFields = array('id', 'fb_id', 'type', 'ip', 'last_login', 'online');
 
     protected static $addit = array('stats', 'friend', 'last_chat');
 
@@ -45,9 +45,23 @@ class User extends BaseModel {
     }
 
     /*
+        Creates new user, yep you should specify ID = Facebook ID
+
+        @return User
+    */
+    public static function create($type, $uname, $pass, $email, $fname, $lname, $ip, $fb_id = null) {
+        $db = DB::getInstance();
+        $data = array('fb_id' => $fb_id, 'type' => $type, 'uname' => $uname, 'pass' => md5($pass),
+            'email' => $email, 'fname' => $fname, 'lname' => $lname, 'ip' => $ip);
+        $id = (int)$db->insert('user', $data);
+        $data['id'] = $id;
+        return new User($data);
+    }
+
+    /*
         This thing makes current guest a full-featured user
     */
-    public function userificate($uname, $fname, $lname, $email, $pass) {
+    public function update($uname, $fname, $lname, $email, $pass) {
         $query = "UPDATE user 
                      SET uname = #uname#,
                          fname = #fname#,
@@ -70,6 +84,26 @@ class User extends BaseModel {
         }
 
         return false;
+    }
+
+    /*
+        Checks if field=val combination exists
+    */
+    public static function existsField($field, $val) {
+        $db = DB::getInstance();
+        $field = $db->real_escape_string($field);
+        $query = "SELECT `$field` FROM user WHERE `$field` = #val# LIMIT 1";
+        return $db->query($query, array('val' => $val))->num_rows == 1;
+    }
+
+    /*
+        Checks if user exist (note id == facebook id)
+
+        @param int $id
+        @return bool
+    */
+    public static function exists($id) {
+        return User::existsField('id', $id);
     }
 
     /*
@@ -142,13 +176,15 @@ class User extends BaseModel {
         @param User|UsersList $friend 
     */    
     public function follow($friends) {
-        if ($friends instanceof UsersList)
-            $values = array_map(function ($f) {
-                   return array($this->id, $f->id);
-                }, $friends);
+        if ($friends instanceof UsersList) 
+            foreach ($friends as $f)
+                $values[] = array($this->id, $f->id);
         elseif ($friends instanceof User)
             $values = array(array($this->id, $friends->id));
-        
+       
+        if (empty($values))
+            return $this;
+
         $query = "INSERT
                     INTO friends (user_id, friend_id)
                   VALUES #values#

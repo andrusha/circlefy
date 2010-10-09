@@ -16,11 +16,27 @@ class DB {
     */
     private $params = array();
 
+    private $queries = array();
+
     private function __construct() {}
 
     function __destruct() {
         if ($this->transactions > 0)
             throw new TransactionException('You forgot to commit or rollback transactions');
+    }
+
+    public function flush_log() {
+        if (empty($this->queries))
+            return;
+
+        $firephp = FirePHP::getInstance(true);
+        $firephp->group('SQL', array('Collapsed' => true));
+        foreach ($this->queries as $q) {
+            list($q, $t) = $q;
+            $firephp->log($q, $t);
+        }
+        $firephp->groupEnd();
+        $this->queries = array();
     }
 
     static public function getInstance() { 
@@ -54,9 +70,9 @@ class DB {
     */
     public function __call($name, $args) {
         if (method_exists($this, $name))
-            return call_user_method_array($name, $this, $args);
+            return call_user_func_array(array($this, $name), $args);
         else if (method_exists($this->db, $name))
-            return call_user_method_array($name, $this->db, $args);
+            return call_user_func_array(array($this->db, $name), $args);
 
         throw new NotImplementedException('Wrong method named `'.$name.'`');
     }
@@ -79,14 +95,12 @@ class DB {
         $result = $this->db->query($query);
         $time = microtime(true) - $time;
 
-        if (DEBUG) {
-            $firephp = FirePHP::getInstance(true);
-            $firephp->group('SQL');
-            $firephp->log($query, $time);
-            $firephp->groupEnd();
-        }
+        if (DEBUG)
+            $this->queries[] = array($query, round($time, 5));
 
         if ($this->db->errno) {
+            if (DEBUG)
+                $this->flush_log();
             throw new SQLException('Error '.$this->db->errno.' occured: '.$this->db->error);
         }
 
@@ -106,7 +120,7 @@ class DB {
     */
     public function listInsert($query, array $list) {
         if (empty($list))
-            throw new AssertionException('You should insert at least 1 item');
+            throw new LogicException('You should insert at least 1 item');
 
         $formatted = array_map(array($this, 'formatByType'),  $list);
         $formatted = ' ('.implode('),(', $formatted).')';

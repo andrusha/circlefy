@@ -48,15 +48,14 @@ abstract class BaseModel implements ArrayAccess {
         if ($this->offsetExists($key)) {
             $name = 'get'.ucfirst($key);
 
-            if (isset($this->data[$key]))
-                return $this->data[$key];
-            elseif (method_exists($this, $name)) {
+            if (method_exists($this, $name) && !isset($this->data[$key])) {
                 if ($this->id === null)
                     throw new InitializeException('ID should be set before data fetching');
 
                 $this->data[$key] = $this->$name();
-                return $this->data[$key];
             }
+
+            return $this->data[$key];
         }
 
         throw new DataException("There is no data named `$key` or you are not allowed to get it");

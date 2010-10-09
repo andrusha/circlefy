@@ -1,0 +1,45 @@
+<?php
+    $_h = array(
+        'title'   => 'homepage',
+        'scripts' => array('roar.js', 'tap.js', /*'main.js',*/ 'modal.js'),
+        'styles'  => array('roar.css', 'modal.css'),
+        'vars'    => array('user' => $me));
+    include(HEADER);
+?>
+    
+    <div id="content">
+    	
+        <div id="left">
+        
+        	<h1 class="title feed">Global Feed</h1>
+            
+            <div id="controls">
+            	<a href="#" id="pause">Pause Stream</a>
+                
+                <div id="filters">
+                	<span>Filter options:</span>
+                    <a href="#" class="filter"><span>Option</span></a>
+                    <a href="#" class="filter"><span>Option</span></a>
+                    <a href="#" class="filter"><span>Option</span></a>
+                </div><!--filters-->
+                
+                <div class="clear"></div>
+                
+            </div><!--controls-->
+            
+            <?php
+                $_f['feed'] = $taps;
+                include(FEED);
+            ?>        
+        </div><!--left-->
+        
+        <?php
+            $_s['circles'] = $groups;
+            include(SIDEBAR);
+        ?>
+        
+    </div><!--content-->
+
+<?php
+    include(FOOTER);
+?>

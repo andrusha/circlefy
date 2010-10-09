@@ -94,67 +94,29 @@ var _modal = _tap.register({
 _modal.signup = _tap.register({
 
     init: function() {
-        var self = this;
         var modalForm = this.modalForm = $('modal-signup');
         this.fb_fname = modalForm.getElement('input[name="fb_fname"]');
         this.fb_lname = modalForm.getElement('input[name="fb_lname"]');
         
         var signupData = this.signupData = {
-            name: modalForm.getElement('input[name="name"]'),
             uname: modalForm.getElement('input[name="uname"]'),
             email: modalForm.getElement('input[name="email"]'),
             pass: modalForm.getElement('input[name="pass"]'),
-            fb: modalForm.getElement('input[name="fb_connect"]')
         };
 
         signupData.uname.addEvent('blur', this.checkUname.toHandler(this));
         signupData.email.addEvent('blur', this.checkEmail.toHandler(this));
         signupData.pass.addEvent('blur', this.checkPass.toHandler(this));
-        signupData.name.addEvent('blur', this.checkName.toHandler(this));
         modalForm.getElement('button').addEvent('click', this.submitForm.toHandler(this)); 
-        modalForm.getElement('input[name="fb_connect"]').addEvent('click', this.toggleFB.bind(this));
-
-        this.subscribe({
-            'facebook.logged_in': this.showFBCheckbox.bind(this),
-            'facebook.logged_out': this.showFBButton.bind(this)
-        });
 
         $$('a.signup-button', 'button.signup-button').addEvent('click', function () {
-            self.publish('modal.show.signup', []);
-        });
+            this.publish('modal.show.signup', []);
+        }.bind(this));
 
         $('access').addEvent('click', function () {
-            self.publish('modal.show.sign-login', []);
-        });
-    },
-
-    toggleFB: function(e) {
-        if (this.modalForm.getElement('p#real_name').getStyle('display') == 'none') {
-            this.modalForm.getElement('p#real_name').setStyle('display', 'block');
-            this.signupData.name.addClass('passed').store('passed', false).removeClass('passed');
-        } else {
-            this.modalForm.getElement('p#real_name').setStyle('display', 'none');
-            this.signupData.name.addClass('passed').store('passed', true);
-        }
-
-    },
-
-    showFBCheckbox: function() {
-        this.modalForm.getElement('input[name="facebook"]').set('value', 1);
-        $('fb-login-button').setStyle('display', 'none');
-        $('fb-checkbox').setStyle('display', 'inline-block');
-        this.modalForm.getElement('p#real_name').setStyle('display', 'none');
-        this.signupData.name.addClass('passed').store('passed', true);
-        this.signupData.fb.set('checked', 1);
-    },
-
-    showFBButton: function() {
-        this.modalForm.getElement('input[name="facebook"]').set('value', 0);
-        $('fb-login-button').setStyle('display', 'inline-block');
-        $('fb-checkbox').setStyle('display', 'none');
-        this.modalForm.getElement('p#real_name').setStyle('display', 'block');
-        this.signupData.name.addClass('passed').store('passed', false).removeClass('passed');
-        this.signupData.fb.set('checked', 0);
+            this.publish('modal.show.suggestions', []);
+            //this.publish('modal.show.sign-login', []);
+        }.bind(this));
     },
 
     showError: function(el, msg){
@@ -175,15 +137,18 @@ _modal.signup = _tap.register({
 
     checkUname: function(el){
         var self = this;
-
+        if (this.oldUname == el.value)
+            return;
+        this.oldUname = el.value;
+        
         if (el.isEmpty() || !el.ofLength(4, 20)) {
             return self.showError(el, 'Username must be at least 4 characters');
         } else {
             new Request({
-                url: '/AJAX/user/check.php',
+                url: '/AJAX/user/check',
                 data: {
-                    type: 1,
-                    val: el.get('value')
+                    type: 'uname',
+                    val: el.value
                 },
                 onSuccess: function(){
                     var response = JSON.decode(this.response.text);
@@ -201,15 +166,19 @@ _modal.signup = _tap.register({
     checkEmail: function(el){
         var self = this;
 
+        if (this.oldEmail == el.value)
+            return;
+        this.oldEmail = el.value;
+
         el.value = el.value.toLowerCase();
         if (el.isEmpty() || !el.isEmail()) {
             return self.showError(el, 'Please enter a valid email.');
         } else {
             new Request({
-                url: '/AJAX/user/check.php',
+                url: '/AJAX/user/check',
                 data: {
-                    type: 2,
-                    val: el.get('value')
+                    type: 'email',
+                    val: el.value
                 },
                 onSuccess: function(){
                     var response = JSON.decode(this.response.text);
@@ -231,34 +200,26 @@ _modal.signup = _tap.register({
         return this.removeError(el);
     },
 
-    checkName: function(el){
-         if (el.isEmpty() || !el.ofLength(2, 250)) {
-                return this.showError(el, 'Please, enter your name');
-        }
-        return this.removeError(el);
-    },
-
     checkFacebook: function() {
         var self = this;
-        var el = this.signupData.fb;
+        var el = $('fb-login-button');
 
         this.removeError(el);
         new Request({
-            url: '/AJAX/user/facebook.php',
+            url: '/AJAX/user/facebook',
             method: 'POST',
-            data: {'action': 'check'},
+            data: {action: 'check'},
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);
                 if (response.success){
-                    self.fb_fname.set('value', response.data.fname);
-                    self.fb_lname.set('value', response.data.lname);
+                    $('modal-signup-name').text = response.data.fname;
                 } else {
-                    if (response.reason == 'already binded')  {
-                        self.showError(el, 'your account already binded to facebook');
-                    } else if (response.reason == 'binded by someone') {
-                        self.showError(el, 'facebook account you logged in is already binded by someone else');
+                    if (response.reason == 'no_fb')  {
+                        self.showError(el, 'you must login into facebook before proceed');
+                    } else if (response.reason == 'exists') {
+                        self.showError(el, 'user with this facebook account already exists');
                     } else { 
-                        self.showError(el, 'something went wrong durning account binding');
+                        self.showError(el, 'something went wrong durning account checking');
                     }
                 }
             },
@@ -270,45 +231,18 @@ _modal.signup = _tap.register({
         var self = this;
         var indic = this.modalForm.getElement('span.indicator');
         var indic_msg = indic.getElement('span.indic-msg');
-        var facebook = this.modalForm.getElement('input[name="facebook"]').get('value');
         var uname = this.signupData.uname.get('value');
 
-        if (this.signupData.fb.getProperty('checked'))
-            this.checkFacebook();
-        else
-            this.signupData.fb.store('passed', true);
+        this.checkFacebook();
+
         if (this.noErrors()) {
-            var facebook = facebook
-                && this.signupData.fb.getProperty('checked');
-            if (facebook) {
-                var fname = this.fb_fname.get('value');
-                var lname = this.fb_lname.get('value');
-            } else {
-                var name = this.signupData.name.get('value');
-                var fname = name.substring(0, name.indexOf(' '));
-                var lname = name.substring(name.indexOf(' ')+1, name.length);
-
-                if (!fname)
-                    fname = uname;
-
-                if (!lname)
-                    lname = uname;
-            }
-
             new Request({
-                url: '/AJAX/user/sign_up.php',
+                url: '/AJAX/user/facebook',
                 data: {
-                    uname: uname,
-                    email: this.signupData.email.get('value'),
-                    pass: this.signupData.pass.get('value'),
-                    fname: fname,
-                    lname: lname,
-                    facebook: facebook, 
-                    joinType : join_type,
-                    joinValue: join_value,
-                    lang: "English",
-                    fid: 0,
-                    signup_flag: 'signup_function();'
+                    action: 'create',
+                    uname:  uname,
+                    email:  this.signupData.email.get('value'),
+                    pass:   this.signupData.pass.get('value')
                 },
                 onRequest: function(){
                     self.modalForm.getElement('span.modal-actions').setStyle('display', 'none');
@@ -316,13 +250,15 @@ _modal.signup = _tap.register({
                     indic.setStyle('display', 'block');
                 },
                 onSuccess: function(){
-                    indic_msg.set('text', 'Logging you in..');
-                    if (facebook) {
+                    var response = JSON.decode(this.response.text);
+                    if (response.success) {
+                        indic_msg.set('text', 'Logging you in..');
                         self.publish('modal.show.suggestions', [ function () {
                             window.location.reload();
                         }]);
-                    } else 
-                        window.location.reload();
+                    } else {
+                        indic_msg.text = 'Error durning account creation';
+                    }
                 }
             }).send();
         } else {
@@ -383,7 +319,7 @@ _modal.facebook = _tap.register({
             caption = this.message.get('value');
 
         new Request({
-            url: '/AJAX/user/facebook.php',
+            url: '/AJAX/user/facebook',
             data: {
                 action: 'share',
                 message: message,
@@ -436,7 +372,7 @@ _modal.suggestions = _tap.register({
             this.chain = chain;
 
         new Request({
-            url: '/AJAX/group/suggest.php',
+            url: '/AJAX/group/suggest',
             data: {
                 action: 'get'    
             },
@@ -510,7 +446,7 @@ _modal.suggestions = _tap.register({
         }
          
         new Request({
-           url: '/AJAX/group/join.php', 
+           url: '/AJAX/group/join', 
            data: {
                action: 'bulk',
                gids: gids

@@ -18,6 +18,10 @@ abstract class Collection implements IteratorAggregate, Countable {
         return $this->data;
     }
 
+    public function asArrayAll() {
+        return array_map(function ($x) { return $x->asArray(); }, $this->data);
+    }
+
     //make countable
     public function count() {
         return count($this->data);

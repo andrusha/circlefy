@@ -1,61 +1,59 @@
 <?php
-
 require_once('config.php');
-//echo "These are the classes that are dynamically loaded:<br/>";
 
-$allowedPages = array(
-		'catagory_add'=>true,
-		'profile'=>true,
-		'invite'=>true,
-		'channels'=>true,
-		'pending_members'=>true,
-		'help'=>true,
-		'rss'=>true,
-		'create_channel'=>true,
-		'channel_edit'=>true,
-		'what'=>true,
-		'login'=>true,
-		'password_recovery'=>true,
-		'signup'=>true,
-		'about'=>true,
-		'devs'=>true,
-		'contact'=>true,
-		'channel'=>true,
-		'company'=>true,
-		'school'=>true,
-		'tap'=>true,
-		'search_people'=>true,
-		'people_search'=>true,
-		'people'=>true,
-		'settings'=>true,
-		'confirm'=>true,
-		'user'=>true,
-        'fb'=>true
-	);
-
-if (isset($allowedPages[$_GET['page']]) && $allowedPages[$_GET['page']]) {
-	// Valid page so allow it to be set
-	$page = $_GET['page'];
-	if ($page == 'user')
-		$page = 'public_user';
-	if ($page == 'channel' || $page == 'school' || $page == 'company')
-		$page = 'public_group';
-    if ($page == 'channels')
-		$page = 'groups';
-    if ($page == 'create_channel')
-		$page = 'create_group';
-    if ($page == 'channel_edit')
-		$page = 'group_edit';
-	if ($page == 'tap')
-		$page = 'public_tap';
-	if ($page == 'settings')
-		$page = $_GET['type'] == 'notifications' ? 'settings' : 'profile';
-} else {
-
-	// Invalid page so default to homepage
-	$page = 'homepage';
-
+if (DEBUG) {
+    $firephp->group('Server params', array('Collapsed' => true));
+    $firephp->log($_GET,     'GET');
+    $firephp->log($_POST,    'POST');
+    $firephp->log($_COOKIES, 'Cookies');
+    $firephp->log($_SESSION, 'Session');
+    $firephp->groupEnd();
 }
 
-require_once(BASE_PATH.'/pages/'.$page.'.php');
-$newpage = new $page();
+//default page should be always allowed
+$default_page = 'homepage';
+$pages = array(
+        'homepage' => array(
+            'allowed'  => true,
+            'template' => 'homepage'
+        ),
+    );
+
+$ajaxs = array(
+         'user' => array(
+                 'check'    => true,
+                 'facebook' => true
+             ),
+         'group' => array(
+                'suggest'   => true,
+                'join'      => true
+            ),
+         );
+
+$page = $_GET['page'];
+$ajax = $_GET['ajax'];
+$type = $_GET['type'];
+
+if (isset($page) || !isset($ajax)) {
+    if (array_key_exists($page, $pages) && $pages[$page]['allowed']) {
+        //hooray
+    } else {
+        $page = $default_page;
+    }
+
+    $template = $pages[$page]['template'];
+    require_once(BASE_PATH.'pages/'.$page.'.php');
+    $newpage = new $page($template);
+    $newpage();
+} elseif (isset($ajax)) {
+    if (isset($type) && array_key_exists($type, $ajaxs))
+        $ajaxs = $ajaxs[$type];
+
+    if (!array_key_exists($ajax, $ajaxs) || !$ajaxs[$ajax])
+        die('You are not allowed to use this API');
+
+    $name = 'ajax_'.$ajax;
+    require_once(BASE_PATH.'AJAX/'.($type ? $type.'/' : '').$ajax.'.php');
+    $ajax = new $name();
+    $ajax();
+}

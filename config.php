@@ -4,6 +4,8 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
+session_start();
+
 define('BASE_PATH', realpath(dirname(__FILE__)).'/');
 define('DEBUG', true);
 
@@ -43,15 +45,20 @@ define("D_PASS",     "root");
 define("D_USER",     "root");
 define("D_DATABASE", "circlefy");
 
-define("JAVASCRIPT_TEMPLATES", BASE_PATH."views/parts/javascript_templates.phtml");
-define("FBCONNECT_BOTTOM",     BASE_PATH."views/parts/fbconnect.phtml");
-
 define("DOMAIN",$_SERVER['HTTP_HOST']);
-
 define("USER_PIC_REL",   "/user_pics/");
 define("GROUP_PIC_REL",  "/group_pics/");
 define("USER_PIC_PATH",  "/var/data/user_pics");
 define("GROUP_PIC_PATH", "/var/data/group_pics");
+
+define("HEADER",  BASE_PATH.'views/parts/header.phtml');
+define("FOOTER",  BASE_PATH.'views/parts/footer.phtml');
+define("SIDEBAR", BASE_PATH.'views/parts/sidebar.phtml');
+define("FEED",    BASE_PATH.'views/parts/feed.phtml');
+
+define("JS_TEMPLATES",  BASE_PATH."views/parts/js_templates.phtml");
+define("MODAL_WINDOWS", BASE_PATH."views/parts/modal_windows.phtml");
+define("FBCONNECT",     BASE_PATH."views/parts/fbconnect.phtml");
 
 define("FBAPPID",     'e31fd60bbbc576ac7fd96f69215268d0');
 define("FBAPPSECRET", '6692d8984d00d3f67ee81bf31637970e');
@@ -63,6 +70,9 @@ define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user
 define("METRIC_KEY",  "05a951428ed5199e27d52356aae83a22");
 
 //*** OPTIONS ***
+
+define("KEYWORDS_TRASHOLD",  3);
+define("GROUPS_FROM_LIKES", 10);
 
 define("G_TAPS_COUNT",      1 << 0);
 define("G_USERS_COUNT",     1 << 1);

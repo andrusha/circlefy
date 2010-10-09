@@ -20,7 +20,7 @@ abstract class Auth {
         if ($_SESSION['uid'])
             return User::init(intval($_SESSION['uid']));
 
-        return new User(); //Auth::createGuest(); //haha, fuck guests
+        return new User(null); //Auth::createGuest(); //haha, fuck guests
     }
 
     public static function logOut() {
@@ -49,7 +49,7 @@ abstract class Auth {
         $db = DB::getInstance();
 
         $query = "SELECT id
-                    FROM login
+                    FROM user 
                    WHERE {$where}
                      AND type <> #type#
                    LIMIT 1";
@@ -66,7 +66,7 @@ abstract class Auth {
             return $user; 
         }
 
-        return null;
+        return new User(null);
     }
 
     /*
@@ -84,7 +84,7 @@ abstract class Auth {
         $db = DB::getInstance();
 
         $ip = $_SERVER['REMOTE_ADDR'];
-        $query = "UPDATE login
+        $query = "UPDATE user 
                      SET last_login = CURRENT_TIMESTAMP(),
                          ip = INET_ATON(#ip#)
                    WHERE id = #uid#

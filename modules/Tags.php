@@ -28,7 +28,7 @@ class Tags extends BaseModel {
         Use existing tag group or creates new
     */
     public function __construct($tagGroupId = null) {
-        parent::__construct();
+        parent::__construct($tagGroupId);
         $this->tagGroupId = $tagGroupId;
     }
     

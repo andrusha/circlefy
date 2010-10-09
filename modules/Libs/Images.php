@@ -27,11 +27,11 @@ class Images {
     */
     public static function makeUserpics($id, $big_picture, $out_dir) {
         $ext = Images::getFileExt($big_picture);
-        $i180 = Images::resizeSquare($big_picture, "$out_dir/180h_$id.$ext", 180);
-        $i100 = Images::resizeSquare($big_picture, "$out_dir/100h_$id.$ext", 50);
-        $i36 = Images::resizeSquare($big_picture, "$out_dir/small_$id.$ext", 20);
+        $large = Images::resizeSquare($big_picture, "$out_dir/large_$id.$ext", 180);
+        $medium = Images::resizeSquare($big_picture, "$out_dir/medium_$id.$ext", 50);
+        $small = Images::resizeSquare($big_picture, "$out_dir/small_$id.$ext", 20);
 
-        return array(basename($big_picture), basename($i180), basename($i100), basename($i36));
+        return array(basename($big_picture), basename($large), basename($medium), basename($small));
     }
 
     /*

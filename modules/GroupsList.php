@@ -14,15 +14,25 @@ class GroupsList extends Collection {
     */
     private static $cache = array();
 
+    public static function void() {
+        return new GroupsList(array());
+    }
+
+    public static function fromIds(array $ids) {
+        return new GroupsList(array_map(
+            function ($id) { return new Group($id); },
+            $ids));
+    }
+
     /*
         Make user member of list of groups
     */
-    public function bulkJoin(User $user) {
+    public function bulkJoin(User $user, $perm = 'user') {
         $db = DB::getInstance();
 
         //prepare insert arrays from groups and user
         $list = array_map(function ($group) use ($user) {
-                return array($group->id, $user->id, Group::$permissions['user']);
+                return array($group->id, $user->id, Group::$permissions[$perm]);
             }, $this->data);
 
         $query = "
@@ -50,7 +60,7 @@ class GroupsList extends Collection {
 
         $db = DB::getInstance();
         
-        $tagGroups = Tags::filterGroupsByTags($keywords, 2);
+        $tagGroups = Tags::filterGroupsByTags($keywords, KEYWORDS_TRASHOLD);
        
         //even if tag groups empty, try to fetch groups
         //by symbol matching
@@ -121,10 +131,10 @@ class GroupsList extends Collection {
         Search groups by params
 
         @param str   $type
-            byUser | byGroup | bySymbol
+            byUser | byGroup | bySymbol | byFbIDs
 
         @param array $params
-            #uid# | #gid# | #symbol#
+            #uid# | #gid# | #symbol# | #fbids#
 
         @param int   $options
             G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT | G_JUST_ID
@@ -159,6 +169,10 @@ class GroupsList extends Collection {
 
             case 'bySymbol':
                 $where = 'g.symbol = #symbol#';
+                break;
+
+            case 'byFbIDs':
+                $where = 'g.fb_id IN (#fbids#)';
                 break;
         }
 
@@ -229,7 +243,7 @@ class GroupsList extends Collection {
 
         $groups = self::search('byUser', array('uid' => $user->id), $options);
         
-        self::$cache['users'][$user->uid][$options] = $groups;
+        self::$cache['users'][$user->id][$options] = $groups;
         return $groups;
     }
 
@@ -291,6 +305,31 @@ class GroupsList extends Collection {
     }
 
     /*
+        Create a lots of groups from info with Facebook ID
+
+        @return GroupsList
+    */
+    public static function bulkCreate(array $list) {
+        if (empty($list))
+            return new GroupsList(array());
+
+        $db = DB::getInstance();
+        $db->startTransaction();
+        try {
+            $query = "INSERT INTO `group` (fb_id, symbol, name, descr) VALUES #values#";
+            $db->listInsert($query, $list);
+            $fbids = array_map(function ($x) { return $x[0]; }, $list);
+            $groups = GroupsList::search('byFbIDs', array('fbids' => $fbids));
+            $db->commit();
+        } catch (SQLException $e) {
+            $db->rollback();
+            throw $e;
+        }
+
+        return $groups;
+    }
+
+    /*
         Creates a bunch of groups from facebook information about them
         Returns array of newly created group objects
 
@@ -302,26 +341,45 @@ class GroupsList extends Collection {
 
         $fb = new Facebook();
 
-        $groups = array();
-        foreach ($fb->bulkInfo($fgids) as $fgid => $info) {
+        // I. Fetch info from FB, prepare it for bulk insert
+        $FBinfo = $fb->bulkInfo($fgids);
+        $insert = array();
+        foreach ($FBinfo as $fgid => $info) {
             if (strlen($info['name']) > 35)
                 continue;
+
+            if (!empty($info['mission']))
+                $info['description'] = $info['mission'];
             $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
             $symbol  = FuncLib::makeSymbol($info['name'], 64);
             $gname   = FuncLib::makePreview($info['name'], 128);
-            $tags    = FuncLib::extractTags($info['name'], $info['description'], $info['category']);
 
-            $group    = Group::create($creator, new Group(), $gname, $symbol, $descr, $tags);
-            $groups[] = $group;
-
-            $id = $group->id;
-            $pic_url = 'http://graph.facebook.com/'.$id.'/picture?type=large';
-            $picture = Images::fetchAndMake(D_GROUP_PIC_PATH, $pic_url, "$id.jpg");
-            $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
-            $favicon = !empty($links) ? Images::getFavicon($links[0], D_GROUP_PIC_PATH."/fav_$id.ico") : null;
+            $insert[] = array($fgid, $symbol, $gname, $descr);
         }
 
-        $groups = new GroupsList($groups);
+        // II. Insert formatted info about group into DB
+        $groups = GroupsList::bulkCreate($insert);
+
+        // III. Download group images & favicons, create tags for each group
+        foreach ($groups as $g) {
+            $info    = $FBinfo[$g->fb_id];
+
+            $tags    = FuncLib::extractTags($info['name'], $info['description'], $info['category'], $info['mission']);
+
+            $pic_url = 'http://graph.facebook.com/'.$g->fb_id.'/picture?type=large';
+            $picture = Images::fetchAndMake(GROUP_PIC_PATH, $pic_url, $g->id.'.jpg');
+
+            $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
+            $favicon = !empty($links) ? Images::getFavicon($links[0], GROUP_PIC_PATH."/fav_{$g->id}.ico") : null;
+
+            //TODO: make bulk tags addition
+            $g->tags->addTags($tags);
+            $g->commit();
+        }
+
+        // IV. Make creator a groups admin
+        $groups->bulkJoin($creator, 'admin');
+
         return $groups;
     }
 };

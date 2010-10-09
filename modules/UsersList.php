@@ -177,9 +177,10 @@ class UsersList extends Collection {
         if ($options & U_ADMINS)
             $where[]  = 'gm.permission >= '.Group::$permissions['moderator'];
 
-        $join  = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
-        $where = implode(' AND ', array_unique($where));
-        $group = array_unique($group);
+        $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
+        $where  = implode(' AND ', array_unique($where));
+        $fields = implode(', ', array_unique($fields));
+        $group  = array_unique($group);
         if (count($group) > 1)
             throw new LogicException("Don't know how to multiple group");
         else
@@ -229,20 +230,27 @@ class UsersList extends Collection {
     }
 
     /*
-        Creates a list of users from uid's
- 
-         foreach ($this->data as $user) {
-            if (array_key_exists($user->uid, $stats))
-                $user->setStats($stats[$user->uid]);
-            else
+        Return ids of existing users from list
 
+        @return array
+    */
+    public static function idExists(array $ids) {
+        return array_map('intval',
+            DB::getInstance()
+              ->query("SELECT id FROM user WHERE id IN (#ids#)",
+                array('ids' => $ids))
+              ->fetch_all());
+    }
+
+    /*
+        Creates a list of users from uid's, checking if friend exists or not
+ 
         @return UsersList
     */
-    public static function fromUids(array $uids) {
-        $users = array();
-        foreach($uids as $i)
-            $users[$i] = new User($i);
-
-        return new UsersList($users);
+    public static function fromIds(array $uids) {
+        return new UsersList(
+            array_map(
+                function ($x) { return new User($x); },
+                self::idExists($uids)));
     }
 };

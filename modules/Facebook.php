@@ -11,7 +11,7 @@ class Facebook extends BaseModel {
     private $access_token = null;
 
     public function __construct() {
-        parent::__construct();
+        parent::__construct(null);
 
         if ($info = $this->infoFromCookies()) {
             $this->fuid = intval($info['uid']);
@@ -56,53 +56,6 @@ class Facebook extends BaseModel {
         $this->parsed_cookie = $args;
 
         return $args;
-    }
-
-    /*
-        Check if user with provided facebook uid exists
-    */
-    public function exists() {
-        if (!$this->fuid)
-            return false;
-
-        $query = "
-            SELECT uid
-              FROM login
-             WHERE fb_uid = #fb_uid#
-             LIMIT 1";
-        
-        $result = $this->db->query($query, array('fb_uid' => $this->fuid));
-        $exists = $result->num_rows == 1;
-
-        return $exists;
-    }
-
-    /*
-        Checks if account is already binded
-
-        @param int|User $user
-
-        @return bool
-    */
-    public static function isBinded($user) {
-        $db = DB::getInstance()->Start_Connection('mysql');
-
-        $uid = $user instanceof User ? $user->uid : $user;
-
-        $query = "
-            SELECT fb_uid
-              FROM login
-             WHERE uid = #uid#
-             LIMIT 1";
-        
-        $binded = false;
-        $result = $db->query($query, array('uid' => $user->uid));
-        if ($result->num_rows) {
-            $result = $result->fetch_assoc();
-            $binded = $result['fb_uid'] != 0;
-        }
-
-        return $binded;
     }
 
     public function bulkInfo(array $ids) {
@@ -194,47 +147,34 @@ class Facebook extends BaseModel {
         return $this->getSomething('group', $gid);
     }
 
+    public function exists() {
+       return User::existsField('fb_id', $this->fuid);
+    }
+
     /*
         Fills user profile with info, we can fetch from
         facebook profile, e.g. gender, profile pic
     */
-    public function bindToFacebook(User $user) {
+    public function createWithFacebook($uname, $pass, $email) {
         $info = $this->getUserInfo();
         if (!$info)
             return false;
 
         //download & resize userpics
-        $pics_dir = PROFILE_PIC_PATH;
-        $big_name = $pics_dir.$this->fuid.'.jpg';
+        $big_name = USER_PIC_PATH.$this->fuid.'.jpg';
         $big_url = 'http://graph.facebook.com/'.$this->fuid.'/picture?type=large';
         file_put_contents($big_name, file_get_contents($big_url));
 
-        list($big_name, $i180, $i100, $i36) = Images::makeUserpics($this->fuid, $big_name, $pics_dir);
+        list($big_name, $large, $medium, $small) = Images::makeUserpics($this->fuid, $big_name, USER_PIC_PATH);
 
-        //update user info
-        $query = "
-            UPDATE login
-               SET fname = #fname#,
-                   lname = #lname#,
-                   fb_uid = #fb_uid#,
-                   pic_full = #big_name#,
-                   pic_180 = #i180#,
-                   pic_100 = #i100#,
-                   pic_36 = #i36#
-             WHERE uid = #uid#
-             LIMIT 1";
-        $this->db->query($query, array('fname' => $info['first_name'], 'lname' => $info['last_name'],
-            'fb_uid' => $this->fuid, 'big_name' => $big_name, 'i180' => $i180, 'i100' => $i100, 'i36' => $i36,
-            'uid' => $user->uid));
-        $ok = $this->db->affected_rows == 1;
+        $user = User::create(User::$types['user'], $uname, $pass, $email, $info['first_name'],
+                            $info['last_name'], $_SERVER['REMOTE_ADDR'], intval($this->fuid));
 
-        if (!$ok)
-            return false;
-    
-        //mass-follow fb-friends
+        Auth::setSession($user);
+   
         $this->followFriends($user);
 
-        return true;
+        return $user;
     }
 
     /*
@@ -248,23 +188,11 @@ class Facebook extends BaseModel {
         if (empty($friends))
             return true;
         
-        $fb_fids = array();
-        foreach($friends as $x)
-            $fb_fids[] = intval($x['id']);
-
-        $query = "
-            SELECT uid
-              FROM login l
-             WHERE fb_uid IN (#fb_fids#)";
-        $result = $this->db->query($query, array('fb_fids' => $fb_fids));
-        if ($result->num_rows == 0)
-            return false;
-        
-        $friends = array();
-        while ($res = $result->fetch_assoc())
-            $friends[] = intval($res['uid']);
-
-        $ok = $user->follow(UsersList::fromUids($friends));
+        //haha, I know, that's weird, but works, right?
+        $user->follow(
+            UsersList::fromIds(
+                array_map( function ($x) { return intval($x['id']); },
+                    $friends)));
 
         return $ok;
     }

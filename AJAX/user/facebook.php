@@ -1,27 +1,25 @@
 <?php
 /* CALLS:
-    settings.js
+    modal.js
 */ 
-require_once('../../config.php');
-require_once('../../api.php');
 
-class facebook_ajax extends Base {
+class ajax_facebook extends Base {
+    protected $view_output = 'JSON';
     private $fb;
 
-    public function __construct() {
-        $this->need_db = false;
-        $this->view_output = 'JSON';
-        parent::__construct();
-
+    public function __invoke() {
         $this->fb = new Facebook();
         $action = $_POST['action'];
 
         switch ($action) {
-            case 'bind':
-                $this->data = $this->bind($this->user);
+            case 'create':
+                $uname = $_POST['uname'];
+                $pass  = $_POST['pass'];
+                $email = $_POST['email'];
+                $this->data = $this->create($uname, $pass, $email);
                 break;
             case 'check':
-                $this->data = $this->checkWithInfo($this->user);
+                $this->data = $this->checkWithInfo();
                 break;
             case 'share':
                 $message = $_POST['message'];
@@ -33,30 +31,28 @@ class facebook_ajax extends Base {
         }
     }
 
-    private function bind(User $user) {
-        $ok = $this->fb->bindToFacebook($user);
-
-        $check = $this->check($user);
+    private function create($uname, $pass, $email) {
+        $check = $this->check();
         if (!$check['success'])
             return $check;
 
-        return array('success' => $ok);
-    }
-
-    private function check(User $user) {
-        if (Facebook::isBinded($user)) {
-            return array('success' => false, 'reason' => 'already binded');
-        }
-
-        if ($this->fb->exists()) {
-            return array('success' => false, 'reason' => 'binded by someone');
-        }
+        $this->fb->createWithFacebook($uname, $pass, $email);
 
         return array('success' => true);
     }
 
-    private function checkWithInfo(User $user) {
-        $check = $this->check($user);
+    private function check() {
+        if (!$this->fb->fuid)
+            return array('success' => false, 'reason' => 'no_fb');
+
+        if ($this->fb->exists())
+            return array('success' => false, 'reason' => 'exists');
+
+        return array('success' => true);
+    }
+
+    private function checkWithInfo() {
+        $check = $this->check();
         if (!$check['success'])
             return $check;
 
@@ -78,5 +74,3 @@ class facebook_ajax extends Base {
         return array('success' => true);
     }
 };
-
-$f = new facebook_ajax();
