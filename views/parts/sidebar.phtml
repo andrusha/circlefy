@@ -1,45 +1,130 @@
-        <div id="sidebar">
+<div id="sidebar">
+<? /*** Group information box ***/ ?>
+    <? if (isset($_s['circle'])):
+            $c = $_s['circle'];
+    ?>
+    <div class="box">
         
-        	<ul id="navigation">
-            	<li class="active" id="tab-your"><a href="#">Your Feed</a></li>
-                <li id="tab-circles"><a href="#">Followed Circles</a></li>
-                <li id="tab-people"><a href="#">Followed People</a></li>
-                <li id="tab-conversations"><a href="#">Followed Conversations</a></li>
-                <li id="tab-discover" class="last"><a href="#">Discover</a></li>
-            </ul>
-            
-            <form>
-            	<input type="text" id="search" value="Search" />
-            </form>
-            
-            <div class="box">
-            
-            	<h3 class="title">Circles you're connected to <a href="#" class="view-all">view all...</a></h3>
-                
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_01.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_02.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_03.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_04.jpg" alt="circle" /></a>
-                
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_02.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_03.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_04.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_01.jpg" alt="circle" /></a>
-                
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_01.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_02.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_03.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_04.jpg" alt="circle" /></a>
-                
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_02.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_03.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_04.jpg" alt="circle" /></a>
-                <a href="#" class="circle-thumb"><span class="circle"></span><img src="/static/images/circles_01.jpg" alt="circle" /></a>
-                
-                <div class="clear"></div>
-                
-            </div><!--box-->
+        <h3 class="username"><?=$c['name']?></h3>
+        <img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" class="profile-thumb" alt="thumb" />
+        <p><?=$c['descr']?></p>
         
-        </div><!--sidebar-->
-
         <div class="clear"></div>
+        
+        <span class="stats"><?=$c['messages_count']?><small>messages sent</small></span>
+        <span class="stats"><?=$c['responses_count']?><small>responses received</small></span>
+        <span class="stats"><?=$c['members_count']?><small>users joined</small></span>
+        
+        <div class="clear"></div>
+        
+        <a href="#" class="follow">Follow circle</a>
+        <a href="#" class="edit">edit</a>
+        
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+    
+<? /*** Group members ***/ ?>
+    <? if (isset($_s['members'])): ?>
+    <div class="box">
+    
+        <h3 class="title">Circle members <a class="view-all" href="#">view all...</a></h3>
+        <?php
+            $_f['members'] = $_s['members'];
+            include(FOLLOWERS);
+        ?>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+<? /*** User information box ***/ ?>
+    <? if (isset($_s['user'])):
+            $u = $_s['user'];
+    ?>
+    <div class="box">
+        
+        <h3 class="username"><span class="<?=($u['online'] ? 'online' : 'offline')?>"><?=$u['uname']?></span>
+        <small><?=$u['fname']?> <?=$u['lname']?></small></h3>
+        <img src="<?=USER_PIC_REL.'medium_'.$u['id'].'.jpg'?>" class="profile-thumb" alt="<?=$u['uname']?>'s avatar" />
+        <p>Random description of the
+        channel. Could be very short</p>
+        
+        <div class="clear"></div>
+        
+        <span class="stats"><?=$u['stats']['messages']?><small>messages sent</small></span>
+        <span class="stats"><?=$u['stats']['responses']?><small>responses received</small></span>
+        <span class="stats"><?=$u['stats']['groups']?><small>channels joined</small></span>
+        
+        <div class="clear"></div>
+        
+        <a href="#" class="follow">Follow</a>
+        <a href="#" class="pm">Send PM</a>
+        
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+<? /*** Navigation menu***/ ?>
+    <? if ($_s['show_nav']): ?>
+    <ul id="navigation">
+        <li class="active" id="tab-your"><a href="#">Your Feed</a></li>
+        <li id="tab-circles"><a href="#">Followed Circles</a></li>
+        <li id="tab-people"><a href="#">Followed People</a></li>
+        <li id="tab-conversations"><a href="#">Followed Conversations</a></li>
+        <li id="tab-discover" class="last"><a href="#">Discover</a></li>
+    </ul>
+    <? endif; ?>
+    
+<? /*** Search bar ***/ ?>
+    <form>
+        <input type="text" id="search" value="Search" />
+    </form>
+
+<? /*** Joined groups ***/ ?>
+    <? if (!empty($_s['circles'])): ?>
+    <div class="box">
+    
+        <h3 class="title">Circles you're connected to <a href="#" class="view-all">view all...</a></h3>
+        <?php
+            $_cl['list'] = $_s['circles'];
+            include(CIRCLE_LIST);
+        ?>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+<? /*** Followers ***/ ?>
+    <? if (!empty($_s['followers'])): ?>
+    <div class="box">
+   
+        <h3 class="title">Followers <a class="view-all" href="#">view all...</a></h3>
+        <?php
+            $_f['members'] = $_s['followers'];
+            include(FOLLOWERS);
+        ?>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+<? /*** Following ***/ ?>
+    <? if (!empty($_s['following'])): ?>
+    <div class="box">
+    
+        <h3 class="title">Following <a class="view-all" href="#">view all...</a></h3>
+        <?php
+            $_f['members'] = $_s['following'];
+            include(FOLLOWERS);
+        ?>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+</div><!--sidebar-->
+
+<div class="clear"></div>

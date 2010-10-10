@@ -131,13 +131,24 @@ class GroupsList extends Collection {
         Search groups by params
 
         @param str   $type
-            byUser | byGroup | bySymbol | byFbIDs
+            byUser   - all groups joned by user
+            byGroup  - group by ID
+            bySymbol - fetch group by symbol
+            byFbIDs  - groups by their Facebook ID
 
         @param array $params
-            #uid# | #gid# | #symbol# | #fbids#
+            uid    - user id
+            gid    - group id
+            symbol - group symbol
+            fbids  - a list of facebook group (likes, etc) ids
+            limit  - how many lines fetch from db
 
         @param int   $options
-            G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT | G_JUST_ID
+            G_TAPS_COUNT      - fetch number of messages in group
+            G_USERS_COUNT     - joined users
+            G_RESPONSES_COUNT - total responses count
+            G_JUST_ID         - fetch only group id
+            G_LIMIT           - limit resultset
 
         @return GroupsList
     */
@@ -145,7 +156,7 @@ class GroupsList extends Collection {
         $db = DB::getInstance();
 
         $join   = $group = array();
-        $where  = '';
+        $where  = $limit = '';
         if ($options & G_JUST_ID)
             $fields = array('g.id');
         else
@@ -176,21 +187,24 @@ class GroupsList extends Collection {
                 break;
         }
 
-        //taps count would ALWAYS join first
-        //IMPORTANT! check conflicts before adding new
-        if ($options & G_TAPS_COUNT) {
-            $fields[] = 'COUNT(g.id) AS taps_count';
-            $join[]   = 'messages';
-            $group[]  = 'g.id';
-        }
-
         //we can freely join and group by table if there
         //would be only one join
-        if (($options & G_USERS_COUNT) && !($options & G_TAPS_COUNT)) {
+        //IMPORTANT! check conflicts before adding new option
+        if ($options & G_USERS_COUNT) {
             $fields[] = 'COUNT(g.id) AS members_count';
             $join[]   = 'members2';
             $groups[] = 'g.id';
         }
+
+        //taps count would ALWAYS join first
+        if (($options & G_TAPS_COUNT) && !($options & G_USERS_COUNT)) {
+            $fields[] = 'COUNT(g.id) AS messages_count';
+            $join[]   = 'messages';
+            $group[]  = 'g.id';
+        }
+
+        if ($options & G_LIMIT)
+            $limit = 'LIMIT 0, #limit#';
 
         $fields = implode(', ', array_unique($fields));
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
@@ -207,7 +221,8 @@ class GroupsList extends Collection {
               FROM `group` g
                {$join}
              WHERE {$where}
-             {$group}";
+             {$group}
+             {$limit}";
 
         $groups = array();
         $result = $db->query($query, $params);
@@ -219,7 +234,7 @@ class GroupsList extends Collection {
 
         //if joins conflict, resolve it
         if (($options & G_USERS_COUNT) && ($options & G_TAPS_COUNT))
-            $groups->getUsersCount();
+            $groups->getTapsCount();
 
         if ($options & G_RESPONSES_COUNT) 
             $groups->getResponsesCount();
@@ -250,8 +265,10 @@ class GroupsList extends Collection {
     /*
         Updates provided group list, adding to each group
         info about members count
+
+        //TODO: pack taps & responses count in _1_ query
     */
-    public function getUsersCount() {
+    public function getTapsCount() {
         if (empty($this->data))
             return $this;
 
@@ -259,8 +276,8 @@ class GroupsList extends Collection {
         $gids = $this->filter('id');
 
         $query = '
-            SELECT group_id, COUNT(group_id) AS members_count
-              FROM group_members
+            SELECT group_id, COUNT(group_id) AS messages_count
+              FROM message
              WHERE group_id IN (#gids#)
              GROUP
                 BY group_id';
@@ -269,9 +286,9 @@ class GroupsList extends Collection {
         $result = $db->query($query, array('gids' => $gids));
         if ($result->num_rows)
             while($res = $result->fetch_assoc())
-                $counts[ intval($res['group_id']) ] = intval($res['members_count']);
+                $counts[ intval($res['group_id']) ] = intval($res['messages_count']);
 
-        $this->joinDataById($counts, 'members_count', 0);
+        $this->joinDataById($counts, 'messages_count', 0);
 
         return $this;
     }

@@ -93,6 +93,7 @@ class UsersList extends Collection {
             members   - group members
             youPM     - list of users whom you PMed
             toYouPM   - list of users who send something to you
+            limit     - users to fetch count
 
         @param array $params
             #uname# | #id# | #gid#
@@ -103,6 +104,7 @@ class UsersList extends Collection {
             U_LAST_CHAT - adds last message to result
             U_PENDING   - members whom requested auth
             U_ADMINS    - members with status >= moderator
+            U_LIMIT     - fetch N users
 
         @return UsersList
     */
@@ -124,7 +126,8 @@ class UsersList extends Collection {
         else
             $fields = FuncLib::addPrefix('u.', User::$fields);
 
-        $join = $where = $group = array();
+        $join  = $where = $group = array();
+        $limit = '';
 
         switch ($type) {
             case 'byUname':
@@ -160,6 +163,7 @@ class UsersList extends Collection {
                 $join[]  = 'messageFrom';
                 $where[] = 'm.reciever_id = #id#';
                 $where[] = 'm.sender_id IS NOT NULL';
+                break;
         }
 
         if ($options & U_BY_UNAME)
@@ -177,6 +181,9 @@ class UsersList extends Collection {
         if ($options & U_ADMINS)
             $where[]  = 'gm.permission >= '.Group::$permissions['moderator'];
 
+        if ($options & U_LIMIT)
+            $limit    = 'LIMIT 0, #limit#';
+
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
         $where  = implode(' AND ', array_unique($where));
         $fields = implode(', ', array_unique($fields));
@@ -191,7 +198,8 @@ class UsersList extends Collection {
               FROM user u
               {$join}
              WHERE {$where}
-              {$group}";
+              {$group}
+              {$limit}";
 
         $users = array();
         $result = $db->query($query, $params);

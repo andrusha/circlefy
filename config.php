@@ -45,16 +45,18 @@ define("D_PASS",     "root");
 define("D_USER",     "root");
 define("D_DATABASE", "circlefy");
 
-define("DOMAIN",$_SERVER['HTTP_HOST']);
+define("DOMAIN",         $_SERVER['HTTP_HOST']);
 define("USER_PIC_REL",   "/user_pics/");
 define("GROUP_PIC_REL",  "/group_pics/");
 define("USER_PIC_PATH",  "/var/data/user_pics");
 define("GROUP_PIC_PATH", "/var/data/group_pics");
 
-define("HEADER",  BASE_PATH.'views/parts/header.phtml');
-define("FOOTER",  BASE_PATH.'views/parts/footer.phtml');
-define("SIDEBAR", BASE_PATH.'views/parts/sidebar.phtml');
-define("FEED",    BASE_PATH.'views/parts/feed.phtml');
+define("HEADER",      BASE_PATH.'views/parts/header.phtml');
+define("FOOTER",      BASE_PATH.'views/parts/footer.phtml');
+define("SIDEBAR",     BASE_PATH.'views/parts/sidebar.phtml');
+define("FEED",        BASE_PATH.'views/parts/feed.phtml');
+define("CIRCLE_LIST", BASE_PATH.'views/parts/circle_list.phtml');
+define("FOLLOWERS",   BASE_PATH.'views/parts/followers.phtml');
 
 define("JS_TEMPLATES",  BASE_PATH."views/parts/js_templates.phtml");
 define("MODAL_WINDOWS", BASE_PATH."views/parts/modal_windows.phtml");
@@ -78,12 +80,14 @@ define("G_TAPS_COUNT",      1 << 0);
 define("G_USERS_COUNT",     1 << 1);
 define("G_RESPONSES_COUNT", 1 << 2);
 define("G_JUST_ID",         1 << 3);
+define("G_LIMIT",           1 << 4);
 
 define("U_LAST_CHAT", 1 << 0);
 define("U_BY_UNAME",  1 << 1);
 define("U_ONLY_ID",   1 << 2);
 define("U_PENDING",   1 << 3);
 define("U_ADMINS",    1 << 4);
+define("U_LIMIT",     1 << 5);
 
 define("T_LIMIT",      1 << 0);
 define("T_SEARCH",     1 << 1);

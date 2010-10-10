@@ -160,15 +160,14 @@ class Facebook extends BaseModel {
         if (!$info)
             return false;
 
+        $user = User::create(User::$types['user'], $uname, $pass, $email, $info['first_name'],
+                            $info['last_name'], $_SERVER['REMOTE_ADDR'], intval($this->fuid));
+
         //download & resize userpics
         $big_name = USER_PIC_PATH.$this->fuid.'.jpg';
         $big_url = 'http://graph.facebook.com/'.$this->fuid.'/picture?type=large';
         file_put_contents($big_name, file_get_contents($big_url));
-
-        list($big_name, $large, $medium, $small) = Images::makeUserpics($this->fuid, $big_name, USER_PIC_PATH);
-
-        $user = User::create(User::$types['user'], $uname, $pass, $email, $info['first_name'],
-                            $info['last_name'], $_SERVER['REMOTE_ADDR'], intval($this->fuid));
+        list($big_name, $large, $medium, $small) = Images::makeUserpics($user->id, $big_name, USER_PIC_PATH);
 
         Auth::setSession($user);
    

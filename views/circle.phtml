@@ -1,35 +1,35 @@
 <?php
     $_h = array(
-        'title'   => 'homepage',
+        'title'   => $group['name'],
         'scripts' => array('roar.js', 'tap.js', /*'main.js',*/ 'modal.js'),
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user' => $me),
         'guest'   => $guest);
     include(HEADER);
-?>
-    
+?>    
     <div id="content">
     	
         <div id="left">
             <?php
                 $_f = array(
-                    'feed' => $feed,
-                    'name' => $feed_name
+                    'feed'       => $feed,
+                    'name'       => $group['name'],
+                    'show_reply' => !$guest 
                 );
                 include(FEED);
             ?>        
         </div><!--left-->
-        
+
         <?php
             $_s = array(
-                'circles'  => $circles,
-                'show_nav' => true
+                'circle'  => $circle,
+                'members' => $members
             );
             include(SIDEBAR);
         ?>
         
     </div><!--content-->
-
+    
 <?php
     include(FOOTER);
 ?>

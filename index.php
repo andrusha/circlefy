@@ -17,6 +17,14 @@ $pages = array(
             'allowed'  => true,
             'template' => 'homepage'
         ),
+        'circle'   => array(
+            'allowed'  => true,
+            'template' => 'circle'
+        ),
+        'user'     => array(
+            'allowed'  => true,
+            'template' => 'user'
+        ),
     );
 
 $ajaxs = array(
@@ -41,9 +49,9 @@ if (isset($page) || !isset($ajax)) {
         $page = $default_page;
     }
 
-    $template = $pages[$page]['template'];
+    $name = 'page_'.$page;
     require_once(BASE_PATH.'pages/'.$page.'.php');
-    $newpage = new $page($template);
+    $newpage = new $name($pages[$page]['template']);
     $newpage();
 } elseif (isset($ajax)) {
     if (isset($type) && array_key_exists($type, $ajaxs))

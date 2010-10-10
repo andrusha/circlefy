@@ -14,11 +14,14 @@ class User extends BaseModel {
 
     protected static $intFields = array('id', 'fb_id', 'type', 'ip', 'last_login', 'online');
 
-    protected static $addit = array('stats', 'friend', 'last_chat');
+    protected static $addit = array('stats', 'friend', 'last_chat', 'guest');
 
     public function __get($key) {
-        if ($key == 'ip' && $this->uid == $_SESSION['uid'])
+        if ($key == 'ip' && $this->id == $_SESSION['uid'])
             return $_SERVER['REMOTE_ADDR'];
+        elseif ($key == 'guest')
+            return $this->id === null ||
+                   $this->data['type'] == self::$types['guest'];
 
         return parent::__get($key);
     }
@@ -129,7 +132,7 @@ class User extends BaseModel {
                       FROM message m
                       LEFT
                       JOIN reply r
-                        ON r.messsage_id = m.id
+                        ON r.message_id = m.id
                      WHERE m.sender_id = #uid#
                      GROUP
                         BY m.id

@@ -7,19 +7,26 @@ class TapsList extends Collection {
 
     /*
         @param str $type
-        'aggr_groups'   | 'ind_group'     | 'public' 
-        'personal'      | 'aggr_personal' | 'private'
-        'aggr_private'  | 'aggr_all'      | 'convos_all'
-        'active'
+            public        - public feed
+            feed          - user feed with groups, convos & PMs
+            aggr_groups   - taps from groups joined by user
+            group         - from individual group
+            aggr_friends  - aggregate feed of your friends
+            friend        - feed of one user
+            aggr_private  - personal messages feed
+            private       - PMs with specific user
+            aggr_convos   - aggregate list of conversations
+            active_convos - only active conversations
+            byId          - fetch one tap by ID
 
         @param array $params array of params related to that filter
-        array(uid        => user id
-              gid        => group id
-              search     => if we searching something
-              start_from => start from in LIMIT
-              from       => user who sent PM
-              to         => user who recieve PM
-              id         => tap id
+            uid        - user id
+            gid        - group id
+            search     - if we searching something
+            start_from - start from in LIMIT
+            from       - user who sent PM
+            to         - user who recieve PM
+            id         - tap id
 
         @param int $options
             T_LIMIT      - specify limit start from
@@ -30,7 +37,7 @@ class TapsList extends Collection {
 
         @return TapsList
     */
-    private static function search($type, array $params, $options = 0) {
+    public static function search($type, array $params = array(), $options = 0) {
         $db = DB::getInstance();
 
         $joins = array(
@@ -50,19 +57,28 @@ class TapsList extends Collection {
         $fields = FuncLib::addPrefix('m.', Tap::$fields);
         
         switch ($type) {
+            case 'public':
+                $join[]  = 'group';
+                $where[] = 'm.group_id IS NOT NULL';
+                $where[] = 'g.secret = 0';
+                break;
+
+            case 'feed':
+                $distinct = true;
+                $join[]   = 'members_l';
+                $join[]   = 'convo_l';
+                $where[]  = '(gm.user_id = #uid# OR c.user_id = #uid# '.
+                            '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
+                            '       m.reciever_id IS NOT NULL))';
+                break;
+
             case 'aggr_groups':
                 $join[]  = 'members';
                 $where[] = 'gm.user_id = #uid#';
                 break;
 
-            case 'ind_group':
+            case 'group':
                 $where[] = 'm.group_id = #gid#';
-                break;
-
-            case 'public':
-                $join[]  = 'group';
-                $where[] = 'm.group_id IS NOT NULL';
-                $where[] = 'g.secret = 0';
                 break;
 
             case 'aggr_friends':
@@ -86,24 +102,15 @@ class TapsList extends Collection {
                            '  (m.sender_id = #to#   AND m.reciever_id = #from#))';
                 break;
 
-            case 'convos_all':
+            case 'aggr_convos':
                 $join[]  = 'convo';
                 $where[] = 'c.user_id = #uid#';
                 break;
 
-            case 'active':
+            case 'active_convos':
                 $join[]  = 'convo';
                 $where[] = 'c.user_id = #uid#';
                 $where[] = 'c.active  = 1';
-                break;
-
-            case 'aggr_all':
-                $distinct = true;
-                $join[]   = 'members_l';
-                $join[]   = 'convo_l';
-                $where[]  = '(gm.user_id = #uid# OR c.user_id = #uid# '.
-                            '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
-                            '       m.reciever_id IS NOT NULL))';
                 break;
 
             case 'byId':

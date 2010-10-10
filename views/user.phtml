@@ -7,10 +7,20 @@
         'guest'   => $guest);
     include(HEADER);
 ?>
-    
     <div id="content">
     	
         <div id="left">
+        
+        	<h1 class="title profile">Circles <?=$user['fname']?> is part of <a class="view-all" href="#">view all...</a></h1>
+            
+            <div class="user-circles">
+                <?php
+                    $_cl['list'] = $circles;
+                    include(CIRCLE_LIST);
+                ?>
+                <div class="clear"></div>
+            </div><!--user-circles-->
+
             <?php
                 $_f = array(
                     'feed' => $feed,
@@ -19,17 +29,16 @@
                 include(FEED);
             ?>        
         </div><!--left-->
-        
+
         <?php
             $_s = array(
-                'circles'  => $circles,
-                'show_nav' => true
+                'user'      => $user,
+                'followers' => $followers,
+                'following' => $following
             );
             include(SIDEBAR);
         ?>
-        
     </div><!--content-->
-
 <?php
     include(FOOTER);
 ?>

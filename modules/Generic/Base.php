@@ -39,12 +39,20 @@ abstract class Base {
     }
 
     public function __destruct() {
-        if (DEBUG)
+        if (DEBUG) {
             DB::getInstance()->flush_log();
+
+            $this->debug->log($this->user, 'user');
+            $this->debug->group('data', array('Collapsed' => true));
+            foreach($this->data as $k => $v)
+                $this->debug->log($v, $k);
+            $this->debug->groupEnd();
+        }
 
         switch($this->view_output){
             case 'HTML':
                 $this->set($this->user->asArray(), 'me');
+                $this->set($this->user->guest,     'guest');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;
             

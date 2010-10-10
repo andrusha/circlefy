@@ -1,48 +1,37 @@
 <?php
 
-class homepage extends Base {
+class page_homepage extends Base {
     protected $need_login = true;
 
 	function __invoke() {
-        /*
-		$this->set(
-            TapsList::getFiltered('active', array('#uid#' => $this->user->uid))
-                    ->filter('all')
-            , 'active_convos');
-	
-        
-        $this->set(
-            GroupsList::byUser($this->user, G_EXTENDED | G_ONLINE_COUNT | G_USERS_COUNT)->filter('info'),
-            'your_groups');	
-
-		$this->set(
-            UsersList::getFollowing($this->user)->filter('info'),
-            'your_friends');
-
-		$this->set(
-            UsersList::withPM($this->user)->filter('info'),
-            'your_private');
-
-        if (!$this->user->guest) {
-            $params = array('#outside#' => '1, 2', '#uid#' => $this->user->uid);
-            $filter = 'aggr_all';
-            $data = TapsList::getFiltered($filter, $params, true, true)
-                            ->lastResponses()
-                            ->filter('all');
-            $this->set('all', 'feed_type');
-        }
-
-        if ($this->user->guest || empty($data)) {
-            //show all public taps for guests
-            $params = array('#outside#' => '1, 2');
-            $filter = 'public';  
-            $data = TapsList::getFiltered($filter, $params, true, true)
-                            ->lastResponses()
-                            ->filter('all');
-            $this->set('discover', 'feed_type');
-        }
-
-        $this->set($data, 'groups_bits');*/
+        if ($this->user->guest)
+            $this->guest();
+        else
+            $this->user();
 	}
 
+    private function user() {
+        $this->set(
+            GroupsList::search('byUser', array('uid' => $this->user->id, 'limit' => 16), G_LIMIT)
+                      ->asArrayAll(),
+            'circles');
+
+        $this->set(
+            TapsList::search('feed', array('uid' => $this->user->id), T_USER_INFO | T_USER_RECV | T_GROUP_INFO) 
+                    ->lastResponses()
+                    ->asArrayAll(),
+            'feed');
+
+        $this->set('Your', 'feed_name');
+    }
+
+    private function guest() {
+        $this->set(
+            TapsList::search('public', array(), T_USER_INFO | T_GROUP_INFO)
+                    ->lastResponses()
+                    ->asArrayAll(),
+            'feed');
+
+        $this->set('Global', 'feed_name');
+    }
 };

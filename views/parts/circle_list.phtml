@@ -1,0 +1,10 @@
+<?php
+    foreach ($_cl['list'] as $c):
+?>
+<a href="/circle/<?=$c['symbol']?>" title="<?=$c['name']?>" class="circle-thumb">
+    <span class="circle"></span>
+    <img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" alt="<?=$c['name']?>" />
+</a>
+<?php
+    endforeach;
+?>

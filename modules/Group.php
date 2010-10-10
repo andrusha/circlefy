@@ -31,7 +31,7 @@ class Group extends BaseModel {
     protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
         'created_time', 'type', 'auth', 'status', 'online_count', 'secret');
 
-    protected static $addit = array('tags', 'members', 'taps_count',
+    protected static $addit = array('tags', 'members', 'messages_count',
         'members_count', 'responses_count');
 
     /*
@@ -76,12 +76,10 @@ class Group extends BaseModel {
         $type = is_int($g) ? 'byGroup' : 'bySymbol';
         $var  = is_int($g) ? 'id'      : 'symbol';
 
-        $group =  GroupsList::search($type, array($var => $g),
+        return  GroupsList::search($type, array($var => $g),
                               G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT)
-                            ->lastOne();
-        $group->set('topic', FuncLib::linkify($group->topic));
-        return $group;
-    }
+                          ->lastOne();
+    } 
 
     /*
         Yeah, right, it simply creates a new group

@@ -1,26 +1,24 @@
-<?php
-    extract($_h, EXTR_OVERWRITE | EXTR_REFS);
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 <?php
-    if (isset($styles))
-        foreach ($styles as $s)
+    if (isset($_h['styles']))
+        foreach ($_h['styles'] as $s)
             echo "<link rel='stylesheet' type='text/css' href='/static/css/$s' />\n";
 ?>
 <script type="text/javascript" src="/static/js/mootools-core.js"></script>
 <script type="text/javascript" src="/static/js/mootools-more.js"></script>
 <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script> 
 <?php
-    if(isset($vars))
-        echo "<script type='text/javascript'>\n_vars = ".json_encode($vars)."\n</script>\n";
+    if(isset($_h['vars']))
+        echo "<script type='text/javascript'>\n_vars = ".json_encode($_h['vars'])."\n</script>\n";
 
-    if (isset($scripts))
-        foreach ($scripts as $s)
+    if (isset($_h['scripts']))
+        foreach ($_h['scripts'] as $s)
             echo "<script type='text/javascript' src='/static/js/$s'></script>\n"; ?>
-<title>circlefy - <?=$title?></title>
+<title>circlefy - <?=$_h['title']?></title>
 </head>
 
 <body>
@@ -35,7 +33,14 @@
             </form>
             </div><!--left-->
             
+            <? if ($_h['guest']): ?>
             <a href="#" id="access">create account or login</a>
+            <? else: ?>
+            <a href="/user/<?=$me['uname']?>" title="It's you">
+                <img src="<?=USER_PIC_REL.'small_'.$me['id'].'.jpg'?>" alt="It's you">
+                <span><?=$me['fname']?></span>
+            </a>
+            <? endif; ?>
             
             <div class="clear"></div>
             
