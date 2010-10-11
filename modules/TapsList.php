@@ -281,7 +281,7 @@ class TapsList extends Collection {
 
             //TODO: that's kinda ugly, should think about way
             // to make it _safe_ and usable
-            if (isset($tap['responses'])) {
+            if (isset($tap['responses']) && !empty($tap->responses['text'])) {
                 $responses = $tap->responses;
                 $responses['text'] = FuncLib::makePreview($responses['text'], 40);
                 $tap->responses = $responses;
