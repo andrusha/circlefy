@@ -6,23 +6,17 @@
 */
 class Tap extends BaseModel {
 
-    public static $fields = array('id', 'sender_id', 'text', 'time', 'group_id', 'reciever_id');
+    public static $fields = array('id', 'sender_id', 'text', 'time', 'group_id', 'reciever_id', 'media_id');
 
     public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
-    protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id');
+    public static $mediaFields = array('id', 'type', 'link');
 
-    protected static $addit = array('responses', 'group', 'sender', 'reciever');
+    public static $mediaTypes  = array('youtube' => 1, 'vimeo' => 2, 'flickr' => 3);
 
-    /*
-        Formats time since & tap text 
-    */
-    public static function formatTap($tap) {
-        $tap['chat_timestamp'] = FuncLib::timeSince($tap['chat_timestamp']);
-        $tap['chat_text'] = FuncLib::linkify(stripslashes($tap['chat_text']));
+    protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id', 'media_id');
 
-        return $tap;
-    }
+    protected static $addit = array('responses', 'group', 'sender', 'reciever', 'media', 'replies');
 
     /*
         Returns desiered tap (only one, if avaliable)

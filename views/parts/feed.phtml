@@ -2,7 +2,7 @@
 
 <? if ($_f['show_reply']): ?>
 <form id="reply">
-    <img src="/static/images/reply_avatar.jpg" alt="avatar" class="avatar" />
+    <img src="/static//static/images/reply_avatar.jpg" alt="avatar" class="avatar" />
     <textarea>Post a message to this circle</textarea>
     <input type="submit" value=" " />
     <div class="clear"></div>
@@ -25,126 +25,83 @@
 
 <div id="feed">
 
-    <div class="feed-item" id="global-01">
+    <? if (!empty($_f['feed'])):
+            $count = count($_f['feed']);
+            $id = 0; //array key doesn't represent real id
+            foreach($_f['feed'] as $f):
+                $id++;
+                $last = $count == $id;
+    ?>
+    <div class="feed-item<?=($last ? ' last' : '')?>" id="global-<?=$f['id']?>">
     
-        <img src="/static/images/avatar_00.jpg" alt="avatar" class="avatar-author" />
+        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['uname']?>" class="avatar-author" />
         <div class="text">
-            <h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-            <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
+            <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
+            <cite><?=$f['text']?></cite>
             <div class="clear"></div>
-            
-            <div class="latest-reply">
-                <img src="/static/images/comments_avatar.jpg" alt="avatar" class="avatar-reply" />
-                <a href="#" class="reply-author">Guest209t7:</a><span>come on dude!</span>
-            </div><!--latest-->
-            
-            <a href="#" class="reply">Reply</a>
-            <a href="#" class="comments">123</a>
-            
-            <div class="clear"></div>
-            <div class="icons">
-                <a href="#"><img src="/static/images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                <a href="#"><img src="/static/images/feed_type_00.jpg" alt="tap type" /></a>
-                <span>some mionutes ago</span>
-            </div>
-            <a href="#" class="edit">edit</a>
-        </div><!--text-->
-    
-    </div><!--feed-item-->
-    
-    <div class="feed-item" id="global-02">
-    
-        <img src="/static/images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-        <div class="text">
-            <h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-            <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-            <div class="clear"></div>
-            
-            <a href="#" class="reply">Reply</a>
-            <a href="#" class="comments">123</a>
-            
-            <div class="clear"></div>
-            <div class="icons">
-                <a href="#"><img src="/static/images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                <a href="#"><img src="/static/images/feed_type_00.jpg" alt="tap type" /></a>
-                <span>some mionutes ago</span>
-            </div>
-            <a href="#" class="edit">edit</a>
-        </div><!--text-->
-    
-    </div><!--feed-item-->
 
-    <div class="feed-item" id="global-03">
-    
-        <img src="/static/images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-        <div class="text">
-            <h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-            <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-            <div class="clear"></div>
+            <? if (empty($f['replies'])): ?>
             
-            <a href="#" class="reply">Reply</a>
-            <a href="#" class="comments">123</a>
-            
+                <? if (!empty($f['responses'])): ?>
+                <div class="latest-reply">
+                    <img src="<?=USER_PIC_REL.'small_'.$f['responses']['user']['id'].'.jpg'?>"
+                         alt="<?=$f['responses']['user']['fname']?> <?=$f['responses']['user']['lname']?>" class="avatar-reply" />
+                    <a href="/user/<?=$f['responses']['user']['uname']?>" class="reply-author"><?=$f['responses']['user']['uname']?>:</a>
+                    <span><?=$f['responses']['text']?></span>
+                </div><!--latest-->
+                <? endif; ?>
+               
+                <a href="#" class="reply">Reply</a>
+                <? if (!empty($f['responses']) && $f['responses']['count'] > 0): ?>
+                <a href="#" class="comments"><?=$f['responses']['count']?></a>
+                <? endif; ?>
+
+            <? endif; ?>
+
+            <div class="replies<?=(empty($f['replies']) ? ' hidden' : '')?>">
+                <div class="list">
+                    <? if (!empty($f['replies'])):
+                            $count = count($f['replies']);
+                            $id = 0;
+                            foreach($f['replies'] as $r):
+                                $id++;
+                                $last = $count == $id; ?>
+                        <div class="reply-item<?=($last ? ' last' : '')?>">
+                            <div class="thumb"><img src="<?=USER_PIC_REL.'small_'.$r['user']['id'].'.jpg'?>" alt="<?=$r['user']['fname']?> <?=$r['user']['lname']?>" /></div>
+                            <span class="text">
+                                <h3 class="username">
+                                    <a href="/user/<?=$r['user']['uname']?>"><?=$r['user']['uname']?></a>:
+                                </h3>
+                                <?=$r['text']?>
+                                <span class="timestamp"><?=$r['time']?></span>
+                            </span>
+                            <div class="clear"></div>
+                        </div><!--item-->
+                    <?      endforeach;
+                       endif;?>
+                </div><!--list-->
+                <div class="field">
+                        <div class="thumb"><img src="/static/images/avatar_00.jpg" alt="avatar" /></div>
+                    <div class="editor">
+                    
+                    </div><!--editor-->
+                    <div class="clear"></div>
+                </div><!--field-->
+            </div><!--replies-->
+
             <div class="clear"></div>
             <div class="icons">
                 <a href="#"><img src="/static/images/feed_circle_thumb.jpg" alt="circle name" /></a>
                 <a href="#"><img src="/static/images/feed_type_00.jpg" alt="tap type" /></a>
-                <span>some mionutes ago</span>
+                <span><?=$f['time']?></span>
             </div>
             <a href="#" class="edit">edit</a>
         </div><!--text-->
     
     </div><!--feed-item-->
-
-    <div class="feed-item" id="global-04">
-    
-        <img src="/static/images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-        <div class="text">
-            <h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-            <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-            <div class="clear"></div>
-            
-            <a href="#" class="reply">Reply</a>
-            <a href="#" class="comments">123</a>
-            
-            <div class="clear"></div>
-            <div class="icons">
-                <a href="#"><img src="/static/images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                <a href="#"><img src="/static/images/feed_type_00.jpg" alt="tap type" /></a>
-                <span>some mionutes ago</span>
-            </div>
-            <a href="#" class="edit">edit</a>
-        </div><!--text-->
-    
-    </div><!--feed-item-->
-
-    <div class="feed-item" id="global-05">
-    
-        <img src="/static/images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-        <div class="text">
-            <h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-            <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-            <div class="clear"></div>
-            
-            <div class="latest-reply">
-                <img src="/static/images/comments_avatar.jpg" alt="avatar" class="avatar-reply" />
-                <a href="#" class="reply-author">Guest209t7:</a><span>come on dude!</span>
-            </div><!--latest-->
-            
-            <a href="#" class="reply">Reply</a>
-            <a href="#" class="comments">123</a>
-            
-            <div class="clear"></div>
-            <div class="icons">
-                <a href="#"><img src="/static/images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                <a href="#"><img src="/static/images/feed_type_00.jpg" alt="tap type" /></a>
-                <span>some mionutes ago</span>
-            </div>
-            <a href="#" class="edit">edit</a>
-        </div><!--text-->
-    
-    </div><!--feed-item-->
-
+    <?    endforeach;
+       endif; 
+    ?>
     
     <a class="load" href="#">Older Taps</a>
     

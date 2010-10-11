@@ -1,6 +1,6 @@
 <?php
     $_h = array(
-        'title'   => 'homepage',
+        'title'   => $user['fname'].' '.$user['lname'],
         'scripts' => array('roar.js', 'tap.js', /*'main.js',*/ 'modal.js'),
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user' => $me),
@@ -24,7 +24,7 @@
             <?php
                 $_f = array(
                     'feed' => $feed,
-                    'name' => $feed_name
+                    'name' => $user['fname']."'s"
                 );
                 include(FEED);
             ?>        

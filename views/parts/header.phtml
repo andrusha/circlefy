@@ -2,6 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<? if (!$_h['guest']): ?>
+<meta name="uid" content="<?=$me['id']?>">
+<meta name="uname" content="<?=$me['uname']?>">
+<? endif; ?>
 <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 <?php
     if (isset($_h['styles']))
@@ -27,12 +31,15 @@
     	<div class="wrap">
         	
             <div class="left">
-            <a href="#" id="logo">circlefy</a>
+            <a href="/" id="logo">circlefy</a>
             <form>
             	<input type="text" value="Start or join a conversation" />
+                <div id="search-results" class="hidden">
+                  <ul></ul>
+                </div><!--searchresults-->
             </form>
             </div><!--left-->
-            
+
             <? if ($_h['guest']): ?>
             <a href="#" id="access">create account or login</a>
             <? else: ?>

@@ -36,6 +36,10 @@ abstract class BaseModel implements ArrayAccess {
         Checks if a key is allowed
     */
     public function offsetExists ($offset) {
+        return $this->keyExists($offset) && isset($this->data[$offset]);
+    }
+
+    private function keyExists ($offset) {
         //Late Static Binding here
         return in_array($offset, static::$addit) ||
                in_array($offset, static::$fields);
@@ -45,7 +49,7 @@ abstract class BaseModel implements ArrayAccess {
         if ($key == 'id')
             return $this->id;
 
-        if ($this->offsetExists($key)) {
+        if ($this->keyExists($key)) {
             $name = 'get'.ucfirst($key);
 
             if (method_exists($this, $name) && !isset($this->data[$key])) {
@@ -66,14 +70,19 @@ abstract class BaseModel implements ArrayAccess {
         It doesn't update corresponding table actually, use with care
     */
     public function __set($key, $val) {
-        if ($this->offsetExists($key))
+        if ($this->keyExists($key))
             $this->data[$key] = $val;
         else
             throw new DataException("You are not allowed to set `$key`");
     }
 
     public function asArray() {
-        return $this->data;
+        $data = $this->data;
+        foreach (static::$addit as $key)
+            if (is_object($data[$key]) && method_exists($data[$key], 'asArray'))
+                $data[$key] = $data[$key]->asArray();
+
+        return $data;
     }
 
     /* Stubs, you should use __get, __set instead */

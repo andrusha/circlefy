@@ -12,12 +12,15 @@ class page_circle extends Base {
         $this->set($group->asArray(), 'circle');
 
         $this->set(
-            UsersList::search('members', array('gid' => $group->id, 'limit' => 14), U_LIMIT)
+            UsersList::search('members', array('gid' => $group->id, 'limit' => 14))
                      ->asArrayAll(),
             'members');
 
         $this->set(
             TapsList::search('group', array('gid' => $group->id), T_USER_INFO)
+                    ->lastResponses()
+                    ->inject('group', $group)
+                    ->format()
                     ->asArrayAll(),
             'feed');
 	}

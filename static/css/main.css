@@ -5,6 +5,10 @@
     -moz-outline-style: none !important;
 }
 
+.hidden {
+        display:none;
+}
+
 a {
     outline: none !important;
 }
@@ -376,7 +380,7 @@ h1.wide {
 	width:29px;
 	height:22px;
 	clear:both;
-	bottom:30px;
+	top:98px;
 	left:10px;
 	overflow:hidden;
 	text-indent:-9999px;
@@ -901,3 +905,147 @@ h1.wide {
 #templates {
 	display: none;
 }
+
+
+
+
+
+
+/*** <Search results> ***/
+#search-results {
+        position:absolute;
+        width:296px;
+        height:auto;
+        background:#232323;
+}
+#search-results .thumb {
+        float:left;
+        width:21px;
+        height:21px;
+        position:relative;
+        margin:7px;
+}
+#search-results li .thumb span {
+        display:block;
+        position:absolute;
+        width:21px;
+        height:21px;
+        z-index:2;
+        background:url(../images/search_over.png) no-repeat top left;
+}
+#search-results li {
+        list-style:none;
+        display:block;
+        text-shadow:1px 1px #000;
+        height:35px;
+        padding:5px 10px 5px 0px;
+}
+#search-results li.create {
+        background:#346394;
+}
+#search-results li.create h3.title a {
+        color:#fff;
+}
+#search-results li.create:hover {
+        background:#346394;
+}
+#search-results li.create .thumb span {
+        background:none;
+}
+#search-results li.create:hover .thumb span {
+        background:none;
+}
+#search-results li:hover {
+        background:#000;
+}
+#search-results li:hover .thumb span {
+        background:url(../images/search_over.png) no-repeat center center;
+}
+#search-results li h3.title {
+        font-size:14px;
+        font-weight:bold;
+}
+#search-results li h3.title a {
+        color:#2878ca;
+        text-decoration:none;
+}
+#search-results li:hover h3.title a {
+        color:#fff;
+}
+#search-results li small {
+        font-size:10px;
+        color:#d0d0d0;
+        display:block;
+        position:relative;
+}
+#search-results li small span {
+        float:left;
+}
+#search-results li small strong {
+        float:right;
+        font-weight:normal;
+        color:#197a06;
+}
+#search-results li small strong em {
+        color:#d0d0d0;
+        font-style:normal;
+}
+/*** </Search results> ***/
+
+/*** <Relies feed> ***/
+.replies {
+        width:500px;
+        border:2px solid #2e72a4;
+        padding:1px;
+        margin:0 0 0 65px;
+}
+.replies .list {
+        height:100px;
+        overflow:scroll;
+        overflow-x:hidden;
+        padding: 0 10px;
+}
+.replies .list .reply-item {
+        padding:10px 0;
+        border-bottom:1px solid #CCC;
+}
+.replies .list .reply-item.last {
+        border-bottom:none;
+}
+.replies .list .reply-item h3.username {
+        display:inline;
+}
+.replies .list .reply-item .thumb {
+        height:20px;
+        width:20px;
+        float:left;
+}
+.replies .list .reply-item span.text {
+        float:left;
+        display:block;
+        width:435px;
+        margin:0 0 0 10px;
+        padding:3px 0 0 0;
+}
+.replies .list .reply-item span.text span.timestamp {
+        display:inline;
+        font-size:10px;
+        color:#999;
+        line-height:12px;
+        margin:0 0 0 5px;
+}
+.replies .field {
+        height:50px;
+        border:1px solid #b9b9b9;
+}
+.replies .field .thumb {
+        width:50px;
+        height:50px;
+        float:left;
+}
+.replies .field .editor {
+        width:448px;
+        height:50px;
+        float:left;
+}
+/*** </Relies feed> ***/

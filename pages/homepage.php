@@ -12,13 +12,14 @@ class page_homepage extends Base {
 
     private function user() {
         $this->set(
-            GroupsList::search('byUser', array('uid' => $this->user->id, 'limit' => 16), G_LIMIT)
+            GroupsList::search('byUser', array('uid' => $this->user->id, 'limit' => 16))
                       ->asArrayAll(),
             'circles');
 
         $this->set(
             TapsList::search('feed', array('uid' => $this->user->id), T_USER_INFO | T_USER_RECV | T_GROUP_INFO) 
                     ->lastResponses()
+                    ->format()
                     ->asArrayAll(),
             'feed');
 
@@ -29,6 +30,7 @@ class page_homepage extends Base {
         $this->set(
             TapsList::search('public', array(), T_USER_INFO | T_GROUP_INFO)
                     ->lastResponses()
+                    ->format()
                     ->asArrayAll(),
             'feed');
 

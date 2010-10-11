@@ -1,231 +1,39 @@
-  <div id="templates">
-                <ul id="template-taps">
-                <#
-                        each (var tap from this):
-                                if (!tap.uname) continue;
-                #>
-                <li id="tid_<#: tap.cid #>" class="container"
-                    data-id="<#: tap.cid #>"
-                    data-uid="<#: tap.uid #>"
-                    data-user="<#: tap.uname #>"
-                    data-private="<#: tap.private #>">
+<div id="templates">
 
-                        <a href="/user/<#: tap.uname #>">
-                                <img class="avatar" alt="<#: tap.uname #>" src="/user_pics/<#: tap.pic_100 #>" />
-                        </a>
+    <? /*** Search suggestions template ***/ ?>
+    <ul id="template-search">
+        <# for (var sugg from this): #>
+        <li>
+           <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
+           <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name #></a></h3>
+           <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
+           <div class="clear"></div>
+        </li>
+        <# end; #>
 
-                        <p class="tap-from <#: ((tap.user_online %AND% tap.user_online !== '0') %OR% tap.uname == _vars.user.uname) ? '' : 'offline' #>">
-                                <a href="/user/<#: tap.uname #>"><#: tap.uname #></a>
-                                <# if (tap.private == 1): #>
-                                    <span style="font-size:16px">-></span> <a href="/user/<#: tap.to_uname #>"><#: tap.to_uname #></a>
-                                <# else: #>
-                                    ,
-                                    <a href="/tap/<#: tap.cid #>" class="date"><#: tap.real_name #></a>
-                                <# endif; #>
+        <li class="create">
+            <div class="thumb"><span></span><img src="/static/images/search_create.gif" alt="search" /></div>
+            <h3 class="title"><a href="#">Create new conversation circle</a></h3>
+            <small>Click here to create a circle on the fly!</small>
+            <div class="clear"></div>
+        </li>       
+    </ul>
 
-                        <# if (tap.private != 1): #>
-            				<a href="/channel/<#: tap.symbol #>">
-                                <img class="aggr-favicons" src="/group_pics/<#: tap.favicon #>" title="<#: tap.gname #>" />
-                            </a>
-                        <# else: #>
-            				<a href="/user/<#: tap.to_uname #>">
-                                <img class="aggr-favicons" src="/user_pics/<#: tap.to_pic_100 #>" title="<#: tap.to_real_name #>" style="height: 30px; width: 30px" />
-                            </a>
-                        <# endif; #>
-                        </p>
-                        
-                    <a href="#" class="tap-resp-count" title="view responses">
-                        <p class="tap-body">
-                                <#: tap.chat_text #>
-                        </p>
-                    </a>
-
-                        <p class="tap-actions">
-                                <span class="last-resp">
-                                        <strong><#: tap.last.resp_uname ? tap.last.resp_uname + ":" : "" #></strong>
-                                        <span class="body ellipsis inblock"><#: tap.last.last_resp #></span>
-                                </span>
-                                <span class="tap-resp">
-                                        <span class="indicator">Someone's replying..</span>
-                                </span>
-                                <a href="#" class="tap-resp-count" title="view responses">
-                                     <span class="show-resp-count"><#: tap.count #></span>
-                                     <span class="follow_button">Reply</span>
-                                </a>
-                        </p>
-                        <div class="responses">
-                                <ul class="chat">
-                                </ul>
-                                <input class="chatbox" type="text" />
-                                <div class="resizer"></div>
-                                <div class="counter">240</div>
-                                <div class="overlay">type in your response and press enter.</div>
-                        </div>
-                        <div class="clarity"></div>
-                </li>
-                <# end; #>
-                </ul>
-                <ul id="template-responses">
-		<# for (var response from this): #>
-                        <li>
-                                <em data-timestamp="<#: response.chat_time_raw #>">
-                                    <#: response.chat_time  #>
-                                </em>
-                                <a href="/user/<#: response.uname #>" class="user">
-					<img src="/user_pics/<#: response.small_pic #>" />
-					<span class="resp-uname"><#: response.uname #>:</span>
-
-				</a>
-				<span class="resp-text"><#: response.chat_text #></span>
-                        </li>
-                <# end; #>
-                </ul>
-                <ul id="template-list-convo">
-                <# for (var convo from this): #>
-                        <li id="cid_<#: convo.mid #>" class="new panel-item"
-                                data-id="<#: convo.mid #>" data-user="<#: convo.uname #>">
-                                <span class="remove-convo action" data-action="remove"><a href="#">remove</a></span>
-                                <p class="from inblock">
-                                    <img class="active-convo-pic" src="/user_pics/<#: convo.small_pic #>" /> 
-                                    <span class="active-convo-uname"><#: convo.real_name #></span>
-                                    <span class="new">*</span>
-                                </p>
-                                <p class="body ellipsis"><#: convo.message #></p>
-                        </li>
-                <# end; #>
-                </ul>
-                <ul id="template-suggest-group">
-                <# for (var group from this): #>
-			<# if(group.img == false){ new_group = 'new-group' } else { new_group = '' }#>
-                        <li class="container <#: new_group #>" data-id="<#: group.id #>"
-                                data-type="channel" data-joined="<#: group.joined #>" data-symbol="<#: group.symbol #>" >
-				<# if( group.img != false ) { #>
-                                <img src="/<#: group.img #>" alt="<#: group.name #>" class="avatar" />
-				<# } #>
-                                <h2 class="search-group-name"><#: group.name #></h2>
-                                <p class="search-group-descr">
-					<#: group.desc #>
-					<span class="search-count-container ">
-						<span class="search-users-online" title="number of users online"><#: group.online #></span> / 
-						<span class="search-users-total" title="number of users total"><#: group.total #></span>
-					</span>
-				</p>
-                        </li>
-                <# end; #>
-                </ul>
-                <ul>
-                        <li id="no-taps-yet" class="notice">
-                                <p>Nothing yet! Try tapping this feed...</p>
-                        </li>
-                        <li id="loadmore-template" class="paginator">
-                                <p>Older Taps</p>
-                        </li>
-                        <li id="loadless-template" class="paginator">
-                                <p>New Taps</p>
-                        </li>
-                </ul>
-
-		 <ul id="template-list-people">
-			<# for (var person from this): #>
-
-			<li id="pid_<#: person.fuid #>" class="container list-item"
-				data-id="<#: person.fuid #>" data-uname="<#: person.uname #>">
-				<# if (person.friend) { #>
-				<button class="untrack">untrack</button>
-				<# } else { #>
-				<button class="track">track</button>
-				<# } #>
-				<img src="/user_pics/<#: person.pic_100 #>" class="avatar" />
-				<h2>
-					<a href="/user/<#: person.uname #>" title="<#: person.uname #>">
-						<#: person.fname #> <#: person.lname #></a>
-					<span class="nick"><#: person.uname #></span>
-				</h2>
-				<p class="headline"><#: person.last_chat #></p>
-				<p class="stats">
-				</p>
-			</li>
-
-			<# if (!person){ #>
-				<li id="no-results"> No user found </li>
-			<# } #>
-
-			<# end; #>
-		</ul>
-
-		<ul id="template-list-member">
-			<# for (var member from this): #>
-			<a href="/user/<#: member.uname #>">
-				<li class="panel-item-public-group" title="<#: (member.online) ? 'online' : '' #>" >
-				<img src="/user_pics/<#: member.small_pic #>" />
-				<# if (member.admin == "1") { #>
-					<span class="user-admin"> &#10070; </span>
-				<# } #>
-				<#: member.uname #>
-				<# if (member.online) { #>	
-					<span class="user-online">*</span>
-				<# } #>
-				</li>
-			</a>
-			<# end; #>
-		</ul>
-
-		 <ul id="template-list-catagories">
-			<# for (var catagory from this): #>
-			<li class="catagory-item" catagoryID="<#: catagory.scid #>">
-				<span class="catagory-name"><#: catagory.cname #></span>
-				<span class="remove-catagory"><a href="#">Remove</a></span>
-				<span class="change-catagory"><a href="#">Change</a></span>
-			</li>
-
-			<# if (!catagory){ #>
-				<li id="no-results"> No catagories found </li>
-			<# } #>
-
-			<# end; #>
-		</ul>
-
-        <ul id="template-suggestions">
-            <li class="selected" data-id="all">
-                <label for="sugg_all">All</label>
-                <input id="sugg_all" name="suggest_all" type="checkbox" title="Check/uncheck all items" checked>
-            </li>
-            <# for (var sugg from this): #>
-            <li class="selected" data-id="<#: sugg.id #>">
-                <img src="/group_pics/medium_<#: sugg.id #>.jpg" />
-                <label for="sugg_<#: sugg.id #>"><#: sugg.name #></label>
-                <input id="sugg_<#: sugg.id #>" name="suggest" type="checkbox" value="<#: sugg.id #>" title="<#: sugg.symbol #>" checked>
-            </li>
-            <# end; #>
-        </ul>
-
-        <ul id="template-users">
-            <# for (var person from this): #>
-                <li id="pid_<#: person.uid #>" class="container list-item" 
-                    data-id="<#: person.uid #>"
-                    data-uname="<#: person.uname #>">
-
-                    <# if (person.friend): ?>
-                        <button class="untrack">untrack</button>
-                    <# else: #>
-                        <button class="track">track</button>
-                    <# endif; #>
-
-                    <img src="/user_pics/<#: person.pic_100 #>" class="avatar" />
-                    <h2>
-                        <a href="/user/<#: person.uname #>" title="<#: person.uname #>">
-                            <#: person.real_name #></a> 
-                        <span class="nick"><#: person.uname #></span>
-                    </h2>
-                    <p class="headline"><#: person.last_chat #></p>
-                    <p class="stats">
-                        <strong><#: person.stats.taps #></strong> Taps sent, 
-                        <strong><#: person.stats.responses #></strong> Responses received, and
-                        <strong><#: person.stats.groups #></strong> Groups joined.
-                    </p>
-                </li>
-            <# end; #>
-        </ul>
+    <? /*** Replies to tap ***/ ?>
+    <ul id="template-replies">
+        <# for (var repl from this): #>
+        <div class="reply-item">
+            <div class="thumb"><img src="<?=USER_PIC_REL?>small_<#: repl.user.id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" /></div>
+            <span class="text">
+                <h3 class="username">
+                    <a href="/user/<#: repl.user.uname #>"><#: repl.user.uname ></a>:
+                </h3>
+                <#: repl.text #>
+                <span class="timestamp"><#: repl.time #></span>
+            </span>
+            <div class="clear"></div>
+        </div><!--item-->
+        <# end; #>
+    </ul>
 
 </div>
-

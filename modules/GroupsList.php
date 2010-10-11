@@ -148,7 +148,6 @@ class GroupsList extends Collection {
             G_USERS_COUNT     - joined users
             G_RESPONSES_COUNT - total responses count
             G_JUST_ID         - fetch only group id
-            G_LIMIT           - limit resultset
 
         @return GroupsList
     */
@@ -203,7 +202,7 @@ class GroupsList extends Collection {
             $group[]  = 'g.id';
         }
 
-        if ($options & G_LIMIT)
+        if (isset($params['limit']))
             $limit = 'LIMIT 0, #limit#';
 
         $fields = implode(', ', array_unique($fields));

@@ -13,7 +13,6 @@ class SeparatorIterator implements Iterator {
     private $tables = array();
     private $fields = array();
 
-    private $row = array();
     private $count = 0;
     private $pos = 0;
 
@@ -25,19 +24,12 @@ class SeparatorIterator implements Iterator {
     }
 
     public function rewind() {
-        $this->result->data_seek(0);
+        if ($this->count)
+            $this->result->data_seek(0);
     }
 
     public function valid() {
         return $this->pos < $this->count;
-    }
-
-    public function current() {
-        return $this->row;
-    }
-
-    public function key() {
-        return $this->pos;
     }
 
     /*
@@ -49,16 +41,24 @@ class SeparatorIterator implements Iterator {
                         'rest' => fields),
             ...
     */
-    public function next() {
+    public function current() {
         $row = array();
         foreach ($this->result->fetch_row() as $id => $val) {
             $table = $this->fields[$id]->table;
-            if (!in_array($table, $tables))
+            if (!in_array($table, $this->tables))
                 $table = 'rest';
 
             $row[$table][$this->fields[$id]->name] = $val;
         }
+        
+        return $row;
+    }
 
-        $this->row = $row;
+    public function key() {
+        return $this->pos;
+    }
+
+    public function next() {
+        $this->pos++;
     }
 };

@@ -48,6 +48,16 @@ abstract class Collection implements IteratorAggregate, Countable {
     }
 
     /*
+        Injects some value for every item in collection
+    */
+    public function inject($key, $val) {
+        foreach ($this->data as &$it)
+            $it->$key = $val;
+        
+        return $this;
+    }
+
+    /*
         Unique collection by specified key
 
         @return Collection

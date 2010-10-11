@@ -104,7 +104,6 @@ class UsersList extends Collection {
             U_LAST_CHAT - adds last message to result
             U_PENDING   - members whom requested auth
             U_ADMINS    - members with status >= moderator
-            U_LIMIT     - fetch N users
 
         @return UsersList
     */
@@ -181,7 +180,7 @@ class UsersList extends Collection {
         if ($options & U_ADMINS)
             $where[]  = 'gm.permission >= '.Group::$permissions['moderator'];
 
-        if ($options & U_LIMIT)
+        if (isset($params['limit']))
             $limit    = 'LIMIT 0, #limit#';
 
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));

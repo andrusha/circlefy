@@ -34,12 +34,14 @@ class TapsList extends Collection {
             T_GROUP_INFO - fetch all group info
             T_USER_INFO  - fetch only sender info
             T_USER_RECV  - fetch reciever info
+            T_MEDIA      - fetch media if avaliable
 
         @return TapsList
     */
     public static function search($type, array $params = array(), $options = 0) {
         $db = DB::getInstance();
 
+        // `m` index reserverd for message table
         $joins = array(
             'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id',
             'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
@@ -49,7 +51,8 @@ class TapsList extends Collection {
             'user_l'    => 'LEFT  JOIN user          u2 ON u2.id       = m.reciever_id',
             'friends'   => 'INNER JOIN friends       f  ON m.sender_id = f.friend_id',
             'convo'     => 'INNER JOIN conversations c  ON m.id        = c.message_id',
-            'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id'
+            'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id',
+            'media'     => 'LEFT  JOIN media         md ON md.id       = m.media_id'
         );
 
         $distinct = false;
@@ -141,6 +144,11 @@ class TapsList extends Collection {
             $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'g.', Group::$fields));
         }
 
+        if ($options & T_MEDIA) {
+            $join[] = 'media';
+            $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Tap::$mediaFields));
+        }
+
         //construct and execute query from supplied params
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
         $where  = implode(' AND ', array_unique($where));
@@ -159,7 +167,7 @@ class TapsList extends Collection {
         $taps = array();
         $result = $db->query($query, $params);
         //separate group/users info from all stuff
-        foreach (DB::getSeparator($result, array('g', 'g2', 'u', 'u2')) as $line) {
+        foreach (DB::getSeparator($result, array('g', 'g2', 'u', 'u2', 'md')) as $line) {
             $tap = $line['rest'];
 
             if (!empty($line['g']) || !empty($line['g2']))
@@ -171,18 +179,26 @@ class TapsList extends Collection {
             if (!empty($tap['u2']))
                 $tap['reciever'] = new User($line['u2']);
 
+            if (!empty($tap['md'])) {
+                $line['md']['type'] = intval($line['md']['type']);
+                $tap['media'] = $line['md'];
+            }
+
             $taps[ intval($tap['id']) ] = new Tap($tap);
         }
-        
+
         return new TapsList($taps);
     }
 
     /*
-        Returns last responses & overall responses count
-        
+        Attaches replies/last reply for each tap
+
+        @param  bool $last    - attach only last reply
+        @param  bool $asArray - attach them as arrays (+User class instead)
+
         @return TapsList
     */
-    public function lastResponses() {
+    private function getReplies($last = false, $asArray = true) {
         if (empty($this->data))
             return $this;
 
@@ -191,12 +207,13 @@ class TapsList extends Collection {
         
         $fields   = FuncLib::addPrefix('r.', Tap::$replyFields);
         $fields   = array_merge($fields, FuncLib::addPrefix('u.', User::$fields));
-        $fields[] = 'r1.count';
+        if ($last)
+            $fields[] = 'r1.count';
         $fields   = implode(', ', array_unique($fields));
 
-        $query = "
-            SELECT {$fields}
-              FROM (
+        $from = $where = '';
+        if ($last) 
+            $from = '(
                     SELECT MAX(id) AS id, COUNT(id) AS count
                       FROM reply
                      WHERE message_id IN (#ids#)
@@ -205,22 +222,81 @@ class TapsList extends Collection {
                    ) AS r1
              INNER
               JOIN reply r
-                ON r.id = r1.id
-             INNER
-              JOIN user u
-                ON u.id = r.user_id";
-
-        $responses = array();
-        $result = $db->query($query, array('ids' => $tap_ids));
-        foreach (DB::getSeparator($result, array('u')) as $line) {
-            $resp = $line['rest'];
-            $resp['user'] = new User($line['u']);
-
-            $responses[ intval($resp['message_id']) ] = $resp;
+                ON r.id = r1.id';
+        else {
+            $from  = 'reply r';
+            $where = 'WHERE r.message_id IN (#ids#)';
         }
 
-        $this->joinDataById($responses, 'responses', array());
+        $query = "
+            SELECT {$fields}
+              FROM {$from}
+             INNER
+              JOIN user u
+                ON u.id = r.user_id
+            {$where}";
 
+        $replies = array();
+        $result = $db->query($query, array('ids' => $tap_ids));
+        foreach (DB::getSeparator($result, array('u')) as $line) {
+            $repl = $line['rest'];
+            $repl['user'] = $asArray ? $line['u'] : new User($line['u']);
+            
+            if ($last)
+                $replies[ intval($repl['message_id']) ] = $repl;
+            else    
+                $replies[ intval($repl['message_id']) ][ intval($repl['id']) ] = $repl;
+        }
+
+        $this->joinDataById($replies, $last ? 'responses' : 'replies', array());
+
+        return $this;
+    }
+
+    /*
+        Attaches last responses & overall responses count
+        
+        @return TapsList
+    */
+    public function lastResponses($asArray = true) {
+        return $this->getReplies(true, $asArray);
+    }
+
+    /*
+        Attaches replies for each tap
+
+        @return TapsList
+    */
+    public function replies($asArray = true) {
+        return $this->getReplies(false, $asArray);
+    }
+
+    /*
+        Formats time since & tap text 
+    */
+    public function format() {
+        foreach ($this->data as &$tap) {
+            $tap->time = FuncLib::timeSince(strtotime($tap->time));
+            $tap->text = FuncLib::linkify($tap->text);
+
+            //TODO: that's kinda ugly, should think about way
+            // to make it _safe_ and usable
+            if (isset($tap['responses'])) {
+                $responses = $tap->responses;
+                $responses['text'] = FuncLib::makePreview($responses['text'], 40);
+                $tap->responses = $responses;
+            }
+            
+            if (isset($tap['replies'])) {
+                $replies = $tap->replies;
+                foreach ($replies as &$r) {
+                    $r['text'] = FuncLib::linkify($r['text']);
+                    $r['time'] = FuncLib::timeSince(strtotime($r['time']));
+                }
+                $tap->replies = $replies;
+            }
+
+        }
         return $this;
     }
 };

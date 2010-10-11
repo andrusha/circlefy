@@ -1,4 +1,10 @@
 <?php
+/*
+    Here goes queries _routing_
+
+    It is the single entry point for
+    both AJAX & php pages
+*/
 require_once('config.php');
 
 if (DEBUG) {
@@ -24,6 +30,10 @@ $pages = array(
         'user'     => array(
             'allowed'  => true,
             'template' => 'user'
+        ),
+        'convo'    => array(
+            'allowed'  => true,
+            'template' => 'conversation'
         ),
     );
 

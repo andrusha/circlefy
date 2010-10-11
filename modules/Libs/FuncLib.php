@@ -40,7 +40,7 @@ abstract class FuncLib {
         if (strlen($text) <= $limit)
             return $text;
         
-        $limit -= 3; //for '...'
+        $limit -= 4; //for ' ...'
         $byPoint = byExplode($text, '.', $limit);
         $byWord = byExplode($text, ' ', $limit);
 
@@ -57,7 +57,7 @@ abstract class FuncLib {
             $result = substr($text, 0, $limit-1);
         }
 
-        return $result.'...';
+        return $result.' ...';
     }
 
     /*
