@@ -16,7 +16,7 @@ class Tap extends BaseModel {
 
     protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id', 'media_id');
 
-    protected static $addit = array('responses', 'group', 'sender', 'reciever', 'media', 'replies');
+    protected static $addit = array('responses', 'group', 'sender', 'reciever', 'media', 'replies', 'involved');
 
     /*
         Returns desiered tap (only one, if avaliable)

@@ -211,19 +211,19 @@ class TapsList extends Collection {
             $fields[] = 'r1.count';
         $fields   = implode(', ', array_unique($fields));
 
-        $from = $where = '';
-        if ($last) 
+        if ($last) { 
             $from = '(
                     SELECT MAX(id) AS id, COUNT(id) AS count
                       FROM reply
                      WHERE message_id IN (#ids#)
                      GROUP
-                        BY id
+                        BY message_id
                    ) AS r1
              INNER
               JOIN reply r
                 ON r.id = r1.id';
-        else {
+            $where = '';
+        } else {
             $from  = 'reply r';
             $where = 'WHERE r.message_id IN (#ids#)';
         }
@@ -269,6 +269,31 @@ class TapsList extends Collection {
     */
     public function replies($asArray = true) {
         return $this->getReplies(false, $asArray);
+    }
+
+    /*
+        Makes a list of unique users involved in each conversation
+
+        @return TapseList
+    */
+    public function involved() {
+        foreach ($this->data as &$tap) {
+            if (!isset($tap['replies']))
+                throw new LogicException('You should fetch replies first');
+
+            $involved = array();
+            foreach ($tap->replies as &$r)
+                if (is_array($r['user']))
+                    $involved[ $r['user']['id'] ] = $r['user'];
+                elseif ($r['user'] instanceof User)
+                    $involved[ $r['user']->id ] = $r['user'];
+                else
+                    throw new LogicException('Replies data is corrupted');
+
+            $tap->involved = $involved;
+        }
+        
+        return $this;
     }
 
     /*
