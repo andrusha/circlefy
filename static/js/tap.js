@@ -47,14 +47,8 @@ var _template = {
 		a mapping of the type and the id in #templates
 	*/
     map: {
-        'taps': 'template-taps',
-        'responses': 'template-responses',
-        'list.convo': 'template-list-convo',
-        'suggest.group': 'template-suggest-group',
-        'list.member': 'template-list-member',
-        'error': 'template-error',
-        'number': 'template-notification-number',
-        'suggestions': 'template-suggestions'
+        'search':  'template-search',
+        'replies': 'template-replies'
     },
 
 	/*
@@ -153,4 +147,9 @@ var _dater = _tap.register({
 var _notifications = new Roar({
     position: 'lowerRight'
 });
+
+var _tips = new Tips($$('.circle-thumb', '.avatar-author'), {
+                showDelay: 200,
+                hideDelay: 200
+        });
 

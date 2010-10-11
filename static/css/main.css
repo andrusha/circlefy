@@ -597,7 +597,7 @@ h1.wide {
 	font-size:14px;
 	font-weight:bold;
 	color:#545454;
-	padding:0 0 13px 0;
+	padding:0 0 11px 0;
 	border-bottom:1px solid #d7d7d7;
 	position:relative;
 	margin:0 0 13px;
@@ -1049,3 +1049,123 @@ h1.wide {
         float:left;
 }
 /*** </Relies feed> ***/
+
+/*** <Group edit page> ***/
+#edit span input[type=checkbox] {
+        margin:0 0 0 20px;
+}
+#add {
+        background:url(../images/filter_semi.png) repeat;
+        display:block;
+        border:1px solid #b3b3b3;
+        margin:30px 0;
+        padding:25px;
+}
+#add li {
+        list-style:none;
+        float:left;
+        display:block;
+        width:40px;
+        height:40px;
+        padding:4px;
+        margin:0 3px 8px 5px;
+        position:relative;
+}
+#add li img {
+                border:none;
+        filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+        /* For IE 8 */
+        -MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        -moz-opacity:.4;    /* old mozilla browser like netscape  */
+        -khtml-opacity: .4;    /* for really really old safari */  
+        opacity: .4;    /* css standard, currently it works in most modern browsers like firefox,  */
+        z-index:1;
+        position:relative;
+}
+#add li:hover img {
+        filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+        /* For IE 8 */
+        -MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+        -moz-opacity:1;    /* old mozilla browser like netscape  */
+        -khtml-opacity: 1;    /* for really really old safari */  
+        opacity: 1;    /* css standard, currently it works in most modern browsers like firefox,  */
+}
+#add li:hover {
+        padding:3px;
+        border:1px solid #b3b3b3;
+        background:#fff;
+        height:40px;
+        width:40px;
+}
+#add li .view {
+        display:none;
+        width:48px;
+        height:18px;
+        background:url(../images/edit_view.png) no-repeat;
+        text-indent:-9999px;
+        overflow:hidden;
+        position:absolute;
+        top:46px;
+        left:-1px;
+        z-index:5;
+}
+#add li:hover .view {
+        display:block;
+}
+#add li span {
+        position:absolute;
+        z-index:8;
+        border:none;
+        top:28px; left:29px;
+        display:block;
+}
+#add li:hover span {
+        top:27px;
+        left:28px;
+}
+#add label {
+        color:#356494;
+        font-size:14px;
+        font-weight:bold;
+        display:block;
+        padding:0 0 5px 10px;
+}
+#add label small {
+        font-size:12px;
+        color:#545454;
+        font-weight:normal;
+        padding:0 0 0 5px;
+}
+.accept {
+        text-decoration:none;
+        border:1px solid #a6a6a6;
+        background:url(../images/button_wide.gif) repeat-x;
+        font-size:11px;
+        font-weight:bold;
+        color:#474747;
+        text-align:center;
+        display:block;
+        border-radius:2px;
+        -webkit-border-radius:2px;
+        -moz-border-radius:2px;
+        padding:8px;
+        margin:10px 11px 0 0;
+        float:right;
+}
+.reject {
+        text-decoration:none;
+        border:1px solid #000;
+        background:#222;
+        font-size:11px;
+        font-weight:bold;
+        color:#fff;
+        text-align:center;
+        display:block;
+        border-radius:2px;
+        -webkit-border-radius:2px;
+        -moz-border-radius:2px;
+        padding:8px;
+        margin:10px 15px 0 0;
+        float:right;
+}
+/*** </Group edit page> ***/

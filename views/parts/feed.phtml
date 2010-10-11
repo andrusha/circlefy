@@ -80,19 +80,25 @@
                     <?      endforeach;
                        endif;?>
                 </div><!--list-->
+
+                <? if (!$guest): ?>
                 <div class="field">
-                        <div class="thumb"><img src="/static/images/avatar_00.jpg" alt="avatar" /></div>
+                        <div class="thumb"><img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" /></div>
                     <div class="editor">
                     
                     </div><!--editor-->
                     <div class="clear"></div>
                 </div><!--field-->
+                <? endif; ?>
             </div><!--replies-->
 
             <div class="clear"></div>
             <div class="icons">
-                <a href="#"><img src="/static/images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                <a href="#"><img src="/static/images/feed_type_00.jpg" alt="tap type" /></a>
+                <? if (!$_f['hide_group_icon']): ?>
+                <a href="/circle/<?=$f['group']['symbol']?>"><img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" alt="<?=$f['group']['name']?>" /></a>
+                <? endif; ?>
+                <!-- there would be icon, selected depending on what type of content message have -->
+                <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
                 <span><?=$f['time']?></span>
             </div>
             <a href="#" class="edit">edit</a>
