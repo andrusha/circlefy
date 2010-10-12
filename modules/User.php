@@ -26,6 +26,11 @@ class User extends BaseModel {
         return parent::__get($key);
     }
 
+    public function asArray() {
+        //security issue
+        return array_diff_key($this->data, array_flip(array('pass', 'ip', 'email','last_login')));
+    }
+
     /*
         @return User
     */

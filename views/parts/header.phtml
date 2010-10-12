@@ -14,6 +14,7 @@
 ?>
 <script type="text/javascript" src="/static/js/mootools-core.js"></script>
 <script type="text/javascript" src="/static/js/mootools-more.js"></script>
+<script type="text/javascript" src="/static/js/libs.js"></script>
 <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script> 
 <?php
     if(isset($_h['vars']))
@@ -33,9 +34,16 @@
             <div class="left">
             <a href="/" id="logo">circlefy</a>
             <form>
-            	<input type="text" value="Start or join a conversation" />
+            	<input id="group-search" type="text" autocmplete="off" value="Start or join a conversation" />
                 <div id="search-results" class="hidden">
-                  <ul></ul>
+                  <ul>
+                    <li class="create">
+                        <div class="thumb"><span></span><img src="/static/images/search_create.gif" alt="search" /></div>
+                        <h3 class="title"><a href="#">Create new conversation circle</a></h3>
+                        <small>Click here to create a circle on the fly!</small>
+                        <div class="clear"></div>
+                    </li>
+                  </ul>
                 </div><!--searchresults-->
             </form>
             </div><!--left-->
