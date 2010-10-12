@@ -12,7 +12,14 @@ var _search = _tap.register({
         this.keyword = null;
         this.last_keypress = new Date().getTime()/1000;
 
-        search.overtext = new OverText(search, {positionOptions: {offset: {x: 10, y: 9}}}).show();
+        search.overtext = new OverText(search, {
+            positionOptions: {
+                offset: {x: 10, y: 9},
+                relativeTo: search,
+                relFixedPosition: false,
+                ignoreScroll: true,
+                ignoreMargin: true
+            }}).show();
         search.addEvents({
             'blur': this.end.toHandler(this),
             'focus': this.start.toHandler(this),

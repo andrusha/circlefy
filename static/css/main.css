@@ -70,6 +70,7 @@ body {
 	width:296px;
 	height:auto;
 	padding:10px 0 0 0;
+    position: relative;
 }
 #header input[type=text] {
 	width:258px;
