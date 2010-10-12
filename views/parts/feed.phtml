@@ -37,7 +37,7 @@
         <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" class="avatar-author" />
         <div class="text">
             <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
-            <a href="/convo/<?=$f['id']?>"><cite><?=$f['text']?></cite></a>
+            <cite><a href="/convo/<?=$f['id']?>"><?=$f['text']?></a></cite>
             <div class="clear"></div>
 
             <? if (empty($f['replies'])): ?>
