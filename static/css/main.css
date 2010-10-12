@@ -107,8 +107,8 @@ body {
 #controls {
 	padding:15px 0;
 }
-#controls #pause {
-	display:inline;
+#pause {
+	display:block;
 	background:#3c3c3c;
 	font-size:11px;
 	font-weight:bold;
@@ -122,6 +122,9 @@ body {
 	padding:3px 6px;
 	float:left;
 	margin:7px 0 0 0;
+	position:absolute;
+	top:0;
+	right:0;
 }
 #controls #filters {
 	display:inline;
@@ -260,6 +263,7 @@ body {
 	float:left;
 	width:635px;
 	height:auto;
+	position:relative;
 }
 .forced {
 	position:fixed;
