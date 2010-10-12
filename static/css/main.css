@@ -395,17 +395,33 @@ h1.wide {
 .feed-item:hover .edit {
 	display:block;
 }
-.conversation .feed-item .icons {
-	top:10px;
-}
-.feed-item .icons {
+.feed-item .circle {
 	position:absolute;
 	top:30px;
 	right:10px;
 	height:20px;
 	width:auto;
 }
-.feed-item .icons img {
+.feed-item .circle span {
+	position:absolute;
+	top:0;
+	right:0;
+	width:20px;
+	height:20px;
+	background:url(../images/circle_small.png) no-repeat top;
+}
+.feed-item:hover .circle span {
+	background:url(../images/circle_small.png) no-repeat bottom;
+}
+
+.feed-item .icons {
+	position:absolute;
+	top:30px;
+	right:35px;
+	height:20px;
+	width:auto;
+}
+.feed-item .icons img, .feed-item .circle img {
 	border:none;
 }
 .feed-item .icons span {
