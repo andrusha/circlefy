@@ -15,6 +15,7 @@ var _modal = _tap.register({
 
         this.subscribe({
             'modal.show.signup': function() { self.show('modal-signup') },
+            'modal.show.login': function() { self.show('modal-login') },
             'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.facebook-status': function(cid, symbol) {
@@ -109,11 +110,15 @@ _modal.signup = _tap.register({
         signupData.pass.addEvent('blur', this.checkPass.toHandler(this));
         modalForm.getElement('button').addEvent('click', this.submitForm.toHandler(this)); 
 
-        $$('a.signup-button', 'button.signup-button').addEvent('click', function () {
+        $$('button.signup-button').addEvent('click', function () {
             this.publish('modal.show.signup', []);
         }.bind(this));
 
-        $('access').addEvent('click', function () {
+        $$('button.login-button').addEvent('click', function () {
+            this.publish('modal.show.login', []);
+        }.bind(this));
+
+        $$('a#access').addEvent('click', function () {
             this.publish('modal.show.sign-login', []);
         }.bind(this));
     },
@@ -458,6 +463,101 @@ _modal.suggestions = _tap.register({
                var response = JSON.decode(this.response.text);
                self.chain();
            }
+        }).send();
+    }
+});
+
+/*
+    Modal window for login-logout
+*/
+_modal.login = _tap.register({
+
+    init: function() {
+        var self = this,
+            form = this.form = $('taplogin');
+        this.facebook = false;
+
+        form.user = form.getElement('input[name="uname"]');
+        form.pass = form.getElement('input[name="pass"]');
+        form.fb   = form.getElement('input[name="facebook"]');
+        form.btn  = form.getElement('input[type="submit"]');
+
+        this.subscribe({
+            'facebook.logged_in':  function () { 
+                this.facebook = true; 
+                this.form.fb.checked = true;
+                this.fbToggle();
+                this.form.fb.getParent().removeClass('hidden');
+            }.bind(this), 
+            'facebook.logged_out': function () {
+                this.facebook = false;
+                this.form.fb.checked = false;
+                this.fbToggle();
+                this.form.fb.getParent().addClass('hidden');
+            }.bind(this)
+        });
+
+        form.addEvent('submit', function(e) {
+            e.stop();
+            var type = 'user';
+            if (self.facebook && self.form.fb.checked) {
+                type = 'facebook';
+            } else {
+                if (form.user.isEmpty()) {
+                    form.user.addClass('error');
+                    return form.user.focus();
+                } else
+                    form.user.removeClass('error');
+
+                if (form.pass.isEmpty()) {
+                    form.pass.addClass('error');
+                    return form.pass.focus();
+                } else
+                    form.pass.removeClass('error');
+            }
+            self.auth(form.user.value, form.pass.value, type);
+        });
+
+        form.fb.addEvent('click', this.fbToggle.bind(this));
+    },
+
+    fbToggle: function (e) {
+        var state = this.form.fb.checked;
+        this.form.fb.checked = state;
+        this.form.user.disabled = state;
+        this.form.pass.disabled = state;
+    },
+
+    auth: function(user, pass, type) {
+        var el = $('login-button');
+        var position = el.getPosition();
+        position = [position.x+63, position.y+25];
+
+        _notifications.alert('Please wait', "We are processing your request... <img src='/images/ajax_loading.gif'>",
+            { color: 'black',  duration: 10000, position: position});
+        var executing = _notifications.items.getLast();
+
+        data = {'user': user,
+                'pass': pass,
+                'type': type};
+        new Request({
+            url: '/AJAX/user/login',
+            data: data,
+            onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+                _notifications.remove(executing);
+
+                if(response.status == 'REGISTERED') {
+                    _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
+                        {color: 'darkgreen', duration: 2000, position: position});
+
+                    (function () { document.location.reload() }).delay(2000, this, 'login');
+                } else if (response.status == 'NOT_REGISTERED') {
+                    _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
+                        {color: 'darkred', duration: 5000, position: position});
+                }
+
+            }
         }).send();
     }
 });

@@ -30,11 +30,55 @@
 		</p>
 	</div>
 
+<!-- Login -->
+	<div id="modal-login" class="modal-window">
+		<h2>Join conversation!</h2>
+        <table>
+            <tr>
+                <td>
+                    <form id="taplogin" action="/" method="POST">
+                        <ul>
+                            <li>
+                                <label class="inblock">username</label>
+                                    <p class="body">
+                                        <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
+                                    </p>
+                            </li>
+                            <li>
+                                <label class="inblock">password</label>
+                                <p class="body">
+                                <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
+                                </p>
+                            </li>
+                            <li class="action">
+                                <input name="facebook" type="checkbox">
+                                <label for="facebook">Login with facebook</label>
+                            </li>
+                            <li class="action">
+                                <button id="login-button" type="submit">login</button>
+                            </li>
+                        </ul>
+                    </form>
+                </td>
+                <td style="width: 40px; padding-right: 10px; text-align: center;">
+                    OR
+                </td>
+                <td>
+                    <fb:login-button show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button>
+                </td>
+            </tr>
+        </table>
+        <span class="modal-actions">
+                <a class="modal-cancel" href="#">close</a>
+        </span>
+	</div>
+
+
 <!-- Login or signup -->
 	<div id="modal-sign-login" class="modal-window">
 		<h2>Hi there, select on option below</h2>
         <span class="modal-actions">
-                <button class="signup-button">Sign up</button> or <button onClick="javascript: window.location.replace('/login')">Log in</button> or <a class="modal-cancel" href="#">close</a>
+                <button class="signup-button">Sign up</button> or <button class="login-button">Log in</button> or <a class="modal-cancel" href="#">close</a>
         </span>
 	</div>
 

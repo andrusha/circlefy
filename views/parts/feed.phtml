@@ -2,7 +2,7 @@
 
 <? if ($_f['show_reply']): ?>
 <form id="reply">
-    <img src="/static//static/images/reply_avatar.jpg" alt="avatar" class="avatar" />
+    <img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" />
     <textarea>Post a message to this circle</textarea>
     <input type="submit" value=" " />
     <div class="clear"></div>
@@ -34,10 +34,10 @@
     ?>
     <div class="feed-item<?=($last ? ' last' : '')?>" id="global-<?=$f['id']?>">
     
-        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['uname']?>" class="avatar-author" />
+        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" class="avatar-author" />
         <div class="text">
             <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
-            <cite><?=$f['text']?></cite>
+            <a href="/convo/<?=$f['id']?>"><cite><?=$f['text']?></cite></a>
             <div class="clear"></div>
 
             <? if (empty($f['replies'])): ?>

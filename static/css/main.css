@@ -343,6 +343,7 @@ h1.wide {
 }
 .feed-item .timestamp {
 	display:none;
+    float: right;
 }
 .feed-item:hover .timestamp {
 	display:inline;

@@ -4,6 +4,12 @@ class page_homepage extends Base {
     protected $need_login = true;
 
 	function __invoke() {
+        if (isset($_GET['logout'])) {
+            Auth::logOut();
+            header('location: /');
+            exit();
+        }
+
         if ($this->user->guest)
             $this->guest();
         else

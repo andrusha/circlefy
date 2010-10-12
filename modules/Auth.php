@@ -42,7 +42,7 @@ abstract class Auth {
             if (!$fb->fuid)
                 return null;
 
-            $where = "id = #fbid#";
+            $where = "fb_id = #fbid#";
             $params = array('fbid' => $fb->fuid);
         }
 
@@ -67,13 +67,6 @@ abstract class Auth {
         }
 
         return new User(null);
-    }
-
-    /*
-        @return User
-    */
-    public static function logInWithFacebook() {
-        return Auth::logIn('', '', true);
     }
 
     /*

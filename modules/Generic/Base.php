@@ -35,7 +35,7 @@ abstract class Base {
 
         //actually, we need user everywhere
         if ($this->need_login || true)
-            $this->userActions();
+            $this->user = Auth::identify();
     }
 
     public function __destruct() {
@@ -69,24 +69,6 @@ abstract class Base {
         echo ob_get_clean();
     }
 
-    /*
-        Create user, based on possible actions on it, like login/logout, etc
-    */
-    private function userActions() {
- 		if (isset($_GET['logout']) && !$_POST['uname']){
-			Auth::logOut();
-            header("location: /");
-            exit();
-		}
-
-        if (!empty($_POST['uname']) && !empty($_POST['pass']) && $_POST['action'] == 'login_basic')
-           $this->user = Auth::logIn($_POST['uname'], $_POST['pass']);
-        else if ($_POST['fb_login'] == '1' && $_POST['action'] == 'login_basic')
-           $this->user = Auth::logInWithFacebook();
-        else
-           $this->user = Auth::identify();
-    }
-      
     public function set($text, $var){
         $this->data[$var] = $text;
     }

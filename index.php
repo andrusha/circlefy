@@ -40,7 +40,8 @@ $pages = array(
 $ajaxs = array(
          'user' => array(
                  'check'    => true,
-                 'facebook' => true
+                 'facebook' => true,
+                 'login'    => true
              ),
          'group' => array(
                 'suggest'   => true,

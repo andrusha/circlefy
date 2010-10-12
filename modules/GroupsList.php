@@ -387,7 +387,6 @@ class GroupsList extends Collection {
 
             $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
             $favicon = !empty($links) ? Images::getFavicon($links[0], GROUP_PIC_PATH."/fav_{$g->id}.ico") : null;
-
             //TODO: make bulk tags addition
             $g->tags->addTags($tags);
             $g->commit();

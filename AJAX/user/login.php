@@ -1,16 +1,12 @@
 <?php
 /* CALLS:
-    login.js
+    modal.js
 */ 
-require_once('../../config.php');
-require_once('../../api.php');
 
-class login extends Base {
-    public function __construct() {
-        $this->need_db = false;
-        $this->view_output = 'JSON';
-        parent::__construct();
+class ajax_login extends Base {
+    protected $view_output = 'JSON';
 
+    public function __invoke() {
         switch ($_POST['type']) {
             case 'user':
                 $user = $_POST['user'];
@@ -25,10 +21,10 @@ class login extends Base {
     }
 
     private function normal($uname, $pass) {
-        if (!$user || !$pass)
+        if (!$uname || !$pass)
             return array('status' => 'NOT_REGISTERED');
 
-        if (Auth::logIn($user, $password, false) !== null)
+        if (Auth::logIn($uname, $pass, false)->id !== null)
             return array('status' => 'REGISTERED');
         return array('status' => 'NOT_REGISTERED');
     }
@@ -37,9 +33,10 @@ class login extends Base {
         $fb = new Facebook();
         $exists = $fb->exists();
         
-        if ($exists)
+        if ($exists) {
+            Auth::logIn('', '', true);
             return array('status' => 'REGISTERED');
-        else {
+        } else {
             $user_info = $fb->info;
             $data = array(
                 'fb_uid' => $fb->fuid,
@@ -51,5 +48,3 @@ class login extends Base {
         }
     }
 };
-
-$a = new login();
