@@ -2,6 +2,7 @@
 
     <? /*** Search suggestions template ***/ ?>
     <ul id="template-search">
+        <# if (this.length > 0): #>
         <# for (var sugg from this): #>
         <li>
            <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
@@ -9,13 +10,25 @@
            <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
            <div class="clear"></div>
         </li>
-        <# end; #>
+        <# endfor; #>
+        <# else: #>
+        <li>
+            <h3>Nothing found. Create your own circle:</h3>
+        </li>
+        <# endif; #>
 
         <li class="create">
             <div class="thumb"><span></span><img src="/static/images/search_create.gif" alt="search" /></div>
             <h3 class="title"><a href="#">Create new conversation circle</a></h3>
             <small>Click here to create a circle on the fly!</small>
             <div class="clear"></div>
+        </li>
+    </ul>
+
+    <? /*** Placeholder for 'searching' state of group suggestions ***/ ?>
+    <ul id="template-search-placeholder">
+        <li>
+            <h3>Searching...</h3>
         </li>
     </ul>
 

@@ -99,44 +99,9 @@ var _dater = _tap.register({
         var items = _body.getElements("[data-timestamp]");
         items.each(function(el) {
             var timestamp = el.getData('timestamp') * 1;
-            el.set('text', _dater.timestampToStr(timestamp));
+            el.text = new Date().timeDiffInWords(new Date(timestamp*1000));
         });
-    },
-
-    /*
-    method: timestampToStr
-        Convert timestamp to human-readable format
-        with X min/hour/day/week ago stuff
-
-        args:
-        1.timestamp integer
-
-        returns:
-        -string represents time
-    */
-    timestampToStr: function(timestamp) {
-        var now = new Date().getTime(),
-                orig = new Date(timestamp * 1000),
-                diff = ((now - orig) / 1000),
-                day_diff = Math.floor(diff / 86400);
-
-        if (diff < 0)
-            return "Just Now";
-
-        if (isNaN(timestamp) || $type(diff) == false || day_diff >= 31)
-            return orig.format('jS M Y');
-
-        return day_diff == 0 && (
-                diff < 120 && "Just Now" ||
-                        diff < 3600 && Math.floor(diff / 60) + "min ago" ||
-                        diff < 7200 && "An hour ago" ||
-                        diff < 86400 && Math.floor(diff / 3600) + " hours ago") ||
-                day_diff == 1 && "Yesterday" ||
-                day_diff < 7 && day_diff + " days ago" ||
-                day_diff == 7 && "A week ago" ||
-                day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago";
     }
-
 });
 
 /*

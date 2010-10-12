@@ -135,6 +135,7 @@ class GroupsList extends Collection {
             byGroup  - group by ID
             bySymbol - fetch group by symbol
             byFbIDs  - groups by their Facebook ID
+            like     - search on group name by LIKE
 
         @param array $params
             uid    - user id
@@ -142,6 +143,7 @@ class GroupsList extends Collection {
             symbol - group symbol
             fbids  - a list of facebook group (likes, etc) ids
             limit  - how many lines fetch from db
+            search - search string for group
 
         @param int   $options
             G_TAPS_COUNT      - fetch number of messages in group
@@ -183,6 +185,10 @@ class GroupsList extends Collection {
 
             case 'byFbIDs':
                 $where = 'g.fb_id IN (#fbids#)';
+                break;
+
+            case 'like':
+                $where = 'g.name LIKE #search#';
                 break;
         }
 

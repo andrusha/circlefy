@@ -569,6 +569,9 @@ Function.implement({
 });
 
 String.implement({
+    isEmpty : function() {
+        return (!this.test(/\w+/));
+    },
 
 	cleanup: function(){
 		return this.replace(/&gt;|%3E|&lt;|%3C|%20/g, function(match){
@@ -630,8 +633,6 @@ String.implement({
 	}
 
 });
-
-
 
 // GENERALS
 

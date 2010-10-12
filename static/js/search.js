@@ -6,18 +6,16 @@ var _search = _tap.register({
 
     init: function(){
         var search = this.search = $('group-search');
-        this.placeholder = 'Start or join a conversation';
 
         this.suggest = $('search-results');
         this.list = this.suggest.getElement('ul');
-        this.selected = null;
         this.keyword = null;
-        this.new_keyword = null;
-        this.last_keypress = new Date();
+        this.last_keypress = new Date().getTime()/1000;
 
+        search.overtext = new OverText(search, {positionOptions: {offset: {x: 10, y: 9}}}).show();
         search.addEvents({
-            'focus': this.start.toHandler(this),
             'blur': this.end.toHandler(this),
+            'focus': this.start.toHandler(this),
             'keyup': this.checkKeys.bind(this)
         });
         this.list.addEvents({
@@ -25,17 +23,9 @@ var _search = _tap.register({
                 this.publish('modal.show.group.create', []);
             }.bind(this)
         });
-        search.value = this.placeholder;
-        //search.focus();
     },
 
-    /*
-    handler: start()
-        fired when the search input is focused
-    */
-    start: function() {
-        if (this.search.value == this.placeholder)
-            this.search.value = '';
+    start: function(el) {
         this.suggest.removeClass('hidden');
     },
 
@@ -44,11 +34,8 @@ var _search = _tap.register({
         fired when the search input is blurred
     */
     end: function(el){
-        this.selected = null;
         (function(){
             this.suggest.addClass('hidden');
-            if (this.search.value == '')
-                this.search.value = this.placeholder;
         }).bind(this).delay(300);
     },
 
@@ -60,9 +47,23 @@ var _search = _tap.register({
         //var updown = ({'down': 1, 'up': -1})[e.key];
         //if (updown) return this.navigate(updown);
         if (e.key == 'enter') return this.goSearch(e);
-        if (({'left': 37,'right': 39,'esc': 27,'tab': 9})[e.key]) return;
-        this.search.value = new Date.diff(this.last_keypress, 'ms');
-        //this.goSearch(e);
+        //skip all meta-keys except del & backspace
+        if ((e.code < 48) && !([8, 46].contains(e.code)))  return;
+
+        //2 - minimal timeout before searches
+        var now = new Date().getTime()/1000,
+            delta = 1.5 - (now - this.last_keypress);
+        this.last_keypress = now;
+
+        if (delta < 0) {
+            clearTimeout(this.search_event);
+            this.goSearch(e);
+        } else {
+            clearTimeout(this.search_event);
+            this.search_event = (function () {
+                this.goSearch(e);
+            }).delay(delta*1000, this);
+        }
     },
 
     /*
@@ -89,92 +90,24 @@ var _search = _tap.register({
         performs the search
     */
     goSearch: function(e){
-        var keyword = this.keyword = this.search.value;
-        if (!keyword.isEmpty() && keyword.length){
+        var keyword = this.search.value,
+            self = this;
+        //do not search for empty strings, strings < 2 chars & same keywords 
+        if (!keyword.isEmpty() && keyword.length > 2 && this.keyword != keyword){
+            this.keyword = keyword;
             if (!this.request)
                 this.request = new Request({
                     url: '/AJAX/group/search',
                     link: 'cancel',
-                    onSuccess: this.parseResponse.bind(this)
+                    onSuccess: function () {
+                        var resp = JSON.decode(this.response.text);
+                        Elements.from(_template.parse('search', resp.groups)).inject(self.list.empty());
+                    }
                 });
             this.request.send({data: {search: keyword}});
-        } else {
+        } else if (keyword.length <= 2)
             this.list.empty();
-            new Element('li', {'text': 'searching..', 'class': 'notice'}).inject(this.list);
-        }
-    },
-
-    /*
-    method: parseResponse()
-        parses the response from the server and inject it in the suggestion box
-    */
-    parseResponse: function(txt){
-        var resp = JSON.decode(txt),
-            list = this.list.empty();
-        this.selected = null;
-        var exact_match = false;
-        var keyword = this.keyword;
-        if (!resp){
-            this.list.empty();
-            var no_res_el = new Element('li', {'text': 'hmm, nothing found..', 'class': 'notice'}).inject(this.list);
-            this.new_keyword = this.keyword.replace(/ /g,'-');
-            var data = [
-                {
-                    id: 0,
-                    symbol: 'search',
-                    name: 'Create New Conversation Channel <span style="color:blue;">'+this.new_keyword+'</span>',
-                    online: '',
-                    total: '',
-                    img: false,
-                    desc: 'Click here to great this channel on the fly!',
-                    joined: 'no'
-                }
-                  ];
-            $$(Elements.from(_template.parse('suggest.group', data)).slice(0, 6)).inject(list);
-            return this;
-        }
-        var data = resp.map(function(item){
-            var els = Elements.from(item[3]),
-                info = item[1].split(':');
-            var a = info[4],b = info[5];
-            info.shift();
-    
-            if(item[0].rtrim(' ').toLowerCase() == keyword.rtrim(' ').toLowerCase() || exact_match != false ){
-                exact_match = true;
-            }
-
-            return {
-                id: info.pop(),
-                symbol: info.shift(),
-                name: item[0],
-                online: a,
-                total: b,
-                img: els.filter('img').pop().get('src'),
-                desc: els.filter('span').pop().get('text'),
-                joined: item[4]
-            };
-        });
-
-        
-
-        this.new_keyword = this.keyword.replace(/ /g,'-');
-        if(!exact_match){
-            data.push(
-                {
-                    id: 0,
-                    symbol: 'search',
-                    name: 'Create New Conversation Channel <span style="color:blue;">'+this.new_keyword+'</span>',
-                    online: '',
-                    total: '',
-                    img: false,
-                    desc: 'Click here to great this channel on the fly!',
-                    joined: 'no'
-                }
-            );
-        }
-        
-        $$(Elements.from(_template.parse('suggest.group', data)).slice(0, 6)).inject(list);
-        this.suggest.addClass('on');
+        else
+            Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.list.empty());
     }
-
 });

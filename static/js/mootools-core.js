@@ -1780,12 +1780,7 @@ this.Events = new Class({
 			for (var i = fns.length; i--;) this.removeEvent(type, fns[i]);
 		}
 		return this;
-	},
-
-    removeOn: function(string) {
-        return removeOn(string);
-    }
-
+	}
 });
 
 this.Options = new Class({
