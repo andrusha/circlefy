@@ -738,6 +738,10 @@ h1.wide {
 	float:right;
 	margin: 0 0 10px 10px;
 }
+.side .circle-thumb {
+	float:right;
+	margin: 0 0 10px 10px;
+}
 .conversation h3.username {
 	position:relative;
 	text-indent:25px;
