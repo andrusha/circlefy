@@ -1,4 +1,4 @@
-<div id="sidebar"<?=(isset($_s['convo']) ? 'class="conversation"' : '')?>>
+<div id="sidebar"<?=(isset($_s['convo']) ? 'class="conversation"' : '')?><?=(isset($_s['circle']) ? 'class="side"' : '')?>>
 <? if (isset($_s['convo'])): ?>
 <div class="wrap">
 <? endif; ?>
@@ -38,9 +38,8 @@
             $c = $_s['circle'];
     ?>
     <div class="box">
-        
         <h3 class="username"><?=$c['name']?></h3>
-        <img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" class="profile-thumb" alt="thumb" />
+        <div href="#" class="circle-thumb"><span class="circle"></span><img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" class="profile-thumb" alt="thumb" /></div>
         <p><?=$c['descr']?></p>
         
         <div class="clear"></div>
@@ -75,7 +74,7 @@
         
         <span class="stats"><?=$u['stats']['messages']?><small>messages sent</small></span>
         <span class="stats"><?=$u['stats']['responses']?><small>responses received</small></span>
-        <span class="stats"><?=$u['stats']['groups']?><small>channels joined</small></span>
+        <span class="stats"><?=$u['stats']['groups']?><small>circles joined</small></span>
         
         <div class="clear"></div>
         

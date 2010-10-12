@@ -9,19 +9,7 @@
 </form><!--reply-->
 <? endif; ?>
 
-<div id="controls">
-    <a href="#" id="pause">Pause Stream</a>
-    
-    <div id="filters">
-        <span>Filter options:</span>
-        <a href="#" class="filter"><span>Option</span></a>
-        <a href="#" class="filter"><span>Option</span></a>
-        <a href="#" class="filter"><span>Option</span></a>
-    </div><!--filters-->
-    
-    <div class="clear"></div>
-    
-</div><!--controls-->
+<a href="#" id="pause">Pause Stream</a>
 
 <div id="feed">
 
@@ -93,11 +81,16 @@
             </div><!--replies-->
 
             <div class="clear"></div>
-            <div class="icons">
                 <? if (!$_f['hide_group_icon']): ?>
-                <a href="/circle/<?=$f['group']['symbol']?>"><img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" alt="<?=$f['group']['name']?>" /></a>
+                <div class="circle">
+                    <a href="/circle/<?=$f['group']['symbol']?>">
+                        <span></span>
+                        <img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" alt="<?=$f['group']['name']?>" />
+                    </a>
+                </div><!--circle-->
                 <? endif; ?>
-                <!-- there would be icon, selected depending on what type of content message have -->
+             <div class="icons">
+               <!-- there would be icon, selected depending on what type of content message have -->
                 <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
                 <span><?=$f['time']?></span>
             </div>

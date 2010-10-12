@@ -140,19 +140,20 @@ _modal.signup = _tap.register({
     },
 
     checkUname: function(el){
-        var self = this;
-        if (this.oldUname == el.value)
+        var self = this,
+            name = el.value;
+        if (this.oldUname == name)
             return;
-        this.oldUname = el.value;
+        this.oldUname = name;
         
-        if (el.isEmpty() || !el.ofLength(4, 20)) {
+        if (name.isEmpty() || !(name.length >= 4 && name.length < 20)) {
             return self.showError(el, 'Username must be at least 4 characters');
         } else {
             new Request({
                 url: '/AJAX/user/check',
                 data: {
                     type: 'uname',
-                    val: el.value
+                    val:   name
                 },
                 onSuccess: function(){
                     var response = JSON.decode(this.response.text);
@@ -168,21 +169,22 @@ _modal.signup = _tap.register({
     },
 
     checkEmail: function(el){
-        var self = this;
+        var self = this,
+            email = el.value;
 
-        if (this.oldEmail == el.value)
+        if (this.oldEmail == email)
             return;
-        this.oldEmail = el.value;
+        this.oldEmail = email;
 
-        el.value = el.value.toLowerCase();
-        if (el.isEmpty() || !el.isEmail()) {
+        el.value = email.toLowerCase();
+        if (email.isEmpty() || !(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i).test(email)) {
             return self.showError(el, 'Please enter a valid email.');
         } else {
             new Request({
                 url: '/AJAX/user/check',
                 data: {
                     type: 'email',
-                    val: el.value
+                    val:   email 
                 },
                 onSuccess: function(){
                     var response = JSON.decode(this.response.text);
@@ -198,7 +200,7 @@ _modal.signup = _tap.register({
     },
 
     checkPass: function(el){
-        if (el.isEmpty() || !el.ofLength(6, 20)) {
+        if (el.value.isEmpty() || !(el.value.length >= 6 && el.value.length < 40)) {
                 return this.showError(el, 'Password must be at least 6 characters.');
         }
         return this.removeError(el);
