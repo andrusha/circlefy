@@ -375,6 +375,11 @@ h1.wide {
 	float:left;
 	margin:0 0 10px 0;
 }
+.feed-item cite a {
+	color:#202020;
+    text-decoration: none;
+    display: block;
+}
 .feed-item .edit {
 	position:absolute;
 	display:none;
