@@ -232,8 +232,12 @@ class GroupsList extends Collection {
         $groups = array();
         $result = $db->query($query, $params);
         if ($result->num_rows)
-            while ($res = $result->fetch_assoc())
+            while ($res = $result->fetch_assoc()) {
+                if ($res['id'] === null)
+                    continue;
+
                 $groups[] = new Group($res);
+            }
 
         $groups = new GroupsList($groups);
 

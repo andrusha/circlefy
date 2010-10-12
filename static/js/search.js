@@ -52,7 +52,7 @@ var _search = _tap.register({
 
         //2 - minimal timeout before searches
         var now = new Date().getTime()/1000,
-            delta = 1.5 - (now - this.last_keypress);
+            delta = 1 - (now - this.last_keypress);
         this.last_keypress = now;
 
         if (delta < 0) {
@@ -93,7 +93,7 @@ var _search = _tap.register({
         var keyword = this.search.value,
             self = this;
         //do not search for empty strings, strings < 2 chars & same keywords 
-        if (!keyword.isEmpty() && keyword.length > 2 && this.keyword != keyword){
+        if (!keyword.isEmpty() && keyword.length > 1 && this.keyword != keyword){
             this.keyword = keyword;
             if (!this.request)
                 this.request = new Request({
@@ -105,7 +105,7 @@ var _search = _tap.register({
                     }
                 });
             this.request.send({data: {search: keyword}});
-        } else if (keyword.length <= 2)
+        } else if (keyword.length <= 1)
             this.list.empty();
         else
             Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.list.empty());
