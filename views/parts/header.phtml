@@ -44,10 +44,18 @@
             <? if ($_h['guest']): ?>
             <a href="#" id="access">create account or login</a>
             <? else: ?>
-            <a href="/user/<?=$me['uname']?>" title="It's you">
-                <img src="<?=USER_PIC_REL.'small_'.$me['id'].'.jpg'?>" alt="It's you">
-                <span><?=$me['fname']?></span>
-            </a>
+            <div class="right">
+            	
+                <div class="user">
+                	<img src="<?=USER_PIC_REL.'small_'.$me['id'].'.jpg'?>" alt="It's you">
+                    <a href="/user/<?=$me['uname']?>" title="It's you"><?=$me['fname']?></a>
+                    <ul class="dropdown">
+                    	<li class="settings"><a href="#">Settings</a></li>
+                        <li class="logout"><a href="#">Log Out</a></li>
+                    </ul>
+                </div><!--user-->
+                
+            </div><!--right-->
             <? endif; ?>
             
             <div class="clear"></div>
