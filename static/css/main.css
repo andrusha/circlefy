@@ -272,6 +272,9 @@ border-top-right-radius: 0px;
 	padding:0;
 	text-align:center;
 }
+#reply .anonym:hover {
+	background:rgba(255,255,255,1);
+}
 #reply .anonym img {
 	border:none;
 }
