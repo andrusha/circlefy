@@ -265,9 +265,10 @@ border-top-right-radius: 0px;
 	text-decoration:none;
 	text-shadow:1px solid #fff;
 	position:absolute;
-	top:40px;
-	left:40px;
+	top:38px;
+	left:13px;
 	padding:3px 0;
+	text-align:center;
 }
 #reply .avatar {
 	padding:2px;
