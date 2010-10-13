@@ -257,7 +257,7 @@ border-top-right-radius: 0px;
 }
 #reply .anonym {
 	display:block;
-	width:15px;
+	width:16px;
 	background:rgba(255,255,255,.85);
 	border:1px solid #9f9f9f;
 	font-size:10px;
@@ -266,9 +266,9 @@ border-top-right-radius: 0px;
 	text-shadow:1px solid #fff;
 	position:absolute;
 	top:43px;
-	height:15px;
+	height:16px;
 	padding:0;
-	left:13px;
+	left:14px;
 	padding:0;
 	text-align:center;
 }
