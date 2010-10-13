@@ -253,6 +253,21 @@ border-top-right-radius: 0px;
 	padding:10px;
 	display:block;
 	margin:15px 0;
+	position:relative;
+}
+#reply .anonym {
+	display:block;
+	width:48px;
+	background:rgba(255,255,255,.85);
+	border:1px solid #9f9f9f;
+	font-size:10px;
+	color:#000;
+	text-decoration:none;
+	text-shadow:1px solid #fff;
+	position:absolute;
+	top:40px;
+	left:40px;
+	padding:3px 0;
 }
 #reply .avatar {
 	padding:2px;
