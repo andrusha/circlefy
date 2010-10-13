@@ -183,6 +183,8 @@ border-top-right-radius: 0px;
 
 #controls {
 	padding:15px 0;
+	position:relative;
+	z-index:2;
 }
 #pause {
 	display:block;
