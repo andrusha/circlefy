@@ -52,14 +52,14 @@
     <? /*** Group suggestions ***/ ?>
      <ul id="template-suggestions">
         <li style="padding-left: 0;">
+            <label for="sugg_all">All</label>
             <input id="sugg_all" name="suggest_all" type="checkbox" checked>
-         <# for (var sugg from this): #>
-        <li>
-            <input id="sugg_<#: sugg.gid #>" name="suggest" type="checkbox" value="<#: sugg.gid #>" title="<#: sugg.gname  #>" checked>
-            <label for="sugg_<#: sugg.gid #>"><#: sugg.symbol #></label>
-        <li class="selected" data-id="<#: sugg.gid #>">
-             <img src="/group_pics/<#: sugg.pic_big #>" />
-            <label><#: sugg.symbol #></label>
+        </li>
+        <# for (var sugg from this): #>
+        <li class="selected" data-id="<#: sugg.id #>">
+            <input id="sugg_<#: sugg.id #>" name="suggest" type="checkbox" value="<#: sugg.id #>" title="<#: sugg.symbol #>" checked>
+            <img src="<?=GROUP_PIC_REL?>medium_<#: sugg.id #>.jpg"/>
+            <label for="sigg_<#: sugg.id #>"><#: sugg.name #></label>
          </li>
          <# end; #>
      </ul>

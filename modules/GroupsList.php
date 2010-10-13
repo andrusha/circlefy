@@ -198,7 +198,7 @@ class GroupsList extends Collection {
         if ($options & G_USERS_COUNT) {
             $fields[] = 'COUNT(g.id) AS members_count';
             $join[]   = 'members2';
-            $groups[] = 'g.id';
+            $group[] = 'g.id';
         }
 
         //taps count would ALWAYS join first
@@ -213,11 +213,12 @@ class GroupsList extends Collection {
 
         $fields = implode(', ', array_unique($fields));
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
+
         $group  = array_unique($group);
         if (count($group) > 1)
             throw new SQLException('Combinator dont know how to handle multiple GROUP BY');
-        elseif (count($group) == 1)
-            $group = 'GROUP BY '.current($group);
+        else if (count($group) == 1)
+            $group = 'GROUP BY '.$group[0];
         else
             $group = '';
 

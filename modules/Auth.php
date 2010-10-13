@@ -59,7 +59,7 @@ abstract class Auth {
         if ($result->num_rows) {
             $result = $result->fetch_assoc();
 
-            $user = User::init(intval($result['uid']));
+            $user = User::init(intval($result['id']));
 
             Auth::setSession($user);
 

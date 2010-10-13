@@ -24,7 +24,8 @@ class ajax_join extends Base {
     }
     
     private function bulk_join(array $gids) {
-        GroupsList::fromIds(array_map('intval', $gids))->bulkJoin($this->user);
+        if (!empty($gids))
+            GroupsList::fromIds(array_map('intval', $gids))->bulkJoin($this->user);
         return array('good' => true);
     }
 

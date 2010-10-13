@@ -59,9 +59,10 @@ var _search = _tap.register({
 
         //2 - minimal timeout before searches
         var now = new Date().getTime()/1000,
-            delta = 1 - (now - this.last_keypress);
+            delta = 0.5 - (now - this.last_keypress);
         this.last_keypress = now;
 
+        Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.list.empty());
         if (delta < 0) {
             clearTimeout(this.search_event);
             this.goSearch(e);
@@ -101,7 +102,6 @@ var _search = _tap.register({
             self = this;
         //do not search for empty strings, strings < 2 chars & same keywords 
         if (!keyword.isEmpty() && keyword.length > 1 && this.keyword != keyword){
-            this.keyword = keyword;
             if (!this.request)
                 this.request = new Request({
                     url: '/AJAX/group/search',
@@ -114,7 +114,6 @@ var _search = _tap.register({
             this.request.send({data: {search: keyword}});
         } else if (keyword.length <= 1)
             this.list.empty();
-        else
-            Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.list.empty());
+        this.keyword = keyword;
     }
 });

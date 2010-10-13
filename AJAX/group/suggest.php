@@ -39,11 +39,12 @@ class ajax_suggest extends Base {
         foreach(array_merge($this->fb->books, $this->fb->movies, $this->fb->groups, $this->fb->likes) as $i)
             $interests[ intval($i['id']) ] = trim($i['name']);
 
-        $interests = array_intersect_key(
-                            $interests,
-                            array_flip(
-                                array_rand($interests,
-                                           count($interests) > GROUPS_FROM_LIKES ? GROUPS_FROM_LIKES : count($interests))));
+        if (!empty($interests))
+            $interests = array_intersect_key(
+                                $interests,
+                                array_flip(
+                                    array_rand($interests,
+                                               count($interests) >= GROUPS_FROM_LIKES ? GROUPS_FROM_LIKES : count($interests))));
        
         // because array_merge rewrites numeric keys
         $keywords = $keywords + $interests;
@@ -51,10 +52,8 @@ class ajax_suggest extends Base {
         // III. Search groups by FB ID
         $foundByFBID = GroupsList::search('byFbIDs', array('fbids' => array_keys($keywords)));
 
-        if (DEBUG) $this->debug->log($keywords, 'keywords_before');
         // IV. Search by keywords (unmatched by FB ID)
         $keywords = array_diff_key($keywords, array_flip($foundByFBID->filter('fb_id')));
-        if (DEBUG) $this->debug->log($keywords, 'keywords_after');
         list($found, $match) = GroupsList::byKeywords($keywords, $this->user);
 
         // V. Create new groups from unamtched keywords
@@ -74,7 +73,7 @@ class ajax_suggest extends Base {
         $created = GroupsList::bulkCreateFacebook($this->user, array_keys($create));
 
         // VI. Return aggregated result
-        $suggest = GroupsList::merge($created, $found)->unique('id')->asArrayAll();
+        $suggest = GroupsList::merge($created, $found, $foundByFBID)->unique('id')->asArrayAll();
 
         return array('success' => 1, 'data' => $suggest);
     }
