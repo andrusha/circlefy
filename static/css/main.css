@@ -270,6 +270,9 @@ border-top-right-radius: 0px;
 	padding:0;
 	text-align:center;
 }
+#reply .anonym img {
+	border:none;
+}
 #reply .avatar {
 	padding:2px;
 	background:#fff;
