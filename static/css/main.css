@@ -371,6 +371,7 @@ h1.wide {
 	border-bottom:1px solid #d7d7d7;
 	display:block;
 	padding:13px 0 13px 25px;
+	position:relative;
 }
 #content #left .forced h1.title.feed {
 	background:url(../images/side_04.gif) no-repeat left center;
@@ -609,6 +610,43 @@ h1.wide {
 #feed .load:hover {
 	color:#2878ca;
 }
+#controls .tab {
+	height:15px;
+	text-decoration:none;
+	border:1px solid #a6a6a6;
+	background:url(../images/button_wide.gif) repeat-x;
+	font-size:11px;
+	font-weight:bold;
+	color:#474747;
+	text-align:center;
+	display:block;
+	padding:8px 0;
+	margin: -16px 0 0 0;
+	width:49.6%;
+	float:left;
+}
+#controls .tab.active {
+	background:#3c3c3c;
+	border:1px solid #000;
+	color:#eee;
+	text-shadow:1px 1px #000;
+}
+.warning {
+	background:#FAF9C9;
+	border:1px solid #ffe222;
+	padding:10px 15px;
+	margin:15px 0 0 0;
+	color:#222;
+	font-size:11px;
+	text-shadow:1px 1px #fff;
+}
+.warning .close {
+	float:right;
+	color:#000000;
+	font-weight:bold;
+	text-decoration:none;
+}
+
 
 
 

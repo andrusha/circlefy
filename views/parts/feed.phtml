@@ -1,4 +1,14 @@
-<h1 class="title feed"><?=$_f['name']?> Feed</h1>
+<h1 class="title feed"><?=$_f['name']?> Feed <a href="#" id="pause">Pause Stream</a></h1>
+
+            <div id="controls">
+            	
+                <a href="#" class="tab active">Inside the Circle</a>
+                <a href="#" class="tab">Outside the Circle</a>
+                
+                <div class="clear"></div>
+                
+            </div><!--controls-->
+
 
 <? if ($_f['show_reply']): ?>
 <form id="reply">
@@ -9,7 +19,6 @@
 </form><!--reply-->
 <? endif; ?>
 
-<a href="#" id="pause">Pause Stream</a>
 
 <div id="feed">
 
