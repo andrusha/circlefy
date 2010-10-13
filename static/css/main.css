@@ -248,7 +248,7 @@ border-top-right-radius: 0px;
 
 
 #reply {
-	background:url(../images/filter_semi.png) repeat;
+	background:url(/static/images/filter_semi.png) repeat;
 	border:1px solid #ccc;
 	padding:10px;
 	display:block;
