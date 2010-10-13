@@ -267,7 +267,7 @@ border-top-right-radius: 0px;
 	position:absolute;
 	top:38px;
 	left:13px;
-	padding:3px 0;
+	padding:0;
 	text-align:center;
 }
 #reply .avatar {
