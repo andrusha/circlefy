@@ -735,6 +735,7 @@ h1.wide {
 	font-size:11px;
 	color:#939393;
 	display:block;
+	line-height:14px;
 }
 #sidebar .box h3.username small {
 	font-size:12px;
