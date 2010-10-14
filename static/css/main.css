@@ -424,7 +424,7 @@ h1.wide {
 #feed.conversation {
 	padding:0 0 80px 0;
 }
-#feed.conversation .feed-item {
+#feed.conversation .reply-item {
 	padding:10px;
 }
 .feed-item {
@@ -472,6 +472,57 @@ h1.wide {
 	font-weight:normal;
 	color:#9f9f9f;
 }
+
+
+
+.reply-item {
+	display:block;
+	border-bottom:1px solid #d7d7d7;
+	padding:30px 10px;
+	position:relative;
+}
+.reply-item.last {
+	border-bottom:none;
+}
+.reply-item:hover {
+	background:rgba(255,255,255,.4);
+}
+.reply-item img.avatar-author {
+	float:left;
+	padding:2px;
+	background:#fff;
+	border:1px solid #c6c6c6;
+	margin:0 10px 0 0;
+}
+.reply-item h3 {
+	font-size:14px;
+	margin:0 0 3px 0;
+}
+.reply-item .timestamp {
+	display:none;
+    float: right;
+}
+.reply-item:hover .timestamp {
+	display:inline;
+	font-size:10px;
+	color:#999;
+	line-height:12px;
+}
+.reply-item h3 a {
+	color:#346394;
+	text-decoration:none;
+}
+.reply-item:hover h3 a {
+	color:#2878ca;
+}
+.reply-item h3 small {
+	font-size:10px;
+	font-weight:normal;
+	color:#9f9f9f;
+}
+
+
+
 .conversation .feed-item cite {
 	margin:0;
 	width:570px;
