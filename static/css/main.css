@@ -531,7 +531,14 @@ h1.wide {
 
 
 .conversation .reply-item .thumb {
-	display:inline;
+	float:left;
+	height:20px;
+	width:20px;
+}
+.conversation .reply-item .text {
+	float:left;
+	display:block;
+	width:570px;
 }
 .feed-item cite {
 	font-style:normal;
