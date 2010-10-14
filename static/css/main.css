@@ -1297,6 +1297,7 @@ h1.wide {
 	color:#545454;
 	line-height:18px;
 	padding:5px;
+	float:left;
 }
 .replies .field input[type=submit] {
 	width:50px;
