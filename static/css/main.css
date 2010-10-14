@@ -536,11 +536,6 @@ h1.wide {
 
 
 
-.conversation .reply-item .thumb {
-	float:left;
-	height:20px;
-	width:20px;
-}
 .conversation .reply-item .text {
 	float:left;
 	display:block;
