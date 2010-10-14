@@ -1231,6 +1231,16 @@ h1.wide {
         height:50px;
         float:left;
 }
+.replies .field .textarea {
+	height:40px;
+	width:388px;
+	border:1px solid #eee;
+	font-family:Helvetica, Arial, sans-serif;
+	font-size:12px;
+	color:#545454;
+	line-height:18px;
+	padding:5px;
+}
 /*** </Relies feed> ***/
 
 /*** <Group edit page> ***/
