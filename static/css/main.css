@@ -436,7 +436,7 @@ h1.wide {
 	padding:30px 10px;
 	position:relative;
 }
-.conversation .feed-item .thumb {
+.conversation .reply-item .thumb {
 	width:20px;
 	height:20px;
 }
