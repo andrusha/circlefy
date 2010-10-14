@@ -1195,6 +1195,9 @@ h1.wide {
 .replies .list .reply-item h3.username {
         display:inline;
 }
+.replies .list .reply-item h3.username a {
+	color:#2878CA;
+}
 .replies .list .reply-item .thumb {
         height:20px;
         width:20px;
