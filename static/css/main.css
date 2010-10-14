@@ -530,14 +530,8 @@ h1.wide {
 
 
 
-.conversation .feed-item cite {
-	margin:0;
-	width:570px;
-}
-.conversation .reply-item cite {
-	margin:0;
-	font-style:normal;
-	width:570px;
+.conversation .reply-item .thumb {
+	display:inline;
 }
 .feed-item cite {
 	font-style:normal;
