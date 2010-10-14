@@ -444,7 +444,7 @@ h1.wide {
 	border:1px solid #ccc;
 	overflow:hidden;
 	float:left;
-	margin:0 4px 0 0;
+	margin:0 10px 0 0;
 }
 .feed-item.last {
 	border-bottom:none;
