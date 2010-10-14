@@ -436,6 +436,10 @@ h1.wide {
 	padding:30px 10px;
 	position:relative;
 }
+.conversation .feed-item .thumb {
+	width:20px;
+	height:20px;
+}
 .feed-item.last {
 	border-bottom:none;
 }
@@ -1292,7 +1296,7 @@ h1.wide {
         float:left;
 }
 .replies .field textarea {
-	height:37px;
+	height:38px;
 	width:385px;
 	border:1px solid #eee;
 	font-family:Helvetica, Arial, sans-serif;
