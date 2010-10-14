@@ -527,6 +527,11 @@ h1.wide {
 	margin:0;
 	width:570px;
 }
+.conversation .reply-item cite {
+	margin:0;
+	font-style:normal;
+	width:570px;
+}
 .feed-item cite {
 	font-style:normal;
 	color:#202020;
