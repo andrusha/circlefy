@@ -427,6 +427,9 @@ h1.wide {
 #feed.conversation .reply-item {
 	padding:10px;
 }
+#feed.conversation .reply-item .username {
+    display: none;
+}
 .feed-item {
 	display:block;
 	border-bottom:1px solid #d7d7d7;

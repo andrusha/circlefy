@@ -548,6 +548,26 @@ module: _responses
 */
 var _responses = _tap.register({
     init: function() {
+        var form = $('reply');
+        if (form) {
+            var chat = form.getElement('textarea');
+            chat.overlay = new OverText(chat, {
+            positionOptions: {
+                offset: {x: 10, y: 7},
+                relativeTo: chat,
+                relFixedPosition: false,
+                ignoreScroll: true,
+                ignoreMargin: true
+            }}).show();
+
+            this.extendResponse(chat, form);
+            
+            var parent = form.getParent('div#left'),
+                list = parent.getElement('div#feed');
+
+            window.scrollTo(0, window.getScrollSize().y);
+        }
+
         _body.addEvents({
             'click:relay(a.reply)': this.setupResponse.toHandler(this)
         });
@@ -625,13 +645,15 @@ var _responses = _tap.register({
 		2. data (object) data to use in parsing the template
 	*/
     addResponses: function(list, data) {
-        var items = Elements.from(_template.parse('replies', data.reverse()));
+        var items = Elements.from(_template.parse('replies', data));
         list.getElements('div.reply-item').removeClass('last');
         items.getLast().addClass('last');
         items.setStyles({opacity:0});
         items.fade(1);
         items.inject(list);
         list.scrollTo(0, list.getScrollSize().y);
+        if (_vars.feed.type == 'conversation')
+            window.scrollTo(0, window.getScrollSize().y);
         this.publish('responses.updated');
         return this;
     },
@@ -652,7 +674,7 @@ var _responses = _tap.register({
 
         chatbox.addEvents({
             'keydown': function(e) {
-                var outOfLimit = this.get('value').length >= limit;
+                var outOfLimit = this.value.length >= limit;
                 if (outOfLimit && !allowed[e.key]) {
                     _notifications.alert('Error', 'Your message is too long', {color: 'darkred'});
                     return e.stop();
@@ -688,11 +710,16 @@ var _responses = _tap.register({
 	*/
     sendResponse: function(chatbox) {
         var self = this;
-            
+        if (chatbox.value.length > 240) {
+            _notifications.alert('Error', 'Your message is too long', {color: 'darkred'});
+            return;
+        }
+        var id = _vars.feed.type != 'conversation' ? chatbox.getParent('div.feed-item').getData('id') : _vars.feed.id;
+
         new Request({
             url: '/AJAX/taps/respond',
             data: {
-                cid: chatbox.getParent('div.feed-item').getData('id'),
+                cid: id,
                 response: chatbox.value
             },
             onRequest: function() {
@@ -725,7 +752,7 @@ _live.typing = _tap.register({
             chatbox.store('typing', false);
         }).delay(1500);
         chatbox.store('typing', true);
-        var id = chatbox.getParent('div.feed-item').getData('id');
+        var id = _vars.feed.type != 'conversation' ? chatbox.getParent('div.feed-item').getData('id') : _vars.feed.id;
         new Request({
             url: '/AJAX/user/typing',
             data: {
@@ -736,45 +763,22 @@ _live.typing = _tap.register({
         }).send();
     },
 
-    showTyping: function(tid, user) {
-        var indicator, parent = $('tid_' + tid), self = this;
-        if (!parent) return;
+    showTyping: function(data) {
+        if (_vars.feed.type != 'conversation')
+            return;
 
-        indicator = parent.getElement('span.tap-resp');
+        var item = $('typing-'+data.uid);
+        if (!item)
+            item = Elements.from(_template.parse('typing', data))[0];
 
-        var users = indicator.retrieve('users') || new Hash();
-        users.set(user, users.get(user) + 1);
-        indicator.store('users', users);
+        clearTimeout(item.timeout);
 
-        (function() {
-            var users = indicator.retrieve('users');
-            users.set(user, users.get(user) - 1);
-            indicator.store('users', users);
-
-            self.redrawIndicator(indicator);
+        item.timeout = (function() {
+            item.destroy();
         }).delay(2000);
 
-        this.redrawIndicator(indicator);
+        item.inject($('sidebar').getElement('div.wrap'));
     },
-
-    redrawIndicator: function(indic) {
-        var users = indic.retrieve('users');
-        if (users.every(function (val) { return val == 0; })) { 
-            indic.removeClass('typing');
-            return;
-        }
-
-        var writers = users.filter(function (val) { return val > 0; }).getKeys();
-        if (writers.length >= 2) {
-            var last = writers.pop();
-            writers = writers.join(', ') + ' & ' + last;
-        } else
-            writers = writers.pop();
-
-        indic.getElement('span.indicator').set('text', writers + ' typing...');
-        indic.addClass('typing');
-    }
-
 });
 
 /*
@@ -789,10 +793,18 @@ _live.responses = _tap.register({
     },
 
     setResponse: function(data) {
-        var parent = $('global-' + data.message_id);
+        if (_vars.feed.type == 'conversation')
+            var parent = $('left');
+        else
+            var parent = $('global-' + data.message_id);
         if (!parent) return;
 
-        this.publish('responses.new', [parent.getElement('div.list'), [data]]);
+        if (_vars.feed.type == 'conversation')
+            var list = parent.getElement('div#feed');
+        else
+            var list = parent.getElement('div.list');
+
+        this.publish('responses.new', [list, [data]]);
     }
 });
 
@@ -993,11 +1005,15 @@ _live.stream = _tap.register({
 		parses the page and gets user, group and tap ids for the push server
 	*/
     refreshStream: function() {
-        $$('div.feed-item').each((function(tap) {
+        $$('div.feed-item[data-id]').each((function(tap) {
             this.convos.push(tap.getData('id'));
             if (tap.getData('gid'))
                 this.groups.push(tap.getData('gid'));
         }).bind(this));
+
+        if (_vars.feed.type == 'conversation')
+            this.convos.push(_vars.feed.id*1);
+
         this.convos = this.convos.unique();
         this.groups = this.groups.unique();
         this.update();
@@ -1211,7 +1227,7 @@ _live.notifications = _tap.register({
     init: function() {
        var self = this;
         this.subscribe({
-            'push.data.notify.convo.response': this.newConvoResponse.bind(this),
+            'push.data.response': this.newConvoResponse.bind(this),
             'push.data.notify.tap.new': this.newTap.bind(this),
             'push.data.notify.follower': this.newFollower.bind(this),
             'push.data.notify.private': this.newPrivate.bind(this)
@@ -1219,19 +1235,22 @@ _live.notifications = _tap.register({
     },
 
     newConvoResponse: function(data) {
-        cid = data['cid'];
-        uname = data['uname'];
-        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
+        if (data['user']['id'] == _vars.user.id)
+            return;
+
+        cid = data['message_id'];
+        uname = data['user']['uname'];
+        ureal_name = data['user']['fname'] + ' ' + data['user']['lname'];
         text = data['text'];
-        avatar = '/user_pics/'+data['avatar'];
-        group_avatar = '/group_pics/'+data['group_avatar'];
+        avatar = '/static/user_pics/small_'+data['user']['id']+'.jpg';
+        group_avatar = '/static/group_pics/small_'+data['group_id']+'.jpg';
 
         _notifications.alert('Response from:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
             '"' + text + '"',
             {avatar: avatar, group_avatar: group_avatar});
     	
         _notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://'+document.domain+'/tap/'+cid);
+        	document.location.replace('http://'+document.domain+'/convo/'+cid);
     	});
     },
 

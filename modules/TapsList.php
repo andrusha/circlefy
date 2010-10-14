@@ -234,7 +234,8 @@ class TapsList extends Collection {
              INNER
               JOIN user u
                 ON u.id = r.user_id
-            {$where}";
+            {$where}
+             ORDER BY r.id ASC";
 
         $replies = array();
         $result = $db->query($query, array('ids' => $tap_ids));

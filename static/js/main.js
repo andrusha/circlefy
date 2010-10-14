@@ -49,7 +49,8 @@ var _template = {
     map: {
         'search':  'template-search',
         'replies': 'template-replies',
-        'suggestions': 'template-suggestions'
+        'suggestions': 'template-suggestions',
+        'typing': 'template-typing'
     },
 
 	/*

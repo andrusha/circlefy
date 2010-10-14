@@ -1,9 +1,11 @@
 <?php
     $_h = array(
         'title'   => 'conversation',
-        'scripts' => array('main.js', 'search.js', 'modal.js'),
+        'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'feed.js'),
         'styles'  => array('roar.css', 'modal.css'),
-        'vars'    => array('user' => $me),
+        'vars'    => array('user'  => $me,
+                           'guest' => $guest,
+                           'feed'  => array('type' => 'conversation', 'id' => $convo['id'])),
         'guest'   => $guest);
     include(HEADER);
 ?>    
@@ -16,31 +18,17 @@
             </div><!--forced-->
                                     
             <div id="feed" class="conversation">
-           
-                <?
-                $count = count($convo['replies']);
-                $id = 0;
-                foreach ($convo['replies'] as $r):
-                    $id++;
-                    $last = $count == $id;?>
-            	<div class="feed-item<?=($last ? ' last' : '')?>" id="conversation-<?=$r['id']?>">
-                
-                	<img src="<?=USER_PIC_REL.'small_'.$r['user']['id'].'.jpg'?>" alt="<?=$r['user']['fname']?> <?=$r['user']['lname']?>" class="avatar-author" width="25" />
-                    <div class="text">
-                        <cite><?=$r['text']?><span class="timestamp"><?=$r['time']?></span></cite>
-                        <div class="clear"></div>
-                    </div><!--text-->
-                
-                </div><!--feed-item-->
-                <? endforeach; ?>
-                
+            <?
+                $_r['replies'] = $convo['replies'];
+                include(REPLIES);
+            ?>
             </div><!--feed-->
 
             <? if (!$guest): ?>
             <div class="forced-bottom">
             <form id="reply">
             	<img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" width="25" />
-                <textarea>Reply to this conversation</textarea>
+                <textarea title="Reply to this conversation"></textarea>
                 <input type="submit" value=" " />
                 <div class="clear"></div>
             </form><!--reply-->

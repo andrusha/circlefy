@@ -144,7 +144,7 @@ class Tap extends BaseModel {
              JOIN user u
                ON u.id = r.user_id
             WHERE r.message_id = #tap_id#
-            ORDER BY r.id DESC";
+            ORDER BY r.id ASC";
 
         $responses = array();
         $result = $this->db->query($query, array('tap_id' => $this->id));

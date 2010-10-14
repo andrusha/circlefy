@@ -66,25 +66,10 @@
 
             <div class="replies<?=(empty($f['replies']) ? ' hidden' : '')?>">
                 <div class="list">
-                    <? if (!empty($f['replies'])):
-                            $count = count($f['replies']);
-                            $id = 0;
-                            foreach($f['replies'] as $r):
-                                $id++;
-                                $last = $count == $id; ?>
-                        <div class="reply-item<?=($last ? ' last' : '')?>">
-                            <div class="thumb"><img src="<?=USER_PIC_REL.'small_'.$r['user']['id'].'.jpg'?>" alt="<?=$r['user']['fname']?> <?=$r['user']['lname']?>" /></div>
-                            <span class="text">
-                                <h3 class="username">
-                                    <a href="/user/<?=$r['user']['uname']?>"><?=$r['user']['uname']?></a>:
-                                </h3>
-                                <?=$r['text']?>
-                                <span class="timestamp" data-timestamp="<?=$r['timestamp']?>"><?=$r['time']?></span>
-                            </span>
-                            <div class="clear"></div>
-                        </div><!--item-->
-                    <?      endforeach;
-                       endif;?>
+                    <?php
+                        $_r['replies'] = $f['replies'];
+                        include(REPLIES);
+                    ?>
                 </div><!--list-->
 
                 <? if (!$guest): ?>
