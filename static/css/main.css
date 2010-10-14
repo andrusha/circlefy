@@ -1238,11 +1238,11 @@ h1.wide {
         padding:10px 0;
         border-bottom:1px solid #CCC;
 }
-.replies .list .reply-item a {
+.reply-item a {
 	color:#6aa6e3;
 	text-decoration:none;
 }
-.replies .list .reply-item a:hover {
+.reply-item a:hover {
 	text-decoration:underline;
 }
 .replies .list .reply-item.last {
