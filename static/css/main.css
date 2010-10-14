@@ -1266,6 +1266,7 @@ h1.wide {
         margin:0 0 0 10px;
         padding:3px 0 0 0;
 }
+
 .replies .list .reply-item span.text span.timestamp {
         display:inline;
         font-size:10px;
@@ -1288,14 +1289,21 @@ h1.wide {
         float:left;
 }
 .replies .field textarea {
-	height:40px;
-	width:388px;
+	height:37px;
+	width:385px;
 	border:1px solid #eee;
 	font-family:Helvetica, Arial, sans-serif;
 	font-size:12px;
 	color:#545454;
 	line-height:18px;
 	padding:5px;
+}
+.replies .field input[type=submit] {
+	width:50px;
+	height:50px;
+	border:none;
+	background:url(../images/reply_reply.gif) no-repeat center;
+	float:left;
 }
 /*** </Relies feed> ***/
 
