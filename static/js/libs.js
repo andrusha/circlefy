@@ -324,7 +324,10 @@ var Roar = new Class({
 	},
 
 	inject: function(elements, options) {
-		if (!this.body) this.render();
+        if (options.once && $('roar-'+options.once))
+            return;
+
+        if (!this.body) this.render();
 		options = options || {};
 
 		var offset = [-this.options.offset, 0];
@@ -354,6 +357,9 @@ var Roar = new Class({
 				'class': 'roar-bg',
 				'opacity': 0.7
 			}).adopt(rightElem), elements);
+
+        if (options.once)
+           item.id = 'roar-'+options.once;
 
 		var to = {'opacity': 1};
 
@@ -415,7 +421,8 @@ var Roar = new Class({
             //set style for roar-bg inner div (first child)
             item.firstElementChild.setStyle('background-color', options.color);
         }
-		item.inject(this.body).morph(to);
+
+        item.inject(this.body).morph(to);
 		return this.fireEvent('onShow', [item, this.items.length]);
 	},
 

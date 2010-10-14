@@ -673,16 +673,13 @@ var _responses = _tap.register({
             allowed = {'enter': 1,'up': 1,'down': 1,'left': 1, 'right': 1,'backspace': 1,'delete': 1};
 
         chatbox.addEvents({
-            'keydown': function(e) {
-                var outOfLimit = this.value.length >= limit;
-                if (outOfLimit && !allowed[e.key]) {
-                    _notifications.alert('Error', 'Your message is too long', {color: 'darkred'});
-                    return e.stop();
-                } else if (!outOfLimit) {
-                    //all Ok guys, we can hide notification, but no need
-                }
-            },
             'keypress': function(e) {
+               var outOfLimit = this.value.length >= limit;
+                if (outOfLimit && !allowed[e.key]) {
+                    _notifications.alert('Error', 'Your message is too long', {color: 'darkred', once: 'too-long'});
+                    return e.stop();
+                }
+
                 if ((e.code > 48) || !([8, 46].contains(e.code)))
                     self.publish('responses.typing', chatbox);
             },
@@ -998,6 +995,10 @@ _live.stream = _tap.register({
         this.subscribe({
             'push.connected; stream.updated': this.refreshStream.bind(this)
         });
+
+        $$('a.close').addEvent('click', function (e) {
+            e.target.getParent('div').toggleClass('hidden');
+        });
     },
 
 	/*
@@ -1250,7 +1251,7 @@ _live.notifications = _tap.register({
             {avatar: avatar, group_avatar: group_avatar});
     	
         _notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://'+document.domain+'/convo/'+cid);
+        	document.location.href = 'http://'+document.domain+'/convo/'+cid;
     	});
     },
 
@@ -1268,7 +1269,7 @@ _live.notifications = _tap.register({
             {avatar: avatar, group_acatar: group_avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://'+document.domain+'/channel/'+gname);
+        	document.location.href = 'http://'+document.domain+'/channel/'+gname;
     	});
     },
 
@@ -1290,7 +1291,7 @@ _live.notifications = _tap.register({
         _notifications.alert(title, message, {avatar:avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://'+document.domain+'/user/'+uname);
+        	document.location.gref = 'http://'+document.domain+'/user/'+uname;
     	});
     },
 
@@ -1306,7 +1307,7 @@ _live.notifications = _tap.register({
             {avatar: avatar});
 
     	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.replace('http://'+document.domain+'/tap/'+cid);
+        	document.location.href = 'http://'+document.domain+'/tap/'+cid;
     	});
 
     }
