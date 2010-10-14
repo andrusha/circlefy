@@ -316,6 +316,11 @@ border-top-right-radius: 0px;
 	margin:0 0 0 -450px;
 	background:url(../images/forced_bottom.png) repeat-x top;
 }
+.conversation .br {
+	width:240px;
+	height:1px;
+	display:block;
+}
 .conversation #reply .avatar {
 	padding:2px;
 	background:#fff;
