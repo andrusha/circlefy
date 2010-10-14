@@ -547,6 +547,12 @@ h1.wide {
 	width:570px;
 	word-wrap: break-word;
 }
+.conversation .reply-item:hover .timestamp {
+	display:inline;
+	font-size:10px;
+	color:#999;
+	line-height:12px;
+}
 .feed-item cite {
 	font-style:normal;
 	color:#202020;
