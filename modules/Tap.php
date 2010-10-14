@@ -18,6 +18,31 @@ class Tap extends BaseModel {
 
     protected static $addit = array('responses', 'group', 'sender', 'reciever', 'media', 'replies', 'involved');
 
+    public function format() {
+        if (isset($this->data['time'])) {
+            $this->data['timestamp'] = strtotime($this->data['time']);
+            $this->data['time'] = FuncLib::timeSince($this->data['timestamp']);
+        }
+
+        if (isset($this->data['text']))
+            $this->data['text'] = FuncLib::linkify($this->data['text']);
+
+        if (isset($this->data['responses']))
+            if (isset($this->data['responses']['text']))
+                $this->data['responses']['text'] = FuncLib::makePreview($this->data['responses']['text'], 40);
+        
+        if (isset($this->data['replies']))
+            foreach ($this->data['replies'] as &$r) {
+                $r['text'] = FuncLib::linkify($r['text']);
+                $r['timestamp'] = is_int($r['time']) ? $r['time'] : strtotime($r['time']);
+                $r['time'] = FuncLib::timeSince($r['timestamp']);
+                if ($r['user'] instanceof User)
+                    $r['user'] = $r['user']->asArray();
+            }
+
+        return $this;
+    }
+
     /*
         Returns desiered tap (only one, if avaliable)
 
@@ -107,7 +132,7 @@ class Tap extends BaseModel {
 
         @return array
     */
-    public function getResponses() {
+    public function getReplies($asArray = false) {
         $fields   = FuncLib::addPrefix('r.', Tap::$replyFields);
         $fields   = array_merge($fields, FuncLib::addPrefix('u.', User::$fields));
         $fields   = implode(', ', array_unique($fields));
@@ -118,17 +143,19 @@ class Tap extends BaseModel {
             INNER
              JOIN user u
                ON u.id = r.user_id
-            WHERE r.message_id = #tap_id#";
+            WHERE r.message_id = #tap_id#
+            ORDER BY r.id DESC";
 
         $responses = array();
         $result = $this->db->query($query, array('tap_id' => $this->id));
         foreach (DB::getSeparator($result, array('u')) as $line) {
-            $resp = $line['rest'];
-            $resp['user'] = new User($line['u']);
-            $responses[] = $resp;
+            $resp         = $line['rest'];
+            $resp['user'] = $asArray ? $line['u'] : new User($line['u']);
+            $responses[]  = $resp;
         }
         
-        return $responses;
+        $this->data['replies'] = $responses;
+        return $this;
     }
 
     public function responseDupe(User $user, $text) {
@@ -149,9 +176,22 @@ class Tap extends BaseModel {
     }
 
     public function addResponse(User $user, $text) {
-        return $this->db->insert('reply', array(
+        $id = $this->db->insert('reply', array(
             'message_id' => $this->id, 'user_id' => $user->id,
             'text' => $text));
+
+        if (!isset($this->data['replies']))
+            $this->data['replies'] = array();
+
+        $this->data['replies'][] = array(
+            'id'         => $id,
+            'message_id' => $this->id,
+            'user_id'    => $user->id,
+            'text'       => $text,
+            'time'       => time(),
+            'user'       => $user);
+
+        return $this;
     }
 
     /*

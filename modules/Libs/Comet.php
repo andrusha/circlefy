@@ -6,8 +6,7 @@
 class Comet {
     public static function send($to, array $message) {
         //server name <-> port mapping
-        $servers = array('message' => 3333, 
-            'user' => 2222, 'admin' => 4444);
+        $servers = array('message' => 3334, 'user' => 2223);
 
         if (!array_key_exists($to, $servers))
             throw new UnknownServerException("There is no server named '$to'");

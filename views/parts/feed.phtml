@@ -35,7 +35,10 @@
                 $id++;
                 $last = $count == $id;
     ?>
-    <div class="feed-item<?=($last ? ' last' : '')?>" id="global-<?=$f['id']?>">
+    <div class="feed-item<?=($last ? ' last' : '')?>"
+         id="global-<?=$f['id']?>"
+         data-id="<?=$f['id']?>"
+         data-gid="<?=$f['group_id']?>">
     
         <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" class="avatar-author" />
         <div class="text">
@@ -76,7 +79,7 @@
                                     <a href="/user/<?=$r['user']['uname']?>"><?=$r['user']['uname']?></a>:
                                 </h3>
                                 <?=$r['text']?>
-                                <span class="timestamp"><?=$r['time']?></span>
+                                <span class="timestamp" data-timestamp="<?=$r['timestamp']?>"><?=$r['time']?></span>
                             </span>
                             <div class="clear"></div>
                         </div><!--item-->
@@ -86,9 +89,13 @@
 
                 <? if (!$guest): ?>
                 <div class="field">
-                        <div class="thumb"><img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" /></div>
+                    <div class="thumb"><img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" /></div>
                     <div class="editor">
-                    
+                        <form>
+                            <textarea></textarea>
+                            <input type="submit" value=" ">
+                        </form>
+                        <div class="clear"></div>
                     </div><!--editor-->
                     <div class="clear"></div>
                 </div><!--field-->
@@ -107,7 +114,7 @@
              <div class="icons">
                <!-- there would be icon, selected depending on what type of content message have -->
                 <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
-                <span><?=$f['time']?></span>
+                <span class="timestamp" data-timestamp="<?$r['timestamp']?>"><?=$f['time']?></span>
             </div>
         </div><!--text-->
     

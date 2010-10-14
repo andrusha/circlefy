@@ -10,7 +10,8 @@ var _push = _tap.register({
 	init: function(){
 		document.domain = document.domain;
 		this.subscribe({'push.send': this.send.bind(this)});
-		this.prepare();
+        if (_vars.user.id && _vars.user.uname)
+    		this.prepare();
 	},
 
 	prepare: function(){
@@ -22,7 +23,7 @@ var _push = _tap.register({
 	},
 
 	connect: function(){
-		this.socket.open('localhost', 2222);
+		this.socket.open('localhost', 2223);
 	},
 
 	send: function(data){
@@ -35,8 +36,8 @@ var _push = _tap.register({
 
 	handleOpen: function(){
 		var data = {
-			uid: (_head.getElement('[name="uid"]').get('content') * 1),
-			uname: _head.getElement('[name="uname"]').get('content')
+			uid:   _vars.user.id,
+			uname: _vars.user.uname 
 		};
 		this.publish('push.opened');
 		if (data.uid && data.uname) {
@@ -56,11 +57,7 @@ var _push = _tap.register({
 			if (!data) continue;
 			this.publish('push.data', data);
 
-            type = data.type
-            module = data.module //'user' or 'admin'
-            parsed = data.data
-
-            //TODO: what the heck is 'notification'?
+            type = data.type;
             switch (type) {
 				case 'ping':
                     continue;
@@ -68,38 +65,8 @@ var _push = _tap.register({
 				case 'refresh':
                     window.location = [window.location, '?', new Date().getTime()].join('');
                     break;
-				case 'typing':
-					this.publish('push.data.response.typing', [parsed.cid, parsed.uname]);
-					break;
-				case 'response':
-					this.publish('push.data.response', [parsed.cid, parsed.uname, parsed.data, parsed.pic]);
-					break;
-				case 'convo':
-					this.publish('push.data.convo', [parsed.cid, '']);
-					break;
-				case 'view_add':
-					this.publish('push.data.view.add', [parsed.data, 1]);
-					break;
-				case 'view_minus':
-					this.publish('push.data.view.minus', [parsed.data, -1]);
-					break;
-				case 'group_add':
-					this.publish('push.data.group.add', [parsed.data, 1]);
-					break;
-				case 'group_minus':
-					this.publish('push.data.group.minus', [parsed.data, -1]);
-					break;
-				case 'user_add':
-					this.publish('push.data.user.add', [parsed.data, 1]);
-					break;
-				case 'user_minus':
-					this.publish('push.data.user.minus', [parsed.data, -1]);
-					break;
-				case 'tap.new':
-					this.publish('push.data.tap.new', [parsed, 0]);
-					break;
                 default:
-                    this.publish('push.data.'+type, [parsed]);
+                    this.publish('push.data.'+type, [data.data]);
             }
 		}
 	}

@@ -1,32 +1,17 @@
 <?php
 /* CALLS:
-    homepage.phtml
+    feed.js
 */
-$usage = <<<EOF
-    PARAMS
-    
-    cid: the channel id of the current "tap" that you're trying to get responses from
-EOF;
 
-require('../../config.php');
-require('../../api.php');
+class ajax_responses extends Base {
+    protected $view_output = 'JSON';
 
-class chat extends Base {
-    public function __construct() {
-        $this->need_db = 0;
-        $this->view_output = 'JSON';
-        parent::__construct();
-
-        $this->data = $this->load_response(intval($_POST['cid']));
-    }
-
-    private function load_response($cid){
-        $tap = new Tap($cid);
-        $responses = $tap->responses;
-        if (count($responses))
-            return array('success' => 1,'responses' => $responses);
-        return array('success' => 0,'responses' => null);
+    function __invoke() {
+        $id = intval($_POST['cid']);
+        
+        $tap = new Tap($id);
+        $tap = $tap->getReplies()->format()->asArray();
+        $responses = $tap['replies'];
+        $this->data = array('success' => count($responses) > 0,'responses' => $responses);
     }
 };
-
-$smth = new chat();

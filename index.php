@@ -38,17 +38,24 @@ $pages = array(
     );
 
 $ajaxs = array(
-         'user' => array(
-                 'check'    => true,
-                 'facebook' => true,
-                 'login'    => true
-             ),
-         'group' => array(
+        'user' => array(
+                'check'    => true,
+                'facebook' => true,
+                'login'    => true,
+                'typing'   => true
+        ),
+        'group' => array(
                 'suggest'   => true,
                 'join'      => true,
                 'search'    => true
-            ),
-         );
+        ),
+        'taps' => array(
+               'responses' => true,
+               'respond'   => true
+        ),
+    );
+
+$ajax_bypass = array('typing');
 
 $page = $_GET['page'];
 $ajax = $_GET['ajax'];
@@ -74,6 +81,8 @@ if (isset($page) || !isset($ajax)) {
 
     $name = 'ajax_'.$ajax;
     require_once(BASE_PATH.'AJAX/'.($type ? $type.'/' : '').$ajax.'.php');
-    $ajax = new $name();
-    $ajax();
+    if (!in_array($ajax, $ajax_bypass)) {
+        $ajax = new $name();
+        $ajax();
+    }
 }

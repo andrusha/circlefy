@@ -300,28 +300,8 @@ class TapsList extends Collection {
         Formats time since & tap text 
     */
     public function format() {
-        foreach ($this->data as &$tap) {
-            $tap->time = FuncLib::timeSince(strtotime($tap->time));
-            $tap->text = FuncLib::linkify($tap->text);
-
-            //TODO: that's kinda ugly, should think about way
-            // to make it _safe_ and usable
-            if (isset($tap['responses']) && !empty($tap->responses['text'])) {
-                $responses = $tap->responses;
-                $responses['text'] = FuncLib::makePreview($responses['text'], 40);
-                $tap->responses = $responses;
-            }
-            
-            if (isset($tap['replies'])) {
-                $replies = $tap->replies;
-                foreach ($replies as &$r) {
-                    $r['text'] = FuncLib::linkify($r['text']);
-                    $r['time'] = FuncLib::timeSince(strtotime($r['time']));
-                }
-                $tap->replies = $replies;
-            }
-
-        }
+        foreach ($this->data as $tap)
+            $tap->format();
         return $this;
     }
 };

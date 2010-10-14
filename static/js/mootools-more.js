@@ -4194,7 +4194,7 @@ MooTools.lang.set('en-US', 'Date', {
 		return (dayOfMonth > 3 && dayOfMonth < 21) ? 'th' : ['th', 'st', 'nd', 'rd', 'th'][Math.min(dayOfMonth % 10, 4)];
 	},
 
-	lessThanMinuteAgo: 'less than a minute ago',
+	lessThanMinuteAgo: 'just now',
 	minuteAgo: 'about a minute ago',
 	minutesAgo: '{delta} minutes ago',
 	hourAgo: 'about an hour ago',

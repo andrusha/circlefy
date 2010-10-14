@@ -36,17 +36,17 @@
     <ul id="template-replies">
         <# for (var repl from this): #>
         <div class="reply-item">
-            <div class="thumb"><img src="<?=USER_PIC_REL?>small_<#: repl.user.id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" /></div>
+            <div class="thumb"><img src="<?=USER_PIC_REL?>small_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" /></div>
             <span class="text">
                 <h3 class="username">
-                    <a href="/user/<#: repl.user.uname #>"><#: repl.user.uname ></a>:
+                    <a href="/user/<#: repl.user.uname #>"><#: repl.user.uname #></a>:
                 </h3>
                 <#: repl.text #>
                 <span class="timestamp"><#: repl.time #></span>
             </span>
             <div class="clear"></div>
         </div><!--item-->
-        <# end; #>
+        <# endfor; #>
     </ul>
 
     <? /*** Group suggestions ***/ ?>

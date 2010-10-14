@@ -94,9 +94,14 @@ class UsersList extends Collection {
             youPM     - list of users whom you PMed
             toYouPM   - list of users who send something to you
             limit     - users to fetch count
+            convo     - search users involved in conversation
 
         @param array $params
-            #uname# | #id# | #gid#
+            uname  - username
+            id     - user id
+            gid    - group id
+            mid    - message id
+            active - conversation status
 
         @param int   $options
             U_ONLY_ID   - selects only id's
@@ -111,17 +116,18 @@ class UsersList extends Collection {
         $db = DB::getInstance();
 
         $joins = array(
-            'friends'     => 'INNER JOIN friends f ON f.user_id = u.id',
-            'friends2'    => 'INNER JOIN friends f ON u.id = f.user_id',
+            'friends'     => 'INNER JOIN friends       f ON f.user_id = u.id',
+            'friends2'    => 'INNER JOIN friends       f ON u.id      = f.user_id',
             'last_chat'   => 'LEFT JOIN 
                                 (SELECT m.sender_id AS uid, text FROM message ORDER BY id DESC)
                                 AS lc ON lc.uid = u.id',
             'members'     => 'INNER JOIN group_members gm ON gm.user_id = u.id',
-            'messageFrom' => 'INNER JOIN message m ON u.id = m.sender_id',
-            'messageTo'   => 'INNER JOIN message m ON u.id = m.reciever_id');
+            'messageFrom' => 'INNER JOIN message       m ON u.id = m.sender_id',
+            'messageTo'   => 'INNER JOIN message       m ON u.id = m.reciever_id',
+            'convo'       => 'INNER JOIN conversations c ON u.id = c.user_id');
 
         if ($options & U_ONLY_ID)
-            $fields = 'u.id';
+            $fields = array('u.id');
         else
             $fields = FuncLib::addPrefix('u.', User::$fields);
 
@@ -162,6 +168,12 @@ class UsersList extends Collection {
                 $join[]  = 'messageFrom';
                 $where[] = 'm.reciever_id = #id#';
                 $where[] = 'm.sender_id IS NOT NULL';
+                break;
+
+            case 'convo':
+                $join[]  = 'convo';
+                $where[] = 'c.message_id = #mid#';
+                $where[] = 'c.active = #active#';
                 break;
         }
 

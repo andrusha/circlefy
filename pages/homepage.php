@@ -10,36 +10,29 @@ class page_homepage extends Base {
             exit();
         }
 
-        if ($this->user->guest)
-            $this->guest();
-        else
-            $this->user();
-	}
-
-    private function user() {
         $this->set(
             GroupsList::search('byUser', array('uid' => $this->user->id, 'limit' => 16))
                       ->asArrayAll(),
             'circles');
 
-        $this->set(
-            TapsList::search('feed', array('uid' => $this->user->id), T_USER_INFO | T_USER_RECV | T_GROUP_INFO) 
+        if (!$this->user->guest) {
+            $feed = TapsList::search('feed', array('uid' => $this->user->id), T_USER_INFO | T_USER_RECV | T_GROUP_INFO) 
                     ->lastResponses()
                     ->format()
-                    ->asArrayAll(),
-            'feed');
+                    ->asArrayAll();
+            $this->set('feed', 'feed_type');
+            $this->set('Your', 'feed_name');
+        } else
+            $this->set('Global', 'feed_name');
 
-        $this->set('Your', 'feed_name');
-    }
-
-    private function guest() {
-        $this->set(
-            TapsList::search('public', array(), T_USER_INFO | T_GROUP_INFO)
+        if (empty($feed) || $this->user->guest) {
+            $feed = TapsList::search('public', array(), T_USER_INFO | T_GROUP_INFO)
                     ->lastResponses()
                     ->format()
-                    ->asArrayAll(),
-            'feed');
-
-        $this->set('Global', 'feed_name');
-    }
+                    ->asArrayAll();
+            $this->set('public', 'feed_type');
+        }
+        
+        $this->set($feed, 'feed');
+	}
 };

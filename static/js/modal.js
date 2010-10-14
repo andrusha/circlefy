@@ -505,13 +505,13 @@ _modal.login = _tap.register({
             if (self.facebook && self.form.fb.checked) {
                 type = 'facebook';
             } else {
-                if (form.user.isEmpty()) {
+                if (form.user.value.isEmpty()) {
                     form.user.addClass('error');
                     return form.user.focus();
                 } else
                     form.user.removeClass('error');
 
-                if (form.pass.isEmpty()) {
+                if (form.pass.value.isEmpty()) {
                     form.pass.addClass('error');
                     return form.pass.focus();
                 } else

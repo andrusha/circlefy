@@ -1,14 +1,10 @@
 <?php
 /* CALLS:
-	homepage.phtml
+    feed.js
 */
-session_start();
-require('../../config.php');
-require('../../api.php');
+$cid   = intval($_POST['cid']);
+$uid   = intval($_POST['uid']);
+$uname = $_POST['uname']; 
 
-$cid = $_POST['cid'];
-$response = $_POST['response'];
-$user = unserialize($_SESSION['user']);
-
-Comet::send('message', array('cid' => $cid, 'action' => 'typing', 'response' => $response, 'uname' => $user->uname));
+Comet::send('message', array('cid' => $cid, 'action' => 'response.typing', 'data' => array('uid' => $uid, 'uname' => $uname)));
 echo 1;

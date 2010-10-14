@@ -87,11 +87,11 @@
 <? /*** Navigation menu***/ ?>
     <? if ($_s['show_nav']): ?>
     <ul id="navigation">
-        <li class="active" id="tab-your"><a href="#">Your Feed</a></li>
+        <li <?=($_s['feed_type'] == 'feed' ? 'class="active"' : '')?>id="tab-your"><a href="#">Your Feed</a></li>
         <li id="tab-circles"><a href="#">Followed Circles</a></li>
         <li id="tab-people"><a href="#">Followed People</a></li>
         <li id="tab-conversations"><a href="#">Followed Conversations</a></li>
-        <li id="tab-discover" class="last"><a href="#">Discover</a></li>
+        <li <?=($_s['feed_type'] == 'public' ? 'class="active"' : '')?>id="tab-discover" class="last"><a href="#">Discover</a></li>
     </ul>
     <? endif; ?>
     

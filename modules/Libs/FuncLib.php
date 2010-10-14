@@ -75,12 +75,11 @@ abstract class FuncLib {
         from unix timestamp
     */
     public static function timeSince($timestamp) {
-        $now = time();
-        $diff = $now - $timestamp;
+        $diff = time() - $timestamp;
         $days = floor($diff / (60*60*24));
         $date = date("jS M Y", $timestamp);
        
-        if ($days == 0) {
+        if ($days == 0 || $diff <= 0) {
             if ($diff < 120) {
                 $date = "Just Now";
             } elseif ($diff < 60*60) {
