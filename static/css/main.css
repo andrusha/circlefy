@@ -18,6 +18,10 @@ a {
 	padding:0;
 }
 
+input[type=submit] {
+	cursor:pointer;
+}
+
 body {
 	background:url(../images/bg.gif) repeat;
 	font-family:Helvetica, Arial, sans-serif;
