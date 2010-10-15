@@ -1293,6 +1293,10 @@ h1.wide {
         width:20px;
         float:left;
 }
+.replies .list .reply-item .thumb img {
+	width:20px;
+	height:20px;
+}
 .replies .list .reply-item span.text {
         float:left;
         display:block;
