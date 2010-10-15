@@ -1261,6 +1261,7 @@ h1.wide {
         border:2px solid #7c7c7c;
         padding:1px;
         margin:0 0 0 65px;
+		background:rgba(255,255,255,.4);
 }
 .replies .list {
         height:250px;
