@@ -1262,6 +1262,14 @@ h1.wide {
         padding:1px;
         margin:0 0 0 65px;
 		background:rgba(255,255,255,.4);
+		position:relative;
+}
+.replies .arrow {
+	width:21px;
+	height:11px;
+	background:url(../images/reply_arrow.png) no-repeat;
+	top:-11px;
+	left:10px;
 }
 .replies .list {
         height:250px;
