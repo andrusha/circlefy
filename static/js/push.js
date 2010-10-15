@@ -7,6 +7,7 @@ var _push = _tap.register({
 
 	init: function(){
 		document.domain = document.domain;
+        this.connected = false;
 		this.subscribe({'push.send': this.send.bind(this)});
         if (_vars.user.id && _vars.user.uname)
     		this.prepare();
@@ -25,6 +26,10 @@ var _push = _tap.register({
 	},
 
 	send: function(data) {
+        if (!this.connected) {
+            console.log('request made too soon');
+            return;
+        }
 		data = JSON.encode(data);
 		if (!data) return;
 		this.socket.send(data + '\r\n');
@@ -39,6 +44,7 @@ var _push = _tap.register({
 		};
 		this.publish('push.opened');
 		if (data.uid && data.uname) {
+            this.connected = true;
 			this.send(data);
 			this.publish('push.connected', data);
 		}

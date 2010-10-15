@@ -751,14 +751,6 @@ _live.typing = _tap.register({
         chatbox.store('typing', true);
         var id = _vars.feed.type != 'conversation' ? chatbox.getParent('div.feed-item').getData('id')*1 : _vars.feed.id*1;
         _push.send({action: 'response.typing', cid: id, data: {cid: id, uid: _vars.user.id*1, uname: _vars.user.uname}});
-        /*new Request({
-            url: '/AJAX/user/typing',
-            data: {
-                cid:   id,
-                uid:   _vars.user.id,
-                uname: _vars.user.uname
-            }
-        }).send();*/
     },
 
     showTyping: function(data) {
