@@ -87,11 +87,29 @@
 <? /*** Navigation menu***/ ?>
     <? if ($_s['show_nav']): ?>
     <ul id="navigation">
-        <li <?=($_s['feed_type'] == 'feed' ? 'class="active"' : '')?>id="tab-your"><a href="#">Your Feed</a></li>
-        <li id="tab-circles"><a href="#">Followed Circles</a></li>
-        <li id="tab-people"><a href="#">Followed People</a></li>
-        <li id="tab-conversations"><a href="#">Followed Conversations</a></li>
-        <li <?=($_s['feed_type'] == 'public' ? 'class="active"' : '')?>id="tab-discover" class="last"><a href="#">Discover</a></li>
+        <li <?=($_s['feed_type'] == 'feed' ? 'class="active"' : '')?>
+            id="tab-your" 
+            data-type="feed">
+            <a href="#">Your Feed</a>
+        </li>
+        <li id="tab-circles"
+            data-type="aggr_groups">
+            <a href="#">Followed Circles</a>
+        </li>
+        <li id="tab-people"
+            data-type="aggr_friends">
+            <a href="#">Followed People</a>
+        </li>
+        <li id="tab-conversations"
+            data-type="aggr_convos">
+            <a href="#">Followed Conversations</a>
+        </li>
+        <li <?=($_s['feed_type'] == 'public' ? 'class="active"' : '')?>
+            id="tab-discover"
+            class="last"
+            data-type="public">
+            <a href="#">Discover</a>
+        </li>
     </ul>
     <? endif; ?>
     

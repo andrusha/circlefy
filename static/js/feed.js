@@ -1,38 +1,4 @@
 /*
- script: public.js
- Controls the main interface.
- */
-
-// UNCOMMENT FOR PROD
-// (function(){
-
-var _lists = _tap.register({
-    myTips: {},
-
-    init: function() {
-        _body.addEvents({
-            'click:relay(li.panel-item)': this.doAction.toHandler(this)
-        });
-        this.addTips();
-    },
-
-    doAction: function(el, e) {
-        var link = el.getElement('a');
-        if (!link) return;
-        window.location = link.get('href');
-    },
-
-    addTips: function() {
-        ['.aggr-favicons', '.panel-item-public-admin', '.people-contact-list img'].each(function(id) {
-            _lists.myTips[id] = new Tips(id, {fixed: true});
-            _lists.myTips[id].addEvent('show', function(tip, el) {
-                tip.fade('in');
-            });
-        });
-    }
-});
-
-/*
 mixin: streaming
 	mixin for streaming/feedlist operations
 */
@@ -41,13 +7,7 @@ _tap.mixin({
     name: 'streaming',
 
     setStreamVars: function() {
-        var main = this.main = $('tapstream');
-        this.stream = $('taps');
-        this.header = main.getElement('h2.header-title');
-        this.title = main.getElement('span.stream-name');
-        this.feedType = this.header.getElement('span.title');
-		this.topic = main.getElement('div.description');
-        this.streamType = 'all';
+        this.feed = $('feed');
     },
 
 	/*
@@ -96,51 +56,12 @@ _tap.mixin({
 			online_count = options.online_count,
 			total_count = options.total_count;
 
-        var template = (
-            ' <img class="favicon-stream-title" src="{fav}" /> {t}' +
-            (online_count !== null && total_count !== null ?
-             '<span class="visitor_count" title="viewers online/total"><span class="viewers_online">{oc}</span> / {tc}</span>' :
-             '') + 
-            ' <a href="{u}">view profile</a>');
-
         this.feedType.set('text', type);
         title = (!url) 
             ? title 
             : template.substitute({fav: favicon, t: title, u: url, oc: online_count, tc: total_count});
 
-        if (options.user)
-            title += '<a href="'+url+'?pm" title="send private message">send pm</a>';
-
-        if (!!admin) title = ['<span title="Moderator" class="moderator-title">&#10070;</span> ', title, '<a href="{u}">manage channel</a>'.substitute({u: admin})].join('');
-        this.title.set('html', title);
-
-        if (desc) {
-            this.topic.set('html', desc.linkify() );
-//            this.main.addClass('description');
-        } else {
-//            this.main.removeClass('description');
-        }
         return this;
-    },
-
-    /*
-    method: linkify
-        Replace all text-lloks-like-link into links
-    */
-    linkify: function(){
-        var regexp = new RegExp("\
-            (?:(?:ht|f)tp(?:s?)\\:\\/\\/|~\\/|\\/){1}\
-            (?:\\w+:\\w+@)?\
-            (?:(?:[-\\w]+\\.)+\
-            (?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))\
-            (?::[\\d]{1,5})?(?:(?:(?:\\/(?:[-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?\
-            (?:(?:\\?(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)\
-            (?:&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*\
-            (?:#(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?".replace(/\(\?x\)|\s+#.*$|\s+/gim, ''), 'g');
-
-        return this.replace(regexp, function(match){
-            return ['<a href="', match,'" target="_blank">', match,'</a>'].join('');
-        });
     },
 
 	/*
@@ -151,67 +72,32 @@ _tap.mixin({
 		1. resp (obj) the response object from the xhr.
 		2. keep (bool) if true, taps already in the feed are not removed.
 	*/
-    parseFeed: function(resp, keep, scrollAndColor) {
-        var stream = this.stream;
-        if (!keep) stream.empty();
-        resp.data = resp.data.reverse();
-        if (resp.results && resp.data) {
-            var items = Elements.from(_template.parse('taps', resp.data));
-            items.each(function(item) {
-                var id = item.get('id'),
-                        el = $(id);
-                if (el) el.destroy();
-            });
-			items = $$(items);
+    parseFeed: function(data, keep, scrollAndColor) {
+         if (!keep) this.feed.empty();
+         if (!data)
+             return;
 
-			if (items.length >= 10 && !keep) ($('loadmore-template').clone()).inject('taps','bottom').setProperty('id', 'loadmore');
-			if(keep) publish_type = 'stream.more'; else publish_type = 'stream.new';
-            this.publish(publish_type, [items]);
-            
-            if (scrollAndColor == true) {
-                var overallHeight = 0;
-                items.each( function (item) {
-                    item.addClass('new');
-                    item.setStyle('background-color', 'lightyellow');
-                    overallHeight += item.getSize().y;
-                });
-
-                var curScroll = window.getScroll();
-                if (curScroll.y > $('taps').getPosition().y)
-                    window.scrollTo(curScroll.x, curScroll.y + overallHeight);
-            }
-
-            stream.removeClass('empty');
-        } else {
-            this.publish('stream.empty', $('no-taps-yet').clone());
-            stream.addClass('empty');
+         var items = Elements.from(_template.parse('messages', data));
+        
+         if (scrollAndColor == true) {
+             var overallHeight = 0;
+             items.each( function (item) {
+                 item.addClass('new');
+                 item.setStyle('background-color', 'lightyellow');
+                 overallHeight += item.getSize().y;
+             });
+ 
+             var curScroll = window.getScroll();
+             if (curScroll.y > $('taps').getPosition().y)
+                 window.scrollTo(curScroll.x, curScroll.y + overallHeight);
         }
-    },
 
-	/*
-	method: addTaps()
-		adds taps to the feedlist
-		
-		args:
-		1. items (elements) the tap items to be added to the feedlist
-	*/
-    addTaps: function(items ) {
         items.setStyles({opacity:0});
-        items.inject(this.stream, 'top');
-        if (_stream.loadmore_count > 0) {
-            ($('loadless-template').clone()).inject(this.stream,'top').setProperty('id', 'loadless');
-        }
+        items.inject(this.feed);
         items.fade(1);
-        this.publish('stream.updated', this.streamType);
-        return this;
-    }, 
 
-	addTapsMore: function(items) {
-		items.inject(this.stream, 'bottom');
-		this.publish('stream.updated', this.streamType);
-		return this;
-	}
-
+        this.publish('feed.updated', []);
+    }
 });
 
 /*
@@ -223,39 +109,19 @@ var _stream = _tap.register({
     mixins: 'streaming',
 
     init: function() {
-		this.enableLoadMore();
+        this.setStreamVars();
 
         this.id = _vars.feed.id;
         this.type = _vars.feed.type;
-        this.feed = {};
         this.keyword = null;
         this.loadmore_count = 0;
 
         //this.setStreamVars();
         this.subscribe({
-            'list.item': this.setStream.bind(this),
-            'stream.new; stream.empty; tapbox.sent; stream.more; stream.live.new': this.addTaps.bind(this),
-            'feed.changed': (function(type) {
-                this.streamType = type;
-            }).bind(this),
-            'filter.search': this.changeFeed.bind(this)
+            'feed.search; feed.change': this.changeFeed.bind(this)
         });
-    },
 
-	/*
-	method: setStream()
-		Sets the current stream type
-		
-		args:
-		1. type (string) the type of stream (eg, "groups", "convos")
-		2. id (string) the id of the stream corresponding to a group
-		3. info (obj) additional group/feedtype data
-	*/
-    setStream: function(type, id, info) {
-        if (['channels', 'peoples', 'private'].contains(type))
-            return this.changeFeed(type, id, info);
-
-        return this;
+		this.enableLoadMore();
     },
 
 	/*
@@ -268,125 +134,30 @@ var _stream = _tap.register({
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
         4. more (int) if you want to load more
 	*/
-    changeFeed: function(type, id, feed, keyword, more, anon) {
+    changeFeed: function(type, id, info, keyword, more) {
         var self = this,
             data = {type: null};
 
-        this.type = type;
-        this.id = id;
-        this.feed = feed;
-        this.keyword = keyword;
+        _vars.feed.type = data.type = type;
+        _vars.feed.id   = data.id   = id;
 
-        var prefix = ''; //urls prefix
-        var user = false;
-        if (type == 'channels') {
-            prefix = 'channel';
-            switch (id) {
-                case 'all':
-                    data.type = 11;
-                    break;
+        data.search = keyword ? keyword : '';
+        data.more = more ? more : 0;
 
-                case 'public':
-                    data.type = 100;
-                    break;
-
-                case 'feed':
-                    data.type = 4;
-                    break;
-
-                case 'convos':
-                    data.type = 5;
-                    break;;
-
-                default:
-                    data.type = 1;
-                    data.id = id;
-            }
-        } else if (type == 'peoples') {
-            prefix = 'user';
-            feed.admin = false;
-            feed.online_count = null;
-            feed.total_count = null;
-            user = true;
-            switch (id) {
-                case 'all':
-                    data.type = 22;
-                    break;
-
-                default:
-                    data.type = 2;
-                    data.id = id;
-           }
-        } else if (type == 'private') {
-            prefix = 'user';
-            feed.admin = false;
-            feed.online_count = null;
-            feed.total_count = null;
-            switch (id) {
-                case 'all':
-                    data.type = 33;
-                    break;
-
-                default:
-                    data.type = 3;
-                    data.id = id;
-            }
-        }
-
-        var tapbox = $('taptext');
-
-        if (tapbox) {
-            if (id == 'public' || id == 'all') {
-                $('taptext').disabled = true;
-                $('taptext').style.background = 'gray';
-            } else {
-                $('taptext').disabled = false;
-                $('taptext').style.background = 'white';
-            }
-        }
-
-		
-		if (!more) {
-			more = false;
-			data.more = 0;
-			self.loadmore_count = 0;
-		} else { 
-			data.more = self.loadmore_count;
-		}
-
-        if (anon)
-            data.anon = 0; //1 for guests only, 0 for registred only
-        else {
-            var anon_elem = $('anon_filter');
-            if (anon_elem && anon_elem.retrieve('state'))
-                data.anon = 0;
-        }
-        
-        if (keyword) data.search = keyword;
         new Request({
-            url: '/AJAX/taps/filter.php',
+            url: '/AJAX/taps/filter',
             data: data,
-            onRequest: this.showLoader.bind(this),
             onSuccess: function() {
                 var response = JSON.decode(this.response.text);
-                if (!feed.hide)
-                    self.setTitle({
-                        title: keyword ? ['"', keyword, '" in ', feed.name].join('') : feed.name,
-    //					favicon: data.type == 1 ? $$('#gid_'+id+' img.favicon-img')[0].src : '',
-                        url: feed.symbol ? '/'+prefix+'/' + feed.symbol : null,
-                        type: keyword ? 'search' : 'feed',
-                        desc: feed.topic,
-                        admin: feed.admin ? '/group_edit?channel=' + feed.symbol : null,
-                        online_count: feed.online_count,
-                        total_count: feed.total_count,
-                        user: user
-                    });
 
-                if (response) self.parseFeed(response);
-                self.hideLoader();
-                self.publish('feed.changed', ['public', 'all'].contains(id) ? id : 'group_' + id);
+                if (response.success) 
+                    self.parseFeed(response.data);
+                else
+                    self.feed.empty();
+
 				self.enableLoadMore();
                 self.enableLoadLess();
+                self.publish('feed.changed', [type, id]);
             }
         }).send();
     },
@@ -459,38 +230,7 @@ var _convos = _tap.register({
 		return this;
 	},
 
-	/*
-	method: changeFeed()
-		loads a specific convo
-		
-		args:
-		1. id (string) the id of the active conversation
-		2. feed (object) additional data about the active conversation
-	*/
-	changeFeed: function(id, feed){
-		var self = this,
-			data = {id_list: id};
-		new Request({
-			url: '/AJAX/taps/convo.php',
-			data: data,
-			onRequest: this.showLoader.bind(this),
-			onSuccess: function(){
-				var response = JSON.decode(this.response.text);
-				self.setTitle({
-					title: 'with '+ feed.user,
-					url: '/user/' + feed.user,
-					type: 'convo'
-				});
-				if (response) self.parseFeed(response);
-				self.hideLoader();
-				self.openConvo();
-				self.publish('feed.changed', 'convos');
-			}
-		}).send();
-	},
-
-
-	/*
+/*
 	method: openConvo()
 		automatically opens the active convo's responses area
 	*/
@@ -754,7 +494,7 @@ _live.typing = _tap.register({
     },
 
     showTyping: function(data) {
-        if (_vars.feed.type != 'conversation')
+        if (_vars.feed.type != 'conversation' && data.cid != _vars.feed.id)
             return;
 
         var item = $('typing-'+data.uid);
@@ -1127,7 +867,7 @@ _live.taps = _tap.register({
     },
 
     hideNotifier: function() {
-        this.notifier.set('text', '').removeClass('notify');
+        //this.notifier.set('text', '').removeClass('notify');
     },
 
     toggleNotifier: function(el) {
@@ -1246,5 +986,3 @@ _live.notifications = _tap.register({
     }
 });
 
-// UNCOMMENT FOR PROD
-// })();

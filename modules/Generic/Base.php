@@ -10,7 +10,7 @@ abstract class Base {
 
     //These properties are flags
     protected $need_db    = false;
-    protected $need_login = false;
+    protected $need_login = true;
 
     /* @var DB */
     protected $db;
@@ -34,7 +34,7 @@ abstract class Base {
             $this->db = DB::getInstance();
 
         //actually, we need user everywhere
-        if ($this->need_login || true)
+        if ($this->need_login)
             $this->user = Auth::identify();
     }
 

@@ -5,6 +5,7 @@
 
 class ajax_responses extends Base {
     protected $view_output = 'JSON';
+    protected $need_login = false;
 
     function __invoke() {
         $id = intval($_POST['cid']);

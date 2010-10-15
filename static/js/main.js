@@ -50,7 +50,8 @@ var _template = {
         'search':  'template-search',
         'replies': 'template-replies',
         'suggestions': 'template-suggestions',
-        'typing': 'template-typing'
+        'typing': 'template-typing',
+        'messages': 'template-messages'
     },
 
 	/*
@@ -101,7 +102,8 @@ var _dater = _tap.register({
         var items = _body.getElements("[data-timestamp]");
         items.each(function(el) {
             var timestamp = el.getData('timestamp') * 1;
-            el.text = Date.timeDiffInWords(new Date(timestamp*1000));
+            if (timestamp)
+                el.text = Date.timeDiffInWords(new Date(timestamp*1000));
         });
     }
 });

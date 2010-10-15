@@ -16,11 +16,17 @@ class SeparatorIterator implements Iterator {
     private $count = 0;
     private $pos = 0;
 
-    public function __construct(MySQLi_Result $result, array $tables) {
+    public function __construct(MySQLi_Result $result, array $tables, $hash = null) {
         $this->result = $result;
         $this->tables = $tables;
         $this->count  = $result->num_rows;
-        $this->fields = $result->fetch_fields();
+        if ($hash !== null && apc_exists($hash) && APC)
+            $this->fields = apc_fetch($hash);
+        else {
+            $this->fields = $result->fetch_fields();
+            if ($hash !== null && APC)
+                apc_store($hash, $this->fields, 2*60*60);
+        }
     }
 
     public function rewind() {

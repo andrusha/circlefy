@@ -6,6 +6,7 @@ CALLS:
 
 class ajax_search extends Base {
     protected $view_output = 'JSON';
+    protected $need_login = false;
 
     public function __invoke() {
         $search = $_POST['search'];

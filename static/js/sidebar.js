@@ -15,12 +15,7 @@ _tap.mixin({
 
 	setListVars: function() {
         var sidebar = this.sidebar = $('sidebar');
-		var list = this.list = sidebar.getElements('#lists');
-		this.header = sidebar.getElements('#tab-name');
-		this.action = sidebar.getElements('#list-action');
-		this.panels = list.getElements('ul')[0];
-		this.tabs = list.getElements('a.tab')[0];
-		this.items = list.getElements('li.panel-item')[0];
+        this.menu = sidebar.getElements('ul#navigation>li');
 	}
 
 });
@@ -36,206 +31,21 @@ var _list = _tap.register({
 	mixins: 'lists',
 
 	init: function(){
-		var self = this;
 		this.setListVars();
-		this.list.addEvents({
-			'click:relay(span.action)': this.actionClick.toHandler(this),
-			'click:relay(a.tab)': this.changeList.toHandler(this),
-			'click:relay(li.panel-item)': this.itemClick.toHandler(this),
-            'click:relay(li.people-contact-list)': this.itemClick.toHandler(this),
-		});
-		this.subscribe({
-			'convos.updated': this.moveItem.bind(this),
-			'convos.removed': this.removeItem.bind(this),
-			'convos.new': function(cid, uid, data){
-				self.addItem('convos', data);
-			},
-			'search.selected': function(id){
-				self.itemClick($(id), {});
-			}
-		});
-	},
+		this.menu.addEvent('click:relay(a)', this.changeFeed.toHandler(this));
+    },
 	
+	changeFeed: function(el, e){
+        e.stop();
+		var type = el.getData('type'),
+            id = _vars.user.id,
+            data = {'feed': el.getElement('a').text };
 
-	/*
-	handler: changeList()
-		event handler for when one of the tabs are clicked
-	*/
-	changeList: function(el, e){
-		var name = el.getData('name'),
-			all = $$(this.tabs, this.panels),
-			panel = $('panel-' + name),
-			action = panel.getData('action'),
-			href = panel.getData('action-href');
-		e.preventDefault();
-		this.header.set('text', el.get('title'));
-		all.removeClass('selected');
-		el.addClass('selected');
-		panel.addClass('selected');
-		el.removeClass('notify').set('text', '');
-		this.action.set((action) ? {'text': action, 'href': href} : {'text': '', 'href': ''});
-		this.publish('list.change', name);
+        el.getSiblings('li').removeClass('active');
+        el.addClass('active');
+
+		this.publish('feed.change', [type, id, data]);
 	},
-
-	/*
-	handler: itemClick()
-		event handler for when one of the items are clicked
-	*/
-	itemClick: function(el, e){
-		var type = el.getParent('ul').getData('name'),
-			id = el.getData('id'),
-			data = {};
-        if (this.items)
-    		this.items.removeClass('selected');
-		el.addClass('selected');
-        data = {
-            name: el.getData('name'),
-            topic: el.getData('topic')
-        };
-		switch (id){
-            case 'feed':
-                type = 'channels';
-                id   = 'feed';
-                break;
-
-			case 'channels':
-                type = 'channels';
-                id   = 'all';
-				break;
-
-			case 'peoples':
-                type = 'peoples';
-                id   = 'all';
-                break;
-
-            case 'convos':
-                type = 'channels';
-                id   = 'convos';
-                break;
-
-            case 'inbox':
-                type = 'private';
-                id   = 'all';
-                break;
-
-            case 'public':
-                type = 'channels';
-                id   = 'public';
-                break;
-		}
-		this.publish('list.item', [type, id, data]);
-	},
-/*	itemClick: function(el, e){
-		var type = el.getParent('ul').getData('name'),
-			id = el.getData('id'),
-			data = {};
-        if (this.items)
-    		this.items.removeClass('selected');
-		el.addClass('selected');
-		switch (type){
-			case 'channels':
-				data = {
-					name: el.getData('name'),
-					online_count: el.getData('online_count'),
-					total_count: el.getData('total_count'),
-					symbol: el.getData('symbol'),
-					topic: el.getData('topic'),
-					admin: !!el.getData('admin')
-				};
-				break;
-
-			case 'convos':
-				data = {
-					user: el.getData('user')
-				};
-				break;
-
-            case 'private':
-            case 'peoples':
-                data = {
-                    symbol: el.getData('uname'),
-                    name: el.getData('name'),
-                    topic: el.getData('topic'),
-                    uid: el.getData('uid')
-                };
-                break;
-		}
-		this.publish('list.item', [type, id, data]);
-	},*/
-
-	/*
-	method: addItem()
-		adds an item to the list
-		
-		args:
-		1. type (string) the type of list (eg, convos, groups, etc).
-		2. data (object) data to use for the templater
-	*/
-	addItem: function(type, data) {
-        if (type == 'convos') 
-            var item = $$('li.panel-item#cid_'+data['mid']);
-            if (item.length == 0)
-                Elements.from(_template.parse('list.convo', [data])).inject($('panel-convos'));
-		this.publish('list.item.added', [type, data]);
-	},
-
-	/*
-	method: moveItem()
-		moves an item on the list to a different position
-		
-		args:
-		1. id (string, obj) list item to move
-		2. where (string) position to move
-	*/
-	moveItem: function(id, where){
-		var el = $(id);
-		where = where || 'top';
-	 	return (el) ? !!el.inject(el.getParent('ul'), where) : false;
-	},
-
-	/*
-	method: removeItem()
-		removes an item from the list
-		
-		args:
-		1. id (string) the value of the id data-attrib of the object
-		2. elID (string, obj) the element to remove
-	*/
-	removeItem: function(id, elId){
-		var el = $(elId);
-		if (el) el.destroy();
-		this.publish('list.item.removed', id);
-	},
-
-	/*
-	method: getItems()
-		get items from the list via a selector
-		
-		args:
-		1. selector (string) the selector to use to filter the items
-		2. limit (number) the number of items to return
-		
-		returns:
-		- (element, collection) the elements found
-	*/
-	getItems: function(selector, limit){
-		var items = this.items.filter(selector);
-		if (items.length === 0) return (limit == 1) ? null : items;
-		return (limit == 1) ? items[0] : $$(items.slice(0, limit - 1));
-	},
-
-	/*
-	handler: actionClick()
-		fires when an .action element in the list is clicked
-	*/
-	actionClick: function(el, e){
-		var action = el.getData('action'),
-			parent = el.getParent('li');
-		if (!action) return;
-		this.publish('list.action.' + action, parent.getData('id'));
-		return this;
-	}
-
 });
 
 /*

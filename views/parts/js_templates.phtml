@@ -61,7 +61,7 @@
             <img src="<?=GROUP_PIC_REL?>medium_<#: sugg.id #>.jpg"/>
             <label for="sigg_<#: sugg.id #>"><#: sugg.name #></label>
          </li>
-         <# end; #>
+         <# endfor; #>
      </ul>
 
      <? /*** User typing template ***/?>
@@ -71,7 +71,75 @@
             <a href="/user/<#: this.uname #>" class="reply-author"><#: this.uname #></a><span>is typing</span>
             <div class="clear"></div><div class="br"></div>
         </div><!--latest-->
-        
      </ul>
+
+    <? /*** Messages feed template ***/?>
+    <ul id="template-messages">
+        <# for (var msg from this): #>
+        <div class="feed-item"
+             id="global-<#: msg.id  #>"
+             data-id="<#: msg.id  #>"
+             data-gid="<#: msg.group_id  #>">
+        
+            <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" />
+            <div class="text">
+                <h3 class="author"><a href="/user/<#: msg.sender.uname  #>"><#: msg.sender.uname  #></a> <small>, <#: msg.sender.fname  #> <#: msg.sender.lname  #></small></h3>
+                <cite><a href="/convo/<#: msg.id  #>"><#: msg.text  #></a></cite>
+                <div class="clear"></div>
+
+                <# if (msg.responses.user): #>
+                <div class="latest-reply">
+                    <img src="<?=USER_PIC_REL?>small_<#: msg.responses.user.id #>.jpg"
+                         alt="<#: msg.responses.user.fname  #> <#: msg.responses.user.lname  #>" class="avatar-reply" />
+                    <a href="/user/<#: msg.responses.user.uname  #>" class="reply-author"><#: msg.responses.user.uname  #>:</a>
+                    <span><#: msg.responses.text  #></span>
+                </div><!--latest-->
+                <# endif; #>
+               
+                <a href="#" class="reply">Reply</a>
+                <# if (msg.responses.count): #>
+                <a href="#" class="comments"><#: msg.responses.count  #></a>
+                <# endif; #>
+
+                <div class="replies hidden">
+                    <div class="arrow"></div>
+                    <div class="list"></div><!--list-->
+
+                    <# if (!_vars.guest): #>
+                    <div class="field">
+                        <div class="thumb"><img src="<?=USER_PIC_REL?>medium_<#: _vars.user.id #>.jpg" alt="It's you" /></div>
+                        <div class="editor">
+                            <form>
+                                <textarea></textarea>
+                                <input type="submit" value=" ">
+                            </form>
+                            <div class="clear"></div>
+                        </div><!--editor-->
+                        <div class="clear"></div>
+                    </div><!--field-->
+                    <# endif; #>
+                </div><!--replies-->
+
+                <div class="clear"></div>
+                    <# if (!this.hide_group_icon): #>
+                    <div class="circle">
+                        <a href="/circle/<#: msg.group.symbol  #>">
+                            <span></span>
+                            <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" alt="<#: msg.group.name  #>" />
+                        </a>
+                    </div><!--circle-->
+                    <# endif; #>
+                 <div class="icons">
+                   <!-- there would be icon, selected depending on what type of content message have -->
+                    <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
+                    <span class="timestamp" data-timestamp="<#: msg.timestamp #>"><#: msg.time  #></span>
+                </div>
+            </div><!--text-->
+        
+        </div><!--feed-item-->
+        <# endeach; #>
+        
+        <a class="load" href="#">Older Taps</a>
+    </ul>
 
 </div>

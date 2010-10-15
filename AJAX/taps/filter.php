@@ -1,121 +1,46 @@
 <?php
 /* CALLS:
-    homepage.phtml
+   feed.js 
 */
-$usage = <<<EOF
-PARAMS
 
-type - 
-    Types:
-    1 = IND Channel
-    11 = AGGR Channels
-    2 = IND Personal 
-    22 = AGGR Personal
-    3 = IND Private
-    33 = AGGR Private
-    4 = AGGR Channels & Private
-    5 = AGGR Convos
-search - 
-    optional if you provide a search term for the feed
-outside - 
-    Can be : 0,1,2 
-more -
-    the more offset if you want a different set of the feed rather then the latest ( i.e. pagiation )
-id -
-    the id of the channel you want to call
-EOF;
-    
-require('../../config.php');
-require('../../api.php');
+class ajax_filter extends Base {
+    protected $view_output = 'JSON';
 
-class filter extends Base {
-    public function __construct() {
-        $this->need_db = 0;
-        $this->view_output = 'JSON';
-        parent::__construct();
-
+    public function __invoke() {
         $type    = $_POST['type'];
+        $id      = intval($_POST['id']);
         $search  = $_POST['search'];
-        $outside = $_POST['outside'];
-        $more    = $_POST['more'];
-        $id      = $_POST['id'];
-        $anon    = $_POST['anon'];
+        $more    = intval($_POST['more']);
 
-        $this->data = $this->filter($type,$search,$outside,$id,$more,$anon);
-    }
-    
-    private function filter($type,$search,$outside,$id,$more,$anon) {
-        $params = array();
-
-        if ($more)
-            $params['#start_from#'] = $more;
-
-        if (!$outside)
-            $outside = '1, 2';
-
-        $params['#outside#'] = $outside;
-
-        if (isset($anon))
-            $params['#anon#'] = $anon;
-        
-        if ($search)
-            $params['#search#'] = $search;
-
-        $group_info = true;
-        $user_info = false;
-        switch ($type) {
-            case 100:
-                $filter = 'public';
-                break;
-            case  11:
-                $filter = 'aggr_groups';
-                $params['#uid#'] = $this->user->uid;
-                break;
-            case   1:
-                $filter = 'ind_group';
-                $params['#gid#'] = intval($id);
-                Action::log($this->user, 'group', 'view', array('gid' => intval($id)));
-                break;
-            case  22:
-                $filter = 'aggr_personal';
-                $params['#uid#'] = $this->user->uid;
-                break;
-            case   2:
-                $filter = 'personal';
-                $params['#uid#'] = intval($id);
-                Action::log($this->user, 'user', 'view', array('uid' => intval($id)));
-                break;
-            case  33:
-                $group_info = false;
-                $user_info = true;
-                $filter = 'aggr_private';
-                $params['#uid#'] = $this->user->uid;
-                break;
-            case   3:
-                $group_info = false;
-                $user_info = true;
-                $filter = 'private';
-                $params['#from#'] = $this->user->uid;
-                $params['#to#'] = intval($id);
-                break;
-            case  4:
-                $group_info = $user_info = true;
-                $filter = 'aggr_all';
-                $params['#uid#'] = $this->user->uid;
-            case  5:
-                $user_info = $group_info = true;
-                $filter = 'convos_all';
-                $params['#uid#'] = $this->user->uid;
+        if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {
+            $this->data = array('success' => false, 'data' => array());
+            return;
         }
 
-        $data = TapsList::getFiltered($filter, $params, $group_info, $user_info)
+        $params = array(
+            'start_from' => $more,
+            'search'     => $search
+        );
+        $options = T_GROUP_INFO | T_USER_INFO;
+
+        if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos')))
+            $params['uid'] = $this->user->id;
+
+        if (in_array($type, array('feed', 'aggr_friends', 'aggr_convos')))
+            $options |= T_USER_RECV;
+
+        if (trim($search))
+            $options |= T_SEARCH;
+
+        if ($more)
+            $options |= T_LIMIT;
+
+        $data = TapsList::search($type, $params, $options)
                         ->lastResponses()
-                        ->filter('all');
+                        ->format()
+                        ->asArrayAll();
 
         $results = !empty($data);
-        return array('results' => $results, 'data' => $data);
+        $this->data = array('success' => $results, 'data' => $data);
     }
-
 };
-
-$something = new filter();

@@ -5,6 +5,7 @@
 */
 class ajax_check extends Base {
     protected $view_output = 'JSON';
+    protected $need_login = false;
 
     function __invoke() {
         $type = $_POST['type'];

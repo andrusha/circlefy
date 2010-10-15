@@ -195,11 +195,8 @@ class UserConnection(BasicConnection):
                 logging.info("User %s offline" % self.server.usernames[self.uid])
 
     def receivedFrame(self, frame):
-        if self.state == "init":
-            if 'uid' not in frame or 'uname' not in frame:
-                logging.warning("Bad packet! In UserConnection (init): %s" % frame)
-                return False
-
+        if self.state == "init" and \
+           ('uid' in frame and 'uname' in frame) and 'action' not in frame:
             self.state = 'connected'
             self.uid = int(frame['uid'])
             self.server.usernames[self.uid] = frame['uname']
@@ -207,11 +204,8 @@ class UserConnection(BasicConnection):
             self.userOnline(1)
 
             logging.info("User %s (%i) online" % (self.server.usernames[self.uid], self.uid))
-
-        elif self.state == "connected" and 'action' not in frame:
-            if 'cids' not in frame and 'gids' not in frame:
-                logging.warning("Bad packet! In UserConnection (connected): %s" % frame)
-                return False
+        elif self.state == "connected" and \
+            ('cids' in frame or 'gids' in frame) and 'action' not in frame:
 
             cids = set(map(int, frame['cids'].split(','))) if 'cids' in frame and frame['cids'] else set() 
             gids = set(map(int, frame['gids'].split(','))) if 'gids' in frame and frame['gids'] else set()
@@ -221,11 +215,10 @@ class UserConnection(BasicConnection):
                 self.remove_ids(old - data, type)
                 self.add_ids(data - old, type)
                 self.server.byUser[type][self.uid] = data
-        elif 'action' in frame and 'data' in frame:
-            if frame['action'] == 'response.typing':
-                MessageConnection(self.server.root.message_server).receivedFrame(frame)
+        elif 'action' in frame and 'data' in frame and frame['action'] == 'response.typing':
+            MessageConnection(self.server.root.message_server).receivedFrame(frame)
         else:
-            logging.warning("Bad packet! In UserConnection (connected): %s" % frame)
+            logging.warning("Bad packet! In UserConnection (%s): %s" % (self.state, frame))
 
     def add_ids(self, items, type):
         online = set()

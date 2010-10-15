@@ -167,7 +167,7 @@ class TapsList extends Collection {
         $taps = array();
         $result = $db->query($query, $params);
         //separate group/users info from all stuff
-        foreach (DB::getSeparator($result, array('g', 'g2', 'u', 'u2', 'md')) as $line) {
+        foreach (DB::getSeparator($result, array('g', 'g2', 'u', 'u2', 'md'), md5($query)) as $line) {
             $tap = $line['rest'];
 
             if (!empty($line['g']) || !empty($line['g2']))
@@ -239,7 +239,7 @@ class TapsList extends Collection {
 
         $replies = array();
         $result = $db->query($query, array('ids' => $tap_ids));
-        foreach (DB::getSeparator($result, array('u')) as $line) {
+        foreach (DB::getSeparator($result, array('u'), md5($query)) as $line) {
             $repl = $line['rest'];
             $repl['user'] = $asArray ? $line['u'] : new User($line['u']);
             

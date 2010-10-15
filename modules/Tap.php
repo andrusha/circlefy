@@ -148,7 +148,7 @@ class Tap extends BaseModel {
 
         $responses = array();
         $result = $this->db->query($query, array('tap_id' => $this->id));
-        foreach (DB::getSeparator($result, array('u')) as $line) {
+        foreach (DB::getSeparator($result, array('u'), md5($query)) as $line) {
             $resp         = $line['rest'];
             $resp['user'] = $asArray ? $line['u'] : new User($line['u']);
             $responses[]  = $resp;
