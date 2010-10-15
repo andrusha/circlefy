@@ -958,6 +958,14 @@ h1.wide {
 	float:right;
 	margin: 0 0 10px 10px;
 }
+.conversation .circle-thumb img {
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+	/* For IE 8 */
+	-MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	-moz-opacity:1;    /* old mozilla browser like netscape  */
+	-khtml-opacity: 1;    /* for really really old safari */  
+	opacity: 1;    /* css standard, currently it works in most modern browsers like firefox,  */
+}
 .side .circle-thumb {
 	float:right;
 	margin: 0 0 10px 10px;
