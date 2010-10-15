@@ -1270,6 +1270,7 @@ h1.wide {
 	background:url(../images/reply_arrow.png) no-repeat;
 	top:-11px;
 	left:10px;
+	position:absolute;
 }
 .replies .list {
         height:250px;
