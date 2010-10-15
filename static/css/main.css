@@ -451,6 +451,10 @@ h1.wide {
 	float:left;
 	margin:0 10px 0 0;
 }
+.conversation .reply-item .thumb img {
+	width:25px;
+	height:25px;
+}
 .feed-item.last {
 	border-bottom:none;
 }
