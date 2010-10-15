@@ -1019,23 +1019,20 @@ h1.wide {
 }
 
 .conversation .latest-reply {
-	background:#d1e2f4;
 	float:left;
 	display:inline;
-	border-radius:2px;
-	-webkit-border-radius:2px;
-	-moz-border-radius:2px;
 	margin:0 0 5px 0;
 }
 .conversation .latest-reply .avatar-reply {
 	float:left;
 	padding:1px;
+	background:#d1e2f4;
 }
 .conversation .latest-reply .reply-author {
 	display:inline;
 	text-decoration:none;
 	float:left;
-	background:url(../images/comments_sep.gif) no-repeat right center;
+	background:url(../images/comments_sep.gif) no-repeat right center #d1e2f4;
 	padding:2px 10px 2px 5px;
 	color:#333;
 	font-weight:bold;
