@@ -1321,11 +1321,14 @@ div.feed-item.new {
 }
 
 .replies .list .reply-item span.text span.timestamp {
-        display:inline;
+        display:none;
         font-size:10px;
         color:#999;
         line-height:18px;
         margin:0 0 0 5px;
+}
+.replies .list .reply-item:hover span.text span.timestamp {
+	display:inline;
 }
 .replies .field {
         height:50px;
