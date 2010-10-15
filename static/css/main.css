@@ -1267,6 +1267,11 @@ div.feed-item.new {
 		background:rgba(255,255,255,.4);
 		position:relative;
 }
+.resizer {
+	height:2px;
+	width:504px;
+	background:#9cb4c3;
+}
 .replies .arrow {
 	width:21px;
 	height:11px;
