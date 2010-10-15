@@ -1263,7 +1263,7 @@ h1.wide {
         margin:0 0 0 65px;
 }
 .replies .list {
-        height:200px;
+        height:250px;
         overflow:scroll;
         overflow-x:hidden;
         padding: 0 10px;
