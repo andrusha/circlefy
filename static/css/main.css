@@ -1260,7 +1260,7 @@ h1.wide {
         width:500px;
         border:2px solid #e8edf0;
         padding:1px;
-        margin:0 0 0 65px;
+        margin:5px 0 0 65px;
 		background:rgba(255,255,255,.4);
 		position:relative;
 }
