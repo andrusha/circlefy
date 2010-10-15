@@ -1,11 +1,11 @@
 <?php
     $_h = array(
-        'title'   => $group['name'],
+        'title'   => $circle['name'],
         'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'feed.js'),
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'group', 'id' => $group['id'])),
+                           'feed'  => array('type' => 'group', 'id' => $circle['id'])),
         'guest'   => $guest);
     include(HEADER);
 ?>    
@@ -15,7 +15,7 @@
             <?php
                 $_f = array(
                     'feed'       => $feed,
-                    'name'       => $group['name'],
+                    'name'       => $circle['name'],
                     'show_reply' => !$guest,
                     'hide_group_icon' => true
                 );

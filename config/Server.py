@@ -23,7 +23,7 @@ DEBUG = True
 thread_count = defaultdict(int) 
 
 class BasicConnection(object):
-    def __init__(self, server, conn, addr = None):
+    def __init__(self, server, conn = None, addr = None):
         self.conn = conn
         self.server = server
         self.buffer = ""
@@ -208,19 +208,24 @@ class UserConnection(BasicConnection):
 
             logging.info("User %s (%i) online" % (self.server.usernames[self.uid], self.uid))
 
-        elif self.state == "connected":
+        elif self.state == "connected" and 'action' not in frame:
             if 'cids' not in frame and 'gids' not in frame:
                 logging.warning("Bad packet! In UserConnection (connected): %s" % frame)
                 return False
 
-            cids = set(map(int, frame['cids'].split(','))) if 'cids' in frame and frame['cids'] else []
-            gids = set(map(int, frame['gids'].split(','))) if 'gids' in frame and frame['gids'] else []
+            cids = set(map(int, frame['cids'].split(','))) if 'cids' in frame and frame['cids'] else set() 
+            gids = set(map(int, frame['gids'].split(','))) if 'gids' in frame and frame['gids'] else set()
 
             for type, data in [('convo', cids), ('group', gids)]:
                 old = self.server.byUser[type][self.uid]
                 self.remove_ids(old - data, type)
                 self.add_ids(data - old, type)
                 self.server.byUser[type][self.uid] = data
+        elif 'action' in frame and 'data' in frame:
+            if frame['action'] == 'response.typing':
+                MessageConnection(self.server.root.message_server).receivedFrame(frame)
+        else:
+            logging.warning("Bad packet! In UserConnection (connected): %s" % frame)
 
     def add_ids(self, items, type):
         online = set()

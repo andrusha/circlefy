@@ -5,7 +5,9 @@
 	color:					#fff;
 	text-align:				left;
 	z-index:				999;
+	text-shadow:				1px 1px #000;
 }
+
 
 .roar
 {
@@ -33,7 +35,6 @@
     background-color: #eee;
 }
 .roar-bg .dismiss {
-    color:white;
     display:block;
     float:right;
     margin-right:10px;
@@ -41,7 +42,13 @@
     font-weight: normal;
     font-size: 10px;
     color: lightgray;
+    text-shadow:none;
 }
+
+.roar-bg .dismiss:hover {
+    color:white;
+}
+
 .roar .avatar {
     clear:both;
     float:left;
@@ -76,6 +83,15 @@
 	color:		#ccc;
 	z-index:	1002;
 }
+
+.roar a{
+	color:white;
+	text-decoration:none;
+}
+.roar a:hover{
+	text-decoration:underline;
+}
+
 .roar h3 a {
     font-weight: bold;
     font-size:  14px;

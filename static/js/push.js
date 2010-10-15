@@ -3,8 +3,6 @@ script: push.js
 	Interface to the Orbited system.
 */
 
-(function(){
-
 var _push = _tap.register({
 
 	init: function(){
@@ -26,7 +24,7 @@ var _push = _tap.register({
 		this.socket.open('localhost', 2223);
 	},
 
-	send: function(data){
+	send: function(data) {
 		data = JSON.encode(data);
 		if (!data) return;
 		this.socket.send(data + '\r\n');
@@ -84,5 +82,3 @@ var _logger = _tap.register({
 	}
 	
 });
-
-})();

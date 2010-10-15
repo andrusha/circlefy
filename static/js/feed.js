@@ -749,15 +749,16 @@ _live.typing = _tap.register({
             chatbox.store('typing', false);
         }).delay(1500);
         chatbox.store('typing', true);
-        var id = _vars.feed.type != 'conversation' ? chatbox.getParent('div.feed-item').getData('id') : _vars.feed.id;
-        new Request({
+        var id = _vars.feed.type != 'conversation' ? chatbox.getParent('div.feed-item').getData('id')*1 : _vars.feed.id*1;
+        _push.send({action: 'response.typing', cid: id, data: {cid: id, uid: _vars.user.id*1, uname: _vars.user.uname}});
+        /*new Request({
             url: '/AJAX/user/typing',
             data: {
                 cid:   id,
                 uid:   _vars.user.id,
                 uname: _vars.user.uname
             }
-        }).send();
+        }).send();*/
     },
 
     showTyping: function(data) {
@@ -969,7 +970,7 @@ _resizer = _tap.register({
     makeResizeable: function() {
         this.resizers = $$('div.resizer');
         this.resizers.each( function(div) {
-            var chat = div.parentNode.getElement('ul.chat');
+            var chat = div.parentNode.getElement('div.replies');
             var drag = new Drag(chat, {
                 snap: 0,
                 handle: div,
@@ -991,7 +992,8 @@ require: _vars
 _live.stream = _tap.register({
 
     init: function() {
-        this.convos = this.groups = [];
+        this.convos = [];
+        this.groups = [];
         this.subscribe({
             'push.connected; stream.updated': this.refreshStream.bind(this)
         });
@@ -1025,74 +1027,13 @@ _live.stream = _tap.register({
 		sends changes to the push server
 	*/
     update: function() {
-        if (!(this.convos.length && this.groups.length) || _vars.guest)
+        if (!(this.convos.length || this.groups.length) || _vars.guest)
             return;
 
         this.publish('push.send', {
             cids: this.convos.join(','),
             gids: this.groups.join(',')
         });
-    }
-
-});
-
-/*
-module: _live.viewers
-	controls the view numbers for the tap stream
-*/
-_live.viewers = _tap.register({
-
-    init: function() {
-        this.subscribe({
-            'push.data.view.add; push.data.view.minus': this.change.bind(this)
-        });
-    },
-
-    change: function(taps, amount) {
-        var len, span, parent;
-        taps = $splat(taps);
-        len = taps.length;
-        while (len--) {
-            parent = $('tid_' + taps[len]);
-            if (!parent) continue;
-            span = parent.getElement('span.tap-view-count');
-            if (span)
-                span.set('text', (span.get('text') * 1) + amount);
-        }
-        return this;
-    }
-
-});
-
-/*
-module: _live.users
-	controls the offline/online mode for users
-
-require: _body
-*/
-_live.users = _tap.register({
-
-    init: function() {
-        this.subscribe({
-            'push.data.user.add': this.setOnline.bind(this),
-            'push.data.user.minus': this.setOffline.bind(this)
-        });
-    },
-
-    setOnline: function(ids) {
-        var el, len = ids.length;
-        while (len--) {
-            el = _body.getElements('[data-uid="' + ids[len] + '"]');
-            el.getElement('p.tap-from').removeClass('offline');
-        }
-    },
-
-    setOffline: function(ids) {
-        var el, len = ids.length;
-        while (len--) {
-            el = _body.getElements('[data-uid="' + ids[len] + '"]');
-            el.getElement('p.tap-from').addClass('offline');
-        }
     }
 
 });

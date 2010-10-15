@@ -1,6 +1,6 @@
 <?php
     $_h = array(
-        'title'   => 'conversation',
+        'title'   => $convo['sender']['fname'].' '.$convo['sender']['lname']."'s conversation".(!empty($convo['group']) ? ' in '.$convo['group']['name'].' circle' : ''),
         'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'feed.js'),
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
