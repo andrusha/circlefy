@@ -36,7 +36,7 @@
     <ul id="template-replies">
         <# for (var repl from this): #>
         <div id="conversation-<#: repl.id #>" class="reply-item">
-            <div class="thumb"><img src="<?=USER_PIC_REL?>small_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" /></div>
+            <div class="thumb"><img src="<?=USER_PIC_REL?>medium_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" width="25" /></div>
             <span class="text">
                 <h3 class="username">
                     <a href="/user/<#: repl.user.uname #>"><#: repl.user.uname #></a>:
