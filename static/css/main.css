@@ -1267,11 +1267,11 @@ h1.wide {
         height:250px;
         overflow:scroll;
         overflow-x:hidden;
-        padding: 0 5px;
+        padding: 0;
 		background:#fff;
 }
 .replies .list .reply-item {
-        padding:10px 5px;
+        padding:10px 10px;
         margin:0 0 2px 0;
 		background:#e8edf0;
 }
