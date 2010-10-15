@@ -958,7 +958,7 @@ h1.wide {
 	float:right;
 	margin: 0 0 10px 10px;
 }
-.conversation .circle-thumb img {
+.conversation .circle-thumb img, .side .circle-thumb img {
 	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
 	/* For IE 8 */
 	-MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
