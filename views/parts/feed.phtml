@@ -1,4 +1,7 @@
-<h1 class="title feed"><?=$_f['name']?> Feed <a href="#" id="pause">Pause Stream</a></h1>
+<h1 class="title feed">
+    <span><?=$_f['name']?></span>
+    <a href="#" id="pause">Pause Stream</a>
+</h1>
 
             <div id="controls">
             	
@@ -19,7 +22,7 @@
 <form id="reply">
 	<a class="anonym" href="#"><img src="/static/images/user.gif" alt="guy" /></a>
     <img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" />
-    <textarea>Post a message to this circle</textarea>
+    <textarea title="Post a message to this circle"></textarea>
     <input type="submit" value=" " />
     <div class="clear"></div>
 </form><!--reply-->
@@ -108,7 +111,9 @@
     <?    endforeach;
        endif; 
     ?>
-    
+   
+    <? if (count($_f['feed']) >= 10): ?>
     <a class="load" href="#">Older Taps</a>
+    <? endif; ?>
     
 </div><!--feed-->

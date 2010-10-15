@@ -1,109 +1,53 @@
 <?php
 /* CALLS:
-    chat_window.js
+    feed.js
 */
 
-require('../../config.php');
-require('../../api.php');
+class ajax_new extends Base {
+    protected $view_output = 'JSON';
 
-class new_message extends Base {
-    public function __construct() {
-        $this->need_db = false;
-        $this->view_output = 'JSON';
-        parent::__construct();
+    public function __invoke() {
+        $id   = intval($_POST['id']);
+        $type = $_POST['type'];
+        $msg  = strip_tags($_POST['msg']);
 
-        $to     = $_POST['to'];
-        $type   = $to['type'];
-        $symbol = $to['symbol'];
-        $id     = intval($to['id']);
+        if (Tap::checkDuplicate($this->user, $msg))
+            return $this->data = array('dupe' => true);
 
-        $msg = $_POST['msg'];
         switch ($type) {
-            case 'channels':
-                $group = $id ? new Group($id) : Group::fromSymbol($symbol);
-                $this->data = $this->create_channel($group, $msg);
+            case 'group':
+                $group = new Group($id);
+                $tap = Tap::toGroup($group, $this->user, $msg);
+                $this->notify($this->user, $group, null, $tap);
                 break;
 
-            case 'private':
+            case 'friend':
                 $user = new User($id);
-                $this->data = $this->send_private($user, $msg);
+                $tap = Tap::toUser($this->user, $user, $msg);
+                $this->notify($this->user, null, $to, $tap);
                 break;
         }
-    }
 
-    private function send_private(User $to, $msg) {
-        $tap = Tap::toUser($this->user, $to, $msg);
-
-        $msg = array(
-            'channel_id'  => $cid,
-            'time'        => time(),
-            'new_channel' => 'true',
-            'new_msg'     => array($tap->all),
-            'your_first'  => false);
-
-        $this->notifyPrivate($this->user, $to, $tap->all);
-        
-        return $msg;
-    }
-
-    private function create_channel(Group $group, $msg) {
-        if (Tap::checkDuplicate($this->user, $msg))
-            return array('dupe' => true);
-
-        $tap = Tap::toGroup($group, $this->user, $msg);
         $tap->makeActive($this->user);
-        
-        $your_first = Tap::firstTapInGroup($group, $this->user);
-
-        $msg = array(
-            'channel_id'  => $tap->id,
-            'time'        => time(),
-            'new_channel' => 'true',
-            'new_msg'     => array($tap->all),
-            'your_first'  => $your_first);
-
-        $this->notifyViewers($this->user, $group, $tap->all);
-        $this->notifyMembers($this->user, $group, $tap->all);
-
-        return $msg;
+        $this->data = array('success' => 1);
     }
 
-    private function notifyPrivate(User $from, User $to, array $tap_array) {
-        $message = array('action' => 'notify.private',
-            'users' => array($to->uid), 'data' => $tap_array);
-        Comet::send('message', $message);
-
-        //yeah, it also throws event to display tap in feed
-        $message = array('action' => 'tap.new',
-            'users' => array($to->uid), 'data' => $tap_array);
-        Comet::send('message', $message);
-   }
-
-    /*
-        Notify all group viewers, that there is new tap
-    */
-    private function notifyViewers(User $tapper, Group $group, $tap_array) {
-        $message = array('action' => 'tap.new', 'gid' => intval($group->gid),
-            'exclude' => array(intval($tapper->uid)), 'data' => $tap_array);
-        Comet::send('message', $message);
-    }
-    
     /*
         Notify all group members, that there is new tap
     */
-    private function notifyMembers(User $tapper, Group $group, $tap_array) {
-        $users = $group->getMembers(true);
+    private function notify(User $tapper, $group, $to, Tap $tap){
+        $message = array(
+            'action' => 'tap.new',
+            'data' => $tap->format()->asArray());
 
-        $text = FuncLib::makePreview($tapText);
-        $data = array('gname' => $tap_array['gname'], 'greal_name' => $tap_array['symbol'], 
-                      'uname' => $tap_array['uname'], 'ureal_name' => $tap_array['real_name'],
-                      'text'  => $tap_array['chat_text'],
-                      'avatar' => $tap_array['pic_100'], 'group_avatar' => $tap_array['favicon']);
-        $message = array('action' => 'notify.tap.new',
-            'gid' => $group->gid, 'users' => $users,
-            'exclude' => array($tapper->uid), 'data' => $data);
+        if ($group instanceof Group) {
+            $uids = UsersList::search('members', array('gid' => $group->id), U_ONLY_ID)->filter('id');
+            $message['gid'] = $group->id;
+        } elseif ($to instanceof User)
+            $uids = array($to->id);
+
+        $message['users'] = $uids;
+
         Comet::send('message', $message);
     }
 };
-
-$something = new new_message();

@@ -2,7 +2,7 @@
 
     <? /*** Search suggestions template ***/ ?>
     <ul id="template-search">
-        <# if (this.length > 0): #>
+        <# if (this.length): #>
         <# for (var sugg from this): #>
         <li>
            <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
@@ -139,7 +139,16 @@
         </div><!--feed-item-->
         <# endeach; #>
         
-        <a class="load" href="#">Older Taps</a>
+    </ul>
+
+    <? /*** Load more button ***/ ?>
+    <ul id="template-loadmore">
+        <a class="load" id="loadmore" href="#">Older Taps</a>
+    </ul>
+
+    <? /*** Load less button ***/ ?>
+    <ul id="template-loadless">
+        <a class="load" id="loadless" href="#">Newer Taps</a>
     </ul>
 
 </div>

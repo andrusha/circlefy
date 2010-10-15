@@ -71,7 +71,7 @@ Acknowledgements:
                         return '$each(' + source_name + ', function (' + var_name + ') { ' +
                                'if (typeOf(' + var_name + ') == "function") return; \n'+ inner;
                     }
-                ).replace(this.loopEnds, '});');
+                ).replace(this.loopEnds, '}.bind(this));');
         },
         
         escape: function(template) {

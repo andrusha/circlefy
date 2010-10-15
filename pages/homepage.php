@@ -21,9 +21,9 @@ class page_homepage extends Base {
                     ->format()
                     ->asArrayAll();
             $this->set('feed', 'feed_type');
-            $this->set('Your', 'feed_name');
+            $this->set('Your Feed', 'feed_name');
         } else
-            $this->set('Global', 'feed_name');
+            $this->set('Discover', 'feed_name');
 
         if (empty($feed) || $this->user->guest) {
             $feed = TapsList::search('public', array(), T_USER_INFO | T_GROUP_INFO)

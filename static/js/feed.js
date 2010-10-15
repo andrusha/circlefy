@@ -29,42 +29,6 @@ _tap.mixin({
     },
 
 	/*
-	method: setTitle()
-		sets the feedlist's title.
-		
-		args:
-		- options (object) see below
-		
-		options:
-		- type (string) the text that'll be used for the 'type' (eg, "group", "convo")
-		- title (string) the main title for the feed
-		- url (string, opt) the url for the optional link
-		- desc (string, opt) the description/topic text
-		- admin (string, opt) the url to the management page
-	*/
-    setTitle: function(options) {
-		var self = this;
-		if(options.type == 'convo')
-			options.favicon = '/group_pics/default.ico';
-
-        var title = options.title,
-            url = options.url,
-			favicon = options.favicon,
-            type = options.type,
-            desc = options.desc,
-            admin = options.admin,
-			online_count = options.online_count,
-			total_count = options.total_count;
-
-        this.feedType.set('text', type);
-        title = (!url) 
-            ? title 
-            : template.substitute({fav: favicon, t: title, u: url, oc: online_count, tc: total_count});
-
-        return this;
-    },
-
-	/*
 	method: parseFeed()
 		parses the taps data in order to create the html for the feedlist
 		
@@ -73,27 +37,34 @@ _tap.mixin({
 		2. keep (bool) if true, taps already in the feed are not removed.
 	*/
     parseFeed: function(data, keep, scrollAndColor) {
-         if (!keep) this.feed.empty();
+         if (!keep)
+             this.feed.empty();
+
          if (!data)
              return;
 
+         if (_vars.feed.type == 'group')
+             data.hide_group_icon = true;
+
          var items = Elements.from(_template.parse('messages', data));
         
-         if (scrollAndColor == true) {
+         if (scrollAndColor) {
              var overallHeight = 0;
              items.each( function (item) {
                  item.addClass('new');
-                 item.setStyle('background-color', 'lightyellow');
                  overallHeight += item.getSize().y;
              });
  
              var curScroll = window.getScroll();
-             if (curScroll.y > $('taps').getPosition().y)
+             if (curScroll.y > this.feed.getPosition().y)
                  window.scrollTo(curScroll.x, curScroll.y + overallHeight);
         }
 
+        this.feed.getElements('div.feed-item').removeClass('last');
         items.setStyles({opacity:0});
-        items.inject(this.feed);
+
+        items.inject(this.feed, scrollAndColor ? 'top' : 'bottom');
+        this.feed.getElements('div.feed-item').getLast().addClass('last');
         items.fade(1);
 
         this.publish('feed.updated', []);
@@ -110,13 +81,8 @@ var _stream = _tap.register({
 
     init: function() {
         this.setStreamVars();
+        this.pos = 0;
 
-        this.id = _vars.feed.id;
-        this.type = _vars.feed.type;
-        this.keyword = null;
-        this.loadmore_count = 0;
-
-        //this.setStreamVars();
         this.subscribe({
             'feed.search; feed.change': this.changeFeed.bind(this)
         });
@@ -136,13 +102,14 @@ var _stream = _tap.register({
 	*/
     changeFeed: function(type, id, info, keyword, more) {
         var self = this,
-            data = {type: null};
+            data = {},
+            info = info ? info : {};
 
-        _vars.feed.type = data.type = type;
-        _vars.feed.id   = data.id   = id;
+        _vars.feed.type = data.type = type ? type : _vars.feed.type;
+        _vars.feed.id   = data.id   = id ? id : _vars.feed.id;
 
-        data.search = keyword ? keyword : '';
-        data.more = more ? more : 0;
+        _vars.feed.keyword = data.search = keyword ? keyword : (_vars.feed.keyword ? _vars.feed.keyword : '');
+        data.more = more ? more : this.pos;
 
         new Request({
             url: '/AJAX/taps/filter',
@@ -154,33 +121,41 @@ var _stream = _tap.register({
                     self.parseFeed(response.data);
                 else
                     self.feed.empty();
+            
+                if (response.data.length == 10) {
+                    Elements.from($('template-loadmore').innerHTML).inject(self.feed, 'bottom');
+	    			self.enableLoadMore();
+                }
+                if (data.more) {
+                    Elements.from($('template-loadless').innerHTML).inject(self.feed, 'top');
+                    self.enableLoadLess();
+                }
+                
+                if (info.feed)
+                    self.feed.getSiblings('h1.title>span')[0].innerHTML = info.feed;
 
-				self.enableLoadMore();
-                self.enableLoadLess();
                 self.publish('feed.changed', [type, id]);
             }
         }).send();
     },
 
 	enableLoadLess: function(){
-		var self = this;
         var loadless = $('loadless');
         if (loadless) {
             loadless.addEvent('click',function(){
-                    self.loadmore_count = self.loadmore_count - 10;
-                    self.changeFeed(self.type, self.id, self.feed, self.keyword, self.loadmore_count);
-            });
+                this.pos -= 10;
+                this.changeFeed();
+            }.bind(this));
         }
 	},
 
 	enableLoadMore: function(){
-		var self = this;
         var loadmore = $('loadmore');
         if (loadmore) {
             loadmore.addEvent('click',function(){
-                    self.loadmore_count = self.loadmore_count + 10;
-                    self.changeFeed(self.type, self.id, self.feed, self.keyword, self.loadmore_count);
-            });
+                this.pos += 10; 
+                this.changeFeed();
+            }.bind(this));
         }
 	},
 });
@@ -288,7 +263,7 @@ module: _responses
 */
 var _responses = _tap.register({
     init: function() {
-        var form = $('reply');
+        var form = $$('div.forced-bottom > form#reply')[0];
         if (form) {
             var chat = form.getElement('textarea');
             chat.overlay = new OverText(chat, {
@@ -548,27 +523,23 @@ var _tapbox = _tap.register({
     sendTo: _vars.sendTo,
 
     init: function() {
-        this.tapbox = $('tapbox');
-        if ((!_vars.user) || !this.tapbox) return;
-        this.overlayMsg = $('tapto');
-        this.msg = $('taptext');
+        var form = this.form = $$('div#left > form#reply')[0];
+        if ((!_vars.user) || !this.form) return;
 
-        this.counter = this.tapbox.getElement('span.counter');
-        this.overlay = new TextOverlay('taptext', 'tapto');
-        this.setupTapBox();
-        this.tapbox.addEvent('submit', this.send.toHandler(this));
-        this.tapbox.addEvent('click', function(el){
-            var tt = $('tapto').innerHTML;
-            var ngs = $('no-group-selected');
-            if(tt == 'choose a channel to tap'){
-                ngs.style.display = 'block';
-                ngs.fade('hide');
-                ngs.fade(1).fade.delay(4000,ngs,0);
-                ngs.setStyles.delay(4700,ngs,{'display':'none'});
-            }
-        });
+        this.sendType = 'group';
+        this.sendTo   = _vars.feed.id;
 
-        this.subscribe({'list.item': this.handleTapBox.bind(this)});
+        var tapbox = this.tapbox = form.getElement('textarea');
+        tapbox.overtext = new OverText(tapbox, {
+            positionOptions: {
+                offset: {x: 10, y: 7},
+                relativeTo: tapbox,
+                relFixedPosition: false,
+                ignoreScroll: true,
+                ignoreMargin: true
+            }}).show();
+
+        form.addEvent('submit', this.send.toHandler(this));
     },
 
 	/*
@@ -576,80 +547,15 @@ var _tapbox = _tap.register({
 		adds event handlers to the tapbox
 	*/
     setupTapBox: function() {
-        var msg = this.msg,
-            counter = this.counter,
+        var msg = this.tapbox,
             limit = 240,
             allowed = {'enter': 1,'up': 1,'down': 1,'left': 1, 'right': 1,'backspace': 1,'delete': 1};
 
         msg.addEvents({
-            'keydown': function(e) {
-                if (this.get('value').length >= limit && !allowed[e.key]) return e.stop();
-            },
-            'keyup': function() {
-                var count = limit - this.get('value').length;
-                counter.set('text', count);
+            'keypress': function(e) {
+                if (msg.value.length >= limit && !allowed[e.key]) return e.stop();
             }
         });
-    },
-
-	/*
-	method: clear()
-		resets the tapbox
-	*/
-    clear: function() {
-        this.msg.set('value', '').blur();
-        this.counter.set('text', '240');
-        this.overlay.show();
-        return this;
-    },
-
-    /*
-	method: handleTapBox()
-		changes the tap box when a new group from the list is clicked
-		
-		args:
-		1. type (string) the type of item clicked
-		2. id (string) the id of the item click
-		3. data (obj) additional data for the item
-	*/
-    handleTapBox: function(type, id, data) {
-        if (!(['channels', 'private'].contains(type))) return;
-        this.changeOverlay(id, data.name);
-        this.changeSendTo(data.name, data.symbol, id, type);
-    },
-
-	/*
-	method: changeOverlay()
-		changes the overlay text for the tap box
-		
-		args:
-		1. id (string) the id of the group
-		2. name (string) the name of the group
-	*/
-    changeOverlay: function(id, name) {
-        var msg = "";
-        switch (id) {
-            case 'all':
-            case 'public': msg = 'tap the public feed..'; break;
-            default: msg = 'tap ' + name + '...';
-        }
-        this.overlayMsg.set('text', msg.toLowerCase());
-        return this;
-    },
-
-	/*
-	method: changeSendTo()
-		changes the destination for the tap box
-		
-		args:
-		1. name (string) the name of the group
-		2. symbol (string) the symbol of the group
-		3. id (string) the id of the group
-	*/
-    changeSendTo: function(name, symbol, id, type) {
-        type = type ? type : 'groups';
-        this.sendTo = {name: name, symbol: symbol, type: type, id: id};
-        return this;
     },
 
 	/*
@@ -658,12 +564,15 @@ var _tapbox = _tap.register({
 	*/
     send: function(el, e) {
         e.stop();
-        if (this.msg.isEmpty()) return this.msg.focus();
+        if (this.tapbox.value.isEmpty())
+            return this.tapbox.focus();
+
         new Request({
-            url: '/AJAX/taps/new.php',
+            url: '/AJAX/taps/new',
             data: {
-                msg: this.msg.get('value'),
-                to: this.sendTo
+                msg:  this.tapbox.value,
+                type: this.sendType,
+                id:   this.sendTo
             },
             onSuccess: this.parseSent.bind(this)
         }).send();
@@ -675,13 +584,9 @@ var _tapbox = _tap.register({
 	*/
     parseSent: function(response) {
         var resp = JSON.decode(response);
-        if (resp.new_msg) {
-            this.clear();
-            var item = Elements.from(_template.parse('taps', resp.new_msg));
-            this.publish('tapbox.sent', item);
+        if (resp.success) {
+            //yay
         }
-        if (resp.your_first && _vars.user.guest)
-            this.publish('modal.show.sign-notify', []);
     }
 
 });
@@ -715,6 +620,30 @@ _resizer = _tap.register({
     },
 });
 
+_warning = _tap.register({
+    init: function() {
+        this.warning = $$('div.warning')[0];
+        if (!this.warning)
+            return;
+
+        this.txt = this.warning.getElement('span');
+
+        this.warning.getElement('a.close').addEvent('click', (function (e) {
+            this.hide();
+        }).bind(this));
+    },
+
+    show: function(text, action) {
+        this.txt.innerHTML = text;
+        this.warning.removeClass('hidden');
+        this.warning.addEvent('click', action);
+    },
+
+    hide: function() {
+        this.warning.addClass('hidden');
+    }
+});
+
 /*
 module: _live.stream
 	controls the automatic tap streaming
@@ -727,11 +656,7 @@ _live.stream = _tap.register({
         this.convos = [];
         this.groups = [];
         this.subscribe({
-            'push.connected; stream.updated': this.refreshStream.bind(this)
-        });
-
-        $$('a.close').addEvent('click', function (e) {
-            e.target.getParent('div').toggleClass('hidden');
+            'push.connected; feed.updated': this.refreshStream.bind(this)
         });
     },
 
@@ -740,7 +665,7 @@ _live.stream = _tap.register({
 		parses the page and gets user, group and tap ids for the push server
 	*/
     refreshStream: function() {
-        $$('div.feed-item[data-id]').each((function(tap) {
+        $$('div#feed > div.feed-item[data-id]').each((function(tap) {
             this.convos.push(tap.getData('id'));
             if (tap.getData('gid'))
                 this.groups.push(tap.getData('gid'));
@@ -779,27 +704,23 @@ require: _responses
 _live.taps = _tap.register({
 
     init: function() {
-        var self = this;
         this.pushed = [];
-        this.notifier = $('newtaps');
-        this.streamer = $('streamer');
-        this.stream = !!(this.streamer);
+        this.pause = $('pause');
+        this.stream = true;
         this.subscribe({
             'push.data.tap.new': this.process.bind(this),
             'push.data.tap.delete': this.deleteTap.bind(this),
             'feed.changed': this.clearPushed.bind(this)
         });
-        this.counter = $('taps-count');
-    /*    this.notifier.addEvent('click', function(e) {
-            e.stop();
-            self.showPushed();
-            self.hideNotifier();
-            self.counter.addClass('hidden');
-        });*/
-        if (this.streamer) this.streamer.addEvent('click', this.toggleNotifier.toHandler(this));
+
+        if (this.pause)
+            this.pause.addEvent('click', (function () {
+                this.stream = !this.stream;
+                this.pause.toggleClass('active');
+            }).bind(this));
 
         window.addEvent('scroll', function () {
-            var newTaps = $$('li.container.new');
+            var newTaps = $$('div.feed-item.new');
             if (newTaps.length == 0)
                 return;
 
@@ -814,9 +735,10 @@ _live.taps = _tap.register({
 
                 tap.set('viewed', true);
                 (function () {
-                    tap.removeClass('new');
+                    var color = tap.getStyle('background-color');
                     var fx = new Fx.Tween(tap);
-                    fx.start('background-color', 'lightyellow', 'white');
+                    fx.chain(function () {tap.removeClass('new');});
+                    fx.start('background-color', color, 'transparent');
                 }).delay(1500);
             });
         });
@@ -843,51 +765,24 @@ _live.taps = _tap.register({
         if (this.stream) {
             this.showPushed();
         } else {
-            this.showNotifier(this.pushed.length);
+            _warning.show('There  is '+this.pushed.length+' new taps.\n Click on warning to load them.', 
+                (function() {
+                    this.pause.fireEvent('click');
+                    this.showPushed();
+                }).bind(this));
         }
     },
 
     showPushed: function() {
-        _stream.parseFeed({results: true, data: this.pushed}, true, true);
+        _stream.parseFeed(this.pushed, true, true);
         this.clearPushed();
+        window.fireEvent('scroll');
     },
 
     clearPushed: function(type) {
         this.pushed = [];
-        this.hideNotifier();
-    },
-
-    showNotifier: function(count) {
-        var notifier = this.notifier;
-        notifier.set('text', [
-            count, 'new', count == 1 ? 'tap.' : 'taps.', 'Click here to load them.'
-        ].join(' '));
-        this.counter.set('text', count);
-        notifier.addClass('notify');
-    },
-
-    hideNotifier: function() {
-        //this.notifier.set('text', '').removeClass('notify');
-    },
-
-    toggleNotifier: function(el) {
-        if (el.hasClass('paused')) {
-            this.stream = true;
-            el.removeClass('paused').set({
-                'alt': 'pause live streaming',
-                'title': 'pause live streaming',
-				'text' : ''	
-            });
-        } else {
-            this.stream = false;
-            el.addClass('paused').set({
-                'alt': 'start live streaming',
-                'title': 'start live streaming',
-				'text':'paused'
-            });
-        }
+        _warning.hide();
     }
-
 });
 
 /*
@@ -899,12 +794,10 @@ _live.taps = _tap.register({
 */
 _live.notifications = _tap.register({
     init: function() {
-       var self = this;
         this.subscribe({
             'push.data.response': this.newConvoResponse.bind(this),
-            'push.data.notify.tap.new': this.newTap.bind(this),
+            'push.data.tap.new': this.newTap.bind(this),
             'push.data.notify.follower': this.newFollower.bind(this),
-            'push.data.notify.private': this.newPrivate.bind(this)
         });
     },
 
@@ -929,22 +822,30 @@ _live.notifications = _tap.register({
     },
 
     newTap: function(data) {
-        gname = data['gname'];
-        greal_name = data['greal_name'];
-        uname = data['uname'];
-        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
-        text = data['text'];
-        avatar = '/user_pics/'+data['avatar'];
-        group_avatar = '/group_pics/'+data['group_avatar'];
+        if (data.sender.id == _vars.user.id)
+            return;
 
-        _notifications.alert('New tap:<br><a href="/user/'+uname+'">' + ureal_name +'</a>',
-            '"' + text + '"',
-            {avatar: avatar, group_acatar: group_avatar});
+        var sender = data.sender,
+            avatar = '/static/user_pics/small_'+sender.id+'.jpg';
 
-    	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.href = 'http://'+document.domain+'/channel/'+gname;
-    	});
-    },
+        if (data.group && data.group.id) {
+            _notifications.alert('New tap:<br><a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname +'</a>',
+                '"' + data.text + '"',
+                {avatar: avatar, group_avatar: '/static/group_pics/small_'+data.group.id+'.jpg'});
+
+            _notifications.items.getLast().addEvent('click', function() {
+                document.location.href = 'http://'+document.domain+'/circle/'+data.group.symbol;
+            });
+        } else if (data.reciever && data.reciever.id) {
+            _notifications.alert('New PM:<br><a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname + '</a>',
+                '"' + data.text + '"',
+                {avatar: avatar});
+
+            _notifications.items.getLast().addEvent('click', function() {
+                document.location.href = 'http://'+document.domain+'/convo/'+data.id;
+            });
+        }
+   },
 
     newFollower: function(data) {
         status = data['status'];
@@ -967,22 +868,5 @@ _live.notifications = _tap.register({
         	document.location.gref = 'http://'+document.domain+'/user/'+uname;
     	});
     },
-
-    newPrivate: function(data) {
-        cid = data['cid'];
-        uname = data['uname'];
-        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
-        text = data['chat_text'];
-        avatar = '/user_pics/'+data['pic_100'];
-
-        _notifications.alert('New PM:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
-            '"' + text + '"',
-            {avatar: avatar});
-
-    	_notifications.items.getLast().addEvent('click', function() {
-        	document.location.href = 'http://'+document.domain+'/tap/'+cid;
-    	});
-
-    }
 });
 

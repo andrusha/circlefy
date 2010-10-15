@@ -52,7 +52,8 @@ $ajaxs = array(
         'taps' => array(
                'responses' => true,
                'respond'   => true,
-               'filter'    => true
+               'filter'    => true,
+               'new'       => true
         ),
     );
 

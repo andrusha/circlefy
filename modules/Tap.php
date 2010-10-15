@@ -63,7 +63,7 @@ class Tap extends BaseModel {
     private static function add(User $from, $text, Group $g = null, User $to = null) {
         $db = DB::getInstance();
 
-        $id = $this->db->insert('message', 
+        $id = $db->insert('message', 
             array('sender_id' => $from->id, 'text' => $text,
                   'group_id' => $g ? $g->id : null,
                   'reciever_id' => $to ? $to->id : null));
@@ -112,7 +112,7 @@ class Tap extends BaseModel {
 
         $query = "SELECT text 
                     FROM message
-                   WHERE user_id = #uid#
+                   WHERE sender_id = #uid#
                    ORDER
                       BY id DESC
                    LIMIT 1";

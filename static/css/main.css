@@ -445,6 +445,9 @@ h1.wide {
 	padding:30px 10px;
 	position:relative;
 }
+div.feed-item.new {
+    background-color: rgba(255, 255, 220, 0.3);
+}
 .conversation .reply-item .thumb {
 	width:25px;
 	height:25px;
