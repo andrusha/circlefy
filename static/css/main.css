@@ -1267,7 +1267,7 @@ h1.wide {
         height:250px;
         overflow:scroll;
         overflow-x:hidden;
-        padding: 0;
+        padding: 0 1px;
 		background:#fff;
 }
 .replies .list .reply-item {
