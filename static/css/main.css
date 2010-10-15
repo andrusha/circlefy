@@ -1488,3 +1488,11 @@ div.feed-item.new {
         float:right;
 }
 /*** </Group edit page> ***/
+
+.resizer {
+    height: 30px;
+    width: 500px;
+    margin-left: 65px;
+    cursor: s-resize;
+    background-color: red;
+}

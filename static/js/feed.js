@@ -307,11 +307,13 @@ var _responses = _tap.register({
         var parent  = el.getParent('div.feed-item'),
             replies = parent.getElement('div.replies'),
             list    = replies.getElement('div.list'),
-            chat    = replies.getElement('textarea');
+            chat    = replies.getElement('textarea'),
+            count   = parent.getElement('a.comments'),
+            latest  = parent.getElement('div.latest-reply');
 
         replies.toggleClass('hidden');
-        parent.getElement('a.comments').toggleClass('hidden');
-        parent.getElement('div.latest-reply').toggleClass('hidden');
+        if (count) count.toggleClass('hidden');
+        if (latest) latest.toggleClass('hidden');
         parent.getElement('a.reply').toggleClass('hidden');
 
         if (!list.retrieve('loaded'))
@@ -362,7 +364,8 @@ var _responses = _tap.register({
     addResponses: function(list, data) {
         var items = Elements.from(_template.parse('replies', data));
         list.getElements('div.reply-item').removeClass('last');
-        items.getLast().addClass('last');
+        if (items.length)
+            items.getLast().addClass('last');
         items.setStyles({opacity:0});
         items.fade(1);
         items.inject(list);
@@ -469,8 +472,8 @@ _live.typing = _tap.register({
     },
 
     showTyping: function(data) {
-        if (_vars.feed.type != 'conversation' && data.cid != _vars.feed.id)
-            return;
+        //if (_vars.feed.type != 'conversation' && data.cid != _vars.feed.id)
+        //    return;
 
         var item = $('typing-'+data.uid);
         if (!item)
@@ -482,7 +485,13 @@ _live.typing = _tap.register({
             item.destroy();
         }).delay(2000);
 
-        item.inject($('sidebar').getElement('div.wrap'));
+        if (_vars.feed.type == 'conversation' && data.cid == _vars.feed.id)
+            item.inject($('sidebar').getElement('div.wrap'));
+        else {
+            var parent = $('global-'+data.cid);
+            if (parent)
+                item.inject(parent.getElement('div.resizer'));
+        }
     },
 });
 
@@ -600,18 +609,18 @@ _resizer = _tap.register({
     init: function() {
         this.makeResizeable();
         this.subscribe({
-            'stream.updated': this.makeResizeable.bind(this),
+            'feed.updated': this.makeResizeable.bind(this),
         });
     },
 
     makeResizeable: function() {
         this.resizers = $$('div.resizer');
         this.resizers.each( function(div) {
-            var chat = div.parentNode.getElement('div.replies');
-            var drag = new Drag(chat, {
-                snap: 0,
+            div.getSiblings('div.replies > div.list')[0].makeResizable({
                 handle: div,
-                modifiers: {y: 'height'},
+                snap: 0,
+                modifiers: {y: 'height', x: null},
+                limit: {y: [250, 650]},
                 onComplete: function(el) {
                     el.scrollTo(0, el.getScrollSize().y);
                 }
