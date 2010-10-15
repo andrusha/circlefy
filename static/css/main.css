@@ -442,8 +442,8 @@ h1.wide {
 	position:relative;
 }
 .conversation .reply-item .thumb {
-	width:20px;
-	height:20px;
+	width:25px;
+	height:25px;
 	padding:2px;
 	background:#fff;
 	border:1px solid #ccc;
