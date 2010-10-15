@@ -1258,7 +1258,7 @@ h1.wide {
 /*** <Relies feed> ***/
 .replies {
         width:500px;
-        border:2px solid #7c7c7c;
+        border:2px solid #e8edf0;
         padding:1px;
         margin:0 0 0 65px;
 		background:rgba(255,255,255,.4);
@@ -1267,11 +1267,13 @@ h1.wide {
         height:250px;
         overflow:scroll;
         overflow-x:hidden;
-        padding: 0 10px;
+        padding: 0 5px;
+		background:#fff;
 }
 .replies .list .reply-item {
-        padding:10px 0;
-        border-bottom:1px solid #CCC;
+        padding:10px 5px;
+        margin:0 0 2px 0;
+		background:#e8edf0;
 }
 .reply-item a {
 	color:#6aa6e3;
