@@ -189,7 +189,8 @@ var Roar = new Class({
 		var items = []; 
         if (params.options.avatar)
             items.push(new Element('img',
-                {class: 'avatar',
+                {
+		 Class: 'avatar',
                  src: params.options.avatar}));
 
         items.push(new Element('h3',
