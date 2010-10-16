@@ -456,7 +456,6 @@ div.feed-item.opened .latest-reply, div.feed-item.opened a.comments, div.feed-it
 }
 div.feed-item.opened a.reply {
     display: none;
-    margin-top: 5px;
 }
 div.feed-item.opened:hover a.reply {
     display: block;
