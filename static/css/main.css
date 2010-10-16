@@ -1286,7 +1286,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
     width:500px;
     border:2px solid #9cb4c3;
     padding:1px;
-    margin:5px 0 0 65px;
+    margin:0 0 0 65px;
     background:rgba(255,255,255,.4);
     position:relative;
 }
