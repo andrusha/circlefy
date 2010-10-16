@@ -76,7 +76,10 @@
         
         <div class="clear"></div>
         
-        <a href="#" class="follow">Follow</a>
+        <a href="#" class="follow" 
+		data-userId="<?=$u['id']?>"
+		data-followed="<?=($state ? 1 : 0)?>"
+	><?=($state ? 'Unfollow' : 'Follow')?></a>
         <a href="#" class="pm">Send PM</a>
         
         <div class="clear"></div>

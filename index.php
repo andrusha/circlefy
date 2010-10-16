@@ -42,6 +42,7 @@ $ajaxs = array(
                 'check'    => true,
                 'facebook' => true,
                 'login'    => true,
+                'follow'   => true,
                 'typing'   => true
         ),
         'group' => array(
