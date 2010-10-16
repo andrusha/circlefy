@@ -25,7 +25,7 @@ class Tap extends BaseModel {
         }
 
         if (isset($this->data['text']))
-            $this->data['text'] = FuncLib::linkify($this->data['text']);
+            $this->data['text'] = FuncLib::linkify(stripslashes($this->data['text']));
 
         if (isset($this->data['responses']))
             if (isset($this->data['responses']['text']))

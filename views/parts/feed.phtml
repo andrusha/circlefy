@@ -38,7 +38,7 @@
                 $id++;
                 $last = $count == $id;
     ?>
-    <div class="feed-item<?=($last ? ' last' : '')?>"
+    <div class="feed-item<?=($last ? ' last' : '')?><?=(empty($f['responses']) ? ' empty' : '')?>"
          id="global-<?=$f['id']?>"
          data-id="<?=$f['id']?>"
          data-gid="<?=$f['group_id']?>">
@@ -49,25 +49,29 @@
             <cite><a href="/convo/<?=$f['id']?>"><?=$f['text']?></a></cite>
             <div class="clear"></div>
 
-            <? if (empty($f['replies'])): ?>
-            
-                <? if (!empty($f['responses'])): ?>
+            <? if (!empty($f['responses'])): ?>
                 <div class="latest-reply">
                     <img src="<?=USER_PIC_REL.'small_'.$f['responses']['user']['id'].'.jpg'?>"
                          alt="<?=$f['responses']['user']['fname']?> <?=$f['responses']['user']['lname']?>" class="avatar-reply" />
                     <a href="/user/<?=$f['responses']['user']['uname']?>" class="reply-author"><?=$f['responses']['user']['uname']?>:</a>
                     <span><?=$f['responses']['text']?></span>
                 </div><!--latest-->
-                <? endif; ?>
-               
-                <a href="#" class="reply">Reply</a>
-                <? if (!empty($f['responses']) && $f['responses']['count'] > 0): ?>
+            <? else: ?>
+                <div class="latest-reply">
+                    <img src="" alt="" class="avatar-reply" />
+                    <a href="" class="reply-author"></a>
+                    <span></span>
+                </div><!--latest-->
+            <? endif; ?>
+           
+            <a href="#" alt="Close" def="Reply" class="reply"></a>
+            <? if (!empty($f['responses']) && $f['responses']['count'] > 0): ?>
                 <a href="#" class="comments"><?=$f['responses']['count']?></a>
-                <? endif; ?>
-
+            <? else:?>
+                <a href="#" class="comments"></a>
             <? endif; ?>
 
-            <div class="replies<?=(empty($f['replies']) ? ' hidden' : '')?>">
+            <div class="replies">
             	<div class="arrow"></div>
                 <div class="list">
                     <?php
@@ -90,6 +94,7 @@
                 </div><!--field-->
                 <? endif; ?>
             </div><!--replies-->
+            <div class="resizer"></div>
 
             <div class="clear"></div>
                 <? if (!$_f['hide_group_icon']): ?>
@@ -106,7 +111,6 @@
                 <span class="timestamp" data-timestamp="<?=$f['timestamp']?>"><?=$f['time']?></span>
             </div>
             <div class="clear"></div>
-            <div class="resizer"></div>
         </div><!--text-->
     
     </div><!--feed-item-->

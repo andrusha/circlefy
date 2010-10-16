@@ -307,14 +307,12 @@ var _responses = _tap.register({
         var parent  = el.getParent('div.feed-item'),
             replies = parent.getElement('div.replies'),
             list    = replies.getElement('div.list'),
-            chat    = replies.getElement('textarea'),
-            count   = parent.getElement('a.comments'),
-            latest  = parent.getElement('div.latest-reply');
+            chat    = replies.getElement('textarea');
 
-        replies.toggleClass('hidden');
-        if (count) count.toggleClass('hidden');
-        if (latest) latest.toggleClass('hidden');
-        parent.getElement('a.reply').toggleClass('hidden');
+        this.count  = parent.getElement('a.comments');
+        this.latest = parent.getElement('div.latest-reply');
+
+        parent.toggleClass('opened');
 
         if (!list.retrieve('loaded'))
             this.loadResponse(parent.getData('id'), list);
@@ -372,8 +370,8 @@ var _responses = _tap.register({
 
             var parent = list.getParent('div.text');
             //already have an reply and add one
-            if (parent && elems.length)
-                this.updateLast(last, parent);
+            if (parent)
+                this.updateLast(data.getLast(), parent);
         }
         items.setStyles({opacity:0});
         items.fade(1);
@@ -381,18 +379,26 @@ var _responses = _tap.register({
         list.scrollTo(0, list.getScrollSize().y);
         if (_vars.feed.type == 'conversation')
             window.scrollTo(0, window.getScrollSize().y);
+        list.getParent('div.feed-item').removeClass('empty');
         this.publish('responses.updated');
         return this;
     },
 
     updateLast: function (reply, parent) {
-        return;
         var count = parent.getElement('a.comments');
         if (count)
-            count.text = count.text*1 + 1;
+            count.innerHTML = count.innerHTML*1 + 1;
 
-        var latest = parent.getElement('');
-        //TODO: make it work
+        var latest = parent.getElement('div.latest-reply');
+        if (latest) {
+            var img = latest.getElement('img');
+            img.src = '/static/user_pics/small_'+reply.user.id+'.jpg';
+            img.alt = reply.user.fname + ' ' + reply.user.lname;
+            var a   = latest.getElement('a');
+            a.href  = '/user/'+reply.user.uname;
+            a.innerHTML = reply.user.uname+':';
+            latest.getElement('span').innerHTML = reply.text;
+        }
     },
 
 	/*

@@ -448,6 +448,28 @@ h1.wide {
 div.feed-item.new {
     background-color: rgba(255, 255, 220, 0.3);
 }
+div.feed-item.opened {
+    padding-bottom: 0px;
+}
+div.feed-item.opened .latest-reply, div.feed-item.opened a.comments, div.feed-item.empty .latest-reply, div.feed-item.empty a.comments {
+    display: none;
+}
+div.feed-item.opened a.reply {
+    display: none;
+    margin-top: 5px;
+}
+div.feed-item.opened:hover a.reply {
+    display: block;
+}
+a.reply:after {
+    content: attr(def);
+}
+div.feed-item.opened:hover a.reply:after {
+    content: attr(alt);
+}
+div.feed-item.opened .replies, div.feed-item.opened .resizer {
+    display: block;
+}
 .conversation .reply-item .thumb {
 	width:25px;
 	height:25px;
@@ -1260,12 +1282,13 @@ div.feed-item.new {
 
 /*** <Relies feed> ***/
 .replies {
-        width:500px;
-        border:2px solid #9cb4c3;
-        padding:1px;
-        margin:5px 0 0 65px;
-		background:rgba(255,255,255,.4);
-		position:relative;
+    display: none;
+    width:500px;
+    border:2px solid #9cb4c3;
+    padding:1px;
+    margin:5px 0 0 65px;
+    background:rgba(255,255,255,.4);
+    position:relative;
 }
 .replies .arrow {
 	width:21px;
@@ -1485,9 +1508,9 @@ div.feed-item.new {
 /*** </Group edit page> ***/
 
 .resizer {
-    height: 4px;
+    display: none;
+    height: 30px;
     width: 506px;
     margin-left: 65px;
     cursor: s-resize;
-    background-color: #9cb4c3;
 }

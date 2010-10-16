@@ -22,14 +22,14 @@ Acknowledgements:
         outkey:   ":",
         loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*(?:{|:)\s*(.*?)/g,
         loopEnds: /end(each|for|foreach);/g,
-        condExp:  /(if|else)+(.*):/g,
-        condEnds: /end(if|while);/g,
+        condExp:  /(if|else)(.*):/g,
+        condEnds: /endif;/g,
                
         parseConds: function(template) {
             return template.replace(
                     this.condExp,
                     function(whole, tag, rest) {
-                        return tag == 'else' ? '} ' : tag + rest + '{';
+                        return (tag == 'else' ? '} ' : '') + tag + rest + '{';
                     }
                 ).replace(this.condEnds, '}');
         },

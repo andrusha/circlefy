@@ -76,7 +76,7 @@
     <? /*** Messages feed template ***/?>
     <ul id="template-messages">
         <# for (var msg from this): #>
-        <div class="feed-item"
+        <div class="feed-item<# if (msg.responses.length == 0): #> empty<# endif; #>"
              id="global-<#: msg.id  #>"
              data-id="<#: msg.id  #>"
              data-gid="<#: msg.group_id  #>">
@@ -88,20 +88,28 @@
                 <div class="clear"></div>
 
                 <# if (msg.responses.user): #>
-                <div class="latest-reply">
-                    <img src="<?=USER_PIC_REL?>small_<#: msg.responses.user.id #>.jpg"
-                         alt="<#: msg.responses.user.fname  #> <#: msg.responses.user.lname  #>" class="avatar-reply" />
-                    <a href="/user/<#: msg.responses.user.uname  #>" class="reply-author"><#: msg.responses.user.uname  #>:</a>
-                    <span><#: msg.responses.text  #></span>
-                </div><!--latest-->
+                    <div class="latest-reply">
+                        <img src="<?=USER_PIC_REL?>small_<#: msg.responses.user.id #>.jpg"
+                             alt="<#: msg.responses.user.fname  #> <#: msg.responses.user.lname  #>" class="avatar-reply" />
+                        <a href="/user/<#: msg.responses.user.uname  #>" class="reply-author"><#: msg.responses.user.uname  #>:</a>
+                        <span><#: msg.responses.text  #></span>
+                    </div><!--latest-->
+                <# else: #>
+                    <div class="latest-reply">
+                        <img src="" alt="" class="avatar-reply" />
+                        <a href="" class="reply-author"></a>
+                        <span></span>
+                    </div><!--latest-->
                 <# endif; #>
                
-                <a href="#" class="reply">Reply</a>
+                <a href="#" alt="Close" def="Reply" class="reply"></a>
                 <# if (msg.responses.count): #>
-                <a href="#" class="comments"><#: msg.responses.count  #></a>
+                    <a href="#" class="comments"><#: msg.responses.count  #></a>
+                <# else: #>
+                    <a href="#" class="comments"></a>
                 <# endif; #>
 
-                <div class="replies hidden">
+                <div class="replies">
                     <div class="arrow"></div>
                     <div class="list"></div><!--list-->
 
@@ -119,6 +127,7 @@
                     </div><!--field-->
                     <# endif; #>
                 </div><!--replies-->
+                <div class="resizer"></div>
 
                 <div class="clear"></div>
                     <# if (!this.hide_group_icon): #>
