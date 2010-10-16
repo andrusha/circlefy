@@ -362,10 +362,19 @@ var _responses = _tap.register({
 		2. data (object) data to use in parsing the template
 	*/
     addResponses: function(list, data) {
-        var items = Elements.from(_template.parse('replies', data));
-        list.getElements('div.reply-item').removeClass('last');
-        if (items.length)
-            items.getLast().addClass('last');
+        var items = Elements.from(_template.parse('replies', data)),
+            elems = list.getElements('div.reply-item');
+
+        elems.removeClass('last');
+        if (items.length) {
+            var last = items.getLast();
+            last.addClass('last');
+
+            var parent = list.getParent('div.text');
+            //already have an reply and add one
+            if (parent && elems.length)
+                this.updateLast(last, parent);
+        }
         items.setStyles({opacity:0});
         items.fade(1);
         items.inject(list);
@@ -374,6 +383,16 @@ var _responses = _tap.register({
             window.scrollTo(0, window.getScrollSize().y);
         this.publish('responses.updated');
         return this;
+    },
+
+    updateLast: function (reply, parent) {
+        return;
+        var count = parent.getElement('a.comments');
+        if (count)
+            count.text = count.text*1 + 1;
+
+        var latest = parent.getElement('');
+        //TODO: make it work
     },
 
 	/*

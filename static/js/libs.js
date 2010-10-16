@@ -18,43 +18,13 @@ Acknowledgements:
 
 (function() {
     this.Template = new Class({
-        Implements:Options,
-        
-        options: {
-            pattern:"raccoon",
-            path:"",
-            suffix:""
-        },
-
-        regexps: {
-            raccoon : {
-                pattern:/<#[:|=]?(.*?)#>/g,
-                outkey:":",
-                include:"="
-            },
-        },
-        loopExp:   /(?:for|each|foreach)\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*(?:{|:)\s*(.*?)/g,
-        loopEnds:  /end(each|for|foreach);/g,
-        condExp:   /(if|else)+(.*):/g,
-        condEnds:  /end(if|while);/g,
-        
-        initialize: function(b) {
-            this.setOptions(b);
-            var d=this.options.pattern,
-                a=this.regexps,
-                c=a.raccoon;
-                
-            if($type(d)=="object") {
-                this.pattern=d.pattern||c.pattern;
-                this.outkey=d.outkey||c.outkey;
-                this.includes=d.include||c.include;
-            } else {
-                this.pattern=a[d].pattern||c.pattern;
-                this.outkey=a[d].outkey||c.raccoon.outkey;
-                this.includes=a[d].include||c.include;
-            }
-        },
-        
+        pattern:  /<#[:|=]?(.*?)#>/g,
+        outkey:   ":",
+        loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*(?:{|:)\s*(.*?)/g,
+        loopEnds: /end(each|for|foreach);/g,
+        condExp:  /(if|else)+(.*):/g,
+        condEnds: /end(if|while);/g,
+               
         parseConds: function(template) {
             return template.replace(
                     this.condExp,
@@ -71,48 +41,35 @@ Acknowledgements:
                         return '$each(' + source_name + ', function (' + var_name + ') { ' +
                                'if (typeOf(' + var_name + ') == "function") return; \n'+ inner;
                     }
-                ).replace(this.loopEnds, '}.bind(this));');
+                ).replace(this.loopEnds, '});');
         },
         
         escape: function(template) {
             return template.replace(/"/g, '\\"').replace(/\r|\n\s*/g, '\\n');
         },
         
-        unescape: function(template) {
-            return template.replace(/\\"/g, '"').replace(/\\n/g, "\n");
-        },
-        
-        build: function(template, data) {
+        build: function(template) {
             template = this.escape(template).replace(
                 this.pattern,
                 function(whole, line){
-                    line = this.unescape(line);
-                                        
-                    if (whole.charAt(2) == this.outkey) {
+                    if (whole.charAt(2) == this.outkey)
                         line = 'buffer += ' + line + ';\n';
-                    } else {
-                        if (whole.charAt(2) == this.includes)
-                            console.log('NotImplemented error - js-template includes');
-                        else
-                            line = this.parseLoops(this.parseConds(line)).trim();
+                    else {
+                        line = this.parseLoops(this.parseConds(line)).trim();
                     }
                     
                     return '";\n' + line + 'buffer += "';
                 }.bind(this)
             );
             
-            return ["var $ = this, buffer = '', print = function(data){ buffer += data; },\n",
-                    "include = function(src){ buffer += $._include(src, $); };\n",
+            return ["var $ = this, buffer = '', print = function(data){ buffer += data; };\n",
                     '\nbuffer += "',template,'";\n',
                     'return buffer;\n'].join("");
         },
         
-        parse: function(template, data) {
-            var code = this.build(template, data),
-                code = new Function(code);
-            result = code.apply(data);
-            
-            return this.unescape(result);
+        compile: function(template) {
+            var code = this.build(template);
+            return new Function(code);
         }
     });
 })();

@@ -40,7 +40,7 @@ local: _template
 var _template = {
 
     templater: new Template(),
-    prepared: {},
+    compiled: {},
 
 	/*
 	prop: map
@@ -67,13 +67,13 @@ var _template = {
 		- (string) html content of the template evaled with the data
 	*/
     parse: function(type, data) {
-        var template = this.prepared[type];
+        var template = this.compiled[type];
         if (!template) {
             template = this.map[type];
             if (!template) return '';
-            template = this.prepared[type] = $(template).innerHTML.cleanup();
+            template = this.compiled[type] = this.templater.compile($(template).innerHTML.cleanup());
         }
-        return this.templater.parse(template, data);
+        return template.apply(data);
     }
 
 };
