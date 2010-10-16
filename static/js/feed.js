@@ -84,7 +84,10 @@ var _stream = _tap.register({
         this.pos = 0;
 
         this.subscribe({
-            'feed.search; feed.change': this.changeFeed.bind(this)
+            'feed.change': this.changeFeed.bind(this),
+            'feed.search': (function (keyword) {
+                this.changeFeed(null, null, null, keyword, 0);
+            }).bind(this)
         });
 
 		this.enableLoadMore();
@@ -109,7 +112,7 @@ var _stream = _tap.register({
         _vars.feed.id   = data.id   = id ? id : _vars.feed.id;
 
         _vars.feed.keyword = data.search = keyword ? keyword : (_vars.feed.keyword ? _vars.feed.keyword : '');
-        data.more = more ? more : this.pos;
+        data.more = this.pos = more ? more : this.pos;
 
         new Request({
             url: '/AJAX/taps/filter',
@@ -902,5 +905,49 @@ _live.notifications = _tap.register({
         	document.location.gref = 'http://'+document.domain+'/user/'+uname;
     	});
     },
+});
+
+/*
+module: _filter
+	Controls the filter/search bar for the tapstream
+*/
+var _filter = _tap.register({
+
+    init: function() {
+        var box = this.box = $('search');
+        if (!this.box) return;
+        box.over = new OverText(box, {
+            positionOptions: {
+                offset: {x: 10, y: 8},
+                relativeTo: box,
+                relFixedPosition: false,
+                ignoreScroll: true,
+                ignoreMargin: true
+            }}).show();
+
+        box.getParents('form').addEvent('submit',
+            (function (e) {
+                e.stop();
+                var keyword = box.value;
+                if (!keyword.isEmpty())
+                    this.search(keyword);
+            }).bind(this));
+
+        this.subscribe('feed.updated', (function() {
+            box.value = '';
+        }).bind(this));
+    },
+	
+    /*
+	method: search()
+		main control logic for searching
+		
+		args:
+		1. keyword (string, opt) the keyword to use for searching; if null, the search is cleared
+	*/
+    search: function(keyword) {
+        this.publish('feed.search', [keyword]);
+        return this;
+    }
 });
 

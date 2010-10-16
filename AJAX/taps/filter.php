@@ -9,7 +9,7 @@ class ajax_filter extends Base {
     public function __invoke() {
         $type    = $_POST['type'];
         $id      = intval($_POST['id']);
-        $search  = $_POST['search'];
+        $search  = '%'.str_replace(' ', '%', $_POST['search']).'%';
         $more    = intval($_POST['more']);
 
         if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {
