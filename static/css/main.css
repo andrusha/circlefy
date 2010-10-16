@@ -1299,7 +1299,8 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	position:absolute;
 }
 .replies .list {
-        height:250px;
+        max-height:250px;
+		height:auto;
         overflow:scroll;
         overflow-x:hidden;
         padding: 0 1px;
