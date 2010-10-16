@@ -35,6 +35,8 @@ class TapsList extends Collection {
             T_USER_INFO  - fetch only sender info
             T_USER_RECV  - fetch reciever info
             T_MEDIA      - fetch media if avaliable
+            T_INSIDE     - taps only from group members
+            T_OUTSIDE    - taps only from not members of the group
 
         @return TapsList
     */
@@ -45,6 +47,7 @@ class TapsList extends Collection {
         $joins = array(
             'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id',
             'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
+            'members_i' => 'LEFT  JOIN group_members gi ON gi.group_id = gm.group_id',
             'group'     => 'INNER JOIN `group`       g  ON g.id        = m.group_id',
             'group_l'   => 'LEFT  JOIN `group`       g2 ON g2.id       = m.group_id',
             'user'      => 'INNER JOIN user          u  ON u.id        = m.sender_id',
@@ -58,6 +61,9 @@ class TapsList extends Collection {
         $distinct = false;
         $join = $where = array();
         $fields = FuncLib::addPrefix('m.', Tap::$fields);
+
+        if ($options & T_INSIDE && $options & T_OUTSIDE)
+            throw new LogicException('If you want to get inside & outside in the same time, just specify nothing');
         
         switch ($type) {
             case 'public':
@@ -70,7 +76,15 @@ class TapsList extends Collection {
                 $distinct = true;
                 $join[]   = 'members_l';
                 $join[]   = 'convo_l';
-                $where[]  = '(gm.user_id = #uid# OR c.user_id = #uid# '.
+                $add      = '';
+                if ($options & T_INSIDE) {
+                    $join[] = 'members_i';
+                    $add    = ' AND m.sender_id = gi.user_id';
+                } else if ($options & T_OUTSIDE) {
+                    $join[] = 'members_i';
+                    $add    = ' AND m.sender_id <> gi.user_id';
+                }
+                $where[]  = "((gm.user_id = #uid# {$add}) OR c.user_id = #uid# ".
                             '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
                             '       m.reciever_id IS NOT NULL))';
                 break;
@@ -147,6 +161,20 @@ class TapsList extends Collection {
         if ($options & T_MEDIA) {
             $join[] = 'media';
             $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Tap::$mediaFields));
+        }
+
+        //cuz feed already implements inside\outside things
+        if ($type != 'feed') {
+            if ($options & T_INSIDE || $options & T_OUTSIDE) {
+                if (!in_array('group', $join) && !in_array('group_l', $join))
+                    $join[] = 'group';
+                $join[] = 'members_i';
+            }
+
+            if ($options & T_INSIDE)
+                $where[] = 'm.sender_id = gi.user_id';
+            else if ($options & T_OUTSIDE)
+                $where[] = 'm.sender_id <> gi.user_id';
         }
 
         //construct and execute query from supplied params

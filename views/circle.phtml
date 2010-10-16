@@ -5,7 +5,7 @@
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'group', 'id' => $circle['id'])),
+                           'feed'  => array('type' => 'group', 'id' => $circle['id'], 'inside' => 1)),
         'guest'   => $guest);
     include(HEADER);
 ?>    
@@ -17,7 +17,8 @@
                     'feed'       => $feed,
                     'name'       => $circle['name'],
                     'show_reply' => !$guest,
-                    'hide_group_icon' => true
+                    'hide_group_icon' => true,
+                    'show_inside' => true
                 );
                 include(FEED);
             ?>        

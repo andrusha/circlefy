@@ -96,3 +96,5 @@ define("T_GROUP_INFO", 1 << 2);
 define("T_USER_INFO",  1 << 3);
 define("T_USER_RECV",  1 << 4);
 define("T_MEDIA",      1 << 5);
+define("T_INSIDE",     1 << 6);
+define("T_OUTSIDE",    1 << 7);

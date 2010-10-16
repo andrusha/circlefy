@@ -5,7 +5,7 @@
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => $feed_type, 'id' => null)),
+                           'feed'  => array('type' => $feed_type, 'id' => null, 'inside' => ($feed_type == 'feed' ? 1 : 0))),
         'guest'   => $guest);
     include(HEADER);
 ?>
@@ -16,7 +16,8 @@
             <?php
                 $_f = array(
                     'feed' => $feed,
-                    'name' => $feed_name
+                    'name' => $feed_name,
+                    'show_inside' => $feed_type == 'feed'
                 );
                 include(FEED);
             ?>        

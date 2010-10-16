@@ -39,12 +39,13 @@ var _list = _tap.register({
         e.stop();
 		var type = el.getData('type'),
             id = _vars.user.id,
-            data = {'feed': el.getElement('a').text };
+            data = {'feed': el.getElement('a').text },
+            inside = el.getData('inside');
 
         el.getSiblings('li').removeClass('active');
         el.addClass('active');
 
-		this.publish('feed.change', [type, id, data]);
+		this.publish('feed.change', [type, id, data, null, null, inside]);
 	},
 });
 

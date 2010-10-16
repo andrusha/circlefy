@@ -11,6 +11,7 @@ class ajax_filter extends Base {
         $id      = intval($_POST['id']);
         $search  = '%'.str_replace(' ', '%', $_POST['search']).'%';
         $more    = intval($_POST['more']);
+        $inside  = intval($_POST['inside']);
 
         if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {
             $this->data = array('success' => false, 'data' => array());
@@ -22,6 +23,10 @@ class ajax_filter extends Base {
             'search'     => $search
         );
         $options = T_GROUP_INFO | T_USER_INFO;
+        if ($inside == 1)
+            $options |= T_INSIDE;
+        elseif ($inside == 2)
+            $options |= T_OUTSIDE;
 
         if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos')))
             $params['uid'] = $this->user->id;

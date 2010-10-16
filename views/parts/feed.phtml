@@ -3,19 +3,16 @@
     <a href="#" id="pause">Pause Stream</a>
 </h1>
 
-            <div id="controls">
-            	
-                <a href="#" class="tab active">Inside the Circle</a>
-                <a href="#" class="tab">Outside the Circle</a>
-                
-                <div class="clear"></div>
-                
-            </div><!--controls-->
+<div id="controls<?=($_f['show_inside'] ? '' : ' hidden')?>">
+    <a href="#" data-inside="1" class="tab active">Inside the Circle</a>
+    <a href="#" data-inside="2" class="tab">Outside the Circle</a>
+    <div class="clear"></div>
+</div><!--controls-->
             
-            <div class="warning hidden">
-                	<a href="#" class="close">X</a>
-                    <span>Some random warning. This will actually be collapsible, using the button on the right. It should fade away gently. Some random warning. This will actually be collapsible, using the button on the right. It should fade away gently. Some random warning. This will actually be collapsible, using the button on the right. It should fade away gently.</span>
-                </div><!--warning-->
+<div class="warning hidden">
+    <a href="#" class="close">X</a>
+    <span></span>
+</div><!--warning-->
 
 
 <? if ($_f['show_reply']): ?>

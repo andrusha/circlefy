@@ -11,24 +11,6 @@ _tap.mixin({
     },
 
 	/*
-	method: showLoader()
-		shows the loading indicator on top of the feedlist
-	*/
-    showLoader: function() {
-        this.header.addClass('loading');
-        return this;
-    },
-
-	/*
-	method: hideLoader()
-		hides the loading indicator on top of the feedlist
-	*/
-    hideLoader: function() {
-        this.header.removeClass('loading');
-        return this;
-    },
-
-	/*
 	method: parseFeed()
 		parses the taps data in order to create the html for the feedlist
 		
@@ -103,13 +85,14 @@ var _stream = _tap.register({
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
         4. more (int) if you want to load more
 	*/
-    changeFeed: function(type, id, info, keyword, more) {
+    changeFeed: function(type, id, info, keyword, more, inside) {
         var self = this,
             data = {},
             info = info ? info : {};
 
         _vars.feed.type = data.type = type ? type : _vars.feed.type;
         _vars.feed.id   = data.id   = id ? id : _vars.feed.id;
+        _vars.feed.inside = data.inside = inside ? inside : 0;
 
         _vars.feed.keyword = data.search = keyword ? keyword : (_vars.feed.keyword ? _vars.feed.keyword : '');
         data.more = this.pos = more ? more : this.pos;
@@ -137,7 +120,7 @@ var _stream = _tap.register({
                 if (info.feed)
                     self.feed.getSiblings('h1.title>span')[0].innerHTML = info.feed;
 
-                self.publish('feed.changed', [type, id]);
+                self.publish('feed.changed', [data.type, data.id]);
             }
         }).send();
     },
@@ -678,6 +661,42 @@ _warning = _tap.register({
 
     hide: function() {
         this.warning.addClass('hidden');
+    }
+});
+
+_controls = _tap.register({
+    init: function() {
+        this.controls = $('controls');
+        if (!this.controls)
+            return;
+        this.tabs = this.controls.getElements('a.tab');
+
+        this.subscribe('feed.changed', function (type, id) {
+            if (['feed', 'aggr_groups', 'group'].contains(type))
+                this.show();
+            else
+                this.hide();
+            this.tabs.removeClass('active');
+            if (_vars.feed.inside)
+                this.controls.getElement('a.tab[data-inside="'+_vars.feed.inside+'"]').addClass('active');
+        }.bind(this));
+
+        this.tabs.addEvent('click', this.toggle.toHandler(this));
+    },
+
+    show: function() {
+        this.controls.removeClass('hidden');
+    },
+
+    hide: function() {
+        this.controls.addClass('hidden');
+    },
+
+    toggle: function(el, e) {
+        this.tabs.removeClass('active');
+        el.addClass('active');
+        _vars.feed.inside = el.getData('inside');
+        this.publish('feed.change', [null, null, null, null, null, _vars.feed.inside]);
     }
 });
 
