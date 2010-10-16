@@ -632,6 +632,14 @@ _resizer = _tap.register({
                 snap: 0,
                 modifiers: {y: 'height', x: null},
                 limit: {y: [250, 650]},
+                onStart: function (el) {
+                    var h = el.getScrollSize().y,
+                        c = el.getStyle('height');
+                    el.setStyles({
+                        height: (el.getStyle('height') > h ? h : c),
+                        'max-height': h,
+                    });
+                },
                 onComplete: function(el) {
                     el.scrollTo(0, el.getScrollSize().y);
                 }
