@@ -1301,7 +1301,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 .replies .list {
         max-height:250px;
 		height:auto;
-        overflow:scroll;
+        overflow:auto;
         overflow-x:hidden;
         padding: 0 1px;
 		background:#fff;
