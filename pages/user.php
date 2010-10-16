@@ -33,5 +33,9 @@ class page_user extends Base {
             UsersList::search('following', array('id' => $user->id, 'limit' => 14))
                      ->asArrayAll(),
             'following');
+
+        $this->set(
+            $this->user->following($user),
+            'state');
 	}
 };

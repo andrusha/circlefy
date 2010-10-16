@@ -3,7 +3,7 @@
     <a href="#" id="pause">Pause Stream</a>
 </h1>
 
-<div id="controls<?=($_f['show_inside'] ? '' : ' hidden')?>">
+<div id="controls" <?=($_f['show_inside'] ? '' : 'class="hidden"')?>>
     <a href="#" data-inside="1" class="tab active">Inside the Circle</a>
     <a href="#" data-inside="2" class="tab">Outside the Circle</a>
     <div class="clear"></div>
@@ -116,7 +116,7 @@
     ?>
    
     <? if (count($_f['feed']) >= 10): ?>
-    <a class="load" href="#">Older Taps</a>
+    <a id="loadmore" class="load" href="#">Older Taps</a>
     <? endif; ?>
     
 </div><!--feed-->

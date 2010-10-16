@@ -947,9 +947,6 @@ var _filter = _tap.register({
             positionOptions: {
                 offset: {x: 10, y: 8},
                 relativeTo: box,
-                relFixedPosition: false,
-                ignoreScroll: true,
-                ignoreMargin: true
             }}).show();
 
         box.getParents('form').addEvent('submit',

@@ -1515,3 +1515,8 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
     margin-left: 65px;
     cursor: s-resize;
 }
+
+div.wrap form {
+    display: block;
+    position: relative;
+}
