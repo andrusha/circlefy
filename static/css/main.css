@@ -1534,9 +1534,8 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
     height: 5px;
 	background:url(../images/resize.gif) no-repeat top center #9CB4C3;
     width: 506px;
-    margin-left: 65px;
     cursor: s-resize;
-	margin:0 0 15px 0;
+	margin:0 0 15px 65px;
 }
 
 div.wrap form {
