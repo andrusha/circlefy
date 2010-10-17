@@ -1547,7 +1547,8 @@ div.replies .typing {
     width: 65px;
 	position:absolute;
 	top:0;
-	left:0;
+	left:-65px;
+	display:block;
 }
 
 div.feed-item.opened div.typing .latest-reply {
