@@ -1562,13 +1562,13 @@ div.text .typing .avatar-reply {
 	float:left;
 }
 
-div.feed-item.opened div.typing .latest-reply {
+div.typing .latest-reply {
     display: block !important;
 	width:24px;
 	float:left;
 	margin:0;
 	padding:0;
 }
-div.feed-item.opened div.typing .latest-reply .br {
+div.typing .latest-reply .br {
 	width:24px;
 }
