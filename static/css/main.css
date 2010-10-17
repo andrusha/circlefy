@@ -1551,6 +1551,7 @@ div.text .typing {
 	left:2px;
 	display:block;
 	height:31px;
+	overflow:hidden;
 }
 .feed-item.opened div.text .typing {
 	height:auto !important;
