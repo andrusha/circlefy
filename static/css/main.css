@@ -1546,14 +1546,14 @@ div.wrap form {
 div.text .typing {
     width: 65px;
 	position:absolute;
-	top:120px;
+	top:80px;
 	left:-65px;
 	display:block;
 }
-.typing .reply-author {
+div.text .typing .reply-author {
 	display:none;
 }
-.typing span {
+div.text .typing span {
 	display:none;
 }
 
