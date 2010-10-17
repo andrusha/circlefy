@@ -20,6 +20,9 @@ class page_homepage extends Base {
                     ->lastResponses()
                     ->format()
                     ->asArrayAll();
+            $this->set(
+                GroupsList::search('byUser', array('uid' => $this->user->id), G_ONLY_ID)->filter('id'),
+                'comet_groups');
             $this->set('feed', 'feed_type');
             $this->set('Your Feed', 'feed_name');
         } else
@@ -34,5 +37,6 @@ class page_homepage extends Base {
         }
         
         $this->set($feed, 'feed');
+
 	}
 };

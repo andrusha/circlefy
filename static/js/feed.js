@@ -718,7 +718,7 @@ _live.stream = _tap.register({
 
     init: function() {
         this.convos = [];
-        this.groups = [];
+        this.groups = _vars.comet.groups ? _vars.comet.groups : [];
         this.subscribe({
             'push.connected; feed.updated': this.refreshStream.bind(this)
         });
@@ -731,15 +731,12 @@ _live.stream = _tap.register({
     refreshStream: function() {
         $$('div#feed > div.feed-item[data-id]').each((function(tap) {
             this.convos.push(tap.getData('id'));
-            if (tap.getData('gid'))
-                this.groups.push(tap.getData('gid'));
         }).bind(this));
 
         if (_vars.feed.type == 'conversation')
             this.convos.push(_vars.feed.id*1);
 
         this.convos = this.convos.unique();
-        this.groups = this.groups.unique();
         this.update();
     },
 

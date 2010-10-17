@@ -5,7 +5,8 @@
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'friend', 'id' => $user['id'])),
+                           'feed'  => array('type' => 'friend', 'id' => $user['id']),
+                           'comet' => array('groups' => array())),
         'guest'   => $guest);
     include(HEADER);
 ?>
@@ -13,7 +14,13 @@
     	
         <div id="left">
         
-        	<h1 class="title profile">Circles <?=$user['fname']?> is part of <a class="view-all" href="#">view all...</a></h1>
+        	<h1 class="title profile">Circles <?=$user['fname']?> is part of 
+            <? if (count($circles) >= 10): ?>
+                <a class="view-all" href="#"
+                   data-type="groups"
+                   data-id="<?=$me['id']?>">view all...</a>
+            <? endif; ?>
+            </h1>
             
             <div class="user-circles">
                 <?php

@@ -141,10 +141,16 @@
     </form>
 
 <? /*** Group members ***/ ?>
-    <? if (isset($_s['members'])): ?>
+    <? if (!empty($_s['members'])): ?>
     <div class="box">
     
-        <h3 class="title">Circle members <a class="view-all" href="#">view all...</a></h3>
+        <h3 class="title">Circle members 
+        <? if (count($_s['members']) >= 14): ?>
+            <a class="view-all" href="#"
+               data-type="members"
+               data-id="<?=$_s['circle']['id']?>">view all...</a>
+        <? endif; ?>
+        </h3>
         <?php
             $_f['members'] = $_s['members'];
             include(FOLLOWERS);
@@ -159,7 +165,13 @@
     <? if (!empty($_s['circles'])): ?>
     <div class="box">
     
-        <h3 class="title">Circles you're connected to <a href="#" class="view-all">view all...</a></h3>
+        <h3 class="title">Circles you're connected to 
+        <? if (count($_s['circles']) >= 16): ?>
+            <a href="#" class="view-all"
+               data-type="groups"
+               data-id="<?=$me['id']?>">view all...</a>
+        <? endif; ?>
+        </h3>
         <?php
             $_cl['list'] = $_s['circles'];
             include(CIRCLE_LIST);
@@ -173,7 +185,13 @@
     <? if (!empty($_s['followers'])): ?>
     <div class="box">
    
-        <h3 class="title">Followers <a class="view-all" href="#">view all...</a></h3>
+        <h3 class="title">Followers 
+        <? if (count($_s['followers']) >= 14): ?>
+            <a class="view-all" href="#"
+               data-type="followers"
+               data-id="<?=$_s['user']['id']?>">view all...</a>
+        <? endif; ?>
+        </h3>
         <?php
             $_f['members'] = $_s['followers'];
             include(FOLLOWERS);
@@ -187,7 +205,13 @@
     <? if (!empty($_s['following'])): ?>
     <div class="box">
     
-        <h3 class="title">Following <a class="view-all" href="#">view all...</a></h3>
+        <h3 class="title">Following 
+        <? if (count($_s['following']) >= 14): ?>
+            <a class="view-all" href="#"
+               data-type="following"
+               data-id="<?=$_s['user']['id']?>">view all...</a>
+        <? endif; ?>
+        </h3>
         <?php
             $_f['members'] = $_s['following'];
             include(FOLLOWERS);
@@ -201,9 +225,16 @@
     <? if (!empty($_s['convo']['involved'])): ?>
     <div class="box">
     
-        <h3 class="title">Participants... <a class="view-all" href="#">view all...</a></h3>
+        <h3 class="title">Participants... 
+        <? if (count($_s['convo']['involved']) >= 16): ?>
+            <a class="view-all" href="#"
+               data-type="involved"
+               data-id="">view all...</a>
+        <? endif; ?>
+        </h3>
         <?php
             $_f['members'] = $_s['convo']['involved'];
+            $_f['limit'] = 16;
             include(FOLLOWERS);
         ?>
         <div class="clear"></div>

@@ -5,7 +5,8 @@
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'group', 'id' => $circle['id'], 'inside' => 1)),
+                           'feed'  => array('type' => 'group', 'id' => $circle['id'], 'inside' => 1),
+                           'comet' => array('groups' => array($circle['id']))),
         'guest'   => $guest);
     include(HEADER);
 ?>    
