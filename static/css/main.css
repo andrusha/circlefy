@@ -612,6 +612,9 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
     display: block;
 	padding:5px 0;
 }
+.feed-item:hover cite a {
+	color:#2878ca;
+}
 .feed-item .edit {
 	position:absolute;
 	display:none;
