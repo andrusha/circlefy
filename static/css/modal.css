@@ -82,7 +82,7 @@ div.modal-window.show {
 	text-align:center;
 	display:block;
 	width:220px;
-	margin:0 auto;
+	margin:15px auto 0;
 }
        
 .modal-window h2 {
