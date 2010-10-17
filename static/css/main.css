@@ -1547,7 +1547,7 @@ div.text .typing {
     width: 65px;
 	position:absolute;
 	top:80px;
-	left:-65px;
+	left:0px;
 	display:block;
 }
 div.text .typing .reply-author {
