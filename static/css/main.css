@@ -1547,7 +1547,7 @@ div.text .typing {
     width: 65px;
 	position:absolute;
 	top:80px;
-	left:0px;
+	left:2px;
 	display:block;
 }
 div.text .typing .reply-author {
@@ -1564,7 +1564,7 @@ div.text .typing .avatar-reply {
 
 div.typing .latest-reply {
     display: block !important;
-	width:24px;
+	width:31px;
 	float:left;
 	margin:0;
 	padding:0;
