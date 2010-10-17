@@ -1545,6 +1545,9 @@ div.wrap form {
 
 div.text .typing {
     width: 65px;
+	position:absolute;
+	top:0;
+	left:0;
 }
 
 div.feed-item.opened div.typing .latest-reply {
