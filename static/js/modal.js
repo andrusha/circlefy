@@ -550,7 +550,7 @@ _modal.login = _tap.register({
                 _notifications.remove(executing);
 
                 if(response.status == 'REGISTERED') {
-                    _notifications.alert('Success', '<img src="/images/icons/accept.png" /> Welcome back.  Logging you in...',
+                    _notifications.alert('Success', 'Welcome back.  Logging you in...',
                         {color: 'darkgreen', duration: 2000, position: position});
 
                     (function () { document.location.reload() }).delay(2000, this, 'login');
