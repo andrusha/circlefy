@@ -501,7 +501,7 @@ _live.typing = _tap.register({
         else {
             var parent = $('global-'+data.cid);
             if (parent)
-                item.inject(parent.getElement('div.resizer'));
+                item.inject(parent.getElement('div.typing'));
         }
     },
 });
