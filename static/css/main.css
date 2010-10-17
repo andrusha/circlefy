@@ -192,12 +192,12 @@ border-top-right-radius: 0px;
 }
 #pause {
 	display:block;
-	background:#3c3c3c;
+	background:url(../images/button_wide.gif) repeat-x;
+	color:#222;
+	text-shadow:1px 1px #fff;
+	border:1px solid #a6a6a6;
 	font-size:11px;
 	font-weight:bold;
-	color:#fff;
-	text-shadow:1px 1px #000;
-	border:1px solid #232323;
 	border-radius:2px;
 	-moz-border-radius:2px;
 	-webkit-border-radius:2px;
@@ -208,6 +208,18 @@ border-top-right-radius: 0px;
 	position:absolute;
 	top:0;
 	right:0;
+}
+#pause:after {
+    content: attr(def);
+}
+#pause.active {
+	background:#3c3c3c;
+	text-shadow:1px 1px #000;
+	color:#fff;
+	border:1px solid #232323;
+}
+#pause.active:after {
+    content: attr(alt);
 }
 #controls #filters {
 	display:inline;
@@ -941,9 +953,17 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	padding:1px 6px;
 	float:left;
 }
+.follow:after {
+    content: attr(def);
+}
 .follow.active {
-	background:#222;
-	border:1px solid #000;
+	background:#3C3C3C;
+	color:#fff;
+	text-shadow:1px 1px #000;
+	border:1px solid #232323;
+}
+.follow.active:after {
+    content: attr(alt);
 }
 .pm {
 	display:inline;

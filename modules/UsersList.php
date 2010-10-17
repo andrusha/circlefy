@@ -116,8 +116,8 @@ class UsersList extends Collection {
         $db = DB::getInstance();
 
         $joins = array(
-            'friends'     => 'INNER JOIN friends       f ON f.user_id = u.id',
-            'friends2'    => 'INNER JOIN friends       f ON u.id      = f.user_id',
+            'friends'     => 'INNER JOIN friends       f ON u.id = f.friend_id',
+            'friends2'    => 'INNER JOIN friends       f ON u.id = f.user_id',
             'last_chat'   => 'LEFT JOIN 
                                 (SELECT m.sender_id AS uid, text FROM message ORDER BY id DESC)
                                 AS lc ON lc.uid = u.id',
@@ -145,7 +145,7 @@ class UsersList extends Collection {
 
             case 'following':
                 $join[]  = 'friends';
-                $where[] = 'u.id = #id#';
+                $where[] = 'f.user_id = #id#';
                 break;
 
             case 'followers':

@@ -6,13 +6,14 @@ class page_convo extends Base {
 	function __invoke() {
         $id = intval($_GET['id']);
 
-        $this->set(
-            TapsList::search('byId', array('id' => $id), T_USER_INFO | T_GROUP_INFO )
-                    ->replies()
-                    ->involved()
-                    ->format()
-                    ->getFirst()
-                    ->asArray(),
-            'convo'); 
+        $tap = TapsList::search('byId', array('id' => $id), T_USER_INFO | T_GROUP_INFO )
+                       ->replies()
+                       ->involved()
+                       ->format()
+                       ->getFirst();
+
+
+        $this->set($tap->asArray(), 'convo'); 
+        $this->set($tap->getStatus($this->user), 'state');
 	}
 };

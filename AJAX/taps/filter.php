@@ -13,7 +13,7 @@ class ajax_filter extends Base {
         $more    = intval($_POST['more']);
         $inside  = intval($_POST['inside']);
 
-        if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {
+        if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos', 'group'))) {
             $this->data = array('success' => false, 'data' => array());
             return;
         }
@@ -30,6 +30,8 @@ class ajax_filter extends Base {
 
         if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos')))
             $params['uid'] = $this->user->id;
+        elseif ($type == 'group')
+            $params['gid'] = $id;
 
         if (in_array($type, array('feed', 'aggr_friends', 'aggr_convos')))
             $options |= T_USER_RECV;

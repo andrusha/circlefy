@@ -238,8 +238,16 @@ class User extends BaseModel {
               INTO group_members (group_id, user_id)
             VALUES (#gid#, #uid#)
                 ON DUPLICATE KEY
-            UPDATE permission = VALUE(permission)";
+            UPDATE permission = VALUES(permission)";
         return $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id))->affected_rows == 1;
+    }
+
+    public function leave(Group $g) {
+        $query = "DELETE
+                    FROM group_members
+                   WHERE group_id = #gid#
+                     AND user_id  = #uid#";
+        return $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->affected_rows == 1;
     }
 
 };

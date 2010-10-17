@@ -42,7 +42,6 @@ $ajaxs = array(
                 'check'    => true,
                 'facebook' => true,
                 'login'    => true,
-                'follow'   => true,
                 'typing'   => true
         ),
         'group' => array(
@@ -56,6 +55,7 @@ $ajaxs = array(
                'filter'    => true,
                'new'       => true
         ),
+        'follow' => true
     );
 
 $ajax_bypass = array('typing');

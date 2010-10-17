@@ -165,7 +165,7 @@ class GroupsList extends Collection {
 
         $joins = array(
             'members'  => 'INNER JOIN group_members gm  ON g.id = gm.group_id',
-            'members2' => 'INNER JOIN group_members gm2 ON g.id = gm2.group_id',
+            'members2' => 'LEFT  JOIN group_members gm2 ON g.id = gm2.group_id',
             'messages' => 'LEFT  JOIN message m         ON m.group_id = g.id');
 
         switch ($type) {

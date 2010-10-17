@@ -39,9 +39,9 @@ Acknowledgements:
                     this.loopExp,
                     function(whole, var_name, source_name, inner) {
                         return '$each(' + source_name + ', function (' + var_name + ') { ' +
-                               'if (typeOf(' + var_name + ') == "function") return; \n'+ inner;
+                               'if (!["object", "array"].contains(typeOf(' + var_name + '))) return; \n'+ inner;
                     }
-                ).replace(this.loopEnds, '});');
+                ).replace(this.loopEnds, '}, this);');
         },
         
         escape: function(template) {

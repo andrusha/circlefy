@@ -22,7 +22,7 @@ class Group extends BaseModel {
     //ENUM('blocked','pending','user', 'moderator', 'admin')
     public static $permissions = array(
         'blocked'   => 1, 'pending' => 2, 'user' => 3,
-        'moderator' => 4, 'admin'   => 5);
+        'moderator' => 4, 'admin'   => 5, 'not_in' => -1);
 
     public static $fields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
         'symbol', 'name', 'descr', 'created_time', 'type', 'auth', 'status',

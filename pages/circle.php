@@ -23,5 +23,9 @@ class page_circle extends Base {
                     ->format()
                     ->asArrayAll(),
             'feed');
+
+        $this->set(
+           $group->userPermissions($this->user) != Group::$permissions['not_in'],
+           'state');
 	}
 };

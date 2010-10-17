@@ -166,8 +166,8 @@ class TapsList extends Collection {
         //cuz feed already implements inside\outside things
         if ($type != 'feed') {
             if ($options & T_INSIDE || $options & T_OUTSIDE) {
-                if (!in_array('group', $join) && !in_array('group_l', $join))
-                    $join[] = 'group';
+                if (!in_array('members', $join) && !in_array('members_l', $join))
+                    $join[] = 'members_l';
                 $join[] = 'members_i';
             }
 
