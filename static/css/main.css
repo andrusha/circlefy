@@ -1531,7 +1531,8 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 
 .resizer {
     display: none;
-    height: 30px;
+    height: 5px;
+	background:url(../images/resize.gif) no-repeat top center #9CB4C3;
     width: 506px;
     margin-left: 65px;
     cursor: s-resize;
