@@ -1578,6 +1578,9 @@ div.typing .latest-reply {
 	margin:0;
 	padding:0;
 }
+div.typing div.latest-reply.dim {
+    opacity: 0.5;
+}
 div.typing .latest-reply .br {
 	width:24px;
 }

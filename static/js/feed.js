@@ -486,15 +486,27 @@ _live.typing = _tap.register({
         //if (_vars.feed.type != 'conversation' && data.cid != _vars.feed.id)
         //    return;
 
-        var item = $('typing-'+data.uid);
+        var item = $('typing-'+data.uid),
+            founded = false;
         if (!item)
             item = Elements.from(_template.parse('typing', data))[0];
-
-        clearTimeout(item.timeout);
+        else {
+            item.removeClass('dim');
+            clearTimeout(item.timeout);
+            clearTimeout(item.timeout2);
+            founded = true;
+        }
 
         item.timeout = (function() {
-            item.destroy();
+            item.addClass('dim');
         }).delay(2000);
+
+        item.timeout2 = (function() {
+            item.destroy();
+        }).delay(5000);
+
+        if (founded)
+            return;
 
         if (_vars.feed.type == 'conversation' && data.cid == _vars.feed.id)
             item.inject($('sidebar').getElement('div.wrap'));
