@@ -629,7 +629,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 .feed-item .circle {
 	position:absolute;
 	top:15px;
-	right:10px;
+	right:0;
 	height:20px;
 	width:auto;
 }
@@ -648,7 +648,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 .feed-item .icons {
 	position:absolute;
 	top:15px;
-	right:35px;
+	right:25px;
 	height:20px;
 	width:auto;
 }
