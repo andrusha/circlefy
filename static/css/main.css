@@ -446,7 +446,7 @@ h1.wide {
 	padding:0 0 80px 0;
 }
 #feed.conversation .reply-item {
-	padding:20px 10px;
+	padding:10px;
 }
 #feed.conversation .reply-item .username {
     display: none;
@@ -455,7 +455,7 @@ h1.wide {
 	display:block;
 	border-bottom:1px solid #d7d7d7;
 /*	padding:30px 10px;*/
-	padding:8px 1px;
+	padding:15px 1px;
 	position:relative;
 }
 div.feed-item.new {
