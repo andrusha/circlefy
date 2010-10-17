@@ -454,7 +454,8 @@ h1.wide {
 .feed-item {
 	display:block;
 	border-bottom:1px solid #d7d7d7;
-	padding:30px 10px;
+/*	padding:30px 10px;*/
+	padding:8px 1px;
 	position:relative;
 }
 div.feed-item.new {
