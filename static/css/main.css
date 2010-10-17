@@ -1550,6 +1550,11 @@ div.text .typing {
 	top:74px;
 	left:2px;
 	display:block;
+	height:31px;
+}
+.feed-item.opened div.text .typing {
+	height:auto !important;
+	overflow:hidden;
 }
 div.text .typing .reply-author {
 	display:none;
