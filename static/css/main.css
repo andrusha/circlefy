@@ -1565,6 +1565,7 @@ div.text .typing .avatar-reply {
 div.typing .latest-reply {
     display: block !important;
 	width:31px;
+	background:none;
 	float:left;
 	margin:0;
 	padding:0;
