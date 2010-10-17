@@ -1550,6 +1550,9 @@ div.replies .typing {
 	left:-130px;
 	display:block;
 }
+div.replies .typing .reply-author {
+	display:none;
+}
 
 div.feed-item.opened div.typing .latest-reply {
     display: block !important;
