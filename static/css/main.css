@@ -1543,17 +1543,17 @@ div.wrap form {
     position: relative;
 }
 
-div.replies .typing {
+div.text .typing {
     width: 65px;
 	position:absolute;
-	top:0;
-	left:-130px;
+	top:120px;
+	left:-65px;
 	display:block;
 }
-div.replies .typing .reply-author {
+.typing .reply-author {
 	display:none;
 }
-div.replies .typing span {
+.typing span {
 	display:none;
 }
 
