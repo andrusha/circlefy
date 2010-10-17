@@ -21,6 +21,9 @@ div#curtain.show {
     width: 500px;
     margin: auto;
 }
+#modal-login {
+	padding-left:0;
+}
 
 .modal-window {
 background: #F2F2F2;
