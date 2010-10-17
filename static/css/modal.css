@@ -22,7 +22,8 @@ div#curtain.show {
     margin: auto;
 }
 #modal-login {
-	padding-left:0;
+	padding-left:35px;
+	padding-right:35px;
 }
 
 .modal-window {
