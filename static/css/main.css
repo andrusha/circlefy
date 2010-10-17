@@ -1547,7 +1547,7 @@ div.replies .typing {
     width: 65px;
 	position:absolute;
 	top:0;
-	left:-65px;
+	left:-130px;
 	display:block;
 }
 
