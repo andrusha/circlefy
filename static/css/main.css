@@ -1553,6 +1553,9 @@ div.replies .typing {
 div.replies .typing .reply-author {
 	display:none;
 }
+div.replies .typing span {
+	display:none;
+}
 
 div.feed-item.opened div.typing .latest-reply {
     display: block !important;
