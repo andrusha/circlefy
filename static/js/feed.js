@@ -709,6 +709,8 @@ _controls = _tap.register({
 });
 
 /*
+666 commit GET!
+
 module: _live.stream
 	controls the automatic tap streaming
 
