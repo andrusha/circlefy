@@ -25,6 +25,10 @@ div#curtain.show {
 	padding-left:35px;
 	padding-right:35px;
 }
+#modal-sign-login {
+	padding-right:189px;
+	width:311px;
+}
 
 .modal-window {
 background: #F2F2F2;
