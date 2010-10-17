@@ -610,6 +610,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	color:#202020;
     text-decoration: none;
     display: block;
+	padding:5px 0;
 }
 .feed-item .edit {
 	position:absolute;
