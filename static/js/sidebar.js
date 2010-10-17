@@ -9,6 +9,7 @@
 mixin: list
 	A mixin for sidelist operations
 */
+var x;
 _tap.mixin({
 
 	name: 'lists',
@@ -16,6 +17,7 @@ _tap.mixin({
 	setListVars: function() {
         var sidebar = this.sidebar = $('sidebar');
         this.menu = sidebar.getElements('ul#navigation>li');
+        this.pmButton = $('sendPMButton');
 	}
 
 });
@@ -33,7 +35,14 @@ var _list = _tap.register({
 	init: function(){
 		this.setListVars();
 		this.menu.addEvent('click:relay(a)', this.changeFeed.toHandler(this));
+		this.sidebar.addEvent('click:relay(#sendPMButton)', this.showPMBox.toHandler(this));
+		x = this.pmButton;
     },
+
+	showPMBox: function(){
+		$('reply').removeClass('hidden');
+		$('reply').fade('hide').fade();
+	},
 	
 	changeFeed: function(el, e){
         e.stop();

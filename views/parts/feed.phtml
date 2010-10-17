@@ -15,15 +15,21 @@
 </div><!--warning-->
 
 
-<? if ($_f['show_reply']): ?>
-<form id="reply">
+<? 
+if ($_f['show_reply']){
+	$title = 'Post a message to this circle';
+} else { 
+	$title = 'Send a Private Message to this person';
+	$classes = 'hidden';	
+}
+?>
+<form id="reply" class="<?=$classes?>">
 	<a class="anonym" href="#"><img src="/static/images/user.gif" alt="guy" /></a>
     <img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" />
-    <textarea title="Post a message to this circle"></textarea>
+    <textarea title="<?=$title?>"></textarea>
     <input type="submit" value=" " />
     <div class="clear"></div>
 </form><!--reply-->
-<? endif; ?>
 
 
 <div id="feed">

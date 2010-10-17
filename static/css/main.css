@@ -684,13 +684,13 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	border:1px solid #fff;
 	box-shadow:inset -1px -1px 0px #c1c1c1;
 	-moz-box-shadow:inset -1px -1px 0px #c1c1c1;
-	-webkit-box-shadow:inset -1px -1px 0px #c1c1c1;
 	text-decoration:none;
 	background:#eee;
 	border-radius:15px;
 	-moz-border-radius:15px;
 	-webkit-border-radius:15px;
 	margin:0 5px 0 0;
+	-webkit-box-shadow: #C1C1C1 -1px -1px 0px;
 }
 .feed-item .comments:hover {
 	color:#346394;
