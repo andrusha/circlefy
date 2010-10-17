@@ -49,6 +49,7 @@ z-index: 11;
 
 .modal-logo-large{
 margin:0 auto 10px;
+display:block;
 }
 #modal-sign-login h2 {
 	text-align:center;
