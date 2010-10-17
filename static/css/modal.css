@@ -26,8 +26,9 @@ div#curtain.show {
 	padding-right:35px;
 }
 #modal-sign-login {
-	padding-right:189px;
-	width:311px;
+	padding-right:139px;
+	padding-left:139px;
+	width:361px;
 }
 
 .modal-window {
