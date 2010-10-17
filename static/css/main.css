@@ -612,7 +612,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
     display: block;
 	padding:5px 0;
 }
-.feed-item:hover cite a {
+.feed-item:hover cite a, .feed-item cite a:hover {
 	color:#2878ca;
 }
 .feed-item.opened:hover cite a {
