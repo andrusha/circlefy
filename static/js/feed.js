@@ -720,7 +720,7 @@ _live.stream = _tap.register({
 
     init: function() {
         this.convos = [];
-        this.groups = _vars.comet.groups ? _vars.comet.groups : [];
+        this.groups = _vars.comet ? (_vars.comet.groups ? _ vars.comet.groups : []) : [];
         this.subscribe({
             'push.connected; feed.updated': this.refreshStream.bind(this)
         });

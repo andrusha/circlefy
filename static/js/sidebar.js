@@ -51,6 +51,9 @@ var _list = _tap.register({
             data = {'feed': el.getElement('a').text },
             inside = el.getData('inside');
 
+        if (_vars.guest && type != 'public')
+            return;
+
         el.getSiblings('li').removeClass('active');
         el.addClass('active');
 
