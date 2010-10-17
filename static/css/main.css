@@ -1536,6 +1536,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
     width: 506px;
     margin-left: 65px;
     cursor: s-resize;
+	margin:0 0 15px 0;
 }
 
 div.wrap form {
