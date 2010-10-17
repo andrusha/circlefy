@@ -92,10 +92,10 @@ var _stream = _tap.register({
 
         _vars.feed.type = data.type = type ? type : _vars.feed.type;
         _vars.feed.id   = data.id   = id ? id : _vars.feed.id;
-        _vars.feed.inside = data.inside = inside ? inside : 0;
+        _vars.feed.inside = data.inside = !!(inside | inside === 0) ? inside : (_vars.feed.inside ? _vars.feed.inside : 0);
 
         _vars.feed.keyword = data.search = keyword ? keyword : (_vars.feed.keyword ? _vars.feed.keyword : '');
-        data.more = this.pos = more ? more : this.pos;
+        data.more = this.pos = !!(more | more === 0) ? more : this.pos;
 
         new Request({
             url: '/AJAX/taps/filter',
@@ -108,7 +108,7 @@ var _stream = _tap.register({
                 else
                     self.feed.empty();
             
-                if (response.data.length == 10) {
+                if (response.more) {
                     Elements.from($('template-loadmore').innerHTML).inject(self.feed, 'bottom');
 	    			self.enableLoadMore();
                 }
@@ -704,7 +704,7 @@ _controls = _tap.register({
         this.tabs.removeClass('active');
         el.addClass('active');
         _vars.feed.inside = el.getData('inside');
-        this.publish('feed.change', [null, null, null, null, null, _vars.feed.inside]);
+        this.publish('feed.change', [null, null, null, null, 0, _vars.feed.inside]);
     }
 });
 

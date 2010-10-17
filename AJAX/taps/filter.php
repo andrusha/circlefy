@@ -9,19 +9,16 @@ class ajax_filter extends Base {
     public function __invoke() {
         $type    = $_POST['type'];
         $id      = intval($_POST['id']);
-        $search  = '%'.str_replace(' ', '%', $_POST['search']).'%';
+        $search  = $_POST['search'];
         $more    = intval($_POST['more']);
         $inside  = intval($_POST['inside']);
 
-        if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos', 'group'))) {
+        if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos', 'group', 'friend'))) {
             $this->data = array('success' => false, 'data' => array());
             return;
         }
 
-        $params = array(
-            'start_from' => $more,
-            'search'     => $search
-        );
+        $params = array('start_from' => $more);
         $options = T_GROUP_INFO | T_USER_INFO;
         if ($inside == 1)
             $options |= T_INSIDE;
@@ -32,12 +29,17 @@ class ajax_filter extends Base {
             $params['uid'] = $this->user->id;
         elseif ($type == 'group')
             $params['gid'] = $id;
+        elseif ($type == 'friend')
+            $params['uid'] = $id;
 
         if (in_array($type, array('feed', 'aggr_friends', 'aggr_convos')))
             $options |= T_USER_RECV;
 
-        if (trim($search))
+        $search = trim(strip_tags($search));
+        if (!empty($search)) {
             $options |= T_SEARCH;
+            $params['search'] = '%'.str_replace(' ', '%', preg_replace('/\s{2,}/', ' ', $search)).'%';
+        }
 
         if ($more)
             $options |= T_LIMIT;
@@ -48,6 +50,6 @@ class ajax_filter extends Base {
                         ->asArrayAll();
 
         $results = !empty($data);
-        $this->data = array('success' => $results, 'data' => $data);
+        $this->data = array('success' => $results, 'more' => count($data) >= 10, 'data' => $data);
     }
 };

@@ -47,7 +47,7 @@ class TapsList extends Collection {
         $joins = array(
             'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id',
             'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
-            'members_i' => 'LEFT  JOIN group_members gi ON gi.group_id = gm.group_id',
+            'members_i' => 'LEFT  JOIN group_members gi ON gi.group_id = m.group_id AND gi.user_id = m.sender_id',
             'group'     => 'INNER JOIN `group`       g  ON g.id        = m.group_id',
             'group_l'   => 'LEFT  JOIN `group`       g2 ON g2.id       = m.group_id',
             'user'      => 'INNER JOIN user          u  ON u.id        = m.sender_id',
@@ -76,15 +76,7 @@ class TapsList extends Collection {
                 $distinct = true;
                 $join[]   = 'members_l';
                 $join[]   = 'convo_l';
-                $add      = '';
-                if ($options & T_INSIDE) {
-                    $join[] = 'members_i';
-                    $add    = ' AND m.sender_id = gi.user_id';
-                } else if ($options & T_OUTSIDE) {
-                    $join[] = 'members_i';
-                    $add    = ' AND m.sender_id <> gi.user_id';
-                }
-                $where[]  = "((gm.user_id = #uid# {$add}) OR c.user_id = #uid# ".
+                $where[]  = "(gm.user_id = #uid# OR c.user_id = #uid# ".
                             '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
                             '       m.reciever_id IS NOT NULL))';
                 break;
@@ -163,19 +155,13 @@ class TapsList extends Collection {
             $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Tap::$mediaFields));
         }
 
-        //cuz feed already implements inside\outside things
-        if ($type != 'feed') {
-            if ($options & T_INSIDE || $options & T_OUTSIDE) {
-                if (!in_array('members', $join) && !in_array('members_l', $join))
-                    $join[] = 'members_l';
-                $join[] = 'members_i';
-            }
+        if ($options & T_INSIDE || $options & T_OUTSIDE)
+            $join[] = 'members_i';
 
-            if ($options & T_INSIDE)
-                $where[] = 'm.sender_id = gi.user_id';
-            else if ($options & T_OUTSIDE)
-                $where[] = 'm.sender_id <> gi.user_id';
-        }
+        if ($options & T_INSIDE)
+            $where[] = 'gi.user_id IS NOT NULL';
+        else if ($options & T_OUTSIDE)
+            $where[] = 'gi.user_id IS NULL';
 
         //construct and execute query from supplied params
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
