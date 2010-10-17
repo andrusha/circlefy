@@ -1543,7 +1543,7 @@ div.wrap form {
     position: relative;
 }
 
-div.text .typing {
+div.replies .typing {
     width: 65px;
 	position:absolute;
 	top:0;
