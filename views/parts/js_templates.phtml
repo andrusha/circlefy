@@ -131,13 +131,19 @@
                 <div class="resizer"></div>
 
                 <div class="clear"></div>
-                    <# if (!this.hide_group_icon): #>
-                    <div class="circle">
-                        <a href="/circle/<#: msg.group.symbol  #>">
-                            <span></span>
-                            <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" alt="<#: msg.group.name  #>" />
-                        </a>
-                    </div><!--circle-->
+                    <# if (!this.hide_group_icon && msg.group_id): #>
+                        <div class="circle">
+                            <a href="/circle/<#: msg.group.symbol  #>">
+                                <span></span>
+                                <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" alt="<#: msg.group.name  #>" />
+                            </a>
+                        </div><!--circle-->
+                    <# else if (msg.reciever_id): #>
+                        <div class="user">
+                            <a href="/user/<#: msg.reciever.uname #>">
+                                <img src="<?=USER_PIC_REL?>small_<#: msg.reciever.id #>.jpg" alt="<#: msg.reciever.fname #> <#: msg.reciever.lname #>" />
+                            </a>
+                        </div><!--user-->
                     <# endif; #>
                  <div class="icons">
                    <!-- there would be icon, selected depending on what type of content message have -->

@@ -40,7 +40,7 @@ body {
 }
 
 #header {
-	position:fixed;
+	position:absolute;
 	width:100%;
 	min-width:900px;
 	height:89px;

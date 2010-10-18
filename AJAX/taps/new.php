@@ -43,8 +43,9 @@ class ajax_new extends Base {
         if ($group instanceof Group) {
             $uids = UsersList::search('members', array('gid' => $group->id), U_ONLY_ID)->filter('id');
             $message['gid'] = $group->id;
-        } elseif ($to instanceof User)
-            $uids = array($to->id);
+        } elseif ($to instanceof User) {
+            $uids = array($to->id, $tapper->id);
+        }
 
         $message['users'] = $uids;
 

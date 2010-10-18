@@ -159,9 +159,11 @@ class TapsList extends Collection {
             $join[] = 'members_i';
 
         if ($options & T_INSIDE)
-            $where[] = 'gi.user_id IS NOT NULL';
-        else if ($options & T_OUTSIDE)
+            $where[] = '(gi.user_id IS NOT NULL OR m.group_id IS NULL)';
+        else if ($options & T_OUTSIDE) {
             $where[] = 'gi.user_id IS NULL';
+            $where[] = 'm.group_id IS NOT NULL';
+        }
 
         //construct and execute query from supplied params
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
@@ -190,10 +192,10 @@ class TapsList extends Collection {
             if (!empty($line['u']))
                 $tap['sender'] = new User($line['u']);
 
-            if (!empty($tap['u2']))
+            if (!empty($line['u2']))
                 $tap['reciever'] = new User($line['u2']);
 
-            if (!empty($tap['md'])) {
+            if (!empty($line['md'])) {
                 $line['md']['type'] = intval($line['md']['type']);
                 $tap['media'] = $line['md'];
             }

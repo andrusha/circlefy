@@ -3,12 +3,20 @@
     <a href="#" id="pause" def="Pause Stream" alt="Release Stream"></a>
 </h1>
 
-<div id="controls" <?=($_f['show_inside'] ? '' : 'class="hidden"')?>>
-    <a href="#" data-inside="1" class="tab active">Inside the Circle</a>
-    <a href="#" data-inside="2" class="tab">Outside the Circle</a>
-    <div class="clear"></div>
-</div><!--controls-->
-            
+<? if (!$_f['user']): ?>
+    <div id="controls" <?=($_f['show_inside'] ? '' : 'class="hidden"')?>>
+        <a href="#" data-inside="1" class="tab active">Inside the Circle</a>
+        <a href="#" data-inside="2" class="tab">Outside the Circle</a>
+        <div class="clear"></div>
+    </div><!--controls-->
+<? else: ?>
+    <div id="controls">
+        <a href="#" data-type="friend" class="tab active">Feed</a>
+        <a href="#" data-type="private" class="tab">Private Messages</a>
+        <div class="clear"></div>
+    </div><!--controls-->
+<? endif; ?>
+
 <div class="warning hidden">
     <a href="#" class="close">X</a>
     <span></span>
@@ -101,13 +109,19 @@ if ($_f['show_reply']){
             <div class="resizer"></div>
 
             <div class="clear"></div>
-                <? if (!$_f['hide_group_icon']): ?>
-                <div class="circle">
-                    <a href="/circle/<?=$f['group']['symbol']?>">
-                        <span></span>
-                        <img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" alt="<?=$f['group']['name']?>" />
-                    </a>
-                </div><!--circle-->
+                <? if (!$_f['hide_group_icon'] && $f['group_id']): ?>
+                    <div class="circle">
+                        <a href="/circle/<?=$f['group']['symbol']?>">
+                            <span></span>
+                            <img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" alt="<?=$f['group']['name']?>" />
+                        </a>
+                    </div><!--circle-->
+                <? elseif ($f['reciever_id']): ?>
+                    <div class="user">
+                        <a href="/user/<?=$f['reciever']['uname']?>">
+                            <img src="<?=USER_PIC_REL.'small_'.$f['reciever']['id'].'.jpg'?>" alt="<?=$f['reciever']['fname']?> <?=$f['reciever']['lname']?>" />
+                        </a>
+                    </div><!--user-->
                 <? endif; ?>
              <div class="icons">
                <!-- there would be icon, selected depending on what type of content message have -->

@@ -34,15 +34,19 @@ var _list = _tap.register({
 
 	init: function(){
 		this.setListVars();
+        this.reply = $('reply');
 		this.menu.addEvent('click:relay(a)', this.changeFeed.toHandler(this));
-		this.sidebar.addEvent('click:relay(#sendPMButton)', this.showPMBox.toHandler(this));
-		x = this.pmButton;
+		this.sidebar.addEvent('click:relay(#sendPMButton)', function () {
+            this.publish('feed.change', ['private']);
+        }.bind(this));
+        this.subscribe('feed.changed', function (type) {
+            if (!this.reply) return;
+            if (!['group', 'private'].contains(type))
+                this.reply.addClass('hidden');
+            else
+                this.reply.removeClass('hidden');
+        }.bind(this));
     },
-
-	showPMBox: function(){
-		$('reply').removeClass('hidden');
-		$('reply').fade('hide').fade();
-	},
 	
 	changeFeed: function(el, e){
         e.stop();

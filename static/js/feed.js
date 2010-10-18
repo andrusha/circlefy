@@ -369,7 +369,7 @@ var _responses = _tap.register({
             window.scrollTo(0, window.getScrollSize().y);
 
         var parent = list.getParent('div.feed-item');
-        if (parent)
+        if (parent && items.length)
             parent.removeClass('empty');
         this.publish('responses.updated');
         return this;
@@ -569,7 +569,7 @@ var _tapbox = _tap.register({
         var form = this.form = $$('div#left > form#reply')[0];
         if ((!_vars.user) || !this.form) return;
 
-        this.sendType = 'group';
+        this.sendType = _vars.feed.type;
         this.sendTo   = _vars.feed.id;
 
         var tapbox = this.tapbox = form.getElement('textarea');
@@ -703,13 +703,16 @@ _controls = _tap.register({
         this.tabs = this.controls.getElements('a.tab');
 
         this.subscribe('feed.changed', function (type, id) {
-            if (['feed', 'aggr_groups', 'group'].contains(type))
+            if (['feed', 'aggr_groups', 'group', 'friend', 'private'].contains(type))
                 this.show();
             else
                 this.hide();
             this.tabs.removeClass('active');
+
             if (_vars.feed.inside)
                 this.controls.getElement('a.tab[data-inside="'+_vars.feed.inside+'"]').addClass('active');
+            if (_vars.feed.type)
+                this.controls.getElement('a.tab[data-type="'+_vars.feed.type+'"]').addClass('active');
         }.bind(this));
 
         this.tabs.addEvent('click', this.toggle.toHandler(this));
@@ -726,8 +729,13 @@ _controls = _tap.register({
     toggle: function(el, e) {
         this.tabs.removeClass('active');
         el.addClass('active');
-        _vars.feed.inside = el.getData('inside');
-        this.publish('feed.change', [null, null, null, null, 0, _vars.feed.inside]);
+        if (el.getData('inside')) {
+            _vars.feed.inside = el.getData('inside');
+            this.publish('feed.change', [null, null, null, null, 0, _vars.feed.inside]);
+        } else if (el.getData('type')) {
+            _vars.feed.type = el.getData('type');
+            this.publish('feed.change', [_vars.feed.type, null, null, null, 0]);
+        }
     }
 });
 

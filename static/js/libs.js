@@ -22,14 +22,14 @@ Acknowledgements:
         outkey:   ":",
         loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*(?:{|:)\s*(.*?)/g,
         loopEnds: /end(each|for|foreach);/g,
-        condExp:  /(if|else)(.*):/g,
+        condExp:  /(if|else|elseif)(.*):/g,
         condEnds: /endif;/g,
                
         parseConds: function(template) {
             return template.replace(
                     this.condExp,
                     function(whole, tag, rest) {
-                        return (tag == 'else' ? '} ' : '') + tag + rest + '{\n';
+                        return (['else', 'elseif'].contains(tag) ? '} ' : '') + tag + rest + '{\n';
                     }
                 ).replace(this.condEnds, '}\n');
         },
@@ -437,7 +437,7 @@ String.implement({
     },
 
 	cleanup: function(){
-		return this.replace(/&gt;|%3E|&lt;|%3C|%20/g, function(match){
+		return this.replace(/&gt;|%3E|&lt;|%3C|%20|&amp;/g, function(match){
 			var x;
 			switch (match) {
 				case '&gt;':
@@ -448,6 +448,8 @@ String.implement({
 					x = '<'; break;
 				case '%20':
 					x = ' '; break;
+                case '&amp;':
+                    x = '&'; break;
 			}
 			return x;
 		});
