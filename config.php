@@ -57,6 +57,7 @@ define("HEADER",      BASE_PATH.'views/parts/header.phtml');
 define("FOOTER",      BASE_PATH.'views/parts/footer.phtml');
 define("SIDEBAR",     BASE_PATH.'views/parts/sidebar.phtml');
 define("FEED",        BASE_PATH.'views/parts/feed.phtml');
+define("NOTIFICATION_TAB",     BASE_PATH.'views/parts/notification_tab.phtml');
 define("CIRCLE_LIST", BASE_PATH.'views/parts/circle_list.phtml');
 define("FOLLOWERS",   BASE_PATH.'views/parts/followers.phtml');
 define("REPLIES",     BASE_PATH.'views/parts/replies.phtml');
