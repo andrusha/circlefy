@@ -986,8 +986,10 @@ var _filter = _tap.register({
             (function (e) {
                 e.stop();
                 var keyword = box.value;
-                if (!keyword.isEmpty())
+                if (!keyword.isEmpty() && _vars.feed.type != 'conversation')
                     this.search(keyword);
+                else if (_vars.feed.type == 'conversation')
+                    this.convoFilter(keyword);
             }).bind(this));
 
         this.subscribe('feed.updated', (function() {
@@ -1005,6 +1007,26 @@ var _filter = _tap.register({
     search: function(keyword) {
         this.publish('feed.search', [keyword]);
         return this;
+    },
+
+    convoFilter: function(keyword) {
+        $$('div.reply-item.hidden').removeClass('hidden');
+        $$('span.highlight').removeClass('highlight');
+        
+        if (!keyword.isEmpty()) {
+            var reg = new RegExp('('+keyword.escapeRegExp().replace(/\s+/, '\.\*\?')+')', 'i');
+            $$('div.reply-item').each(function (reply) {
+                var el = reply.getElement('span.reply'),
+                    text = el.innerHTML;
+                if (text.test(reg)) {
+                    text = text.replace(reg, '<span class="highlight">$1<\/span>');
+                    el.innerHTML = text;
+                } else
+                    reply.addClass('hidden');
+            });
+        }
+
+        window.scrollTo(0, window.getScrollSize().y);
     }
 });
 

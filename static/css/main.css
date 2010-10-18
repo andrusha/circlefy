@@ -1629,3 +1629,9 @@ div.typing .latest-reply .br {
 	margin:0 0 0 10px;
 }
 .title.feed span { float:left; }
+
+/*** Highlighting for search in convo ***/
+span.highlight {
+    background-color: rgba(255, 255, 220, 0.5);
+    font-weight: bold;
+}
