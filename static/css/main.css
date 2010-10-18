@@ -1643,13 +1643,13 @@ span.highlight {
 
 .feed-item .user {
 	position:absolute;
-	top:52px;
-	left:35px;
+	top:47px;
+	left:32px;
 }
 .feed-item .user img {
 	border:1px solid #c6c6c6;
 	padding:1px;
 	background:#fff;
-	width:15px;
-	height:15px;
+	width:20px;
+	height:20px;
 }
