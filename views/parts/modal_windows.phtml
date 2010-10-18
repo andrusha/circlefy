@@ -31,12 +31,12 @@
 	<div id="modal-login" class="modal-window">
 		<h2>Join conversation!</h2>
                     <form id="taplogin" action="/" method="POST">
-                                	<p class="forms">	
-                                        <label class="inblock">username</label>
+                                	<p class="forms" style="margin-top:30px;">	
+                                        <label class="inblock">Username</label>
                                         <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
                                     </p>
                                     <p class="forms">
-                                        <label class="inblock">password</label>
+                                        <label class="inblock">Password</label>
                                         <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
 	                                </p>
                                     <div class="sep"></div>
@@ -45,7 +45,7 @@
                                         <input name="facebook" type="checkbox">
                                         <span class="fb"><fb:login-button show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
                                     </p>
-                                	<span class="modal-actions"><button id="login-button" type="submit">login</button></span>
+                                	<span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
                     </form>
                    
         <span class="modal-actions">
