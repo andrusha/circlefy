@@ -39,14 +39,15 @@ border-bottom-right-radius: 5px 5px;
 border-top-left-radius: 5px 5px;
 border-top-right-radius: 5px 5px;
 display: none;
-left: 350px;
-margin: 0px auto;
+left:50%;
+margin:-200px 0 0 -220px;
 padding: 38px 0px 34px 189px;
 position: fixed;
-top: 100px;
+top:50%;
 width: 500px;
 z-index: 11;
 }
+
 
 .modal-logo-large{
 margin:0 auto 30px;
@@ -86,7 +87,6 @@ div.modal-window.show {
 }
        
 .modal-window h2 {
-    border-bottom: 2px solid #ccc;
     color: #333;
     font-weight: bold;
     margin-bottom: 10px;
