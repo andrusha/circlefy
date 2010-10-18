@@ -93,6 +93,25 @@ width:251px;
 #modal-signup small {
 	margin:10px 0 0 0;
 }
+#modal-signup button {
+	background:#d1e2f4;
+	padding:5px 20px;
+	border:none;
+	text-decoration:none;
+	color:#202020;
+	font-size:12px;
+	border-radius:2px;
+	-webkit-border-radius:2px;
+	-moz-border-radius:2px;
+	box-shadow:1px 1px 0px #bababa;
+	-moz-box-shadow: 1px 1px 0px #bababa;
+	-webkit-box-shadow: 1px 1px 0px #bababa;
+	margin:0 10px 15px 0;
+	display:block;
+	float:left;
+	text-shadow:1px 1px #fff;
+	font-weight:bold;
+}
 
 .modal-window ul{
 list-style: none;
