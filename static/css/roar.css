@@ -109,7 +109,7 @@
 	position:fixed;
 	bottom:0px;
 	right:5px;
-	width:233px;
+	width:234px;
 	height:auto;
 	background:#346394;
 	border:1px solid #0c1e31;
@@ -129,6 +129,7 @@
 	display:block;
 	width:228px;
 	height:22px;
+	padding:3px;
 }
 #notifications .controls .previous {
 	width:87px;
