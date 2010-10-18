@@ -340,3 +340,7 @@ div#suggestions {
     float:left;
     display:block;
 }
+
+#modal-channel-suggestion {
+	margin-top:-250px;
+}
