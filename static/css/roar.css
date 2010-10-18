@@ -104,3 +104,24 @@
 	color:					#fff;
 	z-index:				1002;
 }
+
+#notifications {
+	position:fixed;
+	bottom:5px;
+	right:5px;
+	width:233px;
+	height:auto;
+	background:#9cb4c3;
+}
+
+#notifications .link {
+	display:block;
+	position:absolute;
+	bottom:0;
+	richness:0;
+	padding:3px;
+	color:#343434;
+	font-weight:bold;
+	text-decoration:none;
+	background:url(../images/notifications_arrow.gif) no-repeat right center;
+}
