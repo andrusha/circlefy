@@ -365,7 +365,10 @@ var _responses = _tap.register({
         list.scrollTo(0, list.getScrollSize().y);
         if (_vars.feed.type == 'conversation')
             window.scrollTo(0, window.getScrollSize().y);
-        list.getParent('div.feed-item').removeClass('empty');
+
+        var parent = list.getParent('div.feed-item');
+        if (parent)
+            parent.removeClass('empty');
         this.publish('responses.updated');
         return this;
     },

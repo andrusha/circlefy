@@ -109,6 +109,7 @@
                     <a href="#" class="comments"></a>
                 <# endif; #>
 
+                <div class="typing"></div>
                 <div class="replies">
                     <div class="arrow"></div>
                     <div class="list"></div><!--list-->
@@ -160,4 +161,22 @@
         <a class="load" id="loadless" href="#">Newer Taps</a>
     </ul>
 
+    <? /*** Template for notifications ***/?>
+    <ul id="template-notify">
+        <div class="roar">
+        	<div class="roar-bg" 
+                 style="<# if (this.color): #>background-color: <#: this.color #><# endif; #>">
+                <# if (this.group_id): #>
+            		<img src="<?=GROUP_PIC_REL?>small_<#: this.group_id #>" class="group_icon" />
+                <# else: #>
+            		<div class="dismiss">click to dismiss</div>
+                <# endif; #>
+        	</div>
+            <# if (this.user_id) : #>
+            	<img src="<?=USER_PIC_REL?>small_<#: this.user_id #>" class="avatar" />
+            <# endif; #>
+        	<h3><#: this.title #></h3>
+        	<p><#: this.text #></p>
+        </div>
+    </ul>
 </div>

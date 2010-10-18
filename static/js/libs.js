@@ -29,19 +29,19 @@ Acknowledgements:
             return template.replace(
                     this.condExp,
                     function(whole, tag, rest) {
-                        return (tag == 'else' ? '} ' : '') + tag + rest + '{';
+                        return (tag == 'else' ? '} ' : '') + tag + rest + '{\n';
                     }
-                ).replace(this.condEnds, '}');
+                ).replace(this.condEnds, '}\n');
         },
                
         parseLoops: function(template) {
             return template.replace(
                     this.loopExp,
                     function(whole, var_name, source_name, inner) {
-                        return '$each(' + source_name + ', function (' + var_name + ') { ' +
+                        return '$each(' + source_name + ', function (' + var_name + ') {\n' +
                                'if (!["object", "array"].contains(typeOf(' + var_name + '))) return; \n'+ inner;
                     }
-                ).replace(this.loopEnds, '}, this);');
+                ).replace(this.loopEnds, '}, this);\n');
         },
         
         escape: function(template) {
@@ -181,34 +181,35 @@ var Roar = new Class({
 	initialize: function(options) {
 		this.setOptions(options);
 		this.items = [];
+        this.templater = new Template();
 		this.container = $(this.options.container) || document;
 	},
 
 	alert: function(title, message, options) {
-		var params = Array.link(arguments, {title: String.type, message: String.type, options: Object.type});
-		var items = []; 
-        if (params.options.avatar)
-            items.push(new Element('img',
-                {
-		 Class: 'avatar',
-                 src: params.options.avatar}));
+		var params = Array.link(arguments, {title: String.type, message: String.type, options: Object.type}),
+            options = params.options || {};
 
-        items.push(new Element('h3',
-            {html: $pick(params.title, '')}));
+        if (!this.template)
+            this.template = this.templater.compile($('template-notify').innerHTML.cleanup());
 
-		if (params.message)
-            items.push(new Element('p',
-                {html: params.message}));
+        var data = {title: params.title, text: params.message};
+        if (options.user)
+            data.user_id = options.user;
+        if (options.group)
+            data.group_id = options.group;
+        if (options.color)
+            data.color = options.color;
 
-		return this.inject(items, params.options);
+        var elements = Elements.from(this.template.apply(data));
+
+		return this.inject(elements[0], options);
 	},
 
-	inject: function(elements, options) {
+	inject: function(item, options) {
         if (options.once && $('roar-'+options.once))
             return;
 
         if (!this.body) this.render();
-		options = options || {};
 
 		var offset = [-this.options.offset, 0];
 		var last = this.items.getLast();
@@ -216,27 +217,6 @@ var Roar = new Class({
 			offset[0] = last.retrieve('roar:offset');
 			offset[1] = offset[0] + last.offsetHeight + this.options.offset;
 		}
-
-        var rightElem;
-        if (options.group_avatar)
-            rightElem = new Element('img', {
-                'class': 'group_icon',
-                'src': options.group_avatar
-            });
-        else
-            rightElem = new Element('div', {
-                    'class': 'dismiss',
-                    'html': 'click to dismiss'
-                });
-
-		var item = new Element('div', {
-			'class': this.options.className,
-			'opacity': 0
-		}).adopt(
-			new Element('div', {
-				'class': 'roar-bg',
-				'opacity': 0.7
-			}).adopt(rightElem), elements);
 
         if (options.once)
            item.id = 'roar-'+options.once;
@@ -297,10 +277,6 @@ var Roar = new Class({
 				}
 			});
 		}
-        if (options.color) {
-            //set style for roar-bg inner div (first child)
-            item.firstElementChild.setStyle('background-color', options.color);
-        }
 
         item.inject(this.body).morph(to);
 		return this.fireEvent('onShow', [item, this.items.length]);
