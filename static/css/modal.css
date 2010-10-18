@@ -50,6 +50,23 @@ display:block;
 float:left;
 width:251px;
 }
+.signup-button {
+	background:#d1e2f4;
+	padding:3px 5px;
+	border:none;
+	text-decoration:none;
+	color:#545454;
+	font-size:12px;
+	border-radius:2px;
+	-webkit-border-radius:2px;
+	-moz-border-radius:2px;
+	box-shadow:1px 1px 0px #bababa;
+	-moz-box-shadow: 1px 1px 0px #bababa;
+	-webkit-box-shadow: 1px 1px 0px #bababa;
+	margin:0 0 15px 0;
+	display:block;
+	float:left;
+}
 #modal-sign-login .text {
 	float:right;
 	padding:65px 0 0 0;
