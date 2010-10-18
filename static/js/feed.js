@@ -358,6 +358,8 @@ var _responses = _tap.register({
             //already have an reply and add one
             if (parent)
                 this.updateLast(data.getLast(), parent);
+            else if (_vars.feed.type == 'conversation')
+                this.updateConvo(data.getLast(), $$('span.stats')[0]);
         }
         items.setStyles({opacity:0});
         items.fade(1);
@@ -388,6 +390,12 @@ var _responses = _tap.register({
             a.innerHTML = reply.user.uname+':';
             latest.getElement('span').innerHTML = reply.text;
         }
+    },
+
+    updateConvo: function (reply, stats) {
+        var count = stats.getElement('span');
+        if (count)
+            count.innerHTML = count.innerHTML*1 + 1;
     },
 
 	/*
