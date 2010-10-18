@@ -91,6 +91,13 @@ width:251px;
 .modal-window label.smaller {
 	line-height:18px;
 }
+.modal-window input[type=checkbox] {
+	width:auto;
+	float:left;
+}
+.fb {
+	float:left;
+}
 #modal-signup {
 	margin-top:-200px;
 }
