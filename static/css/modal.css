@@ -91,6 +91,12 @@ width:251px;
 .modal-window label.smaller {
 	line-height:18px;
 }
+.modal-window .sep {
+	width:420px;
+	border-bottom:1px solid #c6c6c6;
+	height:1px;
+	margin:20px 0;
+}
 .modal-window input[type=checkbox] {
 	width:auto;
 }
