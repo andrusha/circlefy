@@ -111,15 +111,16 @@
 	right:5px;
 	width:233px;
 	height:auto;
-	background:#9cb4c3;
-	border:1px solid #7e91a4;
+	background:#346394;
+	border:1px solid #0c1e31;
 }
 
 #notifications .toggle {
 	display:block;
 	padding:3px 5px;
 	width:216px;
-	color:#343434;
+	color:#fff;
+	text-shadow:1px 1px #000101;
 	font-weight:bold;
 	text-decoration:none;
 	background:url(../images/notifications_arrow.gif) no-repeat right center;
