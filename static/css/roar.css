@@ -107,7 +107,7 @@
 
 #notifications {
 	position:fixed;
-	bottom:5px;
+	bottom:0px;
 	right:5px;
 	width:233px;
 	height:auto;
@@ -124,4 +124,36 @@
 	font-weight:bold;
 	text-decoration:none;
 	background:url(../images/notifications_arrow.gif) no-repeat right center;
+}
+#notifications .controls {
+	display:block;
+	width:228px;
+	height:22px;
+}
+#notifications .controls .previous {
+	width:87px;
+	height:22px;
+	background:url(../images/notifications_previous.gif) no-repeat top left;
+	float:left;
+	display:block;
+	text-indent:-9999px;
+	overflow:hidden;
+}
+#notifications .controls .next {
+	width:86px;
+	height:22px;
+	background:url(../images/notifications_next.gif) no-repeat top left;
+	float:left;
+	display:block;
+	text-indent:-9999px;
+	overflow:hidden;
+}
+#notifications .controls .close {
+	width:55px;
+	height:22px;
+	background:url(../images/notifications_close.gif) no-repeat top left;
+	float:left;
+	display:block;
+	text-indent:-9999px;
+	overflow:hidden;
 }
