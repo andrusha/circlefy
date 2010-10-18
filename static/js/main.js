@@ -47,11 +47,12 @@ var _template = {
 		a mapping of the type and the id in #templates
 	*/
     map: {
-        'search':  'template-search',
-        'replies': 'template-replies',
+        'search':      'template-search',
+        'replies':     'template-replies',
         'suggestions': 'template-suggestions',
-        'typing': 'template-typing',
-        'messages': 'template-messages'
+        'typing':      'template-typing',
+        'messages':    'template-messages',
+        'circles':     'template-circles'
     },
 
 	/*

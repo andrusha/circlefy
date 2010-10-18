@@ -185,4 +185,15 @@
         	<p><#: this.text #></p>
         </div>
     </ul>
+
+    <? /*** Circles list ***/?>
+    <ul id="template-circles">
+        <# for (circle from this): #>
+        <a href="/circle/<#: circle.symbol #>" title="<#: circle.name #>" class="circle-thumb">
+            <span class="circle"></span>
+            <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id#>.jpg" alt="<#: circle.name #>" />
+        </a>
+        <# endfor; #>
+        <div class="clear"></div>
+    </ul>
 </div>

@@ -65,69 +65,39 @@ var _list = _tap.register({
 	},
 });
 
-/*
-module: _live.list
-	controls the count numbers for the sidelist
+var _view_all = _tap.register({
+    init: function () {
+        $$('a.view-all').addEvent('click', this.getMore.toHandler(this));
+    },
 
-require: _live
-*/
-_live.list = _tap.register({
+    getMore: function (el, e) {
+        e.stop();
+        var type = el.getData('type'),
+            id = el.getData('id').toInt();
 
-	init: function(){
-		var self = this;
-		this.groups = $('panel-groups');
-		this.subscribe({
-			'taps.pushed': this.parsePushed.bind(this),
-			'stream.loaded': this.clearCount.bind(this),
-			'list.item': function(type, id){
-				if (type == 'groups' && id != 'public'){
-					return self.clearCount(id == 'all' ? id : 'group_' + id);
-				}
-			}
-		});
-	},
+        if (type == 'groups') {
+            var list = el.getParent('div#left').getElement('div.user-circles');
+            el.addClass('hidden');
+            this.getGroups(id, list);
+        }
+    },
 
-	parsePushed: function(type, items, stream){
-		var key = (type == 'channels') ? 'gid_all' : type.replace(/channel/, 'gid');
-		this.setCount(key, items.length);
-	},
-	
-	addCount: function(_, type){
-		if (type == 'public') return;
-		var key = (type == 'all') ? 'gid_all' : type.replace(/channel/, 'gid');
-		var item = $(key);
-		if (!item) return;
-		var counter = item.getElement('span.count');
-		counter.set('text', (counter.get('text') * 1) - 1);
-	},
+    getGroups: function (id, list) {
+        new Request({
+            url: '/AJAX/group/get',
+            data: {
+                type: 'byUser',
+                id: id
+            },
+            onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+                if (!response.success)
+                    return;
 
-	setCount: function(type, count){
-		var item = $(type);
-		if (!item || !count) return;
-		var counter = item.getElement('span.count');
-		counter.style.display = 'block';
-		counter.set('text', count);
-	},
-
-	clearCount: function(type){
-		var key = $((type == 'all') ? 'gid_all' : type.replace(/channel/, 'gid'));
-		if (!key) return;
-		if (type == 'all'){
-			this.groups.getElements('li.panel-item').each(function(item){
-				item.getElement('span.count').set('text', '');
-				item.getElement('span.count').setStyle('display', 'none');
-				
-			});
-		} else {
-			var current = key.getElement('span.count'),
-				total = $('gid_all').getElement('span.count'),
-				count = (total.get('text') * 1) - (current.get('text') * 1);
-			current.setStyle('display', 'none');
-			total.setStyle('display', !count || count < 0 ? 'none' : 'block');
-			total.set('text', !count || count < 0 ? '' : count);
-			current.set('text', '');
-		}
-	}
-
+                var items = Elements.from(_template.parse('circles', response.data));
+                list.empty();
+                items.inject(list);
+            }
+        }).send();
+    }
 });
-

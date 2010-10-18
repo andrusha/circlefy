@@ -47,7 +47,8 @@ $ajaxs = array(
         'group' => array(
                 'suggest'   => true,
                 'join'      => true,
-                'search'    => true
+                'search'    => true,
+                'get'       => true
         ),
         'taps' => array(
                'responses' => true,
