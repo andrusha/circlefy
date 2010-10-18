@@ -1599,6 +1599,7 @@ div.typing .latest-reply .br {
 	-moz-border-radius:2px;
 	box-shadow:1px 1px 0px #bababa;
 	-moz-box-shadow: 1px 1px 0px #bababa;
+	margin:0 0 15px 0;
 }
 .auth span {
 	color:#333;
