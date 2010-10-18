@@ -69,6 +69,14 @@ var _modal = _tap.register({
         });
 
         window.scrollTo(0,0);
+
+        var wsize = $(window).getScrollSize();
+        var msize = $(modalForm).getSize();
+        modalForm.set('styles', {
+            'top': ( wsize.y - msize.y ) / 2 + "px",
+            'left': ( wsize.x - msize.x ) / 2 + "px",
+            'margin': '0'
+        });
     },
 
     /*
