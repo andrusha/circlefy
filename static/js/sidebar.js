@@ -76,7 +76,15 @@ var _view_all = _tap.register({
             id = el.getData('id').toInt();
 
         if (type == 'groups') {
-            var list = el.getParent('div#left').getElement('div.user-circles');
+            var parent = el.getParent('div#left');
+            if (parent)
+                var list = parent.getElement('div.user-circles');
+            else {
+                parent = el.getParent('div.box');
+                if (parent)
+                    var list = parent.getElement('div.circles');
+            }
+
             el.addClass('hidden');
             this.getGroups(id, list);
         }

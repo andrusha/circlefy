@@ -118,6 +118,10 @@ _modal.signup = _tap.register({
             this.publish('modal.show.login', []);
         }.bind(this));
 
+        $$('li.suggestions').addEvent('click', function () {
+            this.publish('modal.show.suggestions', []);
+        }.bind(this));
+
         $$('a#access').addEvent('click', function () {
             this.publish('modal.show.sign-login', []);
         }.bind(this));
