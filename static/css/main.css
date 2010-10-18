@@ -422,6 +422,7 @@ h1.wide {
 }
 #content #left .forced h1.title.feed {
 	background:url(../images/side_04.gif) no-repeat left center;
+	height:18px;
 }
 #content #left h1.title.feed {
 	background:url(../images/feed.png) no-repeat left center;
@@ -1624,5 +1625,6 @@ div.typing .latest-reply .br {
 	font-size:10px;
 	text-transform:uppercase;
 	height:12px;
+	margin:0 0 0 10px;
 }
 .title.feed span { float:left; }
