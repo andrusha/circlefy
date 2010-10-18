@@ -88,7 +88,7 @@ width:251px;
 	font-weight:normal;
 	display:block;
 }
-label.smaller {
+.modal-window label.smaller {
 	line-height:18px;
 }
 #modal-signup {
