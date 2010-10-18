@@ -41,6 +41,7 @@ height:auto;
 width: auto;
 padding:40px;
 z-index: 11;
+max-width:500px;
 }
 
 
@@ -84,7 +85,7 @@ width:251px;
 	width:auto;
 }
 
-#modal-sign-login small {
+.modal-window small {
 	font-size:14px;
 	font-weight:normal;
 	display:block;
