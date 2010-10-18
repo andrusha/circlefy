@@ -25,8 +25,6 @@
             
             <div class="clear"></div>
             
-            <a href="#" class="auth"><span>Authentication type:</span> email address</a>
-
             <a href="#" 
              class="follow <?=($_s['state'] ? ' active' : '')?>" 
              data-id="<?=$c['id']?>"
@@ -56,14 +54,16 @@
         <span class="stats last"><?=$c['members_count']?><small>users<br />joined</small></span>
         
         <div class="clear"></div>
+        
+        <a href="#" class="auth"><span>Authentication type:</span> email address</a>
 
          <a href="#" 
            class="follow <?=($_s['state'] ? ' active' : '')?>" 
 		   data-id="<?=$c['id']?>"
 		   data-followed="<?=($_s['state'] ? 1 : 0)?>"
            data-type="group"
-           def="Follow circle"
-           alt="Unfollow circle"></a>       
+           def="Join circle"
+           alt="Leave circle"></a>       
         
         <div class="clear"></div>
         
