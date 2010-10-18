@@ -81,7 +81,7 @@ width:251px;
 #modal-sign-login .text {
 	float:left;
 	padding:65px 0 0 40px;
-	width:170px;
+	width:auto;
 }
 #modal-sign-login h2 {
 	font-size:24px;
