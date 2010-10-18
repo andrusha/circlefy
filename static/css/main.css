@@ -1621,4 +1621,6 @@ div.typing .latest-reply .br {
 	color:#fff;
 	text-shadow:1px 1px #62717a;
 	background:url(../images/official.gif) no-repeat 50px 3px #9cb4c3;
+	font-size:10px;
+	text-transform:uppercase;
 }
