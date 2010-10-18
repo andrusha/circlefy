@@ -26,35 +26,42 @@ div#curtain.show {
 	padding-right:35px;
 }
 #modal-sign-login {
-	padding-right:35px;
-	padding-left:35px;
-	width:361px;
+
 }
 
 .modal-window {
 background: #F2F2F2;
-border: 7px solid black;
-border-bottom-left-radius: 5px 5px;
-border-bottom-right-radius: 5px 5px;
-border-top-left-radius: 5px 5px;
-border-top-right-radius: 5px 5px;
+border: 5px solid #b2b2b2;
 display: none;
-left:50%;
-margin:-200px 0 0 -220px;
-padding: 38px 0px 34px 189px;
 position: fixed;
 top:50%;
-width: 500px;
+left:50%;
+margin:-105px 0 0 -213px;
+height:210px;
+width: 425px;
+padding:40px;
 z-index: 11;
 }
 
 
 .modal-logo-large{
-margin:0 auto 30px;
+margin:60px auto 0;
 display:block;
+float:left;
+}
+#modal-sign-login .text {
+	float:right;
+	padding:105px 0 0 0;
 }
 #modal-sign-login h2 {
-	text-align:center;
+	font-size:24px;
+	font-weight:bold;
+	line-height:18px;
+}
+#modal-sign-login small {
+	font-size:14px;
+	font-weight:normal;
+	display:block;
 }
 
 .modal-window ul{

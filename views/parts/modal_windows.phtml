@@ -74,10 +74,12 @@
 <!-- Login or signup -->
 	<div id="modal-sign-login" class="modal-window">
 	<img class="modal-logo-large" src="http://circlefy.com/images/logo.png" />
-		<h2>Hi there, select on option below</h2>
+    	<div class="text">
+		<h2>Hi there!<small>select on option below</small></h2>
         <span class="modal-actions">
                 <button class="signup-button">Sign up</button> or <button class="login-button">Log in</button> or <a class="modal-cancel" href="#">close</a>
         </span>
+        </div>
 	</div>
 
 <!-- Notification for guests to login or signup -->
@@ -85,7 +87,7 @@
 		<h2>You've just posted your first tap</h2>
 		<p>In order to make your tap experience better, please, sign up or log in</p>
         <span class="modal-actions">
-                <button class="signup-button">Sign up</button> or <button onClick="javascript: window.location.replace('/login')">Log in</button> or <a class="modal-cancel" href="#">close</a>
+                <button class="signup-button">Sign up</button><button onClick="javascript: window.location.replace('/login')">Log in</button><a class="modal-cancel" href="#">close</a>
         </span>
 	</div>
 
