@@ -31,27 +31,19 @@
 	<div id="modal-login" class="modal-window">
 		<h2>Join conversation!</h2>
                     <form id="taplogin" action="/" method="POST">
-                        <ul>
-                            <li>
-                                <label class="inblock">username</label>
-                                    <p class="body">
+                                	<p class="forms">	
+                                        <label class="inblock">username</label>
                                         <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
                                     </p>
-                            </li>
-                            <li>
-                                <label class="inblock">password</label>
-                                <p class="body">
-                                <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
-                                </p>
-                            </li>
-                            <li class="action">
-                                <input name="facebook" type="checkbox">
-                                <label for="facebook">Login with facebook</label>
-                            </li>
-                            <li class="action">
-                                <button id="login-button" type="submit">login</button>
-                            </li>
-                        </ul>
+                                    <p class="forms">
+                                        <label class="inblock">password</label>
+                                        <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
+	                                </p>
+                                    <p class="forms">
+                                        <input name="facebook" type="checkbox">
+                                        <label for="facebook">Login with facebook</label>
+                                    </p>
+                                	<span class="modal-actions"><button id="login-button" type="submit">login</button></span>
                     </form>
                     <fb:login-button show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button>
         <span class="modal-actions">
