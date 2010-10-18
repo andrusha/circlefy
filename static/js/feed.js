@@ -723,8 +723,11 @@ _controls = _tap.register({
 
             if (_vars.feed.inside)
                 this.controls.getElement('a.tab[data-inside="'+_vars.feed.inside+'"]').addClass('active');
-            if (_vars.feed.type)
-                this.controls.getElement('a.tab[data-type="'+_vars.feed.type+'"]').addClass('active');
+            if (_vars.feed.type) {
+                var el = this.controls.getElement('a.tab[data-type="'+_vars.feed.type+'"]');
+                if (el)
+                    el.addClass('active');
+            }
         }.bind(this));
 
         this.tabs.addEvent('click', this.toggle.toHandler(this));

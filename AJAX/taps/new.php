@@ -24,7 +24,7 @@ class ajax_new extends Base {
             case 'friend':
                 $user = new User($id);
                 $tap = Tap::toUser($this->user, $user, $msg);
-                $this->notify($this->user, null, $to, $tap);
+                $this->notify($this->user, null, $user, $tap);
                 break;
         }
 
