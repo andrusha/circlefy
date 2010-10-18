@@ -1610,17 +1610,19 @@ div.typing .latest-reply .br {
 }
 .official {
 	float:left;
-	padding:5px 20px 5px 5px;
+	padding:2px 18px 6px 8px;
 	background:#9cb4c3;
 	border-radius:3px;
 	-webkit-border-radius:3px;
 	-moz-border-radius:3px;
-	box-shadow:1px 1px 0px #66757f;
-	-moz-box-shadow: 1px 1px 0px #66757f;
-	-webkit-box-shadow: 1px 1px 0px #66757f;
+	box-shadow:1px 1px 0px #66757f inset;
+	-moz-box-shadow: 1px 1px 0px #66757f inset;
+	-webkit-box-shadow: 1px 1px 0px #66757f inset;
 	color:#fff;
 	text-shadow:1px 1px #62717a;
-	background:url(../images/official.gif) no-repeat 50px 3px #9cb4c3;
+	background:url(../images/official.gif) no-repeat 55px 5px #9cb4c3;
 	font-size:10px;
 	text-transform:uppercase;
+	height:12px;
 }
+.title.feed span { float:left; }
