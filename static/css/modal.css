@@ -198,6 +198,7 @@ div.modal-window.show {
     text-align: right;
     padding-right: 60px;
     margin-bottom: 10px;
+	font-size:10px;
     clear: both;
     color: #F12C46;
 }
