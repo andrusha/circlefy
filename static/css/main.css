@@ -1653,7 +1653,7 @@ span.highlight {
 	width:20px;
 	height:20px;
 }
-.privatemessage {
+.feed-item .circle .privatemessage {
 	display:block;
 	width:16px;
 	height:16px;
