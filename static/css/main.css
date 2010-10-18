@@ -1600,7 +1600,8 @@ div.typing .latest-reply .br {
 	box-shadow:1px 1px 0px #bababa;
 	-moz-box-shadow: 1px 1px 0px #bababa;
 	margin:0 0 15px 0;
-	display:inline;
+	display:block;
+	float:left;
 }
 .auth span {
 	color:#333;
