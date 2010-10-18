@@ -400,7 +400,7 @@ var _responses = _tap.register({
             var a   = latest.getElement('a');
             a.href  = '/user/'+reply.user.uname;
             a.innerHTML = reply.user.uname+':';
-            latest.getElement('span').innerHTML = reply.text;
+            latest.getElement('span').innerHTML = reply.text.limit(40);
         }
     },
 

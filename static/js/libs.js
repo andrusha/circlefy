@@ -495,7 +495,23 @@ String.implement({
 		while (s.length < (cnt - this.length)) { s += ch; }
 		s = s.substring(0, cnt-this.length);
 		return this+s;
-	}
+	},
+
+    limit: function(size) {
+        size = size || 30;
+        if (this.length <= size)
+            return this;
+
+        var len = 0,
+            words = this.clean().trim().split(' ').filter(function (word) {
+            len += word.length + 1;
+            return len <= size;
+        });
+        if (words.length)
+            return words.join(' ') + ' ...';
+        else
+            return this.substr(0, size) + ' ...';
+    }
 
 });
 
