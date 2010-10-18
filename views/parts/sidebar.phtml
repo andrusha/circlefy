@@ -12,10 +12,16 @@
                 <img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
                 <?=$c['sender']['uname']?>
             </h3>
-            <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb">
-                <span class="circle"></span>
-                <img src="<?=GROUP_PIC_REL.'medium_'.$c['group']['id'].'.jpg'?>" alt="<?=$c['group']['name']?>" />
-            </a>
+            <? if ($c['group_id']): ?>
+                <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb">
+                    <span class="circle"></span>
+                    <img src="<?=GROUP_PIC_REL.'medium_'.$c['group']['id'].'.jpg'?>" alt="<?=$c['group']['name']?>" />
+                </a>
+            <? elseif ($c['reciever_id']): ?>
+                <a href="/user/<?=$c['sender']['id']?>" class="user">
+                    <img src="<?=USER_PIC_REL.'medium_'.$c['sender']['id'].'.jpg'?>" alt=""<?=$c['sender']['fname']?> <?=$c['sender']['lname']?> />
+                </a>
+            <? endif; ?>
             <p><?=$c['text']?></p>
             
             <div class="clear"></div>

@@ -8,6 +8,11 @@ class page_homepage extends Base {
             Auth::logOut();
             header('location: /');
             exit();
+        } elseif (isset($_GET['killyourself'])) {
+            Auth::logOut();
+            $this->user->delete();
+            header('location: /');
+            exit();
         }
 
         $this->set(

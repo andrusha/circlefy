@@ -54,6 +54,6 @@ class ajax_filter extends Base {
                         ->asArrayAll();
 
         $results = !empty($data);
-        $this->data = array('success' => $results, 'more' => count($data) >= 10, 'data' => $data);
+        $this->data = array('success' => $results, 'more' => count($data) >= 10, 'data' => array_values($data));
     }
 };

@@ -366,12 +366,14 @@ var _responses = _tap.register({
             el = el[0];
             el.innerHTML = el.innerHTML.replace(/\(hug\)/i, '<img src="/static/images/bear.gif" alt="hug">');
         });
-
-        var resizer = parent.getElement('div.resizer');
-        if (items.length + elems.length <= 5 && resizer)
-            resizer.addClass('hidden');
-        else if (resizer)
-            resizer.removeClass('hidden');
+        
+        if (parent) {   
+            var resizer = parent.getElement('div.resizer');
+            if (items.length + elems.length <= 5 && resizer)
+                resizer.addClass('hidden');
+            else if (resizer)
+                resizer.removeClass('hidden');
+        }
 
         items.setStyles({opacity:0});
         items.fade(1);

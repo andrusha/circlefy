@@ -28,6 +28,14 @@ var _modal = _tap.register({
             },
             'modal.hide': this.hide.bind(this)
         });
+
+        var a = new Keyboard({
+            events: {
+                'esc': function () {
+                    this.hide(false);
+                }.bind(this)
+            }
+        });
     },
     
     /*
