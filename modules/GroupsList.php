@@ -28,6 +28,9 @@ class GroupsList extends Collection {
         Make user member of list of groups
     */
     public function bulkJoin(User $user, $perm = 'user') {
+        if (empty($this->data))
+            return $this;
+
         $db = DB::getInstance();
 
         //prepare insert arrays from groups and user
@@ -396,8 +399,6 @@ class GroupsList extends Collection {
             $pic_url = 'http://graph.facebook.com/'.$g->fb_id.'/picture?type=large';
             $picture = Images::fetchAndMake(GROUP_PIC_PATH, $pic_url, $g->id.'.jpg');
 
-            $links   = isset($info['link']) ? explode('\n', $info['link']) : array();
-            $favicon = !empty($links) ? Images::getFavicon($links[0], GROUP_PIC_PATH."/fav_{$g->id}.ico") : null;
             //TODO: make bulk tags addition
             $g->tags->addTags($tags);
             $g->commit();

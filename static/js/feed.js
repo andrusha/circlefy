@@ -364,7 +364,7 @@ var _responses = _tap.register({
 
         items.getElements('span.reply-text').each(function (el) {
             el = el[0];
-            el.innerHTML = el.innerHTML.replace(/\(hug\)/i, '<img src="/static/images/bear.gif" alt="hug">');
+            el.innerHTML = el.innerHTML.replace(/\(hug\)/ig, '<img src="/static/images/bear.gif" alt="hug">');
         });
         
         if (parent) {   
