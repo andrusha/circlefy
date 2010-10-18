@@ -45,14 +45,14 @@ z-index: 11;
 
 
 .modal-logo-large{
-margin:60px auto 0;
+margin:20px auto 0;
 display:block;
 float:left;
 width:251px;
 }
 #modal-sign-login .text {
 	float:right;
-	padding:105px 0 0 0;
+	padding:65px 0 0 0;
 	width:170px;
 }
 #modal-sign-login h2 {
