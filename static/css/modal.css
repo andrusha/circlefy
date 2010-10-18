@@ -38,7 +38,7 @@ top:50%;
 left:50%;
 margin:-105px 0 0 -213px;
 height:auto;
-width: 425px;
+width: auto;
 padding:40px;
 z-index: 11;
 }
@@ -79,8 +79,8 @@ width:251px;
 }
 	
 #modal-sign-login .text {
-	float:right;
-	padding:65px 0 0 0;
+	float:left;
+	padding:65px 0 0 40px;
 	width:170px;
 }
 #modal-sign-login h2 {
