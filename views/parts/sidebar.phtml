@@ -54,8 +54,16 @@
         <span class="stats last"><?=$c['members_count']?><small>users<br />joined</small></span>
         
         <div class="clear"></div>
-        
-        <div class="auth"><span>Authentication type:</span> email address</div>
+       
+        <?
+            $auth = array(
+                'email'  => 'email address',
+                'manual' => 'moderated',
+                'ip'     => 'by ip',
+                'geo'    => 'geo location');
+        if (array_key_exists($_s['circle']['auth'], $auth)): ?>
+            <div class="auth"><span>Authentication type:</span> <?=$auth[$_s['circle']['auth']]?></div>
+        <? endif; ?>
         
         <div class="clear"></div>
 

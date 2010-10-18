@@ -34,6 +34,26 @@ class Group extends BaseModel {
     protected static $addit = array('tags', 'members', 'messages_count',
         'members_count', 'responses_count');
 
+    public function asArray() {
+        $data = $this->data;
+        if (isset($data['type'])) {
+            $types = array_flip(self::$types);
+            $data['type'] = $types[$data['type']];
+        }
+        
+        if (isset($data['auth'])) {
+            $auths = array_flip(self::$auths);
+            $data['auth'] = $auths[$data['auth']];
+        }
+
+        if (isset($data['status'])) {
+            $statuses = array_flip(self::$statuses);
+            $data['status'] = $statuses[$data['status']];
+        }
+
+        return $data;
+    }
+
     /*
         Kinda save changes
     */

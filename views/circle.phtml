@@ -19,7 +19,8 @@
                     'name'       => $circle['name'],
                     'show_reply' => !$guest,
                     'hide_group_icon' => true,
-                    'show_inside' => true
+                    'show_inside' => true,
+                    'status'     => $circle['status']
                 );
                 include(FEED);
             ?>        
@@ -37,6 +38,5 @@
     </div><!--content-->
     
 <?php
-    include(NOTIFICATION_TAB);
     include(FOOTER);
 ?>
