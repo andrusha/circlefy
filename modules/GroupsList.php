@@ -382,7 +382,7 @@ class GroupsList extends Collection {
                 $info['description'] = $info['mission'];
             $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
             $symbol  = FuncLib::makeSymbol($info['name'], 64);
-            $gname   = FuncLib::makePreview($info['name'], 128);
+            $gname   = FuncLib::makePreview($info['name'], 80);
 
             $insert[] = array($fgid, $symbol, $gname, $descr);
         }
