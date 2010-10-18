@@ -30,9 +30,6 @@
 <!-- Login -->
 	<div id="modal-login" class="modal-window">
 		<h2>Join conversation!</h2>
-        <table>
-            <tr>
-                <td>
                     <form id="taplogin" action="/" method="POST">
                         <ul>
                             <li>
@@ -56,15 +53,7 @@
                             </li>
                         </ul>
                     </form>
-                </td>
-                <td style="width: 40px; padding-right: 10px; text-align: center;">
-                    OR
-                </td>
-                <td>
                     <fb:login-button show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button>
-                </td>
-            </tr>
-        </table>
         <span class="modal-actions">
                 <a class="modal-cancel" href="#">close</a>
         </span>
