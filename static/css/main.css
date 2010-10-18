@@ -426,6 +426,7 @@ h1.wide {
 }
 #content #left h1.title.feed {
 	background:url(../images/feed.png) no-repeat left center;
+	height:18px;
 }
 #content #left h1.title.profile {
 	background:none;
