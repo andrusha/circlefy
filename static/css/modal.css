@@ -36,7 +36,7 @@ display: none;
 position: fixed;
 top:50%;
 left:50%;
-margin:-105px 0 0 -213px;
+margin:-115px 0 0 -233px;
 height:auto;
 width: auto;
 padding:40px;
@@ -191,7 +191,7 @@ div.modal-window.show {
     font-size:11px;
 	position:absolute;
 	top:0px;
-	right:0px;
+	right:3px;
 }
 
 #suggestions span.fail {
