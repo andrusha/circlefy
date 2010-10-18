@@ -90,6 +90,9 @@ width:251px;
 	font-weight:normal;
 	display:block;
 }
+#modal-signup {
+	margin-top:-200px;
+}
 #modal-signup small {
 	margin:10px 0 0 0;
 }
