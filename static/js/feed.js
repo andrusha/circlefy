@@ -362,6 +362,11 @@ var _responses = _tap.register({
                 this.updateConvo(data.getLast(), $$('span.stats')[0]);
         }
 
+        items.getElements('span.reply-text').each(function (el) {
+            el = el[0];
+            el.innerHTML = el.innerHTML.replace(/\(hug\)/i, '<img src="/static/images/bear.gif" alt="hug">');
+        });
+
         var resizer = parent.getElement('div.resizer');
         if (items.length + elems.length <= 5 && resizer)
             resizer.addClass('hidden');
