@@ -347,20 +347,27 @@ var _responses = _tap.register({
 	*/
     addResponses: function(list, data) {
         var items = Elements.from(_template.parse('replies', data)),
-            elems = list.getElements('div.reply-item');
+            elems = list.getElements('div.reply-item'),
+            parent = list.getParent('div.text');
 
         elems.removeClass('last');
         if (items.length) {
             var last = items.getLast();
             last.addClass('last');
 
-            var parent = list.getParent('div.text');
             //already have an reply and add one
             if (parent)
                 this.updateLast(data.getLast(), parent);
             else if (_vars.feed.type == 'conversation')
                 this.updateConvo(data.getLast(), $$('span.stats')[0]);
         }
+
+        var resizer = parent.getElement('div.resizer');
+        if (items.length + elems.length <= 5 && resizer)
+            resizer.addClass('hidden');
+        else if (resizer)
+            resizer.removeClass('hidden');
+
         items.setStyles({opacity:0});
         items.fade(1);
         items.inject(list);
@@ -368,7 +375,7 @@ var _responses = _tap.register({
         if (_vars.feed.type == 'conversation')
             window.scrollTo(0, window.getScrollSize().y);
 
-        var parent = list.getParent('div.feed-item');
+        parent = list.getParent('div.feed-item');
         if (parent && items.length)
             parent.removeClass('empty');
         this.publish('responses.updated');
@@ -1016,7 +1023,7 @@ var _filter = _tap.register({
         if (!keyword.isEmpty()) {
             var reg = new RegExp('('+keyword.escapeRegExp().replace(/\s+/, '\.\*\?')+')', 'i');
             $$('div.reply-item').each(function (reply) {
-                var el = reply.getElement('span.reply'),
+                var el = reply.getElement('span.reply-text'),
                     text = el.innerHTML;
                 if (text.test(reg)) {
                     text = text.replace(reg, '<span class="highlight">$1<\/span>');

@@ -1544,6 +1544,11 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	margin:0 0 15px 65px;
 }
 
+.resizer.hidden {
+    display: block !important;
+    visibility: hidden;
+}
+
 div.wrap form {
     display: block;
     position: relative;
