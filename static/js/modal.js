@@ -70,7 +70,7 @@ var _modal = _tap.register({
 
         window.scrollTo(0,0);
 
-        var wsize = $(window).getScrollSize();
+        var wsize = $(window).getSize();
         var msize = $(modalForm).getSize();
         modalForm.set('styles', {
             'top': ( wsize.y - msize.y ) / 2 + "px",
