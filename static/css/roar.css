@@ -117,9 +117,6 @@
 
 #notifications .toggle {
 	display:block;
-	position:absolute;
-	bottom:0;
-	richness:0;
 	padding:3px;
 	color:#343434;
 	font-weight:bold;
