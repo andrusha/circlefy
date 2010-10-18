@@ -1640,3 +1640,9 @@ span.highlight {
     background-color: rgba(255, 255, 220, 0.5);
     font-weight: bold;
 }
+
+.feed-item .user {
+	position:absolute;
+	top:55px;
+	left:35px;
+}
