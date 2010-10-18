@@ -250,4 +250,26 @@ class User extends BaseModel {
         return $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->affected_rows == 1;
     }
 
+    public function delete() {
+        $queries = array(
+            'delete from conversations where user_id = #id# or message_id in (select id from message where sender_id = #id# or reciever_id = #id#);',
+            'delete from reply where user_id = #id# or message_id in (select id from message where sender_id = #id# or reciever_id = #id#);',
+            'delete from message where sender_id = #id# or reciever_id = #id#;',
+            'delete from group_members where user_id = #id#;',
+            'delete from friends where user_id = #id# or friend_id = #id#;',
+            'delete from notification_settings where user_id = #id#;',
+            'delete from user where id = #id#;'
+        );        
+        
+        $this->db->startTransaction();
+        try {
+            foreach ($queries as $q)
+                $this->db->query($q, array('id' => $this->id));
+        } catch (SQLException $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+
+        $this->db->commit();
+    }
 };
