@@ -48,10 +48,12 @@ z-index: 11;
 margin:60px auto 0;
 display:block;
 float:left;
+width:251px;
 }
 #modal-sign-login .text {
 	float:right;
 	padding:105px 0 0 0;
+	width:170px;
 }
 #modal-sign-login h2 {
 	font-size:24px;
