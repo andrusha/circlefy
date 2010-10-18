@@ -1588,8 +1588,8 @@ div.typing .latest-reply .br {
 	width:24px;
 }
 .auth {
-	background:url(../images/auth.gif) no-repeat 5px 5px #d1e2f4;
-	padding:5px;
+	background:url(../images/auth.gif) no-repeat 4px 5px #d1e2f4;
+	padding:5px 5px 5px 20px;
 	border:none;
 	text-decoration:none;
 	color:#545454;
