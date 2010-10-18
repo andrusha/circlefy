@@ -1608,3 +1608,17 @@ div.typing .latest-reply .br {
 	color:#333;
 	font-weight:bold;
 }
+.official {
+	float:left;
+	padding:5px 20px 5px 5px;
+	background:#9cb4c3;
+	border-radius:3px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	box-shadow:1px 1px 0px #66757f;
+	-moz-box-shadow: 1px 1px 0px #66757f;
+	-webkit-box-shadow: 1px 1px 0px #66757f;
+	color:#fff;
+	text-shadow:1px 1px #62717a;
+	background:url(../images/official.gif) no-repeat 50px 3px #9cb4c3;
+}
