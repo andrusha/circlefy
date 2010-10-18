@@ -106,9 +106,8 @@ width:251px;
 	box-shadow:1px 1px 0px #bababa;
 	-moz-box-shadow: 1px 1px 0px #bababa;
 	-webkit-box-shadow: 1px 1px 0px #bababa;
-	margin:0 auto;
+	margin:20px auto 0;
 	display:block;
-	float:left;
 	text-shadow:1px 1px #fff;
 	font-weight:bold;
 }
