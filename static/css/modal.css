@@ -278,7 +278,7 @@ div.modal-window.show {
 div#suggestions {
     overflow: auto;
     background-color: white;
-    border: 1px c6c6c6 solid;
+    border: 1px #c6c6c6 solid;
     color: black;
     padding:5px;
 	width:445px;
