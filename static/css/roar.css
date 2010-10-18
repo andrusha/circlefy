@@ -112,9 +112,10 @@
 	width:233px;
 	height:auto;
 	background:#9cb4c3;
+	border:1px solid #7e91a4;
 }
 
-#notifications .link {
+#notifications .toggle {
 	display:block;
 	position:absolute;
 	bottom:0;
