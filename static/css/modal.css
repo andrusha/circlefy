@@ -278,12 +278,38 @@ div.modal-window.show {
 div#suggestions {
     overflow: auto;
     background-color: white;
-    border: 1px black solid;
+    border: 1px c6c6c6 solid;
     color: black;
-    padding: 14px;
+    padding:5px;
+	width:445px;
     height:300px;
 }
-
+#modal-channel-suggestion button {
+	background:#d1e2f4;
+	padding:5px 20px;
+	border:none;
+	text-decoration:none;
+	color:#202020;
+	font-size:12px;
+	border-radius:2px;
+	-webkit-border-radius:2px;
+	-moz-border-radius:2px;
+	box-shadow:1px 1px 0px #bababa;
+	-moz-box-shadow: 1px 1px 0px #bababa;
+	-webkit-box-shadow: 1px 1px 0px #bababa;
+	margin:0 auto 15px;
+	display:block;
+	text-shadow:1px 1px #fff;
+	font-weight:bold;
+}
+#modal-channel-suggestion button:hover {
+	background:#40729d;
+	color:#fff;
+	text-shadow:1px 1px #000;
+	box-shadow:1px 1px 0px #3d3d3d;
+	-moz-box-shadow: 1px 1px 0px #3d3d3d;
+	-webkit-box-shadow: 1px 1px 0px #3d3d3d;
+}
 #suggestions ul {
     color: black;
     font-size: 14px;
@@ -295,18 +321,19 @@ div#suggestions {
 #suggestions li {
 	cursor: pointer;
 	font-size: 11px;
-	height: 60px;
-	padding-left: 23px;
 	padding: 0px;
-    vertical-align: middle;
-	-webkit-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
-	-moz-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
-	margin-bottom:10px;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px 1px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px 1px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px 1px;
 	position:relative;
+	background:#f2f2f2;
+	height:60px;
+	margin-bottom:5px;
+	width:430px;
 }
 
 #suggestions li.selected {
-    background-color:#F0FFED;
+    background-color:#D1E2F4;
 }
 
 #suggestions li img {
@@ -321,26 +348,23 @@ div#suggestions {
 }
 
 #suggestions input {
-    position:absolute;
-    right: 10px;
-	top:10px;
-    padding: 0;
-    margin-bottom: 0;
-    color: black;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
+    font-weight:bold;
+	left:410px;
+	position:absolute;
+	top:5px;
+	cursor:pointer;
+	margin:0;
 }
 
 #suggestions label {
-    color: black;
-    font-size: 15px;
-    font-weight:bold;
-    font-weight: normal;
-    cursor:pointer;
-    margin-left: 15px;
-    float:left;
-    display:block;
+	font-size:13px;
+	font-weight:normal;
+	left:70px;
+	margin:0;
+	position:absolute;
+	top:17px;
+	display:block;
+	color:#545454;
 }
 
 #modal-channel-suggestion {
