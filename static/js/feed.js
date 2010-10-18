@@ -1012,6 +1012,11 @@ var _filter = _tap.register({
         this.subscribe('feed.updated', (function() {
             box.value = '';
         }).bind(this));
+
+        if (_vars.feed.type == 'conversation')
+            box.addEvent('keyup', function () {
+                this.convoFilter(box.value);
+            }.bind(this));
     },
 	
     /*
@@ -1028,7 +1033,10 @@ var _filter = _tap.register({
 
     convoFilter: function(keyword) {
         $$('div.reply-item.hidden').removeClass('hidden');
-        $$('span.highlight').removeClass('highlight');
+        $$('div.reply-item').each( function (reply) {
+            var el = reply.getElement('span.reply-text');
+                el.innerHTML = el.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/igm, '$1');
+        });
         
         if (!keyword.isEmpty()) {
             var reg = new RegExp('('+keyword.escapeRegExp().replace(/\s+/, '\.\*\?')+')', 'i');
