@@ -968,6 +968,9 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	padding:1px 6px;
 	float:left;
 }
+#sidebar .box .follow:hover {
+	text-decoration:none;
+}
 #sidebar .box .follow:after {
     content: attr(def);
 }
@@ -997,6 +1000,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 }
 #sidebar .box .pm:hover {
 	color:#2878ca;
+	text-decoration:none;
 }
 .follower-thumb {
 	width:25px;
