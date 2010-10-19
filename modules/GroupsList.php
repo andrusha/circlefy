@@ -34,16 +34,16 @@ class GroupsList extends Collection {
         $db = DB::getInstance();
 
         //prepare insert arrays from groups and user
-        $list = array_map(function ($group) use ($user) {
-                return array($group->id, $user->id, Group::$permissions[$perm]);
-            }, $this->data);
+        foreach ($this->data as $group)
+            if ($group->id)
+                $list[] = array($group->id, $user->id, Group::$permissions[$perm]);
 
         $query = "
             INSERT
               INTO group_members (group_id, user_id, permission)
             VALUES  #values#
                 ON DUPLICATE KEY
-            UPDATE permission = VALUES(permission)";
+            UPDATE permission = ".Group::$permissions[$perm];
         $db->listInsert($query, $list);
 
         return $this;

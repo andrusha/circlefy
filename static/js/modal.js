@@ -427,13 +427,19 @@ _modal.suggestions = _tap.register({
                 var allBox = list.getElement('input[name="suggest_all"]'),
                     boxes  = list.getElements('input[name="suggest"]');
 
-                list.getElements('li').addEvent('click', function (i) {
-                    this.getElement('input').fireEvent('click');
+                list.getElements('li').addEvent('click', function (e) {
+                    if (e.target != this)
+                        return;
+                    
+                    var inp = this.getElement('input');
+                    inp.checked = !inp.checked;
+                    inp.fireEvent('change', e);
                 });
 
-                allBox.addEvent('click', function () {
-                    var state = !allBox.checked;
-                    allBox.checked = state;
+                allBox.addEvent('change', function (e) {
+                    e.stop();
+
+                    var state = allBox.checked;
                     this.getParent().toggleClass('selected');
                     boxes.each(
                         function (i) {
@@ -441,8 +447,9 @@ _modal.suggestions = _tap.register({
                         });
                 });
 
-                boxes.addEvent('click', function () {
-                    this.checked = !this.checked;
+                boxes.addEvent('change', function (e) {
+                    e.stop();
+
                     this.getParent().toggleClass('selected');
 
                     allBox.checked = false;
