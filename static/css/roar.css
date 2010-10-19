@@ -113,6 +113,7 @@
 	height:auto;
 	background:#346394;
 	border:1px solid #0c1e31;
+	z-index:11;
 }
 
 #notifications .toggle {
