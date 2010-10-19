@@ -365,6 +365,7 @@ div#suggestions {
 	top:17px;
 	display:block;
 	color:#545454;
+	cursor:pointer;
 }
 #suggestions label[for=sugg_all] {
 	left:10px;
