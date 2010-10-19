@@ -953,7 +953,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	background:url(../images/feed_edit.png) no-repeat;
 	margin:0 0 0 5px;
 }
-.follow {
+#sidebar .box .follow {
 	display:inline;
 	background:url(../images/button_wide.gif) repeat-x;
 	font-size:11px;
@@ -968,19 +968,19 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	padding:1px 6px;
 	float:left;
 }
-.follow:after {
+#sidebar .box .follow:after {
     content: attr(def);
 }
-.follow.active {
+#sidebar .box .follow.active {
 	background:#3C3C3C;
 	color:#fff;
 	text-shadow:1px 1px #000;
 	border:1px solid #232323;
 }
-.follow.active:after {
+#sidebar .box .follow.active:after {
     content: attr(alt);
 }
-.pm {
+#sidebar .box .pm {
 	display:inline;
 	background:url(../images/filter_bg.gif) repeat-x left center;
 	padding:1px 6px;
@@ -995,7 +995,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	margin:0 0 0 5px;
 	float:left;
 }
-.pm:hover {
+#sidebar .box .pm:hover {
 	color:#2878ca;
 }
 .follower-thumb {
