@@ -872,6 +872,14 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #sidebar .box {
 	padding:15px 0;
 }
+#sidebar .box a {
+	color:#2878ca;
+	text-decoration:none;
+}
+#sidebar .box a:hover {
+	text-decoration:underline;
+}
+
 #sidebar .box h3.title {
 	font-size:12px;
 	font-weight:normal;
