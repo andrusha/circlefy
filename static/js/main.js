@@ -124,17 +124,33 @@ var _tooltips = _tap.register({
         this.subscribe('feed.init; feed.changed', function() {
             new CirTooltip({
                container: 'feed',
-               hovered: '.avatar-author',
-               template: 'avatar-author-tooltip',
-               position: 'bottom'
+               hovered: '.avatar-author, .circle',
+               template: 'title-desc-tooltip'
+            });
+        }.bind(this));
+        this.subscribe('groups.get', function() {
+            new CirTooltip({
+               container: $$('.user-circles')[0],
+               hovered: '.circle-thumb',
+               template: 'title-desc-tooltip'
             });
         }.bind(this));
     },
 });
 
-/*
-var _tips = new Tips($$('.circle-thumb', '.avatar-author'), {
-                showDelay: 200,
-                hideDelay: 200
+// To be called when DOM is loaded
+var _startup = _tap.register({
+    init: function() {
+        new CirTooltip({
+           container: $$('.user-circles')[0],
+           hovered: '.circle-thumb',
+           template: 'title-desc-tooltip'
         });
-*/
+        new CirTooltip({
+            container: 'sidebar',
+            hovered: '.follower-thumb',
+            template: 'title-desc-tooltip'
+        })
+        
+    }
+});

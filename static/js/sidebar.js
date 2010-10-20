@@ -91,6 +91,7 @@ var _view_all = _tap.register({
     },
 
     getGroups: function (id, list) {
+        var self = this;
         new Request({
             url: '/AJAX/group/get',
             data: {
@@ -105,6 +106,8 @@ var _view_all = _tap.register({
                 var items = Elements.from(_template.parse('circles', response.data));
                 list.empty();
                 items.inject(list);
+                
+                self.publish('groups.get', [items]);
             }
         }).send();
     }
