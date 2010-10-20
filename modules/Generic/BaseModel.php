@@ -1,5 +1,5 @@
 <?php
-abstract class BaseModel implements ArrayAccess {
+abstract class BaseModel implements ArrayAccess, Serializable {
     /*  @var DB  */
     protected $db;
 
@@ -97,5 +97,14 @@ abstract class BaseModel implements ArrayAccess {
     protected static function typeCast(&$val, $key, array $fields) {
         if (in_array($key, $fields))
             $val = intval($val);
+    }
+
+    public function serialize() {
+        return serialize(array($this->id, $this->data));
+    }
+
+    public function unserialize($str) {
+        list($this->id, $this->data) = unserialize($str);
+        $this->connect();
     }
 };

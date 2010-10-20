@@ -877,6 +877,9 @@ _live.taps = _tap.register({
     },
 
     process: function(data) {
+        if (_vars.feed.type == 'conversation')
+            return;
+
         this.pushed.combine([data]);
 
         if (this.stream) {
