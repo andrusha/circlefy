@@ -146,6 +146,11 @@ var _startup = _tap.register({
            container: $$('.user-circles')[0],
            hovered: '.circle-thumb',
            template: 'title-tooltip'
+        })
+		new CirTooltip({
+           container: $$('#experience')[0],
+           hovered: '.circle-thumb',
+           template: 'title-desc-tooltip'
         });
         new CirTooltip({
             container: 'sidebar',
