@@ -1237,7 +1237,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip {
   display: none;
 }
-.tooltip-title-desc, .tooltip-follow, .tooltip-name, .tooltip-side {
+.tooltip-title-desc, .tooltip-follow, .tooltip-side {
   position: absolute;
   padding: 5px;
   width: 200px;
@@ -1249,6 +1249,15 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
 }
+.tooltip-name {
+  position: absolute;
+  padding: 5px;
+  width: 200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: none;
+  }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
 
