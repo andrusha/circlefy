@@ -136,6 +136,15 @@ var _tooltips = _tap.register({
 			   position: 'left'
             });
         }.bind(this));
+        this.subscribe('groups.get', function() {
+            new CirTooltip({
+               container: 'experience',
+               hovered: '.circle-thumb',
+               template: 'title-tooltip',
+			   position: 'left'
+            });
+        }.bind(this));
+
     },
 });
 
