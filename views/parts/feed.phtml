@@ -120,7 +120,7 @@ if ($_f['show_reply']){
                         </a>
                     </div><!--circle-->
                 <? elseif ($f['reciever_id']): ?>
-                    <div class="user">
+                    <div class="user" data-tiptitle="<?=$f['receiver']['fname']?> <?=$f['receiver']['lname']?>" data-tipcontent="&nbsp;" data-tipid="user-circle-<?=$f['receiver']['id']?>">
                         <a href="/user/<?=$f['reciever']['uname']?>">
                             <img src="<?=USER_PIC_REL.'small_'.$f['reciever']['id'].'.jpg'?>" alt="<?=$f['reciever']['fname']?> <?=$f['reciever']['lname']?>" />
                         </a>

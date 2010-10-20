@@ -130,10 +130,10 @@ var _tooltips = _tap.register({
         }.bind(this));
         this.subscribe('groups.get', function() {
             new CirTooltip({
-               container: $$('.user-circles')[0],
+               container: 'experience',
                hovered: '.circle-thumb',
                template: 'title-tooltip',
-			   position: 'left'
+               position: 'left'
             });
         }.bind(this));
     },
@@ -143,7 +143,7 @@ var _tooltips = _tap.register({
 var _startup = _tap.register({
     init: function() {
         new CirTooltip({
-           container: $$('.user-circles')[0],
+           container: 'experience',
            hovered: '.circle-thumb',
            template: 'title-tooltip',
 		   position: 'left'

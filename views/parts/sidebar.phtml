@@ -171,6 +171,7 @@
         </h3>
         <?php
             $_f['members'] = $_s['members'];
+            $fk = 'gmembers';
             include(FOLLOWERS);
         ?>
         <div class="clear"></div>
@@ -214,6 +215,7 @@
         </h3>
         <?php
             $_f['members'] = $_s['followers'];
+            $fk = 'follower';
             include(FOLLOWERS);
         ?>
         <div class="clear"></div>
@@ -234,6 +236,7 @@
         </h3>
         <?php
             $_f['members'] = $_s['following'];
+            $fk = 'following';
             include(FOLLOWERS);
         ?>
         <div class="clear"></div>
