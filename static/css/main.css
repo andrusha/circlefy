@@ -1231,8 +1231,12 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #templates {
 	display: none;
 }
-
-
+#avatar-author-tooltip {
+  display: none;
+}
+.tooltip-author {
+  position: absolute;
+}
 
 
 

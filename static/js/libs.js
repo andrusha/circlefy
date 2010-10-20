@@ -515,6 +515,109 @@ String.implement({
 
 });
 
+
+/**
+ * CirToolTip
+ *
+ * Tooltips for Circlefy
+ * To show tooltips just add class 'circletip' and the content in REL attribute
+ * as JSON: {title:"Tooltip Title",description:"text here"}
+ * 
+ * based on this MooTooltips: http://www.php-help.ro/examples/mootooltips-javascript-tooltips/
+ *
+ * @version		1.0.0
+ *
+ * @author		Leandro Ardissone <leandro [at] ardissone.com>
+ *
+ */
+var CirTooltip = new Class({
+    Implements: [Options],
+    
+    options: {
+        hovered: null,   // hovered element
+        duration: 100,   // time after mouse leaves hovered element
+        template: null   // template to use
+    },
+    
+    initialize: function(options) {
+        this.setOptions(options||null);
+        
+        if(!this.options.hovered) return;
+        
+        if (this.options.container)
+            this.elements = $(this.options.container).getElements(this.options.hovered);
+        else
+            this.elements = $(document.body).getElements(this.options.hovered);
+        
+        this.currentElement = null;
+        this.templater = new Template();
+        this.attach();
+    },
+    attach: function() {
+        this.elements.each(function(elem, key){
+            var data = {id: elem.getData('tipid'), title: elem.getData('tiptitle'), content: elem.getData('tipcontent'), image: elem.getData('tipimage')};
+            var properties = new Hash();
+            properties.include('visible',0);
+            properties.include('id', data.id);
+            
+            this.tooltip = this.templater.compile($(this.options.template).innerHTML.cleanup());
+            this.tooltip.apply(data);
+            
+            elem.store('tip', this.tooltip);
+            elem.store('properties', properties);
+            
+            var over = this.enter.bindWithEvent(this, elem);
+            var out = this.leave.bindWithEvent(this, elem);
+            
+            elem.addEvent('mouseenter', over);
+            elem.addEvent('mouseleave', out.pass(this.tooltip));
+        }, this);
+    },
+    
+    enter: function(event, element) {
+        var tip = Elements.from(element.retrieve('tip')());
+        var elProperties = element.retrieve('properties');
+        $(_body).adopt(tip);
+        
+        //if(elProperties.visible == 1) return;
+        
+        var elSize = element.getCoordinates()
+        var tipSize = tip.getCoordinates();
+        
+        var top_dist = elSize.top + elSize.height;
+        
+        tip.setStyles({
+            'position': 'absolute',
+            'top': top_dist,
+            'left': elSize.left,
+            'z-index': '110000'
+        });
+        
+        elProperties.set('leave', top_dist);
+        this.currentElement = elProperties.get('id');
+        tip.show();
+        console.log(tip);
+    },
+    
+    leave: function(event, element) {
+        var tip = $('tooltip-author-'+this.currentElement);
+        this.hide(tip);
+    },
+    hide: function(element){
+        element.morph({'opacity':0,'top': 220});
+    },
+    show: function(){
+        console.log('show');
+        $('tooltip-author-'+this.currentElement).setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
+        $('tooltip-author-'+this.currentElement).morph({'opacity':1, 'top':this.fromTop+20});
+        //this.setVisible();
+    },
+    setVisible: function(){
+        var elProperties = this.currentElement.retrieve('properties');
+        elProperties.visible = 1;
+    }
+});
+
 // GENERALS
 
 if (!window.console) {

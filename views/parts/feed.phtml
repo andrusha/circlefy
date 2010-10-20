@@ -57,7 +57,7 @@ if ($_f['show_reply']){
          data-id="<?=$f['id']?>"
          data-gid="<?=$f['group_id']?>">
     
-        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" class="avatar-author" />
+        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipcontent="some text to be defined, some text to be defined, some text to be defined" data-tipid="<?=$f['id']?>" />
         <div class="text">
             <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
             <cite><a href="/convo/<?=$f['id']?>"><?=$f['text']?></a></cite>

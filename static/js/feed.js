@@ -73,6 +73,9 @@ var _stream = _tap.register({
         });
 
 		this.enableLoadMore();
+		
+        // dispatch feed initialization
+        this.publish('feed.init');
     },
 
 	/*

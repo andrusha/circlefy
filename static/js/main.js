@@ -118,8 +118,26 @@ var _notifications = new Roar({
     position: 'lowerRight'
 });
 
+
+var _tooltips = _tap.register({
+    init: function() {
+        this.subscribe('feed.init; feed.changed', function() {
+            new CirTooltip({
+               container: 'feed',
+               hovered: '.avatar-author',
+               template: 'avatar-author-tooltip'
+            });
+            //new MooTooltips({
+            //    hovered: '.avatar-author',
+            //    container: 'feed'
+            //});
+        }.bind(this));
+    },
+});
+
+/*
 var _tips = new Tips($$('.circle-thumb', '.avatar-author'), {
                 showDelay: 200,
                 hideDelay: 200
         });
-
+*/
