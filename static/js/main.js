@@ -148,7 +148,7 @@ var _startup = _tap.register({
            template: 'title-tooltip'
         })
 		new CirTooltip({
-           container: $$('#experience')[0],
+           container: 'experience',
            hovered: '.circle-thumb',
            template: 'title-desc-tooltip'
         });
