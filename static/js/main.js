@@ -153,11 +153,6 @@ var _startup = _tap.register({
             template: 'title-tooltip',
     		position: 'left'
         })
-		new CirTooltip({
-            container: 'experience',
-            hovered: '.circle-thumb',
-            template: 'title-tooltip'
-        })
         
     }
 });
