@@ -1236,7 +1236,17 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 }
 .tooltip-author {
   position: absolute;
+  padding: 5px;
+  width: 200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.8);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
 }
+.tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
 
 
