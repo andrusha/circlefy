@@ -181,18 +181,15 @@
     <ul id="template-notify">
     <!--
         <div class="roar">
-        	<div class="roar-bg">
-                <# if (this.group_id): #>
-            		<img src="<?=GROUP_PIC_REL?>small_<#: this.group_id #>" class="group_icon" />
-                <# else: #>
-            		<div class="dismiss">click to dismiss</div>
-                <# endif; #>
-        	</div>
+            <# if (this.group_id): #>
+                <img src="<?=GROUP_PIC_REL?>small_<#: this.group_id #>.jpg" class="group_icon" />
+            <# endif; #>
             <# if (this.user_id) : #>
-            	<img src="<?=USER_PIC_REL?>small_<#: this.user_id #>" class="avatar" />
+            	<img src="<?=USER_PIC_REL?>small_<#: this.user_id #>.jpg" class="avatar" />
             <# endif; #>
         	<h3><#: this.title #></h3>
         	<p><#: this.text #></p>
+        	<div class="roar-bg"></div>
         </div>
     --> 
     </ul>

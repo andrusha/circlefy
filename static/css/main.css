@@ -1002,6 +1002,9 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	color:#2878ca;
 	text-decoration:none;
 }
+#sidebar form {
+    position: relative;
+}
 .follower-thumb {
 	width:25px;
 	height:25px;

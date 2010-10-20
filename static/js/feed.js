@@ -922,19 +922,12 @@ _live.notifications = _tap.register({
         if (data['user']['id'] == _vars.user.id)
             return;
 
-        cid = data['message_id'];
-        uname = data['user']['uname'];
-        ureal_name = data['user']['fname'] + ' ' + data['user']['lname'];
-        text = data['text'];
-        avatar = '/static/user_pics/small_'+data['user']['id']+'.jpg';
-        group_avatar = '/static/group_pics/small_'+data['group_id']+'.jpg';
-
-        _notifications.alert('Response from:<br><a href="/user/'+uname+'">' + ureal_name + '</a>',
-            '"' + text + '"',
-            {avatar: avatar, group_avatar: group_avatar});
+        _notifications.alert('Response from:<br><a href="/user/'+data['user']['uname']+'">' + data['user']['fname'] + ' ' + data['user']['lname'] + '</a>',
+            '"' + data['text'] + '"',
+            {user: data['user']['id'], group: data['group_id']});
     	
         _notifications.items.getLast().addEvent('click', function() {
-        	document.location.href = 'http://'+document.domain+'/convo/'+cid;
+        	document.location.href = 'http://'+document.domain+'/convo/'+data['message_id'];
     	});
     },
 
@@ -942,13 +935,12 @@ _live.notifications = _tap.register({
         if (data.sender.id == _vars.user.id)
             return;
 
-        var sender = data.sender,
-            avatar = '/static/user_pics/small_'+sender.id+'.jpg';
+        var sender = data.sender;
 
         if (data.group && data.group.id) {
             _notifications.alert('New tap:<br><a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname +'</a>',
                 '"' + data.text + '"',
-                {avatar: avatar, group_avatar: '/static/group_pics/small_'+data.group.id+'.jpg'});
+                {user: sender.id, group: data.group.id});
 
             _notifications.items.getLast().addEvent('click', function() {
                 document.location.href = 'http://'+document.domain+'/circle/'+data.group.symbol;
@@ -956,7 +948,7 @@ _live.notifications = _tap.register({
         } else if (data.reciever && data.reciever.id) {
             _notifications.alert('New PM:<br><a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname + '</a>',
                 '"' + data.text + '"',
-                {avatar: avatar});
+                {userd: sender.id});
 
             _notifications.items.getLast().addEvent('click', function() {
                 document.location.href = 'http://'+document.domain+'/convo/'+data.id;
@@ -965,21 +957,17 @@ _live.notifications = _tap.register({
    },
 
     newFollower: function(data) {
-        status = data['status'];
-        uname = data['uname'];
-        ureal_name = data['ureal_name'] ? data['ureal_name'] : uname;
-        avatar = '/user_pics/'+data['avatar'];
+        var uname = data.user.uname,
+            ureal_name = data.user.fname + ' ' + data.user.lname;
 
-        var title = '';
-        var message = '';
-        if (status) {
-            title = 'New follower:<br><a href="/user/'+uname+'">' + ureal_name + '</a>';
-            message = 'Will follows you everywhere in your tap journey!';
+        if (data.status) {
+            var title = 'New follower:<br><a href="/user/'+uname+'">' + ureal_name + '</a>';
+            var message = 'Will follows you everywhere in your tap journey!';
         } else {
-            title = 'Follower gone:<br><a href="/user/'+uname+'">' + ureal_name +'</a>';
-            message = "doesn't follow you anymore :(";
+            var title = 'Follower gone:<br><a href="/user/'+uname+'">' + ureal_name +'</a>';
+            var message = "doesn't follow you anymore :(";
         }
-        _notifications.alert(title, message, {avatar:avatar});
+        _notifications.alert(title, message, {user: data.user.id});
 
     	_notifications.items.getLast().addEvent('click', function() {
         	document.location.gref = 'http://'+document.domain+'/user/'+uname;
@@ -999,7 +987,7 @@ var _filter = _tap.register({
         box.over = new OverText(box, {
             positionOptions: {
                 offset: {x: 10, y: 8},
-                relativeTo: box,
+                relativeTo: box
             }}).show();
 
         box.getParents('form').addEvent('submit',

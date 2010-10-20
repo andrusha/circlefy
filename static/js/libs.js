@@ -201,10 +201,10 @@ var Roar = new Class({
             data.user_id = options.user;
         if (options.group)
             data.group_id = options.group;
-        if (options.color)
-            data.color = options.color;
 
         var elements = Elements.from(this.template.apply(data));
+        if (options.color)
+            elements[0].getElement('div.roar-bg').setStyle('background-color', options.color);
 
 		return this.inject(elements[0], options);
 	},
@@ -266,7 +266,7 @@ var Roar = new Class({
 			var over = false;
 			var trigger = (function() {
 				trigger = null;
-				if (!item.over) remove();
+                if (!item.over) remove();
 			}).delay(duration);
 			item.addEvents({
 				mouseover: function() {
