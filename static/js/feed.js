@@ -1035,24 +1035,20 @@ var _filter = _tap.register({
     },
 
     convoFilter: function(keyword) {
-        $$('div.reply-item.hidden').removeClass('hidden');
-        $$('div.reply-item').each( function (reply) {
-            var el = reply.getElement('span.reply-text');
-                el.innerHTML = el.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/igm, '$1');
+        var reg = new RegExp('('+keyword.escapeRegExp().replace(/\s+/, '\.\*\?')+')', 'i');
+        $$('div.reply-item').each(function (reply) {
+            reply.removeClass('hidden');
+            var el = reply.getElement('span.reply-text'),
+                text = el.innerHTML;
+
+            text = text.replace(/<span class="highlight">(.*?)<\/span>/igm, '$1');
+            if (text.test(reg))
+                text = text.replace(reg, '<span class="highlight">$1<\/span>');
+            else
+                reply.addClass('hidden');
+
+            el.innerHTML = text;
         });
-        
-        if (!keyword.isEmpty()) {
-            var reg = new RegExp('('+keyword.escapeRegExp().replace(/\s+/, '\.\*\?')+')', 'i');
-            $$('div.reply-item').each(function (reply) {
-                var el = reply.getElement('span.reply-text'),
-                    text = el.innerHTML;
-                if (text.test(reg)) {
-                    text = text.replace(reg, '<span class="highlight">$1<\/span>');
-                    el.innerHTML = text;
-                } else
-                    reply.addClass('hidden');
-            });
-        }
 
         window.scrollTo(0, window.getScrollSize().y);
     }
