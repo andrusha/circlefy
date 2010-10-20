@@ -1234,10 +1234,10 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #templates {
 	display: none;
 }
-#title-desc-tooltip, #title-tooltip {
+#title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip {
   display: none;
 }
-.tooltip-title-desc, .tooltip-title {
+.tooltip-title-desc, .tooltip-follow, .tooltip-name, .tooltip-side {
   position: absolute;
   padding: 5px;
   width: 200px;
