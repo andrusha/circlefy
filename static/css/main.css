@@ -1251,7 +1251,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 }
 .tooltip-name {
   position: absolute;
-  padding: 10px 5px;
+  padding: 10px 0;
   width: 200px;
   font-size: 11px;
   color: #FFF;
@@ -1259,7 +1259,10 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   background: url(../images/tooltip.png) no-repeat 10px 0px;
   }
   .tooltip-name .bg {
-	  background:rgba(0,0,0,.4);
+	  background:rgba(0,0,0,.8);
+	  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+  padding:5px;
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
