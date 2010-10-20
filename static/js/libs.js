@@ -549,16 +549,18 @@ var CirTooltip = new Class({
         
         if(!this.options.hovered) return;
         
-        if (this.options.container)
-            this.elements = $(this.options.container).getElements(this.options.hovered);
-        else
+        if (this.options.container) {
+            if ($(this.options.container)) 
+                this.elements = $(this.options.container).getElements(this.options.hovered);
+        } else
             this.elements = $(document.body).getElements(this.options.hovered);
+        if (this.elements && this.elements.length > 0) {
+            this.currentElement = null;
+            this.templater = new Template();
+            this.tooltip_template = this.templater.compile($(this.options.template).innerHTML.cleanup());
         
-        this.currentElement = null;
-        this.templater = new Template();
-        this.tooltip_template = this.templater.compile($(this.options.template).innerHTML.cleanup());
-        
-        this.attach();
+            this.attach();
+        }
     },
     attach: function() {
         this.elements.each(function(elem, key){
