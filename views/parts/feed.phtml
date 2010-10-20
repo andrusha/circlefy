@@ -57,7 +57,7 @@ if ($_f['show_reply']){
          data-id="<?=$f['id']?>"
          data-gid="<?=$f['group_id']?>">
     
-        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" alt="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipcontent="some text to be defined, some text to be defined, some text to be defined" data-tipid="author-<?=$f['id']?>" />
+        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipcontent="some text to be defined, some text to be defined, some text to be defined" data-tipid="author-<?=$f['id']?>" />
         <div class="text">
             <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
             <cite><a href="/convo/<?=$f['id']?>"><?=$f['text']?></a></cite>
@@ -116,13 +116,13 @@ if ($_f['show_reply']){
                     <div class="circle" data-tiptitle="<?=$f['group']['name']?>" data-tipcontent="<?=((!empty($f['group']['descr']))?$f['group']['descr']:'&nbsp;')?>" data-tipid="group-<?=$f['group_id']?>">
                         <a href="/circle/<?=$f['group']['symbol']?>">
                             <span></span>
-                            <img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" alt="<?=$f['group']['name']?>" />
+                            <img src="<?=GROUP_PIC_REL.'small_'.$f['group']['id'].'.jpg'?>" />
                         </a>
                     </div><!--circle-->
                 <? elseif ($f['reciever_id']): ?>
                     <div class="user" data-tiptitle="<?=$f['receiver']['fname']?> <?=$f['receiver']['lname']?>" data-tipcontent="&nbsp;" data-tipid="user-circle-<?=$f['receiver']['id']?>">
                         <a href="/user/<?=$f['reciever']['uname']?>">
-                            <img src="<?=USER_PIC_REL.'small_'.$f['reciever']['id'].'.jpg'?>" alt="<?=$f['reciever']['fname']?> <?=$f['reciever']['lname']?>" />
+                            <img src="<?=USER_PIC_REL.'small_'.$f['reciever']['id'].'.jpg'?>" />
                         </a>
                     </div><!--user-->
                     <div class="circle">
