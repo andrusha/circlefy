@@ -1251,12 +1251,12 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 }
 .tooltip-name {
   position: absolute;
-  padding: 5px;
+  padding: 10px 5px;
   width: 200px;
   font-size: 11px;
   color: #FFF;
   text-shadow: 1px 1px #000;
-  background: none;
+  background: url(../images/tooltip.png) no-repeat 10px 0px;
   }
   .tooltip-name .bg {
 	  background:rgba(0,0,0,.4);
