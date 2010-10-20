@@ -125,12 +125,9 @@ var _tooltips = _tap.register({
             new CirTooltip({
                container: 'feed',
                hovered: '.avatar-author',
-               template: 'avatar-author-tooltip'
+               template: 'avatar-author-tooltip',
+               position: 'bottom'
             });
-            //new MooTooltips({
-            //    hovered: '.avatar-author',
-            //    container: 'feed'
-            //});
         }.bind(this));
     },
 });
