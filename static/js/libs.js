@@ -561,7 +561,8 @@ var CirTooltip = new Class({
             properties.include('id', data.id);
             
             this.tooltip = this.templater.compile($(this.options.template).innerHTML.cleanup());
-            this.tooltip.apply(data);
+            this.tooltip = Elements.from(this.tooltip.apply(data));
+            //this.tooltip.apply(data);
             
             elem.store('tip', this.tooltip);
             elem.store('properties', properties);
@@ -575,11 +576,9 @@ var CirTooltip = new Class({
     },
     
     enter: function(event, element) {
-        var tip = Elements.from(element.retrieve('tip')());
+        var tip = element.retrieve('tip');
         var elProperties = element.retrieve('properties');
         $(_body).adopt(tip);
-        
-        //if(elProperties.visible == 1) return;
         
         var elSize = element.getCoordinates()
         var tipSize = tip.getCoordinates();
@@ -595,8 +594,7 @@ var CirTooltip = new Class({
         
         elProperties.set('leave', top_dist);
         this.currentElement = elProperties.get('id');
-        tip.show();
-        console.log(tip);
+        this.show(tip);
     },
     
     leave: function(event, element) {
@@ -604,10 +602,10 @@ var CirTooltip = new Class({
         this.hide(tip);
     },
     hide: function(element){
-        element.morph({'opacity':0,'top': 220});
+        element.morph({'opacity':0,'top': this.fromTop-20});
+        element.dispose();
     },
     show: function(){
-        console.log('show');
         $('tooltip-author-'+this.currentElement).setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
         $('tooltip-author-'+this.currentElement).morph({'opacity':1, 'top':this.fromTop+20});
         //this.setVisible();
