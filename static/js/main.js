@@ -130,15 +130,9 @@ var _tooltips = _tap.register({
         }.bind(this));
         this.subscribe('groups.get', function() {
             new CirTooltip({
-               container: 'experience',
+               container: $$('.user-circles')[0],
                hovered: '.circle-thumb',
-               template: 'side-tooltip',
-               position: 'left'
-            })
-			new CirTooltip({
-               container: 'experience',
-               hovered: '.circle-thumb',
-               template: 'experience-tooltip'
+               template: 'side-tooltip'
             });
         }.bind(this));
     },
@@ -148,22 +142,10 @@ var _tooltips = _tap.register({
 var _startup = _tap.register({
     init: function() {
         new CirTooltip({
-           container: 'experience',
-           hovered: '.circle-thumb',
-           template: 'title-tooltip',
-		   position: 'left'
-        });
-        new CirTooltip({
             container: 'sidebar',
             hovered: '.follower-thumb',
             template: 'follow-tooltip',
     		position: 'left'
-        })
-		new CirTooltip({
-            container: 'experience',
-            hovered: '.circle-thumb',
-            template: 'experience-tooltip'
-        })
-        
+        });
     }
 });
