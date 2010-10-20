@@ -198,7 +198,7 @@
     <ul id="template-circles">
     <!--
         <# for (circle from this): #>
-        <a href="/circle/<#: circle.symbol #>" title="<#: circle.name #>" class="circle-thumb">
+        <a href="/circle/<#: circle.symbol #>" title="<#: circle.name #>" class="circle-thumb" data-tipid="circle-<#: circle.id #>" data-tiptitle="<#: circle.name #>">
             <span class="circle"></span>
             <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id#>.jpg" alt="<#: circle.name #>" />
         </a>
