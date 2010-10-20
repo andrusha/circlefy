@@ -146,6 +146,11 @@ var _startup = _tap.register({
             hovered: '.follower-thumb',
             template: 'follow-tooltip',
     		position: 'left'
+        })
+		new CirTooltip({
+            container: $$('.user-circles')[0],
+            hovered: '.follower-thumb',
+            template: 'side-tooltip'
         });
     }
 });
