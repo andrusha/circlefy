@@ -47,9 +47,13 @@ Acknowledgements:
         escape: function(template) {
             return template.replace(/"/g, '\\"').replace(/\r|\n\s*/g, '\\n');
         },
+
+        clean: function(template) {
+            return template.replace(/(^[\s\n\r\t]*<!--|-->[\s\n\r\t]*$)/g, '');
+        },
         
         build: function(template) {
-            template = this.escape(template).replace(
+            template = this.escape(this.clean(template)).replace(
                 this.pattern,
                 function(whole, line){
                     if (whole.charAt(2) == this.outkey)

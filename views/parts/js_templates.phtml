@@ -2,6 +2,7 @@
 
     <? /*** Search suggestions template ***/ ?>
     <ul id="template-search">
+    <!--
         <# if (this.length): #>
         <# for (var sugg from this): #>
         <li>
@@ -23,6 +24,7 @@
             <small>Click here to create a circle on the fly!</small>
             <div class="clear"></div>
         </li>
+    -->
     </ul>
 
     <? /*** Placeholder for 'searching' state of group suggestions ***/ ?>
@@ -34,6 +36,7 @@
 
     <? /*** Replies to tap ***/ ?>
     <ul id="template-replies">
+    <!--
         <# for (var repl from this): #>
         <div id="conversation-<#: repl.id #>" class="reply-item">
             <div class="thumb"><img src="<?=USER_PIC_REL?>medium_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" width="25" /></div>
@@ -47,10 +50,12 @@
             <div class="clear"></div>
         </div><!--item-->
         <# endfor; #>
+    -->
     </ul>
 
     <? /*** Group suggestions ***/ ?>
      <ul id="template-suggestions">
+     <!--
         <li style="padding-left: 0;">
             <label for="sugg_all">All</label>
             <input id="sugg_all" name="suggest_all" type="checkbox" checked>
@@ -62,19 +67,23 @@
             <label for="sigg_<#: sugg.id #>"><#: sugg.name #></label>
          </li>
          <# endfor; #>
+     -->
      </ul>
 
      <? /*** User typing template ***/?>
      <ul id="template-typing">
+     <!--
         <div class="latest-reply" id="typing-<#: this.uid #>">
             <img src="<?=USER_PIC_REL?>small_<#: this.uid #>.jpg" alt="<#: this.uname #>" class="avatar-reply" />
             <a href="/user/<#: this.uname #>" class="reply-author"><#: this.uname #></a><span>is typing</span>
             <div class="clear"></div><div class="br"></div>
         </div><!--latest-->
+     -->
      </ul>
 
     <? /*** Messages feed template ***/?>
     <ul id="template-messages">
+    <!--
         <# for (var msg from this): #>
         <div class="feed-item<# if (msg.responses.length == 0): #> empty<# endif; #>"
              id="global-<#: msg.id  #>"
@@ -149,15 +158,13 @@
                         </div><!--circle-->
                     <# endif; #>
                  <div class="icons">
-                   <!-- there would be icon, selected depending on what type of content message have -->
-                    <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
                     <span class="timestamp" data-timestamp="<#: msg.timestamp #>"><#: msg.time  #></span>
                 </div>
             </div><!--text-->
         
         </div><!--feed-item-->
         <# endeach; #>
-        
+     -->    
     </ul>
 
     <? /*** Load more button ***/ ?>
@@ -172,9 +179,9 @@
 
     <? /*** Template for notifications ***/?>
     <ul id="template-notify">
+    <!--
         <div class="roar">
-        	<div class="roar-bg" 
-                 style="<# if (this.color): #>background-color: <#: this.color #><# endif; #>">
+        	<div class="roar-bg">
                 <# if (this.group_id): #>
             		<img src="<?=GROUP_PIC_REL?>small_<#: this.group_id #>" class="group_icon" />
                 <# else: #>
@@ -187,10 +194,12 @@
         	<h3><#: this.title #></h3>
         	<p><#: this.text #></p>
         </div>
+    --> 
     </ul>
 
     <? /*** Circles list ***/?>
     <ul id="template-circles">
+    <!--
         <# for (circle from this): #>
         <a href="/circle/<#: circle.symbol #>" title="<#: circle.name #>" class="circle-thumb">
             <span class="circle"></span>
@@ -198,5 +207,6 @@
         </a>
         <# endfor; #>
         <div class="clear"></div>
+    -->
     </ul>
 </div>
