@@ -123,17 +123,18 @@ var _tooltips = _tap.register({
     init: function() {
         this.subscribe('feed.init; feed.changed', function() {
             new CirTooltip({
-               container: 'feed',
-               hovered: '.avatar-author, .circle',
+               hovered: $$('#feed .avatar-author, #feed .circle'),
                template: 'name-tooltip'
             });
         }.bind(this));
         this.subscribe('groups.get', function() {
             new CirTooltip({
-               container: $$('.user-circles')[0],
-               hovered: '.circle-thumb',
-               template: 'side-tooltip',
-			   position: 'left'
+                hovered: $$('#sidebar .circle-thumb'),
+                template: 'side-tooltip'
+            });
+            new CirTooltip({
+                hovered: $$('#experience .circle-thumb'),
+                template: 'title-desc-tooltip'
             });
         }.bind(this));
     },
@@ -143,16 +144,18 @@ var _tooltips = _tap.register({
 var _startup = _tap.register({
     init: function() {
         new CirTooltip({
-            container: 'sidebar',
-            hovered: '.follower-thumb',
+            hovered: $$('#sidebar .follower-thumb'),
             template: 'follow-tooltip',
-    		position: 'left'
-        })
-		new CirTooltip({
-            container: $$('.circles')[0],
-            hovered: '.circle-thumb',
+            position: 'left'
+        });
+        new CirTooltip({
+            hovered: $$('#sidebar .circle-thumb'),
             template: 'side-tooltip',
-			position: 'left'
+            position: 'left'
+        });
+        new CirTooltip({
+            hovered: $$('#experience .circle-thumb'),
+            template: 'side-tooltip'
         });
     }
 });

@@ -549,11 +549,14 @@ var CirTooltip = new Class({
         
         if(!this.options.hovered) return;
         
+        this.elements = this.options.hovered;
+        /*
         if (this.options.container) {
             if ($(this.options.container)) 
                 this.elements = $(this.options.container).getElements(this.options.hovered);
         } else
             this.elements = $(document.body).getElements(this.options.hovered);
+        */
         if (this.elements && this.elements.length > 0) {
             this.currentElement = null;
             this.templater = new Template();
@@ -571,7 +574,7 @@ var CirTooltip = new Class({
             
             this.tooltip = Elements.from(this.tooltip_template.apply(data));
             
-            elem.store('tip', this.tooltip);
+            elem.store('tip', this.tooltip[0]);
             elem.store('properties', properties);
             
             var over = this.enter.bindWithEvent(this, elem);
@@ -587,29 +590,29 @@ var CirTooltip = new Class({
         var elProperties = element.retrieve('properties');
         $(_body).adopt(tip);
         
-        var elSize = element.getCoordinates()
-        var tipSize = tip.getCoordinates();
+        var elCoord = element.getCoordinates();
+        var elSize = element.getComputedSize();
+        var tipCoord = tip.getCoordinates();
+        var tipSize = tip.getComputedSize();
         this.currentElementSize = elSize;
         this.currentTipSize = tipSize;
-        console.log(elSize.top, tipSize.height, tipSize);
         
         // position calculation
         var top_dist = left_dist = 0;
         var pos = this.options.position;
         if (pos == 'top') {
-            top_dist = elSize.top - tipSize.height;
-            left_dist = elSize.left;
+            top_dist = elCoord.top - tipSize.height;
+            left_dist = elCoord.left;
         } else if (pos == 'left') {
-            top_dist = elSize.top;
-            left_dist = elSize.left - tipSize.width;
+            top_dist = elCoord.top;
+            left_dist = elCoord.left - tipSize.width;
         } else if (pos == 'right') {
-            top_dist = elSize.top;
-            left_dist = elSize.left + elSize.width;
+            top_dist = elCoord.top;
+            left_dist = elCoord.left + elSize.width;
         } else {
-            top_dist = elSize.top + elSize.height;
-            left_dist = elSize.left;
+            top_dist = elCoord.top + elSize.height;
+            left_dist = elCoord.left;
         }
-        
         tip.setStyles({
             'position': 'absolute',
             'top': top_dist,
@@ -624,7 +627,7 @@ var CirTooltip = new Class({
     
     leave: function(event, element) {
         var tip = $('tooltip-'+this.currentElement);
-        this.hide(tip);
+        //this.hide(tip);
     },
     hide: function(element){
         element.morph({'opacity':0});
