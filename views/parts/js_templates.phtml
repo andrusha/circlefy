@@ -90,7 +90,7 @@
              data-id="<#: msg.id  #>"
              data-gid="<#: msg.group_id  #>">
         
-            <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" />
+            <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" data-tiptitle="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" data-tipid="msg-<#: msg.id #>" />
             <div class="text">
                 <h3 class="author"><a href="/user/<#: msg.sender.uname  #>"><#: msg.sender.uname  #></a> <small>, <#: msg.sender.fname  #> <#: msg.sender.lname  #></small></h3>
                 <cite><a href="/convo/<#: msg.id  #>"><#: msg.text  #></a></cite>
@@ -141,16 +141,16 @@
 
                 <div class="clear"></div>
                     <# if (!this.hide_group_icon && msg.group_id): #>
-                        <div class="circle">
+                        <div class="circle" data-tiptitle="<#: msg.group.name #>"  data-tipid="group-<#: msg.group.id #>">
                             <a href="/circle/<#: msg.group.symbol  #>">
                                 <span></span>
-                                <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" alt="<#: msg.group.name  #>" />
+                                <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" />
                             </a>
                         </div>
                     <# else if (msg.reciever_id): #>
-                        <div class="user">
+                        <div class="user" data-tiptitle="<#: msg.reciever.fname #> <#: msg.reciever.lname #>" data-tipid="user-circle-<#: msg.reciever.id #>">
                             <a href="/user/<#: msg.reciever.uname #>">
-                                <img src="<?=USER_PIC_REL?>small_<#: msg.reciever.id #>.jpg" alt="<#: msg.reciever.fname #> <#: msg.reciever.lname #>" />
+                                <img src="<?=USER_PIC_REL?>small_<#: msg.reciever.id #>.jpg" />
                             </a>
                         </div>
                         <div class="circle">
