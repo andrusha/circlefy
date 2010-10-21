@@ -623,12 +623,12 @@ var CirTooltip = new Class({
             else left_dist = elCoord.left;
         } else {
             if (pos == 'left') 
-                left_dist = elCoord.left - tipSize.width;
+                left_dist = elCoord.left - tipSize.width - 10; // hardcoded extra width
             else 
                 left_dist = elCoord.left + elSize.width;
             
             if (align == 'middle')
-                top_dist = elCoord.top - (elSize.height / 2) + (tipSize.height / 2);
+                top_dist = elCoord.top + (elSize.height / 2) - (tipSize.height / 2);
             else if (align == 'bottom')
                 top_dist = elCoord.bottom - tipSize.height;
             else top_dist = elCoord.top;
@@ -661,6 +661,15 @@ var CirTooltip = new Class({
     show: function(){
         $('tooltip-'+this.currentElement).setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
         $('tooltip-'+this.currentElement).morph({'opacity': 1});
+    }
+});
+
+
+var MediaEmbed = new Class ({
+    Implements: [Options],
+    
+    initialize: function(options) {
+        this.setOptions(options||null);
     }
 });
 
