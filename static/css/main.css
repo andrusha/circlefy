@@ -600,7 +600,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	color:#999;
 	line-height:18px;
 }
-.feed-item cite {
+.feed-item .message {
 	font-style:normal;
 	color:#202020;
 	width:500px;
@@ -608,13 +608,13 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	float:left;
 	margin:0 0 10px 0;
 }
-.feed-item cite a {
+.feed-item .message a {
 	color:#202020;
     text-decoration: none;
     display: block;
 	padding:5px 0;
 }
-.feed-item cite a:hover {
+.feed-item .message a:hover {
 	color:#2878ca;
 }
 .feed-item .edit {
@@ -1726,4 +1726,97 @@ span.highlight {
 }
 .feed-item:hover .circle .privatemessage {
 	background:url(../images/envelope.png) no-repeat top right;
+}
+
+
+
+
+#reply .media-preview {
+	padding:10px 0 0 0;
+}
+#reply .media-preview .thumbnail {
+	width:135px;
+	height:100px;
+	background:#fff;
+	padding:2px;
+	border:1px solid #d1d1d1;
+	float:left;
+}
+#reply .media-preview .data {
+	float:left;
+	width:450px;
+	padding:0 0 0 10px;
+	height:auto;
+}
+#reply .media-preview .data .title {
+	font-size:14px;
+	color:#4177a5;
+	font-weight:normal;
+	padding:2px 0 0 0;
+}
+#reply .media-preview .data .title.video {
+	background:url(../images/media_video.png) no-repeat top right;
+	padding:2px 22px 0 0;
+	display:inline;
+}
+#reply .media-preview .data .title a {
+	color:#4177a5;
+	text-decoration:none;
+}
+#reply .media-preview .data small {
+	color:#959595;
+	font-size:10px;
+	display:block;
+}
+#reply .media-preview .data small a {
+	color:#959595;
+	text-decoration:none;
+}
+#reply .media-preview .data em {
+	display:block;
+	padding:10px 0 0 0;
+}
+
+.conversation .feed-item .message {
+	margin:0;
+	width:570px;
+}
+.feed-item .message {
+	font-style:normal;
+	color:#202020;
+	width:500px;
+	display:block;
+	float:left;
+	margin:0 0 10px 0;
+}
+
+.feed-item .message img {
+	float:left;
+	padding:2px;
+	background:#fff;
+	border:1px solid #d1d1d1;
+}
+.feed-item .message .data {
+	float:left;
+	width:375px;
+	padding:0 0 0 10px;
+}
+.feed-item .message .data .title {
+	font-size:12px;
+	font-weight:normal;
+	margin:0;
+}
+.feed-otem .message .data .title a {
+	color:#4177a5;
+	text-decoration:none;
+}
+.feed-item .message .data small {
+	font-size:10px;
+	display:block;
+	line-height:12px;
+	margin:0 0 10px 0;
+}
+.feed-item .message .data small a {
+	color:#959595;
+	text-decoration:none;
 }

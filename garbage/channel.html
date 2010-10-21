@@ -45,6 +45,15 @@ $(document).ready(function(){
                 <textarea>Post a message to this circle</textarea>
                 <input type="submit" value=" " />
                 <div class="clear"></div>
+                <div class="media-preview">
+                	<img src="images/media_00.jpg" alt="thumb" class="thumbnail" id="video-00" />
+                    <div class="data">
+                    	<h3 class="title video"><a href="#">New Mac OS X Lion, MacBook Air and More! </a></h3>
+                        <small><a href="#">http://www.youtube.com/watch?v=838sJbJTNOY</a></small>
+                        <em>and some description to be added below the video</em>
+                    </div><!--data-->
+                    <div class="clear"></div>
+                </div><!--mediapreview-->                
             </form><!--reply-->
             
             <div id="controls" class="border">
@@ -68,7 +77,16 @@ $(document).ready(function(){
                 	<img src="images/avatar_00.jpg" alt="avatar" class="avatar-author" />
                     <div class="text">
                     	<h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-                        <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
+                        <div class="message">
+                        	<a href="#"><img src="images/media_01.jpg" alt="thumb" class="media-thumbnail" id="image-01" /></a>
+                            <div class="data">
+                            	<h3 class="title"><a href="#">New Mac OS X Lion, MacBook Air and More! </a></h3>
+                                <small><a href="#">http://www.youtube.com/watch?v=838sJbJTNOY</a></small>
+                                <em>I did this in like... 4 hours last night, after having dinner at 9 PM.
+I'm working on the last little teaks, mostly on the code part.Thoughts?</em>
+                            </div><!--data-->
+                            <div class="clear"></div>
+                        </div><!--msg-->
                         <div class="clear"></div>
                         
                         <div class="latest-reply">
@@ -90,98 +108,6 @@ $(document).ready(function(){
                 
                 </div><!--feed-item-->
                 
-                <div class="feed-item" id="global-02">
-                
-                	<img src="images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-                    <div class="text">
-                    	<h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-                        <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-                        <div class="clear"></div>
-                        
-                        <a href="#" class="reply">Reply</a>
-                        <a href="#" class="comments">123</a>
-                        
-                        <div class="clear"></div>
-                        <div class="icons">
-                        	<a href="#"><img src="images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                            <a href="#"><img src="images/feed_type_00.jpg" alt="tap type" /></a>
-                            <span>some mionutes ago</span>
-                        </div>
-                        <a href="#" class="edit">edit</a>
-                    </div><!--text-->
-                
-                </div><!--feed-item-->
-
-            	<div class="feed-item" id="global-03">
-                
-                	<img src="images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-                    <div class="text">
-                    	<h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-                        <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-                        <div class="clear"></div>
-                        
-                        <a href="#" class="reply">Reply</a>
-                        <a href="#" class="comments">123</a>
-                        
-                        <div class="clear"></div>
-                        <div class="icons">
-                        	<a href="#"><img src="images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                            <a href="#"><img src="images/feed_type_00.jpg" alt="tap type" /></a>
-                            <span>some mionutes ago</span>
-                        </div>
-                        <a href="#" class="edit">edit</a>
-                    </div><!--text-->
-                
-                </div><!--feed-item-->
-
-            	<div class="feed-item" id="global-04">
-                
-                	<img src="images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-                    <div class="text">
-                    	<h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-                        <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-                        <div class="clear"></div>
-                        
-                        <a href="#" class="reply">Reply</a>
-                        <a href="#" class="comments">123</a>
-                        
-                        <div class="clear"></div>
-                        <div class="icons">
-                        	<a href="#"><img src="images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                            <a href="#"><img src="images/feed_type_00.jpg" alt="tap type" /></a>
-                            <span>some mionutes ago</span>
-                        </div>
-                        <a href="#" class="edit">edit</a>
-                    </div><!--text-->
-                
-                </div><!--feed-item-->
-
-            	<div class="feed-item" id="global-05">
-                
-                	<img src="images/avatar_00.jpg" alt="avatar" class="avatar-author" />
-                    <div class="text">
-                    	<h3 class="author"><a href="#">Guest20487</a> <small>, Joe Smith</small></h3>
-                        <cite>Integer ullamcorper dui nec metus feugiat tempor! Donec ullamcorper ultrices tristique. Ut elementum, elit eget tempor elementum, urna nibh iaculis augue, in euismod felis mauris eget.</cite>
-                        <div class="clear"></div>
-                        
-                        <div class="latest-reply">
-                        	<img src="images/comments_avatar.jpg" alt="avatar" class="avatar-reply" />
-                            <a href="#" class="reply-author">Guest209t7:</a><span>come on dude!</span>
-                        </div><!--latest-->
-                        
-                        <a href="#" class="reply">Reply</a>
-                        <a href="#" class="comments">123</a>
-                        
-                        <div class="clear"></div>
-                        <div class="icons">
-                        	<a href="#"><img src="images/feed_circle_thumb.jpg" alt="circle name" /></a>
-                            <a href="#"><img src="images/feed_type_00.jpg" alt="tap type" /></a>
-                            <span>some mionutes ago</span>
-                        </div>
-                        <a href="#" class="edit">edit</a>
-                    </div><!--text-->
-                
-                </div><!--feed-item-->
 
             	
                 <a class="load" href="#">Older Taps</a>
