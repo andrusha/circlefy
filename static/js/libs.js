@@ -623,7 +623,7 @@ var CirTooltip = new Class({
             else left_dist = elCoord.left;
         } else {
             if (pos == 'left') 
-                left_dist = elCoord.left - tipSize.width - 10; // hardcoded extra width
+                left_dist = elCoord.left - tipSize.width;
             else 
                 left_dist = elCoord.left + elSize.width;
             
@@ -667,6 +667,11 @@ var CirTooltip = new Class({
 
 var MediaEmbed = new Class ({
     Implements: [Options],
+    
+    options: {
+        element: null,      // watched element
+        services: ''      // time after mouse leaves hovered element
+    },
     
     initialize: function(options) {
         this.setOptions(options||null);
