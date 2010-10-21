@@ -137,7 +137,7 @@
 	padding:3px;
 }
 #notifications .controls .paginate {
-	width:85px;
+	width:84px;
 	height:20px;
 	background:url(../images/filter_bg.gif) repeat-x bottom left;
 	float:left;
@@ -152,11 +152,21 @@
         border:1px solid #3c3c3c;
 }
 #notifications .controls .close {
-	width:55px;
-	height:22px;
-	background:url(../images/notifications_close.gif) no-repeat top left;
+	width:53px;
+	height:20px;
+	background:url(../images/filter_bg.gif) repeat-x bottom left;
 	float:left;
 	display:block;
-	text-indent:-9999px;
+        font-size:10px;
+        text-decoration:none;
+        color:#333;
+        text-shadow:1px 1px #fff;
+        text-align:center;
+        line-height:20px;
 	overflow:hidden;
+        border:1px solid #3c3c3c;
+}
+#notifications .controls strong {
+	font-weight:bold;
+	color:#000;
 }
