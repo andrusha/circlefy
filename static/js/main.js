@@ -132,7 +132,8 @@ var _tooltips = _tap.register({
             new CirTooltip({
                container: $$('.user-circles')[0],
                hovered: '.circle-thumb',
-               template: 'side-tooltip'
+               template: 'side-tooltip',
+			   position: 'left'
             });
         }.bind(this));
     },
