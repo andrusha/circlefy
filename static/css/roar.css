@@ -136,23 +136,20 @@
 	height:22px;
 	padding:3px;
 }
-#notifications .controls .previous {
-	width:87px;
-	height:22px;
-	background:url(../images/notifications_previous.gif) no-repeat top left;
+#notifications .controls .paginate {
+	width:85px;
+	height:20px;
+	background:url(../images/filter_bg.gif) repeat-x bottom left;
 	float:left;
 	display:block;
-	text-indent:-9999px;
+        font-size:10px;
+        text-decoration:none;
+        color:#333;
+        text-shadow:1px 1px #fff;
+        text-align:center;
+        line-height:20px;
 	overflow:hidden;
-}
-#notifications .controls .next {
-	width:86px;
-	height:22px;
-	background:url(../images/notifications_next.gif) no-repeat top left;
-	float:left;
-	display:block;
-	text-indent:-9999px;
-	overflow:hidden;
+        border:1px solid #3c3c3c;
 }
 #notifications .controls .close {
 	width:55px;
