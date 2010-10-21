@@ -155,7 +155,7 @@ var _startup = _tap.register({
         });
         new CirTooltip({
             hovered: $$('#experience .circle-thumb'),
-            template: 'side-tooltip'
+            template: 'title-desc-tooltip'
         });
     }
 });
