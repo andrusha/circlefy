@@ -627,7 +627,7 @@ var CirTooltip = new Class({
     
     leave: function(event, element) {
         var tip = $('tooltip-'+this.currentElement);
-        //this.hide(tip);
+        this.hide(tip);
     },
     hide: function(element){
         element.morph({'opacity':0});
