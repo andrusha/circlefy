@@ -124,7 +124,9 @@ var _tooltips = _tap.register({
         this.subscribe('feed.init; feed.changed', function() {
             new CirTooltip({
                hovered: $$('#feed .avatar-author, #feed .circle'),
-               template: 'name-tooltip'
+               template: 'name-tooltip',
+               position: 'bottom',
+               align: 'center'
             });
         }.bind(this));
         this.subscribe('groups.get', function() {

@@ -529,6 +529,10 @@ String.implement({
  * 
  * based on this MooTooltips: http://www.php-help.ro/examples/mootooltips-javascript-tooltips/
  *
+ * position / align possible combos:
+ * top-bottom / left-center-right
+ * left-right / top-middle-bottom
+ *
  * @version		1.0.0
  *
  * @author		Leandro Ardissone <leandro [at] ardissone.com>
@@ -541,7 +545,8 @@ var CirTooltip = new Class({
         hovered: null,      // hovered element
         duration: 100,      // time after mouse leaves hovered element
         template: null,     // template to use
-        position: 'bottom'  // position where the tooltip will be displayed: top, bottom, left, right
+        position: 'bottom', // position where the tooltip will be displayed: top, bottom, left, right
+        align: 'left'       // tooltip alignment: left, center, right, top, middle, bottom
     },
     
     initialize: function(options) {
@@ -550,13 +555,7 @@ var CirTooltip = new Class({
         if(!this.options.hovered) return;
         
         this.elements = this.options.hovered;
-        /*
-        if (this.options.container) {
-            if ($(this.options.container)) 
-                this.elements = $(this.options.container).getElements(this.options.hovered);
-        } else
-            this.elements = $(document.body).getElements(this.options.hovered);
-        */
+        
         if (this.elements && this.elements.length > 0) {
             this.currentElement = null;
             this.templater = new Template();
@@ -571,6 +570,12 @@ var CirTooltip = new Class({
             var properties = new Hash();
             properties.include('visible',0);
             properties.include('id', data.id);
+            
+            if (elem.getData('tipposition'))
+                properties.include('position', elem.getData('tipposition'));
+            if (elem.getData('tipalign'))
+                properties.include('align', elem.getData('tipalign'));
+            
             
             this.tooltip = Elements.from(this.tooltip_template.apply(data));
             
@@ -594,31 +599,51 @@ var CirTooltip = new Class({
         var elSize = element.getComputedSize();
         var tipCoord = tip.getCoordinates();
         var tipSize = tip.getComputedSize();
-        this.currentElementSize = elSize;
-        this.currentTipSize = tipSize;
         
         // position calculation
         var top_dist = left_dist = 0;
+        
+        var align = this.options.align;
         var pos = this.options.position;
-        if (pos == 'top') {
-            top_dist = elCoord.top - tipSize.height;
-            left_dist = elCoord.left;
-        } else if (pos == 'left') {
-            top_dist = elCoord.top;
-            left_dist = elCoord.left - tipSize.width;
-        } else if (pos == 'right') {
-            top_dist = elCoord.top;
-            left_dist = elCoord.left + elSize.width;
+        if (elProperties.get('position'))
+            pos = elProperties.get('position');
+        if (elProperties.get('align'))
+            align = elProperties.get('align');
+        
+        if (pos == 'top' || pos == 'bottom') {
+            if (pos == 'top')
+                top_dist = elCoord.top - tipSize.height;
+            else
+                top_dist = elCoord.top + elSize.height;
+            
+            if (align == 'center')
+                left_dist = elCoord.left + (elSize.width / 2) - (tipSize.width / 2);
+            else if (align == 'right')
+                left_dist = elCoord.right - tipSize.width;
+            else left_dist = elCoord.left;
         } else {
-            top_dist = elCoord.top + elSize.height;
-            left_dist = elCoord.left;
+            if (pos == 'left') 
+                left_dist = elCoord.left - tipSize.width;
+            else 
+                left_dist = elCoord.left + elSize.width;
+            
+            if (align == 'middle')
+                top_dist = elCoord.top - (elSize.height / 2) + (tipSize.height / 2);
+            else if (align == 'bottom')
+                top_dist = elCoord.bottom - tipSize.height;
+            else top_dist = elCoord.top;
         }
+        
         tip.setStyles({
             'position': 'absolute',
             'top': top_dist,
             'left': left_dist,
             'z-index': '110000'
         });
+        
+        // add custom classes
+        tip.addClass('position-'+pos);
+        tip.addClass('align-'+align);
         
         elProperties.set('leave', top_dist);
         this.currentElement = elProperties.get('id');
