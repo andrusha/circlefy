@@ -383,16 +383,8 @@ Element.Events.outerClick = {
 
 };
 
-Element.Events.showTip = {
-    condition : function(event){
-        return true;
-    }
-};
-Element.Events.hideTip = {
-    condition : function(event){
-        return true;
-    }
-};
+Element.Events.showTip = {};
+Element.Events.hideTip = {};
 
 Element.implement({
 
