@@ -1,7 +1,7 @@
 <?php
     foreach ($_cl['list'] as $c):
 ?>
-<a href="/circle/<?=$c['symbol']?>" class="circle-thumb" class="circle-thumb" data-tipid="circle-<?=$c['id']?>" data-tiptitle="<?= $c['name']?>">
+<a href="/circle/<?=$c['symbol']?>" class="circle-thumb" class="circle-thumb" data-tipid="circle-<?=$c['id']?>" data-tiptitle="<?= $c['name']?>" data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>">
     <span class="circle"></span>
     <img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" />
 </a>
