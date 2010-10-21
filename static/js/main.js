@@ -154,7 +154,8 @@ var _startup = _tap.register({
         new CirTooltip({
             hovered: $$('#sidebar .circle-thumb'),
             template: 'side-tooltip',
-            position: 'left'
+            position: 'left',
+			align: 'middle'
         });
         new CirTooltip({
             hovered: $$('#experience .circle-thumb'),
