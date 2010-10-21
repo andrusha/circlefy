@@ -30,8 +30,7 @@ class page_homepage extends Base {
                 'comet_groups');
             $this->set('feed', 'feed_type');
             $this->set('Your Feed', 'feed_name');
-        } else
-            $this->set('Discover', 'feed_name');
+        }
 
         if (empty($feed) || $this->user->guest) {
             $feed = TapsList::search('public', array(), T_USER_INFO | T_GROUP_INFO)
@@ -39,6 +38,7 @@ class page_homepage extends Base {
                     ->format()
                     ->asArrayAll();
             $this->set('public', 'feed_type');
+            $this->set('Discover', 'feed_name');
         }
         
         $this->set($feed, 'feed');

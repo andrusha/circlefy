@@ -25,7 +25,10 @@ $pages = array(
         ),
         'circle'   => array(
             'allowed'  => true,
-            'template' => 'circle'
+            'template' => 'circle',
+            'actions' => array(
+                'edit' => 'group_edit'
+            )
         ),
         'user'     => array(
             'allowed'  => true,
@@ -34,6 +37,10 @@ $pages = array(
         'convo'    => array(
             'allowed'  => true,
             'template' => 'conversation'
+        ),
+        'group_edit' => array(
+            'allowed'  => false,
+            'template' => 'group_edit'
         ),
     );
 
@@ -67,7 +74,13 @@ $type = $_GET['type'];
 
 if (isset($page) || !isset($ajax)) {
     if (array_key_exists($page, $pages) && $pages[$page]['allowed']) {
-        //hooray
+        //ugly piece of shit:
+        if (isset($pages[$page]['actions']))
+            foreach ($pages[$page]['actions'] as $action => $p)
+                if (isset($_GET[$action]) && array_key_exists($p, $pages)) {
+                    $page = $p;
+                    break;
+                }
     } else {
         $page = $default_page;
     }
