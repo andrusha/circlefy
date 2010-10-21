@@ -1264,7 +1264,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
   padding:5px;
   }
-  .tooltip-name .bg h2 {
+.bg h2 {
 	  font-size:12px;
 	  font-weight:bold;
   }
