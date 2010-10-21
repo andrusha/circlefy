@@ -169,4 +169,9 @@
 #notifications .controls strong {
 	font-weight:bold;
 	color:#000;
+	font-size:11px;
+}
+#notifications .controls a:hover {
+	color:#000;
+	background:#eee;
 }
