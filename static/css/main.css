@@ -1237,7 +1237,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip {
   display: none;
 }
-.tooltip-title-desc, .tooltip-follow, .tooltip-side, .tooltip-name {
+.tooltip-title-desc, .tooltip-follow, .tooltip-name {
   position: absolute;
   padding: 5px 0;
   width: auto;
@@ -1252,10 +1252,23 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
   padding:5px;
+  border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
   }
 .bg h2 {
 	  font-size:12px;
 	  font-weight:bold;
+  }
+  .tooltip-side {
+  position: absolute;
+  padding: 0 5px;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_small.png) no-repeat 10px 0px;
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
