@@ -383,6 +383,17 @@ Element.Events.outerClick = {
 
 };
 
+Element.Events.showTip = {
+    condition : function(event){
+        return true;
+    }
+};
+Element.Events.hideTip = {
+    condition : function(event){
+        return true;
+    }
+};
+
 Element.implement({
 
 	does: function(fn){
@@ -546,7 +557,8 @@ var CirTooltip = new Class({
         duration: 100,      // time after mouse leaves hovered element
         template: null,     // template to use
         position: 'bottom', // position where the tooltip will be displayed: top, bottom, left, right
-        align: 'left'       // tooltip alignment: left, center, right, top, middle, bottom
+        align: 'left',      // tooltip alignment: left, center, right, top, middle, bottom
+        sticky: false       // tooltip will remain open until close event is throw
     },
     
     initialize: function(options) {
@@ -585,8 +597,13 @@ var CirTooltip = new Class({
             var over = this.enter.bindWithEvent(this, elem);
             var out = this.leave.bindWithEvent(this, elem);
             
-            elem.addEvent('mouseenter', over);
-            elem.addEvent('mouseleave', out.pass(this.tooltip));
+            if (!this.options.sticky) {
+                elem.addEvent('mouseenter', over);
+                elem.addEvent('mouseleave', out.pass(this.tooltip));
+            } else {
+                elem.addEvent('showTip', over);
+                elem.addEvent('hideTip', out.pass(this.tooltip));
+            }
         }, this);
     },
     
@@ -670,11 +687,27 @@ var MediaEmbed = new Class ({
     
     options: {
         element: null,      // watched element
-        services: ''      // time after mouse leaves hovered element
+        services: /http:\/\/(.*youtube\.com\/watch.*|.*\.youtube\.com\/v\/.*|youtu\.be\/.*|.*\.youtube\.com\/user\/.*#.*|.*\.youtube\.com\/.*#.*\/.*|m\.youtube\.com\/watch.*|m\.youtube\.com\/index.*|www\.livestream\.com\/.*|www\.flickr\.com\/photos\/.*|flic\.kr\/.*|.*imgur\.com\/.*|.*dribbble\.com\/shots\/.*|drbl\.in\/.*|.*\.deviantart\.com\/art\/.*|.*\.deviantart\.com\/gallery\/.*|.*\.deviantart\.com\/#\/.*|fav\.me\/.*|.*\.deviantart\.com|.*\.deviantart\.com\/gallery|.*\.deviantart\.com\/.*\/.*\.jpg|.*\.deviantart\.com\/.*\/.*\.gif|.*\.deviantart\.net\/.*\/.*\.jpg|.*\.deviantart\.net\/.*\/.*\.gif|www\.vimeo\.com\/groups\/.*\/videos\/.*|www\.vimeo\.com\/.*|vimeo\.com\/m\/#\/featured\/.*|vimeo\.com\/groups\/.*\/videos\/.*|vimeo\.com\/.*|vimeo\.com\/m\/#\/featured\/.*|www\.ted\.com\/talks\/.*\.html.*|www\.ted\.com\/talks\/lang\/.*\/.*\.html.*|www\.ted\.com\/index\.php\/talks\/.*\.html.*|www\.ted\.com\/index\.php\/talks\/lang\/.*\/.*\.html.*|techcrunch\.tv\/watch.*|techcrunch\.tv\/.*\/watch.*|www\\.last\\.fm\/music\/.*|www\\.last\\.fm\/music\/+videos\/.*|www\\.last\\.fm\/music\/+images\/.*|www\\.last\\.fm\/music\/.*\/_\/.*|www\\.last\\.fm\/music\/.*\/.*|www\.facebook\.com\/photo\.php.*|www\.facebook\.com\/video\/video\.php.*|gist\.github\.com\/.*|.*\.scribd\.com\/doc\/.*|tumblr\.com\/.*|.*\.tumblr\.com\/post\/.*)/i
     },
     
     initialize: function(options) {
         this.setOptions(options||null);
+        
+        if (!this.options.element) return;
+        this.url_found = false;
+        this.addChecker();
+    },
+    addChecker: function() {
+        var self = this;
+        this.options.element.addEvent('keydown', function(event){
+            var content = event.target.value;
+            
+            var urls = content.match(self.options.services);
+            if (urls && urls.length > 0) {
+                console.log(urls[0]);
+            }
+            //console.log(event.target.value, self.options, urls);
+        });
     }
 });
 
