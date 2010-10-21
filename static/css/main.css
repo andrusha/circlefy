@@ -1265,6 +1265,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   color: #FFF;
   text-shadow: 1px 1px #000;
   background: url(../images/tooltip_small.png) no-repeat top center;
+  margin:5px 0 0 0;
   }
 .bg h2 {
 	  font-size:12px;
@@ -1279,6 +1280,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   color: #FFF;
   text-shadow: 1px 1px #000;
   background: url(../images/tooltip_small_left.png) no-repeat right center;
+  margin:0 10px 0 0;
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
