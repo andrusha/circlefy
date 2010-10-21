@@ -1237,7 +1237,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip {
   display: none;
 }
-.tooltip-title-desc, .tooltip-follow, .tooltip-name {
+.tooltip-title-desc, .tooltip-name {
   position: absolute;
   padding: 5px 0;
   width: auto;
@@ -1260,7 +1260,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	  font-size:12px;
 	  font-weight:bold;
   }
-  .tooltip-side {
+  .tooltip-side, .tooltip-follow {
   position: absolute;
   padding: 0 5px;
   width: auto;
