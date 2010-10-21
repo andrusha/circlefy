@@ -150,7 +150,8 @@ var _startup = _tap.register({
 		new CirTooltip({
             container: $$('.circles')[0],
             hovered: '.circle-thumb',
-            template: 'side-tooltip'
+            template: 'side-tooltip',
+			position: 'left'
         });
     }
 });
