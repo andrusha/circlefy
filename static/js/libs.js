@@ -610,6 +610,12 @@ var CirTooltip = new Class({
             
             this.tooltip = Elements.from(this.tooltip_template.apply(data))[0];
 
+            this.tooltip.setStyles({
+                'display':'block',
+                'position': 'absolute',
+                'z-index': '110000'
+            });
+
             this.tooltip.set('tween', {link: 'cancel', duration: 'short',
                 onComplete: function(elem) { if (elem.getStyle('opacity') == 0) elem.dispose(); }
             });
@@ -686,11 +692,8 @@ var CirTooltip = new Class({
         }
         
         tip.setStyles({
-            'display':'block',
-            'position': 'absolute',
             'top': top_dist,
-            'left': left_dist,
-            'z-index': '110000'
+            'left': left_dist
         });
         
         // add custom classes
