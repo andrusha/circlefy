@@ -28,6 +28,11 @@ module: _live
 var _live = {};
 
 /*
+ * namespace for all editing classes
+ */
+var _edit = {};
+
+/*
  * If we include tap, we'll anyway need
  * some additional global functions, so,
  * here it is:

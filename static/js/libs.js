@@ -504,6 +504,9 @@ String.implement({
 		return this+s;
 	},
 
+    /*
+     * Make line shorter till specified limit
+     */
     limit: function(size) {
         size = size || 30;
         if (this.length <= size)
@@ -518,8 +521,31 @@ String.implement({
             return words.join(' ') + ' ...';
         else
             return this.substr(0, size) + ' ...';
-    }
+    },
 
+    /*
+     * Make short url-complient text for use as `symbol`
+     */
+    makeSymbol: function(size) {
+        size = size || 30;
+        var str = this.trim();
+
+        //UpperCase for words if there were one
+        if (str.contains(' '))
+            str = str.capitalize().clean().replace(/ /g, '-');
+
+        //clean garbage
+        str = str.replace(/[^a-z0-9\-)(]*/ig, '');
+
+        //if there are words and string > limit
+        //try to make abbreviations
+        if (str.contains('-'))
+            while (str.length > size && str.test(/[a-z]/))
+                str = str.replace(/([A-Z])[a-z0-9]+([^a-z0-9]*)$/, '$1$2');
+
+        return str.substring(0, size);
+    }
+    
 });
 
 
@@ -669,8 +695,10 @@ var CirTooltip = new Class({
         element.dispose();
     },
     show: function(){
-        $('tooltip-'+this.currentElement).setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
-        $('tooltip-'+this.currentElement).morph({'opacity': 1});
+        var el = $('tooltip-'+this.currentElement);
+        el.setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
+        el.set('tween', {duration: 'short'});
+        el.tween('opacity', 1);
     }
 });
 
