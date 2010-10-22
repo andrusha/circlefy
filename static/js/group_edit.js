@@ -32,7 +32,6 @@ _edit.group = _tap.register({
     },
 
     update: function(passed, el, e) {
-        alert(passed);
         e.stop();
     }
 

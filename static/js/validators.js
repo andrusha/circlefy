@@ -11,11 +11,14 @@ Form.Validator.implement('options', {
     },
 
     onElementFail: function (elem, validators) {
-        var text = Form.Validator.validators[validators[0]].getError(elem);
+        var text = '';
+        validators.each(function (val) {
+            text += '<p>' + Form.Validator.validators[val].getError(elem) + '</p>';
+        });
         elem.setData('tiptext', text);
         elem.removeClass('valid');
         elem.addClass('failed');
-        elem.fireEvent('showTip');
+        elem.fireEvent('showCustomTip', [{content: text}]);
     }
 });
 
@@ -23,9 +26,12 @@ Form.Validator.add('groupDoesNotExists', {
     errorMsg: function (elem) {
         return '<a href="/circle/'+elem.value+'">'+elem.value+'</a> circle already exists';
     },
-    test: function (elem) {
+    test: function (elem, props) {
         var symbol = elem.value,
             status = false;
+
+        if (symbol == props.oldSymbol)
+            return true;
 
         new Request({
             url:  '/AJAX/group/exists',

@@ -117,15 +117,14 @@ abstract class FuncLib {
         }
 
         //delete all garbage symbols
-        $gname = preg_replace('/[^a-z0-9\-)]*/i', '', $gname);
+        $gname = preg_replace('/[^a-z0-9\-)(]*/i', '', $gname);
         
         //if gname length is greater, than DB limit
         //try to make abbreviation of our words,
         //if words at least two
         if (strpos($gname, '-'))
-            while(strlen($gname) > $limit) {
-                $gname = preg_replace('/([A-Z])[a-z0-9]+/', '$1', $gname);
-            }
+            while(strlen($gname) > $limit && preg_match('/[a-z]/', $gname))
+                $gname = preg_replace('/([A-Z])[a-z0-9]+([^a-z0-9]*)$/', '$1$2', $gname);
         
         //if even after abbreveation name is greater
         //our limit, then just cut it
