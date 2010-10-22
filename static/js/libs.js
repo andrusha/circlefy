@@ -630,7 +630,6 @@ var CirTooltip = new Class({
         }, this);
     },
     enter: function(event, element, new_content) {
-        console.log('a');
         var tip = element.retrieve('tip');
         var elProperties = element.retrieve('properties');
         $(_body).adopt(tip);
@@ -684,9 +683,9 @@ var CirTooltip = new Class({
         // are we setting new title?
         if (new_content) {
             if (new_content.title)
-                tip.getElement('.title').innerHTML=new_content.title;
+                tip.getElement('.tooltip-title').innerHTML=new_content.title;
             if (new_content.content)
-                tip.getElement('.content').innerHTML=new_content.content;
+                tip.getElement('.tooltip-content').innerHTML=new_content.content;
         }
         
         // add custom classes
