@@ -1157,6 +1157,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	padding:5px;
 	width:630px;
 	margin:0 0 20px 0;
+	letter-spacing:1px;
 }
 #edit textarea {
 	border:2px solid #346394;
@@ -1195,6 +1196,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	font-size:18px;
 	color:#343434;
 	font-weight:normal;
+	letter-spacing:1px;
 	font-family:Arial, Helvetica, sans-serif;
 	padding:4px;
 	width:240px;
