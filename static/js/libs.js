@@ -385,7 +385,7 @@ Element.Events.outerClick = {
 
 Element.Events.showTip = {};
 Element.Events.hideTip = {};
-Element.Events.showTipWithTitle = {};
+Element.Events.showCustomTip = {};
 
 Element.implement({
 
@@ -623,7 +623,7 @@ var CirTooltip = new Class({
                 elem.addEvent('showTip', over);
                 elem.addEvent('hideTip', out.pass(this.tooltip));
                 var self = this;
-                elem.addEvent('showTipWithTitle', function(content){
+                elem.addEvent('showCustomTip', function(content){
                     self.enter(this, elem, content)
                 });
             }
@@ -682,8 +682,12 @@ var CirTooltip = new Class({
         });
         
         // are we setting new title?
-        if (new_content)
-            tip.getElement('.title').innerHTML=new_content;
+        if (new_content) {
+            if (new_content.title)
+                tip.getElement('.title').innerHTML=new_content.title;
+            if (new_content.content)
+                tip.getElement('.content').innerHTML=new_content.content;
+        }
         
         // add custom classes
         tip.addClass('position-'+pos);
