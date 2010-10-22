@@ -385,6 +385,7 @@ Element.Events.outerClick = {
 
 Element.Events.showTip = {};
 Element.Events.hideTip = {};
+Element.Events.showTipWithTitle = {};
 
 Element.implement({
 
@@ -621,11 +622,15 @@ var CirTooltip = new Class({
             } else {
                 elem.addEvent('showTip', over);
                 elem.addEvent('hideTip', out.pass(this.tooltip));
+                var self = this;
+                elem.addEvent('showTipWithTitle', function(content){
+                    self.enter(this, elem, content)
+                });
             }
         }, this);
     },
-    
-    enter: function(event, element) {
+    enter: function(event, element, new_content) {
+        console.log('a');
         var tip = element.retrieve('tip');
         var elProperties = element.retrieve('properties');
         $(_body).adopt(tip);
@@ -676,6 +681,10 @@ var CirTooltip = new Class({
             'z-index': '110000'
         });
         
+        // are we setting new title?
+        if (new_content)
+            tip.getElement('.title').innerHTML=new_content;
+        
         // add custom classes
         tip.addClass('position-'+pos);
         tip.addClass('align-'+align);
@@ -725,7 +734,18 @@ var MediaEmbed = new Class ({
             
             var urls = content.match(self.options.services);
             if (urls && urls.length > 0) {
-                console.log(urls[0], urls[0].split(' ')[0]);
+                var _url = urls[0].split(' ')[0];
+                if (self.url_found != _url) {
+                    self.url_found = _url;
+                    
+                    var request = new Request.JSON({
+                        url: 'http://api.embed.ly/v1/api/oembed?format=json&url='+_url,
+                        onSuccess: function(jsonObj) {
+                            console.log('getting embed..');
+                            console.log(jsonObj);
+                        }
+                    }).get();
+                }
             }
         });
     }
