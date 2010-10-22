@@ -7,11 +7,11 @@ class ajax_follow extends Base {
     protected $view_output = 'JSON';
 
     public function __invoke() {
-        $id = intval($_POST['id']);
+        $id = !is_array($_POST['id']) ? intval($_POST['id']) : $_POST['id'];
         $type = $_POST['type'];
         $state = intval($_POST['state']);
 
-        if (in_array($type, array('user', 'group', 'convo')))
+        if (in_array($type, array('user', 'group', 'convo', 'bulk')))
             $res = $this->$type($id, $state);
 
         $this->data = array('success' => $res ? 1 : 0);
@@ -31,6 +31,12 @@ class ajax_follow extends Base {
             $this->user->leave($group);
 
         return true;
+    }
+
+    private function bulk($gids, $state) {
+        if (!empty($gids))
+            GroupsList::fromIds(array_map('intval', $gids))->bulkJoin($this->user);
+        return true; 
     }
 
     private function convo($cid, $state) {

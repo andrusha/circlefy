@@ -155,23 +155,20 @@ _modal.signup = _tap.register({
         if (!passed)
             return;
 
-        return;
-
         var self = this;
-        var indic = this.modalForm.getElement('span.indicator');
+        var indic = this.form.getElement('span.indicator');
         var indic_msg = indic.getElement('span.indic-msg');
-        var uname = this.signupData.uname.get('value');
 
         new Request({
             url: '/AJAX/user/facebook',
             data: {
                 action: 'create',
-                uname:  uname,
-                email:  this.signupData.email.get('value'),
-                pass:   this.signupData.pass.get('value')
+                uname:  this.fields.uname.value,
+                email:  this.fields.email.value,
+                pass:   this.fields.pass.value
             },
             onRequest: function(){
-                self.modalForm.getElement('span.modal-actions').setStyle('display', 'none');
+                self.form.getElement('span.modal-actions').setStyle('display', 'none');
                 indic_msg.set('text', 'Signing you up..');
                 indic.setStyle('display', 'block');
             },
@@ -303,10 +300,11 @@ _modal.suggestions = _tap.register({
         }
          
         new Request({
-           url: '/AJAX/group/join', 
+           url: '/AJAX/follow', 
            data: {
-               action: 'bulk',
-               gids: gids
+               type: 'bulk',
+               id: gids,
+               state: 1
            },
            onRequest: function () {
                indic.setStyle('display', 'block');
