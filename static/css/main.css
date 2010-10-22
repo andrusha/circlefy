@@ -1152,7 +1152,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	display:block;
 	font-size:18px;
 	color:#343434;
-	font-weight:bold;
+	font-weight:normal;
 	font-family:Arial, Helvetica, sans-serif;
 	padding:5px;
 	width:630px;
@@ -1194,7 +1194,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	display:block;
 	font-size:18px;
 	color:#343434;
-	font-weight:bold;
+	font-weight:normal;
 	font-family:Arial, Helvetica, sans-serif;
 	padding:4px;
 	width:240px;
