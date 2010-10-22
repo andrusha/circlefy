@@ -1237,15 +1237,25 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip, #error-tooltip {
   display: none;
 }
-.tooltip-title-desc {
+.tooltip-error.position-top {
   position: absolute;
-  padding: 5px 0;
+  padding: 0 0 5px;
   width: auto;
   max-width:200px;
   font-size: 11px;
   color: #FFF;
   text-shadow: 1px 1px #000;
-  background: url(../images/tooltip_small.png) no-repeat 10px 0px;
+  background: url(../images/tooltip_red_down.png) no-repeat bottom center;
+  }
+.tooltip-error.position-bottom {
+  position: absolute;
+  padding: 0 0 5px;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_red.png) no-repeat top center;
   }
 .tooltip-error {
   position: absolute;
