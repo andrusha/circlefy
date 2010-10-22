@@ -634,6 +634,14 @@ var CirTooltip = new Class({
         var elProperties = element.retrieve('properties');
         $(_body).adopt(tip);
         
+        // are we setting new title?
+        if (new_content) {
+            if (new_content.title)
+                tip.getElement('.tooltip-title').innerHTML=new_content.title;
+            if (new_content.content)
+                tip.getElement('.tooltip-content').innerHTML=new_content.content;
+        }
+        
         var elCoord = element.getCoordinates();
         var elSize = element.getComputedSize();
         var tipCoord = tip.getCoordinates();
@@ -679,14 +687,6 @@ var CirTooltip = new Class({
             'left': left_dist,
             'z-index': '110000'
         });
-        
-        // are we setting new title?
-        if (new_content) {
-            if (new_content.title)
-                tip.getElement('.tooltip-title').innerHTML=new_content.title;
-            if (new_content.content)
-                tip.getElement('.tooltip-content').innerHTML=new_content.content;
-        }
         
         // add custom classes
         tip.addClass('position-'+pos);
