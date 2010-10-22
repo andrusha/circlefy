@@ -29,6 +29,7 @@ var _modal = _tap.register({
             'modal.hide': this.hide.bind(this)
         });
 
+        //close modal on Esc
         var a = new Keyboard({
             events: {
                 'esc': function () {
@@ -36,6 +37,22 @@ var _modal = _tap.register({
                 }.bind(this)
             }
         });
+
+        $$('button.signup-button').addEvent('click', function () {
+            this.publish('modal.show.signup', []);
+        }.bind(this));
+
+        $$('button.login-button').addEvent('click', function () {
+            this.publish('modal.show.login', []);
+        }.bind(this));
+
+        $$('li.suggestions').addEvent('click', function () {
+            this.publish('modal.show.suggestions', []);
+        }.bind(this));
+
+        $$('a#access').addEvent('click', function () {
+            this.publish('modal.show.sign-login', []);
+        }.bind(this));
     },
     
     /*
@@ -111,256 +128,63 @@ var _modal = _tap.register({
 _modal.signup = _tap.register({
 
     init: function() {
-        var modalForm = this.modalForm = $('modal-signup');
-        this.fb_fname = modalForm.getElement('input[name="fb_fname"]');
-        this.fb_lname = modalForm.getElement('input[name="fb_lname"]');
-        
-        var signupData = this.signupData = {
-            uname: modalForm.getElement('input[name="uname"]'),
-            email: modalForm.getElement('input[name="email"]'),
-            pass: modalForm.getElement('input[name="pass"]'),
-        };
+        var form   = this.form   = $('signup-form'),
+            fields = this.fields = {},
+            inputs = form.getElements('input:not([type="submit"]), #fb-login-button');
 
-        signupData.uname.addEvent('blur', this.checkUname.toHandler(this));
-        signupData.email.addEvent('blur', this.checkEmail.toHandler(this));
-        signupData.pass.addEvent('blur', this.checkPass.toHandler(this));
-        modalForm.getElement('button').addEvent('click', this.submitForm.toHandler(this)); 
+       inputs.each( function (el) {
+           fields[el.name] = el;
+       });
 
-        $$('button.signup-button').addEvent('click', function () {
-            this.publish('modal.show.signup', []);
-        }.bind(this));
+       form.validator = new Form.Validator(form, {
+            fieldSelectors: 'input,#fb-login-button',
+            onFormValidate: this.submitForm.bind(this)
+       });
 
-        $$('button.login-button').addEvent('click', function () {
-            this.publish('modal.show.login', []);
-        }.bind(this));
-
-        $$('li.suggestions').addEvent('click', function () {
-            this.publish('modal.show.suggestions', []);
-        }.bind(this));
-
-        $$('a#access').addEvent('click', function () {
-            this.publish('modal.show.sign-login', []);
-        }.bind(this));
+        new CirTooltip({
+            hovered:  inputs,
+            template: 'error-tooltip',
+            position: 'top',
+            align:    'right',
+            sticky:   true
+        });
     },
 
-    showError: function(el, msg){
-        el.store('passed', false).removeClass('passed').addClass('error');
-        el.getParents('p')[0].getNext('p.guide').set('text', msg).setStyle('display', 'block');
-    },
-
-    removeError: function(el){
-        el.store('passed', true).removeClass('error').addClass('passed');
-        el.getParents('p')[0].getNext('p.guide').setStyle('display', 'none');
-    },
-
-    noErrors: function(){
-        return !$H(this.signupData).getValues().map(function(item){
-            return !!item.retrieve('passed');
-        }).contains(false);
-    },
-
-    checkUname: function(el){
-        var self = this,
-            name = el.value;
-        if (this.oldUname == name)
+    submitForm: function(passed, form, e) {
+        e.stop();
+        if (!passed)
             return;
-        this.oldUname = name;
-        
-        if (name.isEmpty() || !(name.length >= 4 && name.length < 20)) {
-            return self.showError(el, 'Username must be at least 4 characters');
-        } else {
-            new Request({
-                url: '/AJAX/user/check',
-                data: {
-                    type: 'uname',
-                    val:   name
-                },
-                onSuccess: function(){
-                    var response = JSON.decode(this.response.text);
-                    if (!response.available) {
-                        self.showError(el, 'This username is already taken.');
-                    } else {
-                        self.removeError(el);
-                    }
-                }
-            }).send();
-        }
-        return self.removeError(el);
-    },
 
-    checkEmail: function(el){
-        var self = this,
-            email = el.value;
+        return;
 
-        if (this.oldEmail == email)
-            return;
-        this.oldEmail = email;
-
-        el.value = email.toLowerCase();
-        if (email.isEmpty() || !(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i).test(email)) {
-            return self.showError(el, 'Please enter a valid email.');
-        } else {
-            new Request({
-                url: '/AJAX/user/check',
-                data: {
-                    type: 'email',
-                    val:   email 
-                },
-                onSuccess: function(){
-                    var response = JSON.decode(this.response.text);
-                    if (!response.available) {
-                        self.showError(el, 'This email is already used.');
-                    } else {
-                        self.removeError(el);
-                    }
-                }
-            }).send();
-        }
-        return self.removeError(el);
-    },
-
-    checkPass: function(el){
-        if (el.value.isEmpty() || !(el.value.length >= 6 && el.value.length < 40)) {
-                return this.showError(el, 'Password must be at least 6 characters.');
-        }
-        return this.removeError(el);
-    },
-
-    checkFacebook: function() {
-        var self = this;
-        var el = $('fb-login-button');
-
-        this.removeError(el);
-        new Request({
-            url: '/AJAX/user/facebook',
-            method: 'POST',
-            data: {action: 'check'},
-            onSuccess: function() {
-                var response = JSON.decode(this.response.text);
-                if (response.success){
-                    $('modal-signup-name').text = response.data.fname;
-                } else {
-                    if (response.reason == 'no_fb')  {
-                        self.showError(el, 'you must login into facebook before proceed');
-                    } else if (response.reason == 'exists') {
-                        self.showError(el, 'user with this facebook account already exists');
-                    } else { 
-                        self.showError(el, 'something went wrong durning account checking');
-                    }
-                }
-            },
-            async: false
-        }).send();
-    },
-
-    submitForm: function(e) {
         var self = this;
         var indic = this.modalForm.getElement('span.indicator');
         var indic_msg = indic.getElement('span.indic-msg');
         var uname = this.signupData.uname.get('value');
 
-        this.checkFacebook();
-
-        if (this.noErrors()) {
-            new Request({
-                url: '/AJAX/user/facebook',
-                data: {
-                    action: 'create',
-                    uname:  uname,
-                    email:  this.signupData.email.get('value'),
-                    pass:   this.signupData.pass.get('value')
-                },
-                onRequest: function(){
-                    self.modalForm.getElement('span.modal-actions').setStyle('display', 'none');
-                    indic_msg.set('text', 'Signing you up..');
-                    indic.setStyle('display', 'block');
-                },
-                onSuccess: function(){
-                    var response = JSON.decode(this.response.text);
-                    if (response.success) {
-                        indic_msg.set('text', 'Logging you in..');
-                        self.publish('modal.show.suggestions', [ function () {
-                            window.location.reload();
-                        }]);
-                    } else {
-                        indic_msg.text = 'Error durning account creation';
-                    }
-                }
-            }).send();
-        } else {
-            $$($H(this.signupData).getValues().filter(function(item){
-                    return !item.retrieve('passed');
-            })).fireEvent('blur', [e]);
-        }
-    },
-});
-
-/*
- * Facebook account integration
-*/
-_modal.facebook = _tap.register({
-    init: function() {
-        var form = this.form = $('modal-facebook-status'),
-            status = this.status = form.getElement('input[name="status"]'),
-            message = this.message = form.getElement('input[name="message"]');
-        this.link = form.getElement('input[name="link"]');
-
-        var preview = this.preview = $('fb_preview'),
-            status_preview = this.status_preview = preview.getElement('span.fb_message'),
-            message_preview = this.message_preview = preview.getElement('div.caption');
-
-        var name = _vars.user.real_name; 
-
-        preview.getElement('a.fb_name').set('text', name);
-
-        form.getElement('button').addEvent('click', this.send.toHandler(this));
-        status.addEvent('keyup', function() {
-            status_preview.set('text', status.get('value'));
-        });
-        message.addEvent('keyup', function() {
-            message_preview.set('text', message.get('value'));
-        });
-    },
-
-    show: function(cid, symbol) {
-        this.cid = cid;
-        this.symbol = symbol;
-
-        var status = ' leave new tap at '+symbol+' channel';
-        this.status.set('value', status);
-        this.status_preview.set('text', status);
-
-        var msg = $('tid_'+cid).getElement('p.tap-body').get('text').strip();
-        this.message.set('value', msg);
-        this.message_preview.set('text', msg);
-    },
-
-    send: function() {
-        var self = this;
-        var indic = this.form.getElement('span.indicator');
-
-        var message = this.status.get('value'),
-            link = 'http://andrew.tap.info/tap/'+this.cid,
-            name = 'Join discussion',
-            caption = this.message.get('value');
-
         new Request({
             url: '/AJAX/user/facebook',
             data: {
-                action: 'share',
-                message: message,
-                caption: caption,
-                link: link,
-                name: name,
+                action: 'create',
+                uname:  uname,
+                email:  this.signupData.email.get('value'),
+                pass:   this.signupData.pass.get('value')
             },
-            onRequest: function() {
-                self.form.getElement('span.modal-actions').setStyle('display', 'none');
+            onRequest: function(){
+                self.modalForm.getElement('span.modal-actions').setStyle('display', 'none');
+                indic_msg.set('text', 'Signing you up..');
                 indic.setStyle('display', 'block');
             },
-            onSuccess: function() {
-                self.form.getElement('span.modal-actions').setStyle('display', 'block');
-                indic.setStyle('display', 'none');
-                self.publish('modal.hide', []);
+            onSuccess: function(){
+                var response = JSON.decode(this.response.text);
+                if (response.success) {
+                    indic_msg.set('text', 'Logging you in..');
+                    self.publish('modal.show.suggestions', [ function () {
+                        window.location.reload();
+                    }]);
+                } else {
+                    indic_msg.text = 'Error durning account creation';
+                }
             }
         }).send();
     }

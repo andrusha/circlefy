@@ -37,8 +37,102 @@ Form.Validator.add('groupDoesNotExists', {
             async: false,
             onSuccess: function() {
                 try {
+                    status = !JSON.decode(this.response.text).exists;
+                } catch (err) {
+                    status = false;
+                }
+            }
+        }).send();
+
+        return status;
+    }
+});
+
+Form.Validator.add('userDoesNotExists', {
+    errorMsg: function (elem) {
+        return 'This username already taken';
+    },
+    test: function (elem, props) {
+        var name = elem.value,
+            status = false;
+
+        new Request({
+            url:  '/AJAX/user/check',
+            data: {
+                type: 'uname',
+                val:   name
+            },
+            link: 'cancel',
+            async: false,
+            onSuccess: function() {
+                try {
+                    status = JSON.decode(this.response.text).available;
+                } catch (err) {
+                    status = false;
+                }
+            }
+        }).send();
+
+        return status;
+    }
+});
+
+Form.Validator.add('emailDoesNotExists', {
+    errorMsg: function (elem) {
+        return 'User with this email already registred';
+    },
+    test: function (elem, props) {
+        var email  = elem.value,
+            status = false;
+
+        new Request({
+            url:  '/AJAX/user/check',
+            data: {
+                type: 'email',
+                val:   email
+            },
+            link: 'cancel',
+            async: false,
+            onSuccess: function() {
+                try {
+                    status = JSON.decode(this.response.text).available;
+                } catch (err) {
+                    status = false;
+                }
+            }
+        }).send();
+
+        return status;
+    }
+});
+
+Form.Validator.add('validate-facebook', {
+    errorMsg: function (elem) {
+        switch(elem.get('errorType')) {
+            case 'no_fb':
+                return 'You must login into facebook before proceed';
+                break;
+            case 'exists':
+                return 'User with this facebook account already exists';
+                break;
+            default:
+                return 'something went wrong durning account checking';
+        }
+    },
+
+    test: function (elem, props) {
+        var status = false;
+        new Request({
+            url:  '/AJAX/user/facebook',
+            data: {action: 'check'},
+            link: 'cancel',
+            async: false,
+            onSuccess: function() {
+                try {
                     var resp = JSON.decode(this.response.text);
-                    status = !resp.exists;
+                    status = resp.success;
+                    if (resp.reason)
+                        elem.set('errorType', resp.reason);
                 } catch (err) {
                     status = false;
                 }

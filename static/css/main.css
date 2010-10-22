@@ -1283,6 +1283,9 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   text-shadow: 1px 1px #000;
   background: url(../images/tooltip_red_down.png) no-repeat bottom center;
   }
+.tooltip-error a {
+  color: white;
+}
   .tooltip-name .bg, .tooltip-title-desc .bg, .tooltip-follow .bg, .tooltip-side .bg {
 	  background:rgba(0,0,0,.8);
 	  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);

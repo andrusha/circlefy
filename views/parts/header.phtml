@@ -11,6 +11,7 @@
 <script type="text/javascript" src="/static/js/mootools-core.js"></script>
 <script type="text/javascript" src="/static/js/mootools-more.js"></script>
 <script type="text/javascript" src="/static/js/libs.js"></script>
+<script type="text/javascript" src="/static/js/validators.js"></script>
 <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script> 
 <?php
     if(isset($_h['vars']))
@@ -18,7 +19,8 @@
 
     if (isset($_h['scripts']))
         foreach ($_h['scripts'] as $s)
-            echo "<script type='text/javascript' src='/static/js/$s'></script>\n"; ?>
+            echo "<script type='text/javascript' src='/static/js/$s'></script>\n";
+?>
 
 <!-- START GLOBAL JS SCRIPTS -->
 <script type="text/javascript" src="/static/js/follow.js"></script>

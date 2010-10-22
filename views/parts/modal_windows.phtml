@@ -3,82 +3,114 @@
 <div id="modal-container">
 
 <!-- Signup window for new users -->
-	<div id="modal-signup" class="modal-window">
-		<h2>Just one more thing before we log you in..<small>We're almost there <strong><span id="modal-signup-name"></span></strong>, but first we'll need you to add a few more details to personalize your Tap experience.</small></h2>
-		
-		<p class="forms" style="margin-top:30px"><label>Username</label> <input type="text" name="uname" class="validate-alphanum" /></p>
-		<p class="guide">This username is already taken.</p>
-		<p class="forms"><label>Email</label> <input type="text" name="email" class="validate-email" /></p>
-		<p class="guide">Enter a valid email address.</p>
-		<p class="forms"><label>Password</label> <input type="password" name="pass" /></p>
-		<p class="guide">Passwords must be at least 4 characters.</p>
-        <div class="sep"></div>
-        <p class="forms" id="fb-button"><label style="padding-right: 28px">Facebook</label>
-            <fb:login-button id="fb-login-button" show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button>
-        </p>
-        <p class="guide">There is some issue with your fb-account</p>
-		<p class="modal-actions">
-				<span class="indicator">
-						<img src="/static/spinner.gif" />
-						<span class="indic-msg">Signing you up...</span>
-				</span>
-				<span class="modal-actions">
-						<button>Start Tapping!</button><a class="modal-cancel" href="#">close</a>
-				</span>
-		</p>
-	</div>
+    <div id="modal-signup" class="modal-window">
+        <h2>Just one more thing before we log you in..<small>We're almost there <strong><span id="modal-signup-name"></span></strong>, but first we'll need you to add a few more details to personalize your Tap experience.</small></h2>
+    
+        <form id="signup-form">
+            <p class="forms">
+            <label for="i-uname">Username</label>
+            <input type="text" id="i-uname"
+                   name="uname"
+                   class="required validate-alphanum maxLength:20 minLength:4 userDoesNotExists"
+                   data-tipid="tip-signup-user"
+            />
+            </p>
+
+            <p class="forms">
+            <label for="i-email">Email</label>
+            <input type="text" id="i-email"
+                   name="email"
+                   class="required validate-email emailDoesNotExists"
+                   data-tipid="tip-signup-email"
+            />
+            </p>
+
+            <p class="forms">
+            <label for="i-pass">Password</label>
+            <input type="password" id="i-pass"
+                   name="pass"
+                   class="required minLength:6"
+                   data-tipid="tip-signup-pass"
+            />
+            </p>
+
+            <div class="sep"></div>
+            <p class="forms" id="fb-button">
+                <label for="fb-login-button" style="padding-right: 28px">Facebook</label>
+                <fb:login-button 
+                    id="fb-login-button"
+                    show-faces="true"
+                    width="300"
+                    perms="<?=FBPERMISSIONS?>"
+                    class="validate-facebook"
+                    name="facebook"
+                    data-tipid="tip-signup-facebook"
+                ></fb:login-button>
+            </p>
+
+            <p class="modal-actions">
+                <span class="indicator">
+                    <img src="/static/spinner.gif" />
+                    <span class="indic-msg">Signing you up...</span>
+                </span>
+                <span class="modal-actions">
+                    <input type="submit" value="Start Tapping!"> <a class="modal-cancel" href="#">close</a>
+                </span>
+            </p>
+        </form>
+    </div>
 
 <!-- Login -->
-	<div id="modal-login" class="modal-window">
-		<h2>Join conversation!</h2>
+    <div id="modal-login" class="modal-window">
+        <h2>Join conversation!</h2>
                     <form id="taplogin" action="/" method="POST">
-                                	<p class="forms" style="margin-top:30px;">	
+                                    <p class="forms" style="margin-top:30px;">  
                                         <label class="inblock">Username</label>
                                         <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
                                     </p>
                                     <p class="forms">
                                         <label class="inblock">Password</label>
                                         <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
-	                                </p>
+                                    </p>
                                     <div class="sep"></div>
                                     <p class="forms">
                                         <label for="facebook" class="smaller">Login with Facebook</label>
                                         <input name="facebook" type="checkbox">
                                         <span class="fb"><fb:login-button show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
                                     </p>
-                                	<span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
+                                    <span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
                     </form>
                    
         <span class="modal-actions">
                 <a class="modal-cancel" href="#">close</a>
         </span>
-	</div>
+    </div>
 
 
 <!-- Login or signup -->
-	<div id="modal-sign-login" class="modal-window">
-	<img class="modal-logo-large" src="http://circlefy.com/images/logo.png" />
-    	<div class="text">
-		<h2>Hi there!<small>Select an option below</small></h2>
+    <div id="modal-sign-login" class="modal-window">
+    <img class="modal-logo-large" src="http://circlefy.com/images/logo.png" />
+        <div class="text">
+        <h2>Hi there!<small>Select an option below</small></h2>
         <span class="modal-actions">
                 <button class="signup-button">Sign up</button><button class="login-button">Log in</button><a class="modal-cancel" href="#">close</a>
         </span>
         </div>
-	</div>
+    </div>
 
 <!-- Notification for guests to login or signup -->
-	<div id="modal-sign-notify" class="modal-window">
-		<h2>You've just posted your first tap</h2>
-		<p>In order to make your tap experience better, please, sign up or log in</p>
+    <div id="modal-sign-notify" class="modal-window">
+        <h2>You've just posted your first tap</h2>
+        <p>In order to make your tap experience better, please, sign up or log in</p>
         <span class="modal-actions">
                 <button class="signup-button">Sign up</button><button onClick="javascript: window.location.replace('/login')">Log in</button><a class="modal-cancel" href="#">close</a>
         </span>
-	</div>
+    </div>
 
 <!-- Post status on facebook -->
-	<div id="modal-facebook-status" class="modal-window">
-		<h2>Tap notice</h2>
-		<p>Share your tap experience with your friends!</p>
+    <div id="modal-facebook-status" class="modal-window">
+        <h2>Tap notice</h2>
+        <p>Share your tap experience with your friends!</p>
         <input type="hidden" name="link">
         <div id="fb_preview" style="background-color: white; border: 1px solid #CCCCCC; width: 460px; color:#333333; font-family: 'lucida grande', tahoma, verdana, arial; font-weight: normal; text-align: left; overflow: hidden;font-size: 11px; padding: 4px;">
             <div>
@@ -100,20 +132,20 @@
                 </div>
             </div>
         </div>
-		<p class="forms" style="margin-top:30px"><label>Status</label> <input type="text" name="status" /></p>
-		<p class="guide">Wrong story, bro</p>
-		<p class="forms" style="margin-top:30px"><label>Message</label> <input type="text" name="message" /></p>
-		<p class="guide">Wrong story, bro</p>
-		<p class="modal-menu">
-				<span class="indicator">
-						<img src="/static/spinner.gif" />
-						<span class="indic-msg">Publishing...</span>
-				</span>
-				<span class="modal-actions">
-						<button>Publish</button> or <a class="modal-cancel" href="#">close</a>
-				</span>
-		</p>
-	</div>
+        <p class="forms" style="margin-top:30px"><label>Status</label> <input type="text" name="status" /></p>
+        <p class="guide">Wrong story, bro</p>
+        <p class="forms" style="margin-top:30px"><label>Message</label> <input type="text" name="message" /></p>
+        <p class="guide">Wrong story, bro</p>
+        <p class="modal-menu">
+                <span class="indicator">
+                        <img src="/static/spinner.gif" />
+                        <span class="indic-msg">Publishing...</span>
+                </span>
+                <span class="modal-actions">
+                        <button>Publish</button> or <a class="modal-cancel" href="#">close</a>
+                </span>
+        </p>
+    </div>
 
 <!-- Channel suggestion dialog -->
     <div id="modal-channel-suggestion" class="modal-window">
