@@ -745,13 +745,56 @@ var MediaEmbed = new Class ({
                 if (self.url_found != _url) {
                     self.url_found = _url;
                     
-                    var request = new Request.JSON({
-                        url: 'http://api.embed.ly/v1/api/oembed?format=json&url='+_url,
-                        onSuccess: function(jsonObj) {
-                            console.log('getting embed..');
-                            console.log(jsonObj);
+                    var data = {'format':'json','url':_url};
+                    /*new Request({
+                        //url: 'http://api.embed.ly/v1/api/oembed',
+                        url: 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=leech',
+                        headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
+                        //data: data,
+                        async: false,
+                        onSuccess: function() {
+                            try {
+                                var resp = JSON.decode(this.response.text);
+                                console.log(resp);
+                            } catch (err) {
+                                console.log('error');
+                            }
+                            
+                            //alert(responseText);
+                            //var response = JSON.decode(this.response.text);
+                            
+                            //console.log('getting embed..');
+                            //console.log(jsonObj);
+                            
                         }
-                    }).get();
+                    }).send();*/
+                    
+                    new Request({
+                        url: 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=leech',
+                        method: 'get',
+                        onSuccess: function() {
+                            console.log('worked?');
+                        }
+                    }).send();
+                    
+                    /*
+                    var jsonReq = new Request.JSON({ 
+                        url: 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=leech',
+                        //url: 'http://api.embed.ly/v1/api/oembed?url='+_url,
+                        headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
+                        method: 'post',
+                        onComplete: function(response){
+                            console.log('complete: ', this.response);
+                        },
+                        onSuccess: function(r) {
+                            console.log('success:', this.response);
+                        },
+                        onFailure: function(err){
+                            console.log('error:', this.response);
+                        }
+                    });
+                    jsonReq.get();
+                    */
                 }
             }
         });

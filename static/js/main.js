@@ -150,6 +150,7 @@ var _tooltips = _tap.register({
 // To be called when DOM is loaded
 var _startup = _tap.register({
     init: function() {
+        // Tooltips
         new CirTooltip({
             hovered: $$('#sidebar .follower-thumb'),
             template: 'follow-tooltip',
@@ -165,6 +166,11 @@ var _startup = _tap.register({
         new CirTooltip({
             hovered: $$('#experience .circle-thumb'),
             template: 'title-desc-tooltip'
+        });
+        
+        // Links detector
+        new MediaEmbed({
+            element: $$('#reply textarea')
         });
     }
 });
