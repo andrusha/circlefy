@@ -93,7 +93,7 @@
             <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" data-tiptitle="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" data-tipid="msg-<#: msg.id #>" />
             <div class="text">
                 <h3 class="author"><a href="/user/<#: msg.sender.uname  #>"><#: msg.sender.uname  #></a> <small>, <#: msg.sender.fname  #> <#: msg.sender.lname  #></small></h3>
-                <cite><a href="/convo/<#: msg.id  #>"><#: msg.text  #></a></cite>
+                <div class="message"><a href="/convo/<#: msg.id  #>"><#: msg.text  #></a></div>
                 <div class="clear"></div>
 
                 <# if (msg.responses.user): #>
