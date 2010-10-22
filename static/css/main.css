@@ -1301,7 +1301,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   }
-.tooltip-title-desc, .tooltip-name {
+.tooltip-name {
   position: absolute;
   padding: 5px 0;
   width: auto;
@@ -1310,6 +1310,17 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   color: #FFF;
   text-shadow: 1px 1px #000;
   background: url(../images/tooltip_small.png) no-repeat top center;
+  margin:5px 0 0 0;
+  }
+.tooltip-title-desc {
+  position: absolute;
+  padding: 5px 0;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_small.png) no-repeat 10px 0;
   margin:5px 0 0 0;
   }
 .bg h2 {
