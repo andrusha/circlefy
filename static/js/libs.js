@@ -608,9 +608,13 @@ var CirTooltip = new Class({
                 properties.include('align', elem.getData('tipalign'));
             
             
-            this.tooltip = Elements.from(this.tooltip_template.apply(data));
+            this.tooltip = Elements.from(this.tooltip_template.apply(data))[0];
+
+            this.tooltip.set('tween', {link: 'cancel', duration: 'short',
+                onComplete: function(elem) { if (elem.getStyle('opacity') == 0) elem.dispose(); }
+            });
             
-            elem.store('tip', this.tooltip[0]);
+            elem.store('tip', this.tooltip);
             elem.store('properties', properties);
             
             var over = this.enter.bindWithEvent(this, elem);
@@ -682,6 +686,7 @@ var CirTooltip = new Class({
         }
         
         tip.setStyles({
+            'display':'block',
             'position': 'absolute',
             'top': top_dist,
             'left': left_dist,
@@ -703,17 +708,10 @@ var CirTooltip = new Class({
             this.hide(tip);
     },
     hide: function(element){
-        element.morph({'opacity':0});
-        element.dispose();
+        element.tween('opacity', 0);
     },
     show: function(){
-        var el = $('tooltip-'+this.currentElement);
-        if (el.getStyle('opacity') == 1)
-            return;
-
-        el.setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
-        el.set('tween', {duration: 'short'});
-        el.tween('opacity', 1);
+        $('tooltip-'+this.currentElement).tween('opacity', 1);
     }
 });
 
