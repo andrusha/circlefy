@@ -7,7 +7,7 @@ _edit.group = _tap.register({
 	init: function() {
        var form   = this.form   = $('edit'),
            fields = this.fields = {},
-           inputs = form.getElements('input:not([type="submit"])');
+           inputs = form.getElements('input:not([type="submit"]), textarea');
 
         new CirTooltip({
             hovered:  inputs,

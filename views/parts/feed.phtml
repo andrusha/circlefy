@@ -125,7 +125,7 @@ if ($_f['show_reply']){
                             <img src="<?=USER_PIC_REL.'small_'.$f['reciever']['id'].'.jpg'?>" />
                         </a>
                     </div><!--user-->
-                    <div class="circle">
+                    <div class="circle" data-tiptitle="Private message" data-tipid="user-pm-<?=$f['sender']['id']?>">
 						<a href="/convo/<?=$f['id']?>" class="privatemessage">PM</a>
                     </div><!--circle-->
                 <? endif; ?>

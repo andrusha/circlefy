@@ -5,19 +5,16 @@
 
 Form.Validator.implement('options', {
     onElementPass: function (elem) {
-        elem.removeClass('failed');
-        elem.addClass('valid');
         elem.fireEvent('hideTip');
     },
 
     onElementFail: function (elem, validators) {
         var text = '';
         validators.each(function (val) {
+            val = val.split(':')[0];
             text += '<p>' + Form.Validator.validators[val].getError(elem) + '</p>';
         });
         elem.setData('tiptext', text);
-        elem.removeClass('valid');
-        elem.addClass('failed');
         elem.fireEvent('showCustomTip', [{content: text}]);
     }
 });

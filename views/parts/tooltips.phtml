@@ -1,45 +1,57 @@
 <!-- Title + description -->
 <div id="title-desc-tooltip">
+<!--
   <div id="tooltip-<#: this.id #>" class="tooltip-title-desc">
     <div class="bg">
     <h2 class="tooltip-title"><#: this.title #></h2>
-    <div class="tooltip-content"><#: this.content #></div>
+    <# if (this.content.trim()): #>
+        <div class="tooltip-content"><#: this.content #></div>
+    <# endif; #>
     </div>
   </div>
+-->
 </div>
 
 <!-- Follow Tooltip -->
 <div id="follow-tooltip">
+<!--
   <div id="tooltip-<#: this.id #>" class="tooltip-follow">
     <div class="bg">
     <h2 class="tooltip-title"><#: this.title #></h2>
     </div>
   </div>
+-->
 </div>
 
 <!-- Name Tooltip -->
 <div id="name-tooltip">
+<!--
   <div id="tooltip-<#: this.id #>" class="tooltip-name">
     <div class="bg">
     <h2 class="tooltip-title"><#: this.title #></h2>
     </div>
   </div>
+-->
 </div>
 
 <!-- Side Tooltip -->
 <div id="side-tooltip">
+<!--
   <div id="tooltip-<#: this.id #>" class="tooltip-side">
     <div class="bg">
     <h2 class="tooltip-title"><#: this.title #></h2>
     </div>
   </div>
+-->
 </div>
 
 <!-- error Tooltip -->
 <div id="error-tooltip">
+<!--
   <div id="tooltip-<#: this.id #>" class="tooltip-error">
     <div class="bg">
     <div class="tooltip-content"><#: this.content #></div>
     </div>
   </div>
+-->
 </div>

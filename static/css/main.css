@@ -1878,12 +1878,12 @@ span.highlight {
 }
 
 /*** Form input states used for validation ***/
-textarea.valid, input.valid {
+textarea.validation-passed, input.validation-passed {
     -moz-box-shadow:        0 0 5px rgba(0, 200, 0, 0.5);
     -webkit-box-shadow:		0 0 5px rgba(0, 200, 0, 0.5);
     box-shadow:         	0 0 5px rgba(0, 200, 0, 0.5);
 }
-textarea.failed, input.failed {
+textarea.validation-failed, input.validation-failed {
     -moz-box-shadow:        0 0 5px rgba(200, 0, 0, 0.5);
     -webkit-box-shadow:		0 0 5px rgba(200, 0, 0, 0.5);
     box-shadow:         	0 0 5px rgba(200, 0, 0, 0.5);

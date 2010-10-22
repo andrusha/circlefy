@@ -708,6 +708,9 @@ var CirTooltip = new Class({
     },
     show: function(){
         var el = $('tooltip-'+this.currentElement);
+        if (el.getStyle('opacity') == 1)
+            return;
+
         el.setStyles({'position': 'absolute','display':'block','opacity':0,'z-index':100000});
         el.set('tween', {duration: 'short'});
         el.tween('opacity', 1);
