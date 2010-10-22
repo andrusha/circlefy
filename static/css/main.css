@@ -1773,15 +1773,15 @@ span.highlight {
 }
 .feed-item .circle .privatemessage {
 	display:block;
-	width:16px;
-	height:16px;
+	width:20px;
+	height:20px;
 	border:none;
 	text-indent:-9999px;
 	overflow:hidden;
-	background:url(../images/envelope.png) no-repeat top right;
+	background:url(../images/envelope.png) no-repeat center;
 }
 .feed-item:hover .circle .privatemessage {
-	background:url(../images/envelope.png) no-repeat top right;
+	background:url(../images/envelope.png) no-repeat center;
 }
 
 
