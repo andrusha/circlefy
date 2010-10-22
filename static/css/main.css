@@ -1250,7 +1250,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 .tooltip-error.position-bottom {
   position: absolute;
   padding: 5px 0 0 0;
-  margin:10px 0 0 0;
+  margin:15px 0 0 0;
   width: auto;
   max-width:200px;
   font-size: 11px;
