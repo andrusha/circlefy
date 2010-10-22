@@ -1301,7 +1301,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   }
-.tooltip-name {
+.tooltip-title-desc, .tooltip-name {
   position: absolute;
   padding: 5px 0;
   width: auto;
