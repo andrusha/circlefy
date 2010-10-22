@@ -4,7 +4,7 @@
 */
 class User extends BaseModel {
     //ENUM('guest', 'user', 'banned', 'private')
-    public static $types = array('guest' => 1, 'user' => 2, 'banned' => 3, 'private' => 4);
+    public static $types = array('guest' => 1, 'user' => 2, 'banned' => 3, 'private' => 4, 'superadmin' => 5);
 
     //ENUM('yes','no','new')
     public static $accepts = array('no' => 0, 'yes' => 1, 'new' => 2);
