@@ -1906,6 +1906,28 @@ line-height:15px;
 background-color:#DDD;
 }
 
+.pm-label{
+	width:100px;
+	float:right;
+	display:block;
+        padding:2px 12px 6px 20px;
+        background:#acb4c3;
+        border-radius:3px;
+        -webkit-border-radius:3px;
+        -moz-border-radius:3px;
+        box-shadow:1px 1px 0px #66757f inset;
+        -moz-box-shadow: 1px 1px 0px #66757f inset;
+        -webkit-box-shadow: 1px 1px 0px #66757f inset;
+        color:#fff;
+        text-shadow:1px 1px #62717a;
+        font-size:10px;
+        text-transform:uppercase;
+        height:12px;
+        margin:0 0 10px 0px;
+	background: url(http://mark.tap.info/static/images/envelope.png) #acb4c3 no-repeat 2px 2px;
+
+}
+
 button:hover {
 cursor:pointer;
 }

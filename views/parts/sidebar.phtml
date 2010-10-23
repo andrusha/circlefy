@@ -9,7 +9,11 @@
         <div class="box">
             
             <h3 class="username">
-                <img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
+                <? if(!$c['reciever_id']): ?>
+		<img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
+		<? else: ?>
+		<img src="/static/images/envelope.png" />
+		<? endif; ?>
                 <?=$c['sender']['uname']?>
             </h3>
             <? if ($c['group_id']): ?>
@@ -21,6 +25,7 @@
                 <a href="/user/<?=$c['sender']['id']?>" class="user">
                     <img src="<?=USER_PIC_REL.'medium_'.$c['sender']['id'].'.jpg'?>" alt=""<?=$c['sender']['fname']?> <?=$c['sender']['lname']?> />
                 </a>
+		<span class="pm-label">Private Message</span>
             <? endif; ?>
             <p><?=$c['text']?></p>
             
@@ -77,7 +82,7 @@
                 'manual' => 'moderated',
                 'ip'     => 'by ip',
                 'geo'    => 'geo location');
-        if (array_key_exists($_s['circle']['auth'], $auth)): ?>
+        if (array_key_exists($_s['circle']['auth'], $auth) || true): ?>
             <div class="auth"><span>Authentication type:</span> <?=$auth[$_s['circle']['auth']]?></div>
         <? endif; ?>
         
