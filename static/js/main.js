@@ -155,13 +155,13 @@ var _startup = _tap.register({
             hovered: $$('#sidebar .follower-thumb'),
             template: 'follow-tooltip',
             position: 'top',
-			align: 'middle'
+			align: 'center'
         });
         new CirTooltip({
             hovered: $$('#sidebar .circle-thumb'),
             template: 'side-tooltip',
             position: 'top',
-			align: 'middle'
+			align: 'center'
         });
         new CirTooltip({
             hovered: $$('#experience .circle-thumb'),
