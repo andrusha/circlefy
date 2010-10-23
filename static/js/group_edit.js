@@ -34,6 +34,8 @@ _edit.group = _tap.register({
     update: function(passed, el, e) {
         e.stop();
         var data = Object.map(this.fields, function(elem, name) {
+            if (elem.type == 'checkbox')
+                return elem.checked;
             return elem.value;
         });
 

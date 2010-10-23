@@ -17,7 +17,7 @@ class ajax_update extends Base {
        $group->descr  = $_POST['descr'];
        $group->type   = intval($_POST['type']);
        $group->auth   = intval($_POST['auth']);
-       $group->secret = $_POST['secret'] == 'on' ? 1 : 0;
+       $group->secret = $_POST['secret'] == 'true' ? 1 : 0;
        $group->update();
 
        $this->set(1, 'success');
