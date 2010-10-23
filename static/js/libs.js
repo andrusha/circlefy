@@ -745,56 +745,37 @@ var MediaEmbed = new Class ({
                 if (self.url_found != _url) {
                     self.url_found = _url;
                     
-                    var data = {'format':'json','url':_url};
-                    /*new Request({
-                        //url: 'http://api.embed.ly/v1/api/oembed',
-                        url: 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=leech',
-                        headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
-                        //data: data,
-                        async: false,
-                        onSuccess: function() {
-                            try {
-                                var resp = JSON.decode(this.response.text);
-                                console.log(resp);
-                            } catch (err) {
-                                console.log('error');
-                            }
-                            
-                            //alert(responseText);
-                            //var response = JSON.decode(this.response.text);
-                            
-                            //console.log('getting embed..');
-                            //console.log(jsonObj);
-                            
-                        }
-                    }).send();*/
+                    var data = {'format': 'json', 'url':_url};
                     
-                    new Request({
-                        url: 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=leech',
-                        method: 'get',
-                        onSuccess: function() {
-                            console.log('worked?');
+                    new Request.JSONP({
+                        url: 'http://api.embed.ly/v1/api/oembed',
+                        headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
+                        data: data,
+                        onComplete: function(response) {
+                            console.log(response);
+                            
+                            if (response.type == 'video' || response.type == 'photo') {
+                                var _form = $('reply');
+                                var f_Url =   new Element('input', {'type': 'hidden', 'name': 'url', 'value': _url}).inject(_form);
+                                var f_Title = new Element('input', {'type': 'hidden', 'name': 'title', 'value': response.title}).inject(_form);
+                                var f_Desc =   new Element('input', {'type': 'hidden', 'name': 'description', 'value': response.description}).inject(_form);
+                                var f_Thumb = new Element('input', {'type': 'hidden', 'name': 'thumbnail_url', 'value': response.thumbnail_url}).inject(_form);
+                                var f_Code = new Element('input', {'type': 'hidden', 'name': 'embed_code', 'value': response.html}).inject(_form);
+                                var f_Type = new Element('input', {'type': 'hidden', 'name': 'type'}).inject(_form);
+
+                                if (response.type == 'video') {
+                                    f_Type.set('value', 'video');
+                                    
+                                    // display video template
+                                    $('reply').getElement('.media-preview').innerHTML = '<img src="'+response.thumbnail_url+'" /> <h3>'+response.title+'</h3><div class="embed-url">'+_url+'</div><div class="embed-desc">'+response.description+'</div>';
+                                } else if (response.type == 'photo') {
+                                    f_Type.set('value', 'photo');
+                                    // display image template
+                                    $('reply').getElement('.media-preview').innerHTML = '<img src="'+response.thumbnail_url+'" /> <h3>'+response.title+'</h3><div class="embed-url">'+_url+'</div><div class="embed-desc">'+response.description+'</div>';
+                                }
+                            }
                         }
                     }).send();
-                    
-                    /*
-                    var jsonReq = new Request.JSON({ 
-                        url: 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=leech',
-                        //url: 'http://api.embed.ly/v1/api/oembed?url='+_url,
-                        headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
-                        method: 'post',
-                        onComplete: function(response){
-                            console.log('complete: ', this.response);
-                        },
-                        onSuccess: function(r) {
-                            console.log('success:', this.response);
-                        },
-                        onFailure: function(err){
-                            console.log('error:', this.response);
-                        }
-                    });
-                    jsonReq.get();
-                    */
                 }
             }
         });

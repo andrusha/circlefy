@@ -65,7 +65,7 @@ class Curl {
 
         $result = curl_exec($this->curl);
 
-        curl_setopt($tis->curl, CURLOPT_HTTPGET, 0);
+        curl_setopt($this->curl, CURLOPT_HTTPGET, 0);
 
         return $result;
     }
