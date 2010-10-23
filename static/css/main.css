@@ -796,6 +796,13 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	color:#545454;
 	text-shadow:1px 1px #fff;
 }
+#controls #authenticated.active {
+	background:url(../images/lock.png) no-repeat -4px 5px;
+}
+#controls #authenticated {
+	background:url(../images/lock.png) no-repeat -4px 5px #cdcdcd;
+	padding:5px 8px 5px 24px
+}
 .warning {
 	background:#FAF9C9;
 	border:1px solid #ffe222;
