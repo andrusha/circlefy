@@ -1350,7 +1350,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
-.tooltip-name.position-top.align-center {
+.position-top.align-center {
   position: absolute;
   padding: 0 0 5px;
   width: auto;
@@ -1361,6 +1361,33 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   background: url(../images/tooltip_small_bottom.png) no-repeat bottom center;
   color: #FFF;
   text-shadow: 1px 1px #000;
+  margin:-5px 0 0 0;
+  }
+.position-left.align-middle {
+  position: absolute;
+  padding: 0 5px 0 0;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_small_right.png) no-repeat right center;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  margin:0 0 0 -5px;
+  }
+.position-right.align-middle {
+  position: absolute;
+  padding: 0 0 0 5px;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_small_left.png) no-repeat left center;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  margin:0 0 0 5px;
   }
 .position-bottom.align-center {
   position: absolute;
@@ -1373,6 +1400,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   background: url(../images/tooltip_small.png) no-repeat top center;
   color: #FFF;
   text-shadow: 1px 1px #000;
+  margin:5px 0 0 0;
   }
 
 /*** <Search results> ***/
