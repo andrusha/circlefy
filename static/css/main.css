@@ -186,9 +186,11 @@ border-top-right-radius: 0px;
 
 
 #controls {
-	padding:15px 0;
+	padding:30px 0 0 0;
+	height:13px;
 	position:relative;
 	z-index:2;
+	border-bottom:1px solid #dbdbdb;
 }
 #pause {
 	display:block;
@@ -765,25 +767,34 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	color:#2878ca;
 }
 #controls .tab {
-	height:15px;
+	height:auto;
 	text-decoration:none;
-	border:1px solid #a6a6a6;
-	background:url(../images/button_wide.gif) repeat-x;
+	border:1px solid #dbdbdb;
+	border-bottom:none;
+	background:rgba(0,0,0,.12);
 	font-size:11px;
 	font-weight:bold;
-	color:#474747;
+	color:#fff;
+	text-shadow:1px 1px rgba(0,0,0,.2);
 	text-align:center;
 	display:block;
-	padding:8px 0;
+	padding:5px 8px;
 	margin: -16px 0 0 0;
-	width:49.6%;
+	width:auto;
 	float:left;
+	﻿﻿﻿-webkit-border-top-left-radius:3px;
+	-webkit-border-top-right-radius:3px;
+	-moz-border-radius-topleft:3px;
+	-moz-border-radius-topright:3px;
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
 }
 #controls .tab.active {
-	background:#3c3c3c;
-	border:1px solid #000;
-	color:#eee;
-	text-shadow:1px 1px #000;
+	background:none;
+	border:1px solid #dbdbdb;
+	border-bottom:1px solid #f0f0f0;
+	color:#545454;
+	text-shadow:1px 1px #fff;
 }
 .warning {
 	background:#FAF9C9;
