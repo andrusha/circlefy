@@ -63,7 +63,7 @@ define("FOLLOWERS",   BASE_PATH.'views/parts/followers.phtml');
 define("REPLIES",     BASE_PATH.'views/parts/replies.phtml');
 
 define("JS_TEMPLATES",  BASE_PATH."views/parts/js_templates.phtml");
-define("TYPECON",  BASE_PATH."views/parts/typecon.phtml");
+/*define("TYPECON",  BASE_PATH."views/parts/typecon.phtml");*/
 define("TOOLTIP_TEMPLATES",  BASE_PATH."views/parts/tooltips.phtml");
 define("MODAL_WINDOWS", BASE_PATH."views/parts/modal_windows.phtml");
 define("FBCONNECT",     BASE_PATH."views/parts/fbconnect.phtml");

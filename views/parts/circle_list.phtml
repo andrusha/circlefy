@@ -1,5 +1,4 @@
 <?php
-    INCLUDE(TYPECON);
     foreach ($_cl['list'] as $c):
 ?>
 <a href="/circle/<?=$c['symbol']?>" class="circle-thumb" class="circle-thumb" data-tipid="circle-<?=$c['id']?>" data-tiptitle="<img src='static/images/type_<?=$c['type']?>.png' /> <?=$c['name']?>" data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>">
