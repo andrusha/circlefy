@@ -1905,3 +1905,7 @@ padding:4px 8px 2px 18px;
 line-height:15px;
 background-color:#DDD;
 }
+
+button:hover {
+cursor:pointer;
+}
