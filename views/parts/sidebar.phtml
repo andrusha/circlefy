@@ -80,7 +80,12 @@
            data-type="group"
            def="Join circle"
            alt="Leave circle"></a>       
-        
+	
+
+	<? if($_s['moderator']): ?>
+	<span id="edit_circle"> <a href="?edit">Edit Circle</a></span>
+	<? endif; ?>       
+ 
         <div class="clear"></div>
         
     </div><!--box-->

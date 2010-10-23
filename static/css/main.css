@@ -1891,3 +1891,17 @@ textarea.validation-failed, input.validation-failed {
     -webkit-box-shadow:		0 0 5px rgba(200, 0, 0, 0.5);
     box-shadow:         	0 0 5px rgba(200, 0, 0, 0.5);
 }
+
+
+/* TASO CSS */
+
+#edit_circle{ 
+margin-left:8px;
+border:1px #CCC solid;
+height:15px;
+display:inline-block;
+background: url(http://d1vgw4v7ja2ido.cloudfront.net/-58e19a2a4a4a0ecd.gif) no-repeat 2px 6px;
+padding:4px 8px 2px 18px;
+line-height:15px;
+background-color:#DDD;
+}
