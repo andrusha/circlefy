@@ -131,7 +131,7 @@ var _tooltips = _tap.register({
                hovered: $$('#feed .avatar-author, #feed .circle'),
                template: 'name-tooltip',
                position: 'top',
-               align: 'center'
+               align: 'middle'
             });
         }.bind(this));
         this.subscribe('groups.get', function() {
@@ -160,7 +160,7 @@ var _startup = _tap.register({
         new CirTooltip({
             hovered: $$('#sidebar .circle-thumb'),
             template: 'side-tooltip',
-            position: 'top',
+            position: 'center',
 			align: 'middle'
         });
         new CirTooltip({
