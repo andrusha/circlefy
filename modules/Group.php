@@ -178,4 +178,12 @@ class Group extends BaseModel {
 
         return $s;
     }
+
+    /*
+        If user permitted to edit this group (admin, moderator or superadmin)
+    */
+    public function isPermitted(User $u) {
+        return $this->userPermissions($u) >= Group::$permissions['moderator'] ||
+               $u->type == User::$types['superadmin'];
+    }
 };

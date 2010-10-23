@@ -27,5 +27,9 @@ class page_circle extends Base {
         $this->set(
            $group->userPermissions($this->user) != Group::$permissions['not_in'],
            'state');
+
+        $this->set(
+            $group->isPermitted($this->user),
+            'moderator');
 	}
 };
