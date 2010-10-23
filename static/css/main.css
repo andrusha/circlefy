@@ -1989,4 +1989,11 @@ button:hover {
 cursor:pointer;
 }
 .box.circle-title {
+margin-top:-12px;
+}
+.box.circle-title h3.username span {
+font-size:10px;
+display:block;
+font-weight:normal;
+line-height:12px;
 }
