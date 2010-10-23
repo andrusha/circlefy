@@ -131,7 +131,7 @@ var _tooltips = _tap.register({
                hovered: $$('#feed .avatar-author, #feed .circle'),
                template: 'name-tooltip',
                position: 'top',
-               align: 'middle'
+               align: 'center'
             });
         }.bind(this));
         this.subscribe('groups.get', function() {
