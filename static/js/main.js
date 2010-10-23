@@ -130,7 +130,7 @@ var _tooltips = _tap.register({
             new CirTooltip({
                hovered: $$('#feed .avatar-author, #feed .circle'),
                template: 'name-tooltip',
-               position: 'bottom',
+               position: 'top',
                align: 'center'
             });
         }.bind(this));
@@ -154,13 +154,13 @@ var _startup = _tap.register({
         new CirTooltip({
             hovered: $$('#sidebar .follower-thumb'),
             template: 'follow-tooltip',
-            position: 'left',
+            position: 'top',
 			align: 'middle'
         });
         new CirTooltip({
             hovered: $$('#sidebar .circle-thumb'),
             template: 'side-tooltip',
-            position: 'left',
+            position: 'top',
 			align: 'middle'
         });
         new CirTooltip({
