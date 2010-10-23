@@ -18,11 +18,11 @@ Acknowledgements:
 
 (function() {
     this.Template = new Class({
-        pattern:  /<#[:|=]?(\S*?)#>/g,
+        pattern:  /<#[:|=]?(.*?)#>/g,
         outkey:   ":",
-        loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(\S*?)\s+from\s+(\S*?)\s*\)\s*(?:{|:)\s*(\S*?)/g,
+        loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*(?:{|:)\s*(.*?)/g,
         loopEnds: /end(each|for|foreach);/g,
-        condExp:  /(if|else|elseif)(\S*):/g,
+        condExp:  /(if|else|elseif)(.*):/g,
         condEnds: /endif;/g,
                
         parseConds: function(template) {
@@ -481,7 +481,7 @@ String.implement({
 			(?::[\\d]{1,5})?(?:(?:(?:\\/(?:[-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?\
 			(?:(?:\\?(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)\
 			(?:&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*\
-			(?:#(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?".replace(/\(\?x\)|\s+#\S*$|\s+/gim, ''), 'g');
+			(?:#(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?".replace(/\(\?x\)|\s+#.*$|\s+/gim, ''), 'g');
 		return this.replace(regexp, function(match){
 			return ['<a href="', match,'" target="_blank">', match,'</a>'].join('');
 		});
@@ -717,7 +717,6 @@ var CirTooltip = new Class({
         $('tooltip-'+this.currentElement).tween('opacity', 1);
     }
 });
-
 
 var MediaEmbed = new Class ({
     Implements: [Options],
