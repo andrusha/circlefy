@@ -57,8 +57,8 @@
       
 	<?
 	//need to add icon mapping here
-	$circle_type = $_s['circle_type'];
-	$circle_type = 'Circle Type Goes Here [icon]';
+	$circle_type = $_s['type'];
+	$circle_type = "<span class='type-label'><img src='/static/images/type_{$c['type']}.png' />Type: {$c['type']} </span>";
 	?> 
 
 	<h3 class="username"><?=$c['name']?><? if($circle_type): ?>
@@ -81,7 +81,7 @@
                 'manual' => 'moderated',
                 'ip'     => 'by ip',
                 'geo'    => 'geo location');
-        if (array_key_exists($_s['circle']['auth'], $auth) || true): ?>
+        if (array_key_exists($_s['circle']['auth'], $auth)): ?>
             <div class="auth"><span>Authentication type:</span> <?=$auth[$_s['circle']['auth']]?></div>
         <? endif; ?>
         

@@ -1985,6 +1985,26 @@ background-color:#DDD;
 
 }
 
+.type-label{
+	margin-top:10px;
+	width:100px;
+	display:inline-block;
+        padding:2px 12px 14px 00px;
+        background:#acb4c3;
+        border-radius:3px;
+        -webkit-border-radius:3px;
+        -moz-border-radius:3px;
+        box-shadow:1px 1px 0px #66757f inset;
+        -moz-box-shadow: 1px 1px 0px #66757f inset;
+        -webkit-box-shadow: 1px 1px 0px #66757f inset;
+        color:#fff;
+        text-shadow:1px 1px #62717a;
+        font-size:10px;
+        text-transform:uppercase;
+        height:10px;
+	line-height:5px;
+}
+
 button:hover {
 cursor:pointer;
 }
