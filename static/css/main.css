@@ -1361,8 +1361,26 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
-
-
+.position-top-align-middle {
+  position: absolute;
+  padding: 0 0 5px;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_small.png) no-repeat bottom center;
+  }
+.position-bottom-align-middle {
+  position: absolute;
+  padding: 5px 0 0;
+  width: auto;
+  max-width:200px;
+  font-size: 11px;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
+  background: url(../images/tooltip_small.png) no-repeat top center;
+  }
 
 /*** <Search results> ***/
 #search-results {
