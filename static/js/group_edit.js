@@ -7,7 +7,7 @@ _edit.group = _tap.register({
 	init: function() {
        var form   = this.form   = $('edit'),
            fields = this.fields = {},
-           inputs = form.getElements('input:not([type="submit"]), textarea');
+           inputs = form.getElements('input:not([type="submit"]), textarea, select');
 
         new CirTooltip({
             hovered:  inputs,
@@ -33,6 +33,17 @@ _edit.group = _tap.register({
 
     update: function(passed, el, e) {
         e.stop();
+        var data = Object.map(this.fields, function(elem, name) {
+            return elem.value;
+        });
+
+        new Request.JSON({
+            url: '/AJAX/group/update',
+            onSuccess: function (response) {
+                if (response.success)
+                    document.location = '/circle/'+response.group.symbol+'?edit';
+            }
+        }).post(data);
     }
 
 });

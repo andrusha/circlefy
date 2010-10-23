@@ -34,6 +34,8 @@ class Group extends BaseModel {
     protected static $addit = array('tags', 'members', 'messages_count',
         'members_count', 'responses_count');
 
+    protected static $tableName = 'group';
+
     public function asArray() {
         $data = $this->data;
         if (isset($data['type'])) {
@@ -63,6 +65,9 @@ class Group extends BaseModel {
            $tgid = $this->tags->getGroupId();
            $this->updateTagId($tgid);
         }
+
+        if ($this->id)
+           $this->update();
     }
 
     private function updateTagId($tgid) {
@@ -87,6 +92,10 @@ class Group extends BaseModel {
                          ->lastOne();
     }
 
+    public static function byId($id) {
+        return GroupsList::search('byGroup', array('gid' => $id))->getFirst();
+    }
+
     /*
         @param int|str $g select by gid|symbol
 
@@ -94,7 +103,7 @@ class Group extends BaseModel {
     */
     public static function init($g) {
         $type = is_int($g) ? 'byGroup' : 'bySymbol';
-        $var  = is_int($g) ? 'id'      : 'symbol';
+        $var  = is_int($g) ? 'gid'     : 'symbol';
 
         return  GroupsList::search($type, array($var => $g),
                               G_TAPS_COUNT | G_USERS_COUNT | G_RESPONSES_COUNT)

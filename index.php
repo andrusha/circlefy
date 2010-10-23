@@ -53,10 +53,10 @@ $ajaxs = array(
         ),
         'group' => array(
                 'suggest'   => true,
-                'join'      => true,
                 'search'    => true,
                 'get'       => true,
-                'exists'    => true
+                'exists'    => true,
+                'update'    => true
         ),
         'taps' => array(
                'responses' => true,

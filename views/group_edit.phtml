@@ -43,25 +43,26 @@
         <form id="edit">
         
         <div id="left">
+            <input type="hidden" name="id" id="edit-id" value="<?=$circle['id']?>">
         
-			<label>title   <small>what will your circle be called?</small></label>
-            <input type="text"
+			<label for="edit-title">title   <small>what will your circle be called?</small></label>
+            <input type="text" id="edit-title"
                    name="title" 
                    value="<?=$circle['name']?>"
                    class="required"
                    data-tipid="tip-input-title"
             />
             
-            <label>symbol   <small>leave it for robots</small></label>
-            <input type="text" disabled=""
+            <label for="edit-symbol">symbol   <small>leave it for robots</small></label>
+            <input type="text" id="edit-symbol"  disabled=""
                    name="symbol"
                    value="<?=$circle['symbol']?>"
                    class="groupDoesNotExists oldSymbol:'<?=$circle['symbol']?>'"
                    data-tipid="tip-input-symbol"
             />
             
-            <label>description   <small>a brief explaination what this circle stands for</small></label>
-            <textarea name="descr" 
+            <label for="edit-descr">description   <small>a brief explaination what this circle stands for</small></label>
+            <textarea name="descr" id="edit-descr" 
                       class="maxLength:250"
                       data-tipid="tip-input-descr"
             /><?=$circle['descr']?></textarea>
@@ -71,15 +72,15 @@
         </div><!--left-->
         
         <div id="sidebar">
-        	<label>circle type</label>
-            <select name="type">
+        	<label for="edit-type">circle type</label>
+            <select name="type" id="edit-type">
                 <? foreach ($types as $val => $t): ?>
                     <option value="<?=$val?>" <?=($t == $circle['type'] ? ' selected' : '')?>><?=$t?></option>
                 <? endforeach; ?>
             </select>
             
-            <label>authentication type</label>
-            <select name="auth">
+            <label for="edit-auth">authentication type</label>
+            <select name="auth" id="edit-auth">
                 <? foreach ($auths as $val => $t): ?>
                     <option value="<?=$val?>" <?=($t == $circle['auth'] ? ' selected' : '')?>><?=$t?></option>
                 <? endforeach; ?>

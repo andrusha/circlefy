@@ -3,6 +3,7 @@ abstract class BaseModel implements ArrayAccess, Serializable {
     /*  @var DB  */
     protected $db;
 
+
     //a list of fields
     public static $fields = array();
 
@@ -11,6 +12,8 @@ abstract class BaseModel implements ArrayAccess, Serializable {
 
     //used for typecasting
     protected static $intFields = array();
+
+    protected static $tableName = null;
 
     //entity ID
     protected $id = null;
@@ -65,15 +68,23 @@ abstract class BaseModel implements ArrayAccess, Serializable {
         throw new DataException("There is no data named `$key` or you are not allowed to get it");
     }
 
-    /*
-        Warning!
-        It doesn't update corresponding table actually, use with care
-    */
     public function __set($key, $val) {
-        if ($this->keyExists($key))
-            $this->data[$key] = $val;
-        else
+        if (!$this->keyExists($key))
             throw new DataException("You are not allowed to set `$key`");
+
+        if (in_array($key, static::$fields) && 
+            static::$tableName && 
+            $this->id &&
+            $this->data[$key] != $val) {
+
+            $this->db->lazyUpdate(static::$tableName, $this->id, $key, $val);
+        }
+        $this->data[$key] = $val;
+    }
+    
+    //commits updates to DB
+    public function update() {
+        $this->db->commitLazyUpdate(static::$tableName, $this->id);
     }
 
     public function asArray() {
@@ -86,9 +97,15 @@ abstract class BaseModel implements ArrayAccess, Serializable {
     }
 
     /* Stubs, you should use __get, __set instead */
-    public function offsetGet ($offset) { }
-    public function offsetSet ($offset, $value) { }
-    public function offsetUnset ($offset) { }
+    public function offsetGet ($offset) {
+        throw new BadMethodCallException('You should not use this methods for data-accessing');
+    }
+    public function offsetSet ($offset, $value) { 
+        throw new BadMethodCallException('You should not use this methods for data-accessing');
+    }
+    public function offsetUnset ($offset) {  
+        throw new BadMethodCallException('You should not use this methods for data-accessing');
+    }
 
     /*
         Cast provided fields into int

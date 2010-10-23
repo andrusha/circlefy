@@ -16,7 +16,20 @@ class DB {
     */
     private $params = array();
 
+    /*
+        Query log for debugging  
+    */
     private $queries = array();
+
+    /*
+        A list of pending updates 
+
+        array(
+            table => array(
+                id => array(
+                    column => value
+    */
+    private $updates = array();
 
     private function __construct() {}
 
@@ -37,6 +50,10 @@ class DB {
         }
         $firephp->groupEnd();
         $this->queries = array();
+
+        if (!empty($this->updates)) {
+            $firephp->warn($this->updates, 'Uncommited updates');
+        }
     }
 
     static public function getInstance() { 
@@ -197,5 +214,30 @@ class DB {
         //on nested transactions
         $this->transactions = 0;
         $this->db->rollback();
+    }
+
+    public function lazyUpdate($table, $id, $column, $value) {
+        $this->updates[$table][$id][$column] = $value;
+        return $this;
+    }
+
+    /*
+        Saves all lazy commits for table
+    */
+    public function commitLazyUpdate($table, $id) {
+        if (empty($this->updates[$table][$id]))
+            return;
+        
+        $columns = $this->updates[$table][$id];
+        $fields = implode(', ', 
+            array_map(function ($elem) {
+                    return "$elem = #$elem#";
+                },
+                array_keys($columns)));
+
+        $query = "UPDATE `$table` SET ".$fields." WHERE id = #id#";
+        $this->query($query, array_merge($columns, array('id' => $id)));
+
+        unset($this->updates[$table][$id]);
     }
 };
