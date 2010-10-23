@@ -18,11 +18,11 @@ Acknowledgements:
 
 (function() {
     this.Template = new Class({
-        pattern:  /<#[:|=]?(.*?)#>/g,
+        pattern:  /<#[:|=]?(\S*?)#>/g,
         outkey:   ":",
-        loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(.*?)\s+from\s+(.*?)\s*\)\s*(?:{|:)\s*(.*?)/g,
+        loopExp:  /(?:for|each|foreach)\s+\((?:var\s*)?(\S*?)\s+from\s+(\S*?)\s*\)\s*(?:{|:)\s*(\S*?)/g,
         loopEnds: /end(each|for|foreach);/g,
-        condExp:  /(if|else|elseif)(.*):/g,
+        condExp:  /(if|else|elseif)(\S*):/g,
         condEnds: /endif;/g,
                
         parseConds: function(template) {
@@ -481,7 +481,7 @@ String.implement({
 			(?::[\\d]{1,5})?(?:(?:(?:\\/(?:[-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?\
 			(?:(?:\\?(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)\
 			(?:&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*\
-			(?:#(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?".replace(/\(\?x\)|\s+#.*$|\s+/gim, ''), 'g');
+			(?:#(?:[-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?".replace(/\(\?x\)|\s+#\S*$|\s+/gim, ''), 'g');
 		return this.replace(regexp, function(match){
 			return ['<a href="', match,'" target="_blank">', match,'</a>'].join('');
 		});
@@ -724,61 +724,67 @@ var MediaEmbed = new Class ({
     
     options: {
         element: null,      // watched element
-        services: /http:\/\/(.*youtube\.com\/watch.*|.*\.youtube\.com\/v\/.*|youtu\.be\/.*|.*\.youtube\.com\/user\/.*#.*|.*\.youtube\.com\/.*#.*\/.*|m\.youtube\.com\/watch.*|m\.youtube\.com\/index.*|www\.livestream\.com\/.*|www\.flickr\.com\/photos\/.*|flic\.kr\/.*|.*imgur\.com\/.*|.*dribbble\.com\/shots\/.*|drbl\.in\/.*|.*\.deviantart\.com\/art\/.*|.*\.deviantart\.com\/gallery\/.*|.*\.deviantart\.com\/#\/.*|fav\.me\/.*|.*\.deviantart\.com|.*\.deviantart\.com\/gallery|.*\.deviantart\.com\/.*\/.*\.jpg|.*\.deviantart\.com\/.*\/.*\.gif|.*\.deviantart\.net\/.*\/.*\.jpg|.*\.deviantart\.net\/.*\/.*\.gif|www\.vimeo\.com\/groups\/.*\/videos\/.*|www\.vimeo\.com\/.*|vimeo\.com\/m\/#\/featured\/.*|vimeo\.com\/groups\/.*\/videos\/.*|vimeo\.com\/.*|vimeo\.com\/m\/#\/featured\/.*|www\.ted\.com\/talks\/.*\.html.*|www\.ted\.com\/talks\/lang\/.*\/.*\.html.*|www\.ted\.com\/index\.php\/talks\/.*\.html.*|www\.ted\.com\/index\.php\/talks\/lang\/.*\/.*\.html.*|techcrunch\.tv\/watch.*|techcrunch\.tv\/.*\/watch.*|www\\.last\\.fm\/music\/.*|www\\.last\\.fm\/music\/+videos\/.*|www\\.last\\.fm\/music\/+images\/.*|www\\.last\\.fm\/music\/.*\/_\/.*|www\\.last\\.fm\/music\/.*\/.*|www\.facebook\.com\/photo\.php.*|www\.facebook\.com\/video\/video\.php.*|gist\.github\.com\/.*|.*\.scribd\.com\/doc\/.*|tumblr\.com\/.*|.*\.tumblr\.com\/post\/.*)/i
+        services: /http:\/\/(\S*youtube\.com\/watch\S*|\S*\.youtube\.com\/v\/\S*|youtu\.be\/\S*|\S*\.youtube\.com\/user\/\S*#\S*|\S*\.youtube\.com\/\S*#\S*\/\S*|m\.youtube\.com\/watch\S*|m\.youtube\.com\/index\S*|www\.livestream\.com\/\S*|www\.flickr\.com\/photos\/\S*|flic\.kr\/\S*|\S*imgur\.com\/\S*|\S*dribbble\.com\/shots\/\S*|drbl\.in\/\S*|\S*\.deviantart\.com\/art\/\S*|\S*\.deviantart\.com\/gallery\/\S*|\S*\.deviantart\.com\/#\/\S*|fav\.me\/\S*|\S*\.deviantart\.com|\S*\.deviantart\.com\/gallery|\S*\.deviantart\.com\/\S*\/\S*\.jpg|\S*\.deviantart\.com\/\S*\/\S*\.gif|\S*\.deviantart\.net\/\S*\/\S*\.jpg|\S*\.deviantart\.net\/\S*\/\S*\.gif|www\.vimeo\.com\/groups\/\S*\/videos\/\S*|www\.vimeo\.com\/\S*|vimeo\.com\/m\/#\/featured\/\S*|vimeo\.com\/groups\/\S*\/videos\/\S*|vimeo\.com\/\S*|vimeo\.com\/m\/#\/featured\/\S*|www\.ted\.com\/talks\/\S*\.html\S*|www\.ted\.com\/talks\/lang\/\S*\/\S*\.html\S*|www\.ted\.com\/index\.php\/talks\/\S*\.html\S*|www\.ted\.com\/index\.php\/talks\/lang\/\S*\/\S*\.html\S*|techcrunch\.tv\/watch\S*|techcrunch\.tv\/\S*\/watch\S*|www\\.last\\.fm\/music\/\S*|www\\.last\\.fm\/music\/+videos\/\S*|www\\.last\\.fm\/music\/+images\/\S*|www\\.last\\.fm\/music\/\S*\/_\/\S*|www\\.last\\.fm\/music\/\S*\/\S*|www\.facebook\.com\/photo\.php\S*|www\.facebook\.com\/video\/video\.php\S*|gist\.github\.com\/\S*|\S*\.scribd\.com\/doc\/\S*|tumblr\.com\/\S*|\S*\.tumblr\.com\/post\/\S*)/i
     },
     
     initialize: function(options) {
-        this.setOptions(options||null);
+        this.setOptions(options || {});
         
-        if (!this.options.element) return;
+        if (!this.options.element)
+            return;
+
+        this.preview = this.options.element.getParent('form#reply').getElement('div.media-preview');
+
+        if (!this.preview)
+            return;
+
         this.url_found = false;
         this.addChecker();
     },
+
     addChecker: function() {
         var self = this;
-        this.options.element.addEvent('keydown', function(event){
+        this.options.element.addEvent('keyup', function(event){
             var content = event.target.value;
             
             var urls = content.match(self.options.services);
-            if (urls && urls.length > 0) {
-                var _url = urls[0].split(' ')[0];
-                if (self.url_found != _url) {
-                    self.url_found = _url;
-                    
-                    var data = {'format': 'json', 'url':_url};
-                    
-                    new Request.JSONP({
-                        url: 'http://api.embed.ly/v1/api/oembed',
-                        headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
-                        data: data,
-                        onComplete: function(response) {
-                            console.log(response);
-                            
-                            if (response.type == 'video' || response.type == 'photo') {
-                                var _form = $('reply');
-                                var f_Url =   new Element('input', {'type': 'hidden', 'name': 'url', 'value': _url}).inject(_form);
-                                var f_Title = new Element('input', {'type': 'hidden', 'name': 'title', 'value': response.title}).inject(_form);
-                                var f_Desc =   new Element('input', {'type': 'hidden', 'name': 'description', 'value': response.description}).inject(_form);
-                                var f_Thumb = new Element('input', {'type': 'hidden', 'name': 'thumbnail_url', 'value': response.thumbnail_url}).inject(_form);
-                                var f_Code = new Element('input', {'type': 'hidden', 'name': 'embed_code', 'value': response.html}).inject(_form);
-                                var f_Type = new Element('input', {'type': 'hidden', 'name': 'type'}).inject(_form);
+            if (!urls || !urls.length || urls[1] == this.url_found)
+                return; 
 
-                                if (response.type == 'video') {
-                                    f_Type.set('value', 'video');
-                                    
-                                    // display video template
-                                    $('reply').getElement('.media-preview').innerHTML = '<img src="'+response.thumbnail_url+'" /> <h3>'+response.title+'</h3><div class="embed-url">'+_url+'</div><div class="embed-desc">'+response.description+'</div>';
-                                } else if (response.type == 'photo') {
-                                    f_Type.set('value', 'photo');
-                                    // display image template
-                                    $('reply').getElement('.media-preview').innerHTML = '<img src="'+response.thumbnail_url+'" /> <h3>'+response.title+'</h3><div class="embed-url">'+_url+'</div><div class="embed-desc">'+response.description+'</div>';
-                                }
-                            }
-                        }
-                    }).send();
-                }
-            }
-        });
+            this.url_found = urls[1];
+            this.getEmbed(urls[0]);
+        }.bind(this));
+    },
+
+    getEmbed: function(url) {
+        new Request.JSONP({
+            url: 'http://api.embed.ly/v1/api/oembed',
+            data: {format: 'json', url: url},
+            headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
+            onComplete: function(response) {
+                console.log(response);
+                
+                if (['video', 'photo'].contains(response.type))
+                    this.inject(response);
+                else
+                    console.log('Wrong type! '+response.type);
+            }.bind(this)
+        }).send();
+    },
+
+    inject: function(data) {
+        var p = this.preview[0],
+            d = p.getElement('div.data'),
+            title = d.getElement('h3.title > a'),
+            link  = d.getElement('small > a'),
+            descr = d.getElement('em');
+
+        p.getElement('img.thumbnail').src = data.thumbnail_url;
+        title.innerHTML = data.title;
+        descr.innerHTML = data.description.stripTags().limit(200).replace('\n', '<br>');
+        title.href = link.innerHTML = link.href = data.url;
+
+        p.removeClass('hidden');
     }
 });
 
