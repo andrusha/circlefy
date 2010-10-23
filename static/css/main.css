@@ -1350,7 +1350,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
-.position-top-align-middle {
+.position-top.align-middle {
   position: absolute;
   padding: 0 0 5px;
   width: auto;
@@ -1358,9 +1358,11 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   font-size: 11px;
   color: #FFF;
   text-shadow: 1px 1px #000;
-  background: url(../images/tooltip_small.png) no-repeat bottom center;
+  background: url(../images/tooltip_small_bottom.png) no-repeat bottom center;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
   }
-.position-bottom-align-middle {
+.position-bottom.align-middle {
   position: absolute;
   padding: 5px 0 0;
   width: auto;
@@ -1369,6 +1371,8 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
   color: #FFF;
   text-shadow: 1px 1px #000;
   background: url(../images/tooltip_small.png) no-repeat top center;
+  color: #FFF;
+  text-shadow: 1px 1px #000;
   }
 
 /*** <Search results> ***/
