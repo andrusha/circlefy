@@ -86,8 +86,9 @@ var _modal = _tap.register({
 
         var wsize = $(window).getSize();
         var msize = $(modalForm).getSize();
+        var top = ( wsize.y - msize.y ) / 2;
         modalForm.set('styles', {
-            'top': ( wsize.y - msize.y ) / 2 + "px",
+            'top': (top > 0 ? top : 0) + "px",
             'left': ( wsize.x - msize.x ) / 2 + "px",
             'margin': '0'
         });

@@ -14,7 +14,6 @@ Form.Validator.implement('options', {
             val = val.split(':')[0];
             text += '<p>' + Form.Validator.validators[val].getError(elem) + '</p>';
         });
-        elem.setData('tiptext', text);
         elem.fireEvent('showCustomTip', [{content: text}]);
     }
 });

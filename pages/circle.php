@@ -31,5 +31,13 @@ class page_circle extends Base {
         $this->set(
             $group->isPermitted($this->user),
             'moderator');
+
+        $this->set(
+            array_flip(Group::$types),
+            'types');
+
+        $this->set(
+            array_flip(Group::$auths),
+            'auths');
 	}
 };

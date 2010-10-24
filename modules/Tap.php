@@ -18,6 +18,8 @@ class Tap extends BaseModel {
 
     protected static $addit = array('responses', 'group', 'sender', 'reciever', 'media', 'replies', 'involved');
 
+    protected static $tableName = 'message';
+
     public function format() {
         if (isset($this->data['time'])) {
             $this->data['timestamp'] = strtotime($this->data['time']);

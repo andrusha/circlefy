@@ -16,6 +16,8 @@ class User extends BaseModel {
 
     protected static $addit = array('stats', 'friend', 'last_chat', 'guest');
 
+    protected static $tableName = 'user';
+
     public function __get($key) {
         if ($key == 'ip' && $this->id == $_SESSION['uid'])
             return $_SERVER['REMOTE_ADDR'];

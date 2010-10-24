@@ -3,10 +3,10 @@
 MooTools: the javascript framework
 
 web build:
- - http://mootools.net/core/4d4e8e86fec7dd03193da566ba9f5e7d
+ - http://mootools.net/core/fc26db285dac726c8699123610095ffc
 
 packager build:
- - packager build Core/Core Core/Array Core/String Core/Number Core/Function Core/Object Core/Event Core/Browser Core/Class Core/Class.Extras Core/Slick.Parser Core/Slick.Finder Core/Element Core/Element.Style Core/Element.Event Core/Element.Dimensions Core/Fx Core/Fx.CSS Core/Fx.Tween Core/Fx.Morph Core/Fx.Transitions Core/Request Core/Request.JSON Core/Cookie Core/JSON Core/DOMReady
+ - packager build Core/Core Core/Array Core/String Core/Number Core/Function Core/Object Core/Event Core/Browser Core/Class Core/Class.Extras Core/Slick.Parser Core/Slick.Finder Core/Element Core/Element.Style Core/Element.Event Core/Element.Dimensions Core/Fx Core/Fx.CSS Core/Fx.Tween Core/Fx.Morph Core/Fx.Transitions Core/Request Core/Request.HTML Core/Request.JSON Core/Cookie Core/DOMReady Core/Swiff
 
 /*
 ---
@@ -1781,6 +1781,7 @@ this.Events = new Class({
 		}
 		return this;
 	}
+
 });
 
 this.Options = new Class({
@@ -5305,6 +5306,89 @@ Element.implement({
 /*
 ---
 
+name: Request.HTML
+
+description: Extends the basic Request Class with additional methods for interacting with HTML responses.
+
+license: MIT-style license.
+
+requires: [Element, Request]
+
+provides: Request.HTML
+
+...
+*/
+
+Request.HTML = new Class({
+
+	Extends: Request,
+
+	options: {
+		update: false,
+		append: false,
+		evalScripts: true,
+		filter: false,
+		headers: {
+			Accept: 'text/html, application/xml, text/xml, */*'
+		}
+	},
+
+	success: function(text){
+		var options = this.options, response = this.response;
+
+		response.html = text.stripScripts(function(script){
+			response.javascript = script;
+		});
+
+		var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+		if (match) response.html = match[1];
+		var temp = new Element('div').set('html', response.html);
+
+		response.tree = temp.childNodes;
+		response.elements = temp.getElements('*');
+
+		if (options.filter) response.tree = response.elements.filter(options.filter);
+		if (options.update) document.id(options.update).empty().set('html', response.html);
+		else if (options.append) document.id(options.append).adopt(temp.getChildren());
+		if (options.evalScripts) Browser.exec(response.javascript);
+
+		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
+	}
+
+});
+
+Element.Properties.load = {
+
+	set: function(options){
+		var load = this.get('load').cancel();
+		load.setOptions(options);
+		return this;
+	},
+
+	get: function(){
+		var load = this.retrieve('load');
+		if (!load){
+			load = new Request.HTML({data: this, link: 'cancel', update: this, method: 'get'});
+			this.store('load', load);
+		}
+		return load;
+	}
+
+};
+
+Element.implement({
+
+	load: function(){
+		this.get('load').send(Array.link(arguments, {data: Type.isObject, url: Type.isString}));
+		return this;
+	}
+
+});
+
+
+/*
+---
+
 name: JSON
 
 description: JSON encoder and decoder.
@@ -5596,4 +5680,121 @@ window.addEvent('load', function(){
 });
 
 })(window, document);
+
+
+/*
+---
+
+name: Swiff
+
+description: Wrapper for embedding SWF movies. Supports External Interface Communication.
+
+license: MIT-style license.
+
+credits:
+  - Flash detection & Internet Explorer + Flash Player 9 fix inspired by SWFObject.
+
+requires: [Options, Object]
+
+provides: Swiff
+
+...
+*/
+
+(function(){
+
+var id = 0;
+
+var Swiff = this.Swiff = new Class({
+
+	Implements: Options,
+
+	options: {
+		id: null,
+		height: 1,
+		width: 1,
+		container: null,
+		properties: {},
+		params: {
+			quality: 'high',
+			allowScriptAccess: 'always',
+			wMode: 'window',
+			swLiveConnect: true
+		},
+		callBacks: {},
+		vars: {}
+	},
+
+	toElement: function(){
+		return this.object;
+	},
+
+	initialize: function(path, options){
+		this.instance = 'Swiff_' + id++;
+
+		this.setOptions(options);
+		options = this.options;
+		var id = this.id = options.id || this.instance;
+		var container = document.id(options.container);
+
+		Swiff.CallBacks[this.instance] = {};
+
+		var params = options.params, vars = options.vars, callBacks = options.callBacks;
+		var properties = Object.append({height: options.height, width: options.width}, options.properties);
+
+		var self = this;
+
+		for (var callBack in callBacks){
+			Swiff.CallBacks[this.instance][callBack] = (function(option){
+				return function(){
+					return option.apply(self.object, arguments);
+				};
+			})(callBacks[callBack]);
+			vars[callBack] = 'Swiff.CallBacks.' + this.instance + '.' + callBack;
+		}
+
+		params.flashVars = Object.toQueryString(vars);
+		if (Browser.ie){
+			properties.classid = 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000';
+			params.movie = path;
+		} else {
+			properties.type = 'application/x-shockwave-flash';
+		}
+		properties.data = path;
+
+		var build = '<object id="' + id + '"';
+		for (var property in properties) build += ' ' + property + '="' + properties[property] + '"';
+		build += '>';
+		for (var param in params){
+			if (params[param]) build += '<param name="' + param + '" value="' + params[param] + '" />';
+		}
+		build += '</object>';
+		this.object = ((container) ? container.empty() : new Element('div')).set('html', build).firstChild;
+	},
+
+	replaces: function(element){
+		element = document.id(element, true);
+		element.parentNode.replaceChild(this.toElement(), element);
+		return this;
+	},
+
+	inject: function(element){
+		document.id(element, true).appendChild(this.toElement());
+		return this;
+	},
+
+	remote: function(){
+		return Swiff.remote.apply(Swiff, [this.toElement()].extend(arguments));
+	}
+
+});
+
+Swiff.CallBacks = {};
+
+Swiff.remote = function(obj, fn){
+	var rs = obj.CallFunction('<invoke name="' + fn + '" returntype="javascript">' + __flash__argumentsToXML(arguments, 2) + '</invoke>');
+	return eval(rs);
+};
+
+})();
 

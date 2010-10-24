@@ -4,6 +4,9 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
+//flash uploader & sessions workaround
+if (!empty($_FILES) && !empty($_POST) && $_POST['PHPSESSID'])
+    session_id($_POST['PHPSESSID']);
 session_start();
 
 define('BASE_PATH', realpath(dirname(__FILE__)).'/');

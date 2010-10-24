@@ -250,6 +250,12 @@
             </select>
             
             <span>secret <input type="checkbox" name="secret" <?=($circle['secret'] ? ' checked' : '')?>/></span>
+
+            <div style="width: 180px; height: 180px">
+                <img src="<?=GROUP_PIC_REL?>large_<?=$circle['id']?>.jpg" 
+                     id="avatar-changer"
+                     data-tipid="tip-avatar-changer">
+            </div>
                     
         </div><!--sidebar-->
         
