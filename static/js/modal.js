@@ -18,6 +18,7 @@ var _modal = _tap.register({
             'modal.show.login': function() { self.show('modal-login') },
             'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
+            'modal.show.group-edit': function() { self.show('modal-group-edit') },
             'modal.show.facebook-status': function(cid, symbol) {
                 self.show('modal-facebook-status');
                 _modal.facebook.show(cid, symbol);
@@ -38,21 +39,17 @@ var _modal = _tap.register({
             }
         });
 
-        $$('button.signup-button').addEvent('click', function () {
-            this.publish('modal.show.signup', []);
-        }.bind(this));
-
-        $$('button.login-button').addEvent('click', function () {
-            this.publish('modal.show.login', []);
-        }.bind(this));
-
-        $$('li.suggestions').addEvent('click', function () {
-            this.publish('modal.show.suggestions', []);
-        }.bind(this));
-
-        $$('a#access').addEvent('click', function () {
-            this.publish('modal.show.sign-login', []);
-        }.bind(this));
+        Object.each({'button.signup-button': 'modal.show.signup', 
+                     'button.login-button':  'modal.show.login',
+                     'li.suggestions':       'modal.show.suggestions', 
+                     'a#access':             'modal.show.sign-login', 
+                     'span#edit_circle > a': 'modal.show.group-edit'},
+           function (event, selector) {
+                $$(selector).addEvent('click', function (e) {
+                    e.stop();
+                    this.publish(event, []);
+                }.bind(this));
+           }.bind(this));
     },
     
     /*

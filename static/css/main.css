@@ -2017,3 +2017,6 @@ display:block;
 font-weight:normal;
 line-height:12px;
 }
+#modal-group-edit {
+    position: absolute;
+}
