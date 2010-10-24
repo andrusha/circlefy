@@ -1164,6 +1164,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	color:#545454;
 	font-weight:normal;
 	padding:0 0 0 5px;
+	display:inline;
 }
 #edit input[type=text] {
 	border:2px solid #346394;
@@ -1173,7 +1174,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	font-weight:normal;
 	font-family:Arial, Helvetica, sans-serif;
 	padding:5px;
-	width:630px;
+	width:486px;
 	margin:0 0 20px 0;
 	letter-spacing:1px;
 }
@@ -1185,7 +1186,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	font-weight:normal;
 	font-family:Arial, Helvetica, sans-serif;
 	padding:5px;
-	width:630px;
+	width:486px;
 	height:55px;
 	margin:0 0 20px 0;
 }
@@ -1206,7 +1207,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	-moz-border-radius:2px;
 	padding:4px 0;
 	margin:15px 0;
-	width:645px;
+	width:500px;
 }
 #edit select {
 	border:2px solid #346394;
