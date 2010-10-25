@@ -195,10 +195,8 @@ class TapsList extends Collection {
             if (!empty($line['u2']))
                 $tap['reciever'] = new User($line['u2']);
 
-            if (!empty($line['md'])) {
-                $line['md']['type'] = intval($line['md']['type']);
-                $tap['media'] = $line['md'];
-            }
+            if (!empty($line['md']))
+                $tap['media'] = new Media($line['md']);
 
             $taps[ intval($tap['id']) ] = new Tap($tap);
         }
