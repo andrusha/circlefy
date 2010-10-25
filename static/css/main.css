@@ -1225,6 +1225,9 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 padding:0;
 display:block;
 float:left;
+font-size:12px;
+font-weight:normal;
+line-height:12px;
 }
 #avatar-changer {
 float:left;
@@ -1241,10 +1244,12 @@ padding:0;
 	display:block;
 	font-size:14px;
 	font-weight:bold;
-	margin:20px 0 0 0;
+	margin:20px 0;
+	padding:0
 }
 #edit span input[type=checkbox] {
 	margin:0 0 0 20px;
+	float:none;
 }
 
 
