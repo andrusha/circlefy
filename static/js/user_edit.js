@@ -1,18 +1,21 @@
 /*
- * All stuff related to group editing (including group pic)
+ * All stuff related to user profile and settings edit 
 */
 
-_edit.group = _tap.register({
+_edit.user = _tap.register({
 
 	init: function() {
-        var form   = this.form   = $('group-edit'),
-           fields = this.fields = {},
-           inputs = form.getElements('input:not([type="submit"]), textarea, select');
+        if (!_vars.user.id) return;
 
-        this.sidebar = $$('div.box.circle-title')[0];
+        var form   = this.form   = $('user-edit'),
+            fields = this.fields = {},
+            inputs = form.getElements('input:not([type="submit"])'),
+            avatar = $('user-avatar-changer');
+
+        if (!avatar) return;
 
         new CirTooltip({
-            hovered:  inputs.combine($$('avatar-changer')),
+            hovered:  inputs.combine(avatar),
             template: 'error-tooltip',
             position: 'top',
             align:    'right',
@@ -23,27 +26,17 @@ _edit.group = _tap.register({
            fields[el.name] = el;
         });
 
-        this.oldSymbol = fields.symbol.value;
-
-        fields.title.addEvent('keyup', function () {
-            fields.symbol.value = fields.title.value.makeSymbol();
-        });
-
         form.validator = new Form.Validator(form, {
-            ignoreDisabled: false,
             onFormValidate: this.update.bind(this)
         });
 
-        var avatar = $('avatar-changer');
-        if (!avatar) return;
         var avparent = avatar.getParent('div');
-
         avparent.set('spinner', {message: 'uploading...', maskMargins: true});
 
         new Swiff.Uploader({
             path: '/static/Swiff.Uploader.swf',
-            url: '/AJAX/group/update',
-            data: {'id': $('edit-id').value},
+            url: '/AJAX/user/update',
+            data: {'id': _vars.user.id},
             target: avatar,
             queued: false,
             multiple: false,
@@ -69,11 +62,6 @@ _edit.group = _tap.register({
                     newLarge.src = resp.medium+'?'+Math.random();
                     newLarge.replaces(avatar);
                     avatar = newLarge;
-
-                    var oldMed = this.sidebar.getElement('img.profile-thumb'),
-                        newMed = oldMed.clone(true, true);
-                    newMed.src = resp.medium+'?'+Math.random();
-                    newMed.replaces(oldMed);
                 }
             }.bind(this),
             onComplete: function() {
@@ -97,14 +85,11 @@ _edit.group = _tap.register({
         });
 
         new Request.JSON({
-            url: '/AJAX/group/update',
+            url: '/AJAX/user/update',
             onSuccess: function (response) {
                 if (!response.success)
                     return;
-                if (response.group.symbol != this.oldSymbol)
-                    document.location = '/circle/'+response.group.symbol+'?edit';
-                else
-                    this.updateInfo(response.group);
+                window.location.reload();
             }.bind(this)
         }).post(data);
     },

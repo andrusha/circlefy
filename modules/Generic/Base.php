@@ -51,7 +51,7 @@ abstract class Base {
 
         switch($this->view_output){
             case 'HTML':
-                $this->set($this->user->asArray(), 'me');
+                $this->set($this->user->asArray(false), 'me');
                 $this->set($this->user->guest,     'guest');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;

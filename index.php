@@ -42,7 +42,8 @@ $ajaxs = array(
                 'check'    => true,
                 'facebook' => true,
                 'login'    => true,
-                'typing'   => true
+                'typing'   => true,
+                'update'   => true
         ),
         'group' => array(
                 'suggest'   => true,

@@ -18,6 +18,16 @@ Form.Validator.implement('options', {
     }
 });
 
+Form.Validator.add('validate-alphaspace', {
+    errorMsg: function (elem) {
+        return 'Please use only letters (a-z) in this field';
+    },
+    test: function (element) {
+        return Form.Validator.getValidator('IsEmpty').test(element) || 
+               (/^[a-zA-Z ]+$/).test(element.get('value'));
+    }
+});
+
 Form.Validator.add('groupDoesNotExists', {
     errorMsg: function (elem) {
         return '<a href="/circle/'+elem.value+'">'+elem.value+'</a> circle already exists';
@@ -83,6 +93,9 @@ Form.Validator.add('emailDoesNotExists', {
     test: function (elem, props) {
         var email  = elem.value,
             status = false;
+
+        if (email == props.oldEmail)
+            return true;
 
         new Request({
             url:  '/AJAX/user/check',

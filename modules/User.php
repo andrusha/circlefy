@@ -28,9 +28,12 @@ class User extends BaseModel {
         return parent::__get($key);
     }
 
-    public function asArray() {
+    public function asArray($formatted = true) {
         //security issue
-        return array_diff_key($this->data, array_flip(array('pass', 'ip', 'email','last_login')));
+        $exclude = array('pass', 'ip', 'last_login');
+        if ($formatted)
+            $exclude[] = 'email' ;
+        return array_diff_key($this->data, array_flip($exclude));
     }
 
     /*
@@ -66,34 +69,6 @@ class User extends BaseModel {
         $id = (int)$db->insert('user', $data);
         $data['id'] = $id;
         return new User($data);
-    }
-
-    /*
-        This thing makes current guest a full-featured user
-    */
-    public function update($uname, $fname, $lname, $email, $pass) {
-        $query = "UPDATE user 
-                     SET uname = #uname#,
-                         fname = #fname#,
-                         lname = #lname#,
-                         pass  = MD5(#pass#),
-                         email = #email#,
-                         type  = #type#
-                   WHERE id = #uid#
-                   LIMIT 1";
-        $data = array('uname' => $uname, 'fname' => $fname,
-            'lname' => $lname, 'pass' => $pass, 'email' => $email,
-            'uid' => $this->id, 'type' => User::$types['user']);
-        $this->db->query($query, $data);
-
-        $this->data = array_merge($this->data, $data);
-        
-        if ($this->db->affected_rows == 1) {
-            Auth::setSession($this);
-            return true;
-        }
-
-        return false;
     }
 
     /*

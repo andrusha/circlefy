@@ -174,6 +174,7 @@
     </div>
 
 <? if ($circle && $moderator): ?>
+<!-- Group edit dialog-->
     <div id="modal-group-edit" class="modal-window">
         <h1 class="wide">Manage circle</h1>
         
@@ -203,7 +204,7 @@
             </div><!--add-->
         <? endif; ?>
     	
-        <form id="edit">
+        <form id="group-edit">
         
             <input type="hidden" name="id" id="edit-id" value="<?=$circle['id']?>">
         	
@@ -270,5 +271,54 @@
     </div><!--modal-->
 <? endif; ?>
 
-</div>
+<? if (!$guest): ?>
+<!-- User edit dialog-->
+    <div id="modal-user-edit" class="modal-window" style="position: absolute">
+        <h1 class="wide">Your profile settings</h1>
+        <form id="user-edit">
+            <input type="hidden" name="id" id="edit-user-id" value="<?=$me['id']?>">
 
+            <div class="cont">
+			<label for="user-edit-fname">First name</label>
+            <input type="text" id="user-edit-fname"
+                   name="fname" 
+                   value="<?=$me['fname']?>"
+                   class="required validate-alphaspace maxLength:24"
+                   data-tipid="tip-input-fname"
+            />
+            </div>
+
+            <div class="cont second">
+			<label for="user-edit-lname">Last name</label>
+            <input type="text" id="user-edit-lname"
+                   name="lname" 
+                   value="<?=$me['lname']?>"
+                   class="required validate-alphaspace maxLength:24"
+                   data-tipid="tip-input-lname"
+            />
+            </div>           
+
+            <div class="cont second">
+            <label for="user-edit-email">electro-mail <small>this is the place where "enlarge your circles" goes</small></label>
+            <input type="text" id="user-edit-email" 
+                   name="email"
+                   value="<?=$me['email']?>"
+                   class="required validate-email emailDoesNotExists oldEmail:'<?=$me['email']?>'"
+                   data-tipid="tip-input-email"
+            />
+            </div>
+            
+            <div class="clear"></div>
+            <div style="width: 500px; height: 50px; padding: 20px 0 0 0;">
+                <img src="<?=USER_PIC_REL?>medium_<?=$me['id']?>.jpg" 
+                     id="user-avatar-changer"
+                     data-tipid="tip-user-avatar-changer">
+                     <span class="up">Tits or GTFO!</span>
+            </div>
+
+            <input type="submit" class="load" value="Update your profile"/>
+        </form>
+    </div><!--modal-->
+<? endif; ?>
+
+</div>

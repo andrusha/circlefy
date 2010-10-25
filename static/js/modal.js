@@ -19,6 +19,7 @@ var _modal = _tap.register({
             'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.group-edit': function() { self.show('modal-group-edit') },
+            'modal.show.user-edit': function() { self.show('modal-user-edit') },
             'modal.show.facebook-status': function(cid, symbol) {
                 self.show('modal-facebook-status');
                 _modal.facebook.show(cid, symbol);
@@ -34,7 +35,7 @@ var _modal = _tap.register({
         var a = new Keyboard({
             events: {
                 'esc': function () {
-                    this.hide(false);
+                    this.publish('modal.hide', [false]);
                 }.bind(this)
             }
         });
@@ -43,7 +44,8 @@ var _modal = _tap.register({
                      'button.login-button':  'modal.show.login',
                      'li.suggestions':       'modal.show.suggestions', 
                      'a#access':             'modal.show.sign-login', 
-                     'span#edit_circle > a': 'modal.show.group-edit'},
+                     'span#edit_circle > a': 'modal.show.group-edit',
+                     'li.settings':          'modal.show.user-edit'},
            function (event, selector) {
                 $$(selector).addEvent('click', function (e) {
                     e.stop();
