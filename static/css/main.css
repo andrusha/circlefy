@@ -1228,6 +1228,7 @@ float:left;
 font-size:12px;
 font-weight:normal;
 line-height:12px;
+padding:0 0 0 20px;
 }
 #avatar-changer {
 float:left;
@@ -1250,6 +1251,7 @@ padding:0;
 #edit span input[type=checkbox] {
 	margin:0 0 0 20px;
 	float:none;
+	display:inline;
 }
 
 
