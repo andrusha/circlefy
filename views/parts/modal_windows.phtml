@@ -217,7 +217,7 @@
             />
             </div>
             
-            <div class="cont">
+            <div class="cont second">
             <label for="edit-symbol">symbol   <small>leave it for robots</small></label>
             <input type="text" id="edit-symbol"  disabled=""
                    name="symbol"
@@ -244,7 +244,7 @@
             </select>
             </div>
             
-            <div class="cont">            
+            <div class="cont second">            
             <label for="edit-auth">authentication type</label>
             <select name="auth" id="edit-auth">
                 <? foreach ($auths as $val => $t): ?>
@@ -257,10 +257,11 @@
             
             <span>secret <input type="checkbox" name="secret" <?=($circle['secret'] ? ' checked' : '')?>/></span>
 
-            <div style="width: 180px; height: 180px">
+            <div style="width: 500px; height: 50px">
                 <img src="<?=GROUP_PIC_REL?>large_<?=$circle['id']?>.jpg" 
                      id="avatar-changer"
                      data-tipid="tip-avatar-changer">
+                     <span class="up">Upload a picture to represent this circle</span>
             </div>
                        
             <input type="submit" class="load" value="Update Circle"/>
