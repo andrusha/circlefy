@@ -1,5 +1,7 @@
 <?php
 /*
+    1000 GET!
+
     Here goes queries _routing_
 
     It is the single entry point for
