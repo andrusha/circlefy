@@ -205,9 +205,9 @@
     	
         <form id="edit">
         
-        <div class="left">
             <input type="hidden" name="id" id="edit-id" value="<?=$circle['id']?>">
-        
+        	
+            <div class="cont">
 			<label for="edit-title">title   <small>what will your circle be called?</small></label>
             <input type="text" id="edit-title"
                    name="title" 
@@ -215,7 +215,9 @@
                    class="required"
                    data-tipid="tip-input-title"
             />
+            </div>
             
+            <div class="cont">
             <label for="edit-symbol">symbol   <small>leave it for robots</small></label>
             <input type="text" id="edit-symbol"  disabled=""
                    name="symbol"
@@ -223,31 +225,35 @@
                    class="groupDoesNotExists oldSymbol:'<?=$circle['symbol']?>'"
                    data-tipid="tip-input-symbol"
             />
+            </div>
+            
+            <div class="clear"></div>
             
             <label for="edit-descr">description   <small>a brief explaination what this circle stands for</small></label>
             <textarea name="descr" id="edit-descr" 
                       class="maxLength:250"
                       data-tipid="tip-input-descr"
             /><?=$circle['descr']?></textarea>
-                       
-            <input type="submit" class="load" value="Update Circle"/>
-                
-        </div><!--left-->
-        
-        <div class="side">
+			
+            <div class="cont">
         	<label for="edit-type">circle type</label>
             <select name="type" id="edit-type">
                 <? foreach ($types as $val => $t): ?>
                     <option value="<?=$val?>" <?=($t == $circle['type'] ? ' selected' : '')?>><?=$t?></option>
                 <? endforeach; ?>
             </select>
+            </div>
             
+            <div class="cont">            
             <label for="edit-auth">authentication type</label>
             <select name="auth" id="edit-auth">
                 <? foreach ($auths as $val => $t): ?>
                     <option value="<?=$val?>" <?=($t == $circle['auth'] ? ' selected' : '')?>><?=$t?></option>
                 <? endforeach; ?>
             </select>
+            </div>
+            
+            <div class="clear"></div>
             
             <span>secret <input type="checkbox" name="secret" <?=($circle['secret'] ? ' checked' : '')?>/></span>
 
@@ -256,11 +262,9 @@
                      id="avatar-changer"
                      data-tipid="tip-avatar-changer">
             </div>
+                       
+            <input type="submit" class="load" value="Update Circle"/>
                     
-        </div><!--sidebar-->
-        
-        <div class="clear"></div>
-        
         </form>
     </div><!--modal-->
 <? endif; ?>
