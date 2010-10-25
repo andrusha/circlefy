@@ -50,16 +50,17 @@ var _list = _tap.register({
 	
 	changeFeed: function(el, e){
         e.stop();
-		var type = el.getData('type'),
+		var parent = el.getParent('li'),
+            type = parent.getData('type'),
             id = _vars.user.id,
-            data = {'feed': el.getElement('a').text },
-            inside = el.getData('inside');
+            data = {'feed': el.text },
+            inside = parent.getData('inside');
 
         if (_vars.guest && type != 'public')
             return;
 
-        el.getSiblings('li').removeClass('active');
-        el.addClass('active');
+        parent.getSiblings('li').removeClass('active');
+        parent.addClass('active');
 
 		this.publish('feed.change', [type, id, data, null, null, inside]);
 	},
