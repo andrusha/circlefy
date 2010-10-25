@@ -20,6 +20,10 @@ var _modal = _tap.register({
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.group-edit': function() { self.show('modal-group-edit') },
             'modal.show.user-edit': function() { self.show('modal-user-edit') },
+            'modal.show.image-display': function(embed) { 
+                self.show('modal-image-display');
+                _modal.image_preview.init(embed);
+            },
             'modal.show.facebook-status': function(cid, symbol) {
                 self.show('modal-facebook-status');
                 _modal.facebook.show(cid, symbol);
@@ -410,5 +414,15 @@ _modal.login = _tap.register({
 
             }
         }).send();
+    }
+});
+
+/*
+    Modal window for big image preview
+*/
+_modal.image_preview = _tap.register({
+    init: function(embed) {
+        this.container = $('modal-image-display').getElement('.img-container');
+        this.container.innerHTML = embed;
     }
 });

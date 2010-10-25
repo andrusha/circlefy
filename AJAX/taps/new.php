@@ -10,20 +10,21 @@ class ajax_new extends Base {
         $id   = intval($_POST['id']);
         $type = $_POST['type'];
         $msg  = strip_tags($_POST['msg']);
-
+        $media = (!empty($_POST['media'])?$_POST['media']:null);
+        
         if (Tap::checkDuplicate($this->user, $msg))
             return $this->data = array('dupe' => true);
 
         switch ($type) {
             case 'group':
                 $group = new Group($id);
-                $tap = Tap::toGroup($group, $this->user, $msg);
+                $tap = Tap::toGroup($group, $this->user, $msg, $media);
                 $this->notify($this->user, $group, null, $tap);
                 break;
 
             case 'friend':
                 $user = new User($id);
-                $tap = Tap::toUser($this->user, $user, $msg);
+                $tap = Tap::toUser($this->user, $user, $msg, $media);
                 $this->notify($this->user, null, $user, $tap);
                 break;
         }

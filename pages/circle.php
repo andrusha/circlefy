@@ -17,7 +17,7 @@ class page_circle extends Base {
             'members');
 
         $this->set(
-            TapsList::search('group', array('gid' => $group->id), T_USER_INFO | T_INSIDE)
+            TapsList::search('group', array('gid' => $group->id), T_USER_INFO | T_INSIDE | T_MEDIA)
                     ->lastResponses()
                     ->inject('group', $group)
                     ->format()

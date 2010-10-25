@@ -751,7 +751,6 @@ var MediaEmbed = new Class ({
             if (!urls || !urls.length || urls[1] == this.url_found)
                 return; 
             
-            
             this.url_found = urls[1];
             this.preview_loading[0].removeClass('hidden');
             this.getEmbed(urls[0]);
@@ -767,24 +766,37 @@ var MediaEmbed = new Class ({
                 console.log(response);
                 
                 if (['video', 'photo'].contains(response.type))
-                    this.inject(response);
+                    this.inject(response, url);
                 else
                     console.log('Wrong type! '+response.type);
             }.bind(this)
         }).send();
     },
 
-    inject: function(data) {
+    inject: function(data, url) {
         var p = this.preview[0],
             d = p.getElement('div.data'),
             title = d.getElement('h3.title > a'),
             link  = d.getElement('small > a'),
-            descr = d.getElement('em');
+            descr = d.getElement('em'),
+            description = data.description.stripTags().limit(200).replace('\n', '<br>');
 
         p.getElement('img.thumbnail').src = data.thumbnail_url;
         title.innerHTML = data.title;
-        descr.innerHTML = data.description.stripTags().limit(200).replace('\n', '<br>');
-        title.href = link.innerHTML = link.href = data.url;
+        descr.innerHTML = description;
+        title.href = link.innerHTML = link.href = url;
+        
+        this.options.element.setData('type', data.type);
+        this.options.element.setData('link', url);
+        this.options.element.setData('embed', data.html);
+        this.options.element.setData('title', data.title);
+        this.options.element.setData('description', description);
+        this.options.element.setData('thumbnail', data.thumbnail_url);
+        if (data.type == 'photo') {
+            this.options.element.setData('fullimage', data.url);
+            this.options.element.setData('embed', data.width +','+ data.height);
+        }
+        
         this.preview_loading[0].addClass('hidden');
         p.removeClass('hidden');
     }

@@ -586,8 +586,8 @@ var _tapbox = _tap.register({
         var form = this.form = $$('div#left > form#reply')[0];
         if ((!_vars.user) || !this.form) return;
 
-        this.sendType = _vars.feed.type;
-        this.sendTo   = _vars.feed.id;
+        this.sendType  = _vars.feed.type;
+        this.sendTo    = _vars.feed.id;
 
         var tapbox = this.tapbox = form.getElement('textarea');
         tapbox.overtext = new OverText(tapbox, {
@@ -626,14 +626,29 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.tapbox.value.isEmpty())
             return this.tapbox.focus();
-
+        console.log(el, e, this.tapbox.get('testing'));
+        var data = {
+            msg: this.tapbox.value,
+            type: this.sendType,
+            id: this.sendTo
+        }
+        if (this.tapbox.getData('type').length > 0) {
+            var media = {
+                'type': this.tapbox.getData('type'),
+                'link': this.tapbox.getData('link'),
+                'code': this.tapbox.getData('embed'),
+                'title': this.tapbox.getData('title'),
+                'description': this.tapbox.getData('description'),
+                'thumbnail_url': this.tapbox.getData('thumbnail')
+            }
+            if (this.tapbox.getData('fullimage'))
+                media.fullimage_url = this.tapbox.getData('fullimage');
+            data.media = media;
+        }
+        
         new Request({
             url: '/AJAX/taps/new',
-            data: {
-                msg:  this.tapbox.value,
-                type: this.sendType,
-                id:   this.sendTo
-            },
+            data: data,
             onSuccess: this.parseSent.bind(this)
         }).send();
     },
@@ -646,6 +661,9 @@ var _tapbox = _tap.register({
         var resp = JSON.decode(response);
         if (resp.success) {
             //yay
+            this.tapbox.value = '';
+            this.tapbox.getParent('form#reply').getElement('div.media-preview').addClass("hidden");
+            
         }
     }
 

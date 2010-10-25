@@ -10,7 +10,7 @@ class Tap extends BaseModel {
 
     public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
-    public static $mediaFields = array('id', 'type', 'link');
+    public static $mediaFields = array('id', 'type', 'link', 'code', 'title', 'description', 'thumbnail_url', 'fullimage_url');
 
     public static $mediaTypes  = array('youtube' => 1, 'vimeo' => 2, 'flickr' => 3);
 
@@ -50,8 +50,8 @@ class Tap extends BaseModel {
 
         $tap_id int
     */
-    public static function byId($id, $group_info = true, $user_info = false, $last_resp = false) {
-        $taps = TapsList::search('byId', array('id' => $id), ($group_info ? T_GROUP_INFO : 0) | T_USER_INFO | ($user_info ? T_USER_RECV : 0));
+    public static function byId($id, $group_info = true, $user_info = false, $last_resp = false, $media = false) {
+        $taps = TapsList::search('byId', array('id' => $id), ($group_info ? T_GROUP_INFO : 0) | T_USER_INFO | ($user_info ? T_USER_RECV : 0) | ($media ? T_MEDIA : 0));
         if ($last_resp)
             $taps->lastResponses();
         return $taps->getFirst();
@@ -62,11 +62,23 @@ class Tap extends BaseModel {
 
         @return int
     */
-    private static function add(User $from, $text, Group $g = null, User $to = null) {
+    private static function add(User $from, $text, $media = null, Group $g = null, User $to = null) {
         $db = DB::getInstance();
-
+        
+        if ($media) {
+            $media_id = $db->insert('media',
+                array('type' => $media['type'], 
+                      'link' => $media['link'], 
+                      'code' => $media['code'],
+                      'title' => $media['title'],
+                      'description' => $media['description'],
+                      'thumbnail_url' => $media['thumbnail_url'],
+                      'fullimage_url' => $media['fullimage_url']));
+        }
+        
         $id = $db->insert('message', 
             array('sender_id' => $from->id, 'text' => $text,
+                  'media_id' => $media_id ? $media_id : null,
                   'group_id' => $g ? $g->id : null,
                   'reciever_id' => $to ? $to->id : null));
 
@@ -76,15 +88,15 @@ class Tap extends BaseModel {
     /*
         @return Tap
     */
-    public static function toGroup(Group $group, User $user, $text) {
-        return Tap::byId(Tap::add($user, $text, $group, null), true, false, true);
+    public static function toGroup(Group $group, User $user, $text, $media) {
+        return Tap::byId(Tap::add($user, $text, $media, $group, null), true, false, true);
     }
 
     /*
         @return Tap
     */
-    public static function toUser(User $from, User $to, $text) {
-        return Tap::byId(Tap::add($from, $text, null, $to), true, true, true);
+    public static function toUser(User $from, User $to, $text, $media) {
+        return Tap::byId(Tap::add($from, $text, $media, null, $to), true, true, true);
     }
 
     /*
