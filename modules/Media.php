@@ -36,6 +36,6 @@ class Media extends BaseModel {
       }
       
       $db->commit();
-      return $id
+      return $id;
     }
 };
