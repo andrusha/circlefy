@@ -61,7 +61,7 @@
 	$circle_type = "<span class='type-label'><img src='/static/images/type_{$c['type']}.png' />Type: {$c['type']} </span>";
 	?> 
 
-	<h3 class="username"><?=$c['name']?><? if($circle_type): ?>
+	<h3 class="username"><span class="group-name"><?=$c['name']?></span><? if($circle_type): ?>
 	<span class="circle_type" data-tiptitle="blah"><?=$circle_type?></span> 
 	<? endif; ?></h3>
         <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>"><span class="circle"></span><img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" class="profile-thumb" alt="thumb" /></div>

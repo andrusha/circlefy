@@ -36,7 +36,10 @@ class Group extends BaseModel {
 
     protected static $tableName = 'group';
 
-    public function asArray() {
+    public function asArray($format = true) {
+        if (!$format)
+            return $this->data;
+
         $data = $this->data;
         if (isset($data['type'])) {
             $types = array_flip(self::$types);

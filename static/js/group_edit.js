@@ -9,6 +9,8 @@ _edit.group = _tap.register({
            fields = this.fields = {},
            inputs = form.getElements('input:not([type="submit"]), textarea, select');
 
+        this.sidebar = $$('div.box.circle-title')[0];
+
         new CirTooltip({
             hovered:  inputs.combine($$('avatar-changer')),
             template: 'error-tooltip',
@@ -20,6 +22,8 @@ _edit.group = _tap.register({
         inputs.each( function (el) {
            fields[el.name] = el;
         });
+
+        this.oldSymbol = fields.symbol.value;
 
         fields.title.addEvent('keyup', function () {
             fields.symbol.value = fields.title.value.makeSymbol();
@@ -54,14 +58,24 @@ _edit.group = _tap.register({
                 avparent.spin();
             },
             onSelectFail: function(files) {
-                elem.fireEvent('showCustomTip', [{content: 'Please select image smaller than 2 Mb'}]);
+                avatar.fireEvent('showCustomTip', [{content: 'Please select image smaller than 2 Mb'}]);
             },
             onFileComplete: function(file) {
                 var resp = JSON.decode(file.response.text);
                 console.log(resp); 
-                if (resp.success)
-                    avatar.src = resp.pic+'?'+Math.random();
-            },
+                if (resp.success) {
+                    //a bit dirty, but there is no good solution for chrome
+                    var newLarge = avatar.clone(true, true);
+                    newLarge.src = resp.large+'?'+Math.random();
+                    newLarge.replaces(avatar);
+                    avatar = newLarge;
+
+                    var oldMed = this.sidebar.getElement('img.profile-thumb'),
+                        newMed = oldMed.clone(true, true);
+                    newMed.src = resp.medium+'?'+Math.random();
+                    newMed.replaces(oldMed);
+                }
+            }.bind(this),
             onComplete: function() {
                 avparent.unspin();
             }
@@ -79,10 +93,33 @@ _edit.group = _tap.register({
         new Request.JSON({
             url: '/AJAX/group/update',
             onSuccess: function (response) {
-                if (response.success)
+                if (!response.success)
+                    return;
+                if (response.group.symbol != this.oldSymbol)
                     document.location = '/circle/'+response.group.symbol+'?edit';
-            }
+                else
+                    this.updateInfo(response.group);
+            }.bind(this)
         }).post(data);
+    },
+
+    /*
+     * Lazy info updater, works without page reload
+     */
+    updateInfo: function(group) {
+        var f = this.fields,
+            s = this.sidebar;
+        //in some cases we may change title, but not symbol
+        f.title.value = group.name;
+        f.descr.value = group.descr;
+        f.type.value = group.type;
+        f.auth.value = group.auth;
+        f.secret.checked = group.secret;
+
+        s.getElement('p').innerHTML = group.descr;
+        s.getElement('span.group-name').innerHTML = group.name;
+
+        this.publish('modal.hide', []);
     }
 
 });

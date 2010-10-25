@@ -32,7 +32,7 @@ class ajax_update extends Base {
        $group->secret = $_POST['secret'] == 'true' ? 1 : 0;
        $group->update();
 
-       return array('success' => 1, 'group' => $group->asArray());
+       return array('success' => 1, 'group' => $group->asArray(false));
     }
 
     private function avatar(Group $group) {
@@ -44,6 +44,9 @@ class ajax_update extends Base {
         move_uploaded_file($_FILES['Filedata']['tmp_name'], $uploaded);
         $pictures = Images::makeUserpics($group->id, $uploaded, GROUP_PIC_PATH); 
 
-        return array('success' => 1, 'pic' => GROUP_PIC_REL.'large_'.$group->id.'.jpg');
+        return array('success' => 1, 
+                     'large'  => GROUP_PIC_REL.'large_'.$group->id.'.jpg',
+                     'medium' => GROUP_PIC_REL.'medium_'.$group->id.'.jpg',
+                     'small'  => GROUP_PIC_REL.'small_'.$group->id.'.jpg');
     }
 };
