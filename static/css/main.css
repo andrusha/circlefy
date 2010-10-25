@@ -2045,3 +2045,6 @@ line-height:12px;
 	margin: 0 auto;
 }
 /*** /Mootools.Spinner ***/
+
+.media-preview-loading { padding: 30px 250px;}
+.media-preview-loading span { display:block; float: right; line-height: 30px; height: 30px;}

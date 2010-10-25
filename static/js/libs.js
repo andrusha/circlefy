@@ -733,6 +733,7 @@ var MediaEmbed = new Class ({
             return;
 
         this.preview = this.options.element.getParent('form#reply').getElement('div.media-preview');
+        this.preview_loading = this.options.element.getParent('form#reply').getElement('div.media-preview-loading');
 
         if (!this.preview)
             return;
@@ -749,8 +750,10 @@ var MediaEmbed = new Class ({
             var urls = content.match(self.options.services);
             if (!urls || !urls.length || urls[1] == this.url_found)
                 return; 
-
+            
+            
             this.url_found = urls[1];
+            this.preview_loading[0].removeClass('hidden');
             this.getEmbed(urls[0]);
         }.bind(this));
     },
@@ -782,7 +785,7 @@ var MediaEmbed = new Class ({
         title.innerHTML = data.title;
         descr.innerHTML = data.description.stripTags().limit(200).replace('\n', '<br>');
         title.href = link.innerHTML = link.href = data.url;
-
+        this.preview_loading[0].addClass('hidden');
         p.removeClass('hidden');
     }
 });
