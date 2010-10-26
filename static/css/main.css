@@ -1208,7 +1208,7 @@ font-weight:normal;
 line-height:12px;
 padding:0 0 0 20px;
 }
-#avatar-changer {
+#user-avatar-changer {
 float:left;
 }
 #user-edit .cont {
@@ -1216,7 +1216,16 @@ float:left;
 	width:240px;
 padding:0 20px 0 0;
 }
-
+#user-edit .cont.second {
+padding:0;
+}
+#user-edit span {
+	display:block;
+	font-size:14px;
+	font-weight:bold;
+	margin:20px 0;
+	padding:0;
+}
 
 
 
