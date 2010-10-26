@@ -68,17 +68,15 @@ class Tap extends BaseModel {
         if ($media) {
             // Remove the URL of the media published
             $text = str_replace($media['link'], '', $text);
-
-            $media_id = $db->insert('media',
-                array('type' => $media['type'], 
-                      'link' => $media['link'], 
-                      'code' => $media['code'],
-                      'title' => $media['title'],
-                      'description' => $media['description'],
-                      'thumbnail_url' => $media['thumbnail_url'],
-                      'fullimage_url' => $media['fullimage_url']));
+            
+            $media_id = Media::create($media['mediatype'], 
+                                      $media['link'], 
+                                      $media['code'], 
+                                      $media['title'],
+                                      $media['description'],
+                                      $media['thumbnail_url'],
+                                      $media['fullimage_url']);
         }
-        
         
         $id = $db->insert('message', 
             array('sender_id' => $from->id, 'text' => $text,
@@ -93,14 +91,14 @@ class Tap extends BaseModel {
         @return Tap
     */
     public static function toGroup(Group $group, User $user, $text, $media) {
-        return Tap::byId(Tap::add($user, $text, $media, $group, null), true, false, true);
+        return Tap::byId(Tap::add($user, $text, $media, $group, null), true, false, true, (!empty($media) ? true : false));
     }
 
     /*
         @return Tap
     */
     public static function toUser(User $from, User $to, $text, $media) {
-        return Tap::byId(Tap::add($from, $text, $media, null, $to), true, true, true);
+        return Tap::byId(Tap::add($from, $text, $media, null, $to), true, true, true, (!empty($media) ? true : false));
     }
 
     /*

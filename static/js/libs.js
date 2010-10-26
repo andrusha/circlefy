@@ -760,7 +760,7 @@ var MediaEmbed = new Class ({
     getEmbed: function(url) {
         new Request.JSONP({
             url: 'http://api.embed.ly/v1/api/oembed',
-            data: {format: 'json', url: url},
+            data: {format: 'json', maxwidth: 500, url: url},
             headers: {'User-Agent': 'Mozilla/5.0 (compatible; Circlefy/0.1; +http://circlefy.com/)'},
             onComplete: function(response) {
                 console.log(response);
@@ -786,7 +786,7 @@ var MediaEmbed = new Class ({
         descr.innerHTML = description;
         title.href = link.innerHTML = link.href = url;
         
-        this.options.element.setData('type', data.type);
+        this.options.element.setData('mediatype', data.type);
         this.options.element.setData('link', url);
         this.options.element.setData('embed', data.html);
         this.options.element.setData('title', data.title);

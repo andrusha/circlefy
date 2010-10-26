@@ -626,15 +626,14 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.tapbox.value.isEmpty())
             return this.tapbox.focus();
-        console.log(el, e, this.tapbox.get('testing'));
         var data = {
             msg: this.tapbox.value,
             type: this.sendType,
             id: this.sendTo
         }
-        if (this.tapbox.getData('type').length > 0) {
+        if (this.tapbox.getData('mediatype').length > 0) {
             var media = {
-                'type': this.tapbox.getData('type'),
+                'mediatype': this.tapbox.getData('mediatype'),
                 'link': this.tapbox.getData('link'),
                 'code': this.tapbox.getData('embed'),
                 'title': this.tapbox.getData('title'),
@@ -663,7 +662,6 @@ var _tapbox = _tap.register({
             //yay
             this.tapbox.value = '';
             this.tapbox.getParent('form#reply').getElement('div.media-preview').addClass("hidden");
-            
         }
     }
 

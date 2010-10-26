@@ -4,7 +4,7 @@ class Media extends BaseModel {
     //ENUM()
     public static $types = array(
       'video' => 1,
-      'image' => 2
+      'photo' => 2
     );
 
     public static $fields = array(
@@ -24,7 +24,7 @@ class Media extends BaseModel {
       $db = DB::getInstance();
       $db->startTransaction();
       
-      $data = array('type' => $this->types[type], 'link' => $link, 'code' => $code,
+      $data = array('type' => Media::$types[$type], 'link' => $link, 'code' => stripslashes($code),
         'title' => $title, 'description' => $description,
         'thumbnail_url' => $thumbnail_url, 'fullimage_url' => $fullimage_url);
       

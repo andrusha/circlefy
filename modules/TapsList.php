@@ -152,6 +152,7 @@ class TapsList extends Collection {
 
         if ($options & T_MEDIA) {
             $join[] = 'media';
+            $prefix = 'md.';
             $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Tap::$mediaFields));
         }
 

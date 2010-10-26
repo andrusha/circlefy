@@ -93,7 +93,30 @@
             <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" data-tiptitle="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" data-tipid="msg-<#: msg.id #>" />
             <div class="text">
                 <h3 class="author"><a href="/user/<#: msg.sender.uname  #>"><#: msg.sender.uname  #></a> <small>, <#: msg.sender.fname  #> <#: msg.sender.lname  #></small></h3>
-                <div class="message"><a href="/convo/<#: msg.id  #>"><#: msg.text  #></a></div>
+                <div class="message">
+                    <a href="/convo/<#: msg.id  #>"><#: msg.text  #></a>
+                    <# if (msg.media.id): #>
+                        <# if (msg.media.type == 1): #>
+                            <a href="#" class="display-video thumbnail">
+                                <img src="<#: msg.media.thumbnail_url #>" alt="" class="thumbnail-video media-thumbnail" />
+                                <img src="/static/images/play.png" alt="" class="play-button" />
+                            </a>
+                        <# else: #>
+                            <a href="#" class="display-image thumbnail" data-embedcode="<#: msg.media.code #>" data-imageurl="<#: msg.media.fullimage_url #>">
+                                <img src="<#: msg.media.thumbnail_url #>" alt="" class="thumbnail-image media-thumbnail" />
+                            </a>
+                        <# endif; #>
+                        <div class="data">
+                            <h3 class="title video"><a href="<#: msg.media.link #>"><#: msg.media.title #></a></h3>
+                            <small><a href="<#: msg.media.link #>"><#: msg.media.link #></a></small>
+                            <em><#: msg.media.description #></em>
+                        </div>
+                        <div class="clear"></div>
+                        <# if (msg.media.type == 1): #>
+                        <div class="video-embed hidden"><#: msg.media.code #></div>
+                        <# endif; #>
+                    <# endif; #>
+                </div>
                 <div class="clear"></div>
 
                 <# if (msg.responses.user): #>

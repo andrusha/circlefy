@@ -10,7 +10,7 @@ class ajax_new extends Base {
         $id   = intval($_POST['id']);
         $type = $_POST['type'];
         $msg  = strip_tags($_POST['msg']);
-        $media = (!empty($_POST['media'])?$_POST['media']:null);
+        $media = (!empty($_POST['media']['mediatype'])?$_POST['media']:null);
         
         if (Tap::checkDuplicate($this->user, $msg))
             return $this->data = array('dupe' => true);
