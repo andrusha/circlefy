@@ -64,8 +64,11 @@ class Tap extends BaseModel {
     */
     private static function add(User $from, $text, $media = null, Group $g = null, User $to = null) {
         $db = DB::getInstance();
-        
+
         if ($media) {
+            // Remove the URL of the media published
+            $text = str_replace($media['link'], '', $text);
+
             $media_id = $db->insert('media',
                 array('type' => $media['type'], 
                       'link' => $media['link'], 
@@ -75,6 +78,7 @@ class Tap extends BaseModel {
                       'thumbnail_url' => $media['thumbnail_url'],
                       'fullimage_url' => $media['fullimage_url']));
         }
+        
         
         $id = $db->insert('message', 
             array('sender_id' => $from->id, 'text' => $text,

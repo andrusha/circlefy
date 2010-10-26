@@ -71,6 +71,11 @@ if ($_f['show_reply']){
         <div class="text">
             <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
             <div class="message">
+                <?
+                if (!empty($f['media']['id'])) {
+                    
+                }
+                ?>
                 <a href="/convo/<?=$f['id']?>"><?=$f['text']?></a>
                 <? if (!empty($f['media']['id'])): ?>
                     <? if ($f['media']['type'] == 1): ?>
