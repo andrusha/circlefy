@@ -181,14 +181,14 @@ var _startup = _tap.register({
                 if (elem.hasClass('display-video')) {
                     elem.addEvent('click', function(e) {
                         e.stop();
-                        e.target.getParent('div.media').getElement('.video-embed').toggleClass('hidden');
+                        e.target.getParent('div.message').getElement('.video-embed').toggleClass('hidden');
                     }.bind(this));
                 } else {
                     elem.addEvent('click', function(e) {
                         var sizes = e.target.getParent().getData('embedcode').split(','),
                             url   = e.target.getParent().getData('imageurl'),
                             embed = '<img src="'+ url +'" width="'+ sizes[0] +'" height="'+ sizes[1] +'" />';
-                        self.publish('modal.show.image-display', [embed]);
+                        self.publish('modal.show.image-display', [embed, sizes]);
                     }.bind(this));
                 }
             });

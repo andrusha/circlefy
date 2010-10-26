@@ -70,31 +70,31 @@ if ($_f['show_reply']){
         <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipid="author-<?=$f['id']?>" />
         <div class="text">
             <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
-            <div class="message"><a href="/convo/<?=$f['id']?>"><?=$f['text']?></a></div>
-            <? if (!empty($f['media']['id'])): ?>
-            <div class="media">
-                <? if ($f['media']['type'] == 1): ?>
-                <a href="#" class="display-video thumbnail">
-                    <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-video" />
-                    <img src="/static/images/play.png" alt="" class="play-button" />
-                </a>
-                <? else: ?>
-                <a href="#" class="display-image thumbnail" data-embedcode="<?=$f['media']['code']?>" data-imageurl="<?=$f['media']['fullimage_url']?>">
-                    <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-image" />
-                </a>
-                <? endif; ?>
+            <div class="message">
+                <a href="/convo/<?=$f['id']?>"><?=$f['text']?></a>
+                <? if (!empty($f['media']['id'])): ?>
+                    <? if ($f['media']['type'] == 1): ?>
+                    <a href="#" class="display-video thumbnail">
+                        <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-video media-thumbnail" />
+                        <img src="/static/images/play.png" alt="" class="play-button" />
+                    </a>
+                    <? else: ?>
+                    <a href="#" class="display-image thumbnail" data-embedcode="<?=$f['media']['code']?>" data-imageurl="<?=$f['media']['fullimage_url']?>">
+                        <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-image media-thumbnail" />
+                    </a>
+                    <? endif; ?>
                 <div class="data">
                     <h3 class="title video"><a href="<?=$f['media']['link']?>"><?=$f['media']['title']?></a></h3>
                     <small><a href="<?=$f['media']['link']?>"><?=$f['media']['link']?></a></small>
                     <em><?=$f['media']['description']?></em>
                 </div><!--data-->
+                <div class="clear"></div>
+                <!--<?= print_r($f['media'],1); ?>-->
                 <? if ($f['media']['type'] == 1): ?>
                 <div class="video-embed hidden"><?=stripslashes($f['media']['code'])?></div>
                 <? endif; ?>
-                <div class="clear"></div>
-            </div><!--mediapreview-->                
-            <!--<?= print_r($f['media'],1); ?>-->
-            <? endif; ?>
+                <? endif; ?>
+            </div><!--message-->
             <div class="clear"></div>
 
             <? if (!empty($f['responses'])): ?>

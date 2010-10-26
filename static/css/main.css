@@ -1883,9 +1883,6 @@ span.highlight {
 	float:left;
 }
 #feed .media .thumbnail-video, #feed .media .thumbnail-image { width: 135px; height: 100px; background: #fff; border: 0;}
-#feed .media .display-video { position: relative;}
-#feed .media .display-video img { position: absolute; border: 0;}
-#feed .media .display-video .play-button { margin: 27px 47px;}
 #reply .media-preview .data, #feed .media .data {
 	float:left;
 	width:450px;
@@ -1903,16 +1900,16 @@ span.highlight {
 	padding:2px 22px 0 0;
 	display:inline;
 }
-#reply .media-preview .data .title a, #feed .media .data .title a {
+#reply .media-preview .data .title a {
 	color:#4177a5;
 	text-decoration:none;
 }
-#reply .media-preview .data small, #feed .media .data small {
+#reply .media-preview .data small {
 	color:#959595;
 	font-size:10px;
 	display:block;
 }
-#reply .media-preview .data small a, #feed .media .data small a {
+#reply .media-preview .data small a {
 	color:#959595;
 	text-decoration:none;
 }
@@ -1932,13 +1929,25 @@ span.highlight {
 	float:left;
 	margin:0 0 10px 0;
 }
-
-.feed-item .message img {
+.feed-item .message .thumbnail {
 	float:left;
 	padding:2px;
-	background:#fff;
 	border:1px solid #d1d1d1;
+	width:100px;
+	height:76px;
+	background:#fff;
+	display:block;
 }
+.feed-item .message .media-thumbnail {
+  width: 100px;
+  height: 76px;
+	background:#fff;
+	border:0;
+}
+.feed-item .message .display-video { position: relative;}
+.feed-item .message .display-video img { position: absolute; border: 0;}
+.feed-item .message .display-video .play-button { margin: 16px 30px;}
+
 .feed-item .message .data {
 	float:left;
 	width:375px;
@@ -1949,9 +1958,10 @@ span.highlight {
 	font-weight:normal;
 	margin:0;
 }
-.feed-otem .message .data .title a {
+.feed-item .message .data .title a {
 	color:#4177a5;
 	text-decoration:none;
+	padding:0;
 }
 .feed-item .message .data small {
 	font-size:10px;
@@ -1962,6 +1972,7 @@ span.highlight {
 .feed-item .message .data small a {
 	color:#959595;
 	text-decoration:none;
+	padding:0;
 }
 
 /*** Form input states used for validation ***/
@@ -2047,6 +2058,7 @@ line-height:12px;
 #modal-group-edit {
     position: absolute;
 }
+#modal-image-display .img-container img { display: block;}
 
 /*** Mootools.Spinner ***/
 .spinner {
