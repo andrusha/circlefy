@@ -181,7 +181,18 @@ var _startup = _tap.register({
                 if (elem.hasClass('display-video')) {
                     elem.addEvent('click', function(e) {
                         e.stop();
-                        e.target.getParent('div.message').getElement('.video-embed').toggleClass('hidden');
+                        var close_btn = e.target.getParent('div.message').getElement('.video-embed-close');
+                            embed_div = e.target.getParent('div.message').getElement('.video-embed');
+                            thumbnail = e.target.getParent('a.display-video');
+                        embed_div.removeClass('hidden');
+                        close_btn.removeClass('hidden');
+                        thumbnail.addClass('hidden');
+                        close_btn.addEvent('click', function(e) { 
+                            e.stop();
+                            embed_div.addClass('hidden');
+                            close_btn.addClass('hidden');
+                            thumbnail.removeClass('hidden');
+                        });
                     }.bind(this));
                 } else {
                     elem.addEvent('click', function(e) {

@@ -72,8 +72,8 @@ class Tap extends BaseModel {
             $media_id = Media::create($media['mediatype'], 
                                       $media['link'], 
                                       $media['code'], 
-                                      $media['title'],
-                                      $media['description'],
+                                      stripslashes($media['title']),
+                                      stripslashes($media['description']),
                                       $media['thumbnail_url'],
                                       $media['fullimage_url']);
         }
