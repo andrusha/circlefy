@@ -723,7 +723,7 @@ var MediaEmbed = new Class ({
     
     options: {
         element: null,      // watched element
-        services: /http:\/\/(\S*youtube\.com\/watch\S*|\S*\.youtube\.com\/v\/\S*|youtu\.be\/\S*|\S*\.youtube\.com\/user\/\S*#\S*|\S*\.youtube\.com\/\S*#\S*\/\S*|m\.youtube\.com\/watch\S*|m\.youtube\.com\/index\S*|www\.livestream\.com\/\S*|www\.flickr\.com\/photos\/\S*|flic\.kr\/\S*|\S*imgur\.com\/\S*|\S*dribbble\.com\/shots\/\S*|drbl\.in\/\S*|\S*\.deviantart\.com\/art\/\S*|\S*\.deviantart\.com\/gallery\/\S*|\S*\.deviantart\.com\/#\/\S*|fav\.me\/\S*|\S*\.deviantart\.com|\S*\.deviantart\.com\/gallery|\S*\.deviantart\.com\/\S*\/\S*\.jpg|\S*\.deviantart\.com\/\S*\/\S*\.gif|\S*\.deviantart\.net\/\S*\/\S*\.jpg|\S*\.deviantart\.net\/\S*\/\S*\.gif|www\.vimeo\.com\/groups\/\S*\/videos\/\S*|www\.vimeo\.com\/\S*|vimeo\.com\/m\/#\/featured\/\S*|vimeo\.com\/groups\/\S*\/videos\/\S*|vimeo\.com\/\S*|vimeo\.com\/m\/#\/featured\/\S*|www\.ted\.com\/talks\/\S*\.html\S*|www\.ted\.com\/talks\/lang\/\S*\/\S*\.html\S*|www\.ted\.com\/index\.php\/talks\/\S*\.html\S*|www\.ted\.com\/index\.php\/talks\/lang\/\S*\/\S*\.html\S*|techcrunch\.tv\/watch\S*|techcrunch\.tv\/\S*\/watch\S*|www\\.last\\.fm\/music\/\S*|www\\.last\\.fm\/music\/+videos\/\S*|www\\.last\\.fm\/music\/+images\/\S*|www\\.last\\.fm\/music\/\S*\/_\/\S*|www\\.last\\.fm\/music\/\S*\/\S*|www\.facebook\.com\/photo\.php\S*|www\.facebook\.com\/video\/video\.php\S*|gist\.github\.com\/\S*|\S*\.scribd\.com\/doc\/\S*|tumblr\.com\/\S*|\S*\.tumblr\.com\/post\/\S*)/i
+        services: /http:\/\/(\S*youtube\.com\/watch\S*|\S*\.youtube\.com\/v\/\S*|youtu\.be\/\S*|\S*\.youtube\.com\/user\/\S*#\S*|\S*\.youtube\.com\/\S*#\S*\/\S*|m\.youtube\.com\/watch\S*|m\.youtube\.com\/index\S*|www\.livestream\.com\/\S*|www\.flickr\.com\/photos\/\S*|flic\.kr\/\S*|\S*imgur\.com\/\S*|\S*dribbble\.com\/shots\/\S*|drbl\.in\/\S*|www\.vimeo\.com\/groups\/\S*\/videos\/\S*|www\.vimeo\.com\/\S*|vimeo\.com\/m\/#\/featured\/\S*|vimeo\.com\/groups\/\S*\/videos\/\S*|vimeo\.com\/\S*|vimeo\.com\/m\/#\/featured\/\S*|www\.ted\.com\/talks\/\S*\.html\S*|www\.ted\.com\/talks\/lang\/\S*\/\S*\.html\S*|www\.ted\.com\/index\.php\/talks\/\S*\.html\S*|www\.ted\.com\/index\.php\/talks\/lang\/\S*\/\S*\.html\S*|www\\.last\\.fm\/music\/\S*|www\\.last\\.fm\/music\/+videos\/\S*|www\\.last\\.fm\/music\/+images\/\S*|www\\.last\\.fm\/music\/\S*\/_\/\S*|www\\.last\\.fm\/music\/\S*\/\S*|www\.facebook\.com\/photo\.php\S*|www\.facebook\.com\/video\/video\.php\S*|gist\.github\.com\/\S*|\S*\.scribd\.com\/doc\/\S*|tumblr\.com\/\S*|\S*\.tumblr\.com\/post\/\S*)/i
     },
     
     initialize: function(options) {
@@ -767,8 +767,10 @@ var MediaEmbed = new Class ({
                 
                 if (['video', 'photo'].contains(response.type))
                     this.inject(response, url);
-                else
+                else {
                     console.log('Wrong type! '+response.type);
+                    this.preview_loading.addClass('hidden');
+                }
             }.bind(this)
         }).send();
     },
@@ -779,17 +781,17 @@ var MediaEmbed = new Class ({
             title = d.getElement('h3.title > a'),
             link  = d.getElement('small > a'),
             descr = d.getElement('em'),
-            description = data.description.stripTags().limit(200).replace('\n', '<br>');
+            description = data.description ? data.description.stripTags().limit(200).replace('\n', '<br>') : '&nbsp;';
 
         p.getElement('img.thumbnail').src = data.thumbnail_url;
-        title.innerHTML = data.title;
+        title.innerHTML = data.title ? data.title : '&nbsp;';
         descr.innerHTML = description;
         title.href = link.innerHTML = link.href = url;
         
         this.options.element.setData('mediatype', data.type);
         this.options.element.setData('link', url);
         this.options.element.setData('embed', data.html);
-        this.options.element.setData('title', data.title);
+        this.options.element.setData('title', data.title ? data.title : '&nbsp;');
         this.options.element.setData('description', description);
         this.options.element.setData('thumbnail', data.thumbnail_url);
         if (data.type == 'photo') {

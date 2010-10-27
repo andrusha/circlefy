@@ -631,7 +631,7 @@ var _tapbox = _tap.register({
             type: this.sendType,
             id: this.sendTo
         }
-        if (this.tapbox.getData('mediatype').length > 0) {
+        if (this.tapbox.getData('mediatype') && this.tapbox.getData('mediatype').length) {
             var media = {
                 'mediatype': this.tapbox.getData('mediatype'),
                 'link': this.tapbox.getData('link'),

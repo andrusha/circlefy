@@ -2155,7 +2155,7 @@ line-height:12px;
 #modal-group-edit {
     position: absolute;
 }
-#modal-image-display .img-container img { display: block;}
+#modal-image-display .img-container { display: block; }
 
 /*** Mootools.Spinner ***/
 .spinner {

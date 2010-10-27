@@ -12,7 +12,7 @@ var _modal = _tap.register({
             e.stop();
             self.hide();
         });
-
+        
         this.subscribe({
             'modal.show.signup': function() { self.show('modal-signup') },
             'modal.show.login': function() { self.show('modal-login') },
@@ -20,8 +20,7 @@ var _modal = _tap.register({
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.group-edit': function() { self.show('modal-group-edit') },
             'modal.show.user-edit': function() { self.show('modal-user-edit') },
-            'modal.show.image-display': function(embed, sizes) { 
-                self.show('modal-image-display');
+            'modal.show.image-display': function(embed, sizes) {
                 _modal.image_preview.show(embed, sizes);
             },
             'modal.show.facebook-status': function(cid, symbol) {
@@ -422,7 +421,36 @@ _modal.login = _tap.register({
 */
 _modal.image_preview = _tap.register({
     show: function(embed, sizes) {
-        this.container = $('modal-image-display').getElement('.img-container').set('styles', {'width': sizes[0]+'px', 'height': sizes[1]+'px'});
-        this.container.innerHTML = embed;
+        var modalForm = $('modal-image-display'),
+            curtain   = $('curtain');
+        curtain.set('styles', {
+            'opacity': '0.7',
+            'display': 'block'
+        });
+
+        var container = modalForm.getElement('.img-container');
+        container.innerHTML = embed;
+        container.getElement('img').set('styles', {'width': sizes[0]+'px', 'height': sizes[1]+'px'});
+
+        curtain.addClass('show');
+        modalForm.set('styles', {
+            'opacity': '0'
+        });
+        modalForm.addClass('show');
+
+        var myEffects = new Fx.Morph(modalForm, {duration: 1000, transition: Fx.Transitions.Sine.easeOut});
+
+        myEffects.start({
+            'opacity': '1'
+        });
+
+        var wsize = $(window).getSize();
+        var msize = $(modalForm).getSize();
+        var top = ( wsize.y - msize.y ) / 2;
+        modalForm.set('styles', {
+            'top': (top > 0 ? top : 0) + "px",
+            'left': ( wsize.x - msize.x ) / 2 + "px",
+            'margin': '0'
+        });
     }
 });
