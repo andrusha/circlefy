@@ -893,6 +893,13 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 #sidebar .box a {
 	color:#2878ca;
 	text-decoration:none;
+word-wrap: break-word;
+}
+#sidebar .box img.thumbnail-image {
+border:none;
+}
+#sidebar .box .thumbnail {
+margin:15px 0;
 }
 #sidebar .box a:hover {
 	text-decoration:underline;
