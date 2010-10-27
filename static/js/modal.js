@@ -147,8 +147,7 @@ _modal.signup = _tap.register({
         new CirTooltip({
             hovered:  inputs,
             template: 'error-tooltip',
-            position: 'top',
-            align:    'right',
+            position: 'upperRight',
             sticky:   true
         });
     },

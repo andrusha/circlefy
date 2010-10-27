@@ -10,10 +10,10 @@
             
             <h3 class="username">
                 <? if(!$c['reciever_id']): ?>
-		<img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
-		<? else: ?>
-		<img src="/static/images/envelope.png" />
-		<? endif; ?>
+                <img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
+                <? else: ?>
+                <img src="/static/images/envelope.png" />
+                <? endif; ?>
                 <?=$c['sender']['uname']?>
             </h3>
             <? if ($c['group_id']): ?>
@@ -25,9 +25,20 @@
                 <a href="/user/<?=$c['sender']['id']?>" class="user">
                     <img src="<?=USER_PIC_REL.'medium_'.$c['sender']['id'].'.jpg'?>" alt=""<?=$c['sender']['fname']?> <?=$c['sender']['lname']?> />
                 </a>
-		<span class="pm-label">Private Message</span>
+                <span class="pm-label">Private Message</span>
             <? endif; ?>
-            <p><?=$c['text']?></p>
+            <p>
+                <?=$c['text']?>
+            </p>
+            <? if ($c['media']): ?>
+            <div class="media">
+                <small><a href="<?=$c['media']['link']?>"><?=$c['media']['link']?></a></small>
+                <a href="<?=$c['media']['link']?>" class="thumbnail">
+                    <img src="<?=$c['media']['thumbnail_url'] ?>" alt="" class="thumbnail-image media-thumbnail" />
+                </a>
+                
+            </div>
+            <? endif; ?>
             
             <div class="clear"></div>
             

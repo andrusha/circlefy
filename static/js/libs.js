@@ -575,7 +575,7 @@ var CirTooltip = new Class({
         hovered: null,      // hovered element
         duration: 100,      // time after mouse leaves hovered element
         template: null,     // template to use
-        position: 'bottom', // position where the tooltip will be displayed: top, bottom, left, right
+        position: 'bottom', // any position from Element.Position
         align: 'left',      // tooltip alignment: left, center, right, top, middle, bottom
         sticky: false       // tooltip will remain open until close event is throw
     },
@@ -652,55 +652,20 @@ var CirTooltip = new Class({
                 tip.getElement('.tooltip-content').innerHTML=new_content.content;
         }
         
-        var elCoord = element.getCoordinates();
-        var elSize = element.getComputedSize();
-        var tipCoord = tip.getCoordinates();
-        var tipSize = tip.getComputedSize();
-        
-        // position calculation
-        var top_dist = left_dist = 0;
-        
-        var align = this.options.align;
-        var pos = this.options.position;
-        if (elProperties.get('position'))
-            pos = elProperties.get('position');
-        if (elProperties.get('align'))
-            align = elProperties.get('align');
-        
-        if (pos == 'top' || pos == 'bottom') {
-            if (pos == 'top')
-                top_dist = elCoord.top - tipSize.height;
-            else
-                top_dist = elCoord.top + elSize.height;
-            
-            if (align == 'center')
-                left_dist = elCoord.left + (elSize.width / 2) - (tipSize.width / 2);
-            else if (align == 'right')
-                left_dist = elCoord.right - tipSize.width;
-            else left_dist = elCoord.left;
-        } else {
-            if (pos == 'left') 
-                left_dist = elCoord.left - tipSize.width;
-            else 
-                left_dist = elCoord.left + elSize.width;
-            
-            if (align == 'middle')
-                top_dist = elCoord.top + (elSize.height / 2) - (tipSize.height / 2);
-            else if (align == 'bottom')
-                top_dist = elCoord.bottom - tipSize.height;
-            else top_dist = elCoord.top;
+        var opposites = {
+            'upperLeft': 'bottomRight',
+            'centerTop': 'centerBottom',
+            'upperRight': 'BottomLeft',
+            'bottomLeft': 'upperRight',
+            'centerBottom': 'centerTop',
+            'bottomRight': 'upperLeft',
+            'centerLeft': 'centerRight',
+            'centerRight': 'centerLeft'
         }
+        tip.position({relativeTo: element, position: this.options.position, edge: opposites[this.options.position]})
+        tip.addClass('position-'+this.options.position);
         
-        tip.setStyles({
-            'top': top_dist,
-            'left': left_dist
-        });
-        
-        // add custom classes
-        tip.addClass('position-'+pos);
-        tip.addClass('align-'+align);
-        
-        elProperties.set('leave', top_dist);
+        //elProperties.set('leave', top_dist);
         this.currentElement = elProperties.get('id');
         this.show(tip);
     },

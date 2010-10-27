@@ -130,18 +130,19 @@ var _tooltips = _tap.register({
             new CirTooltip({
                hovered: $$('#feed .avatar-author, #feed .circle'),
                template: 'name-tooltip',
-               position: 'top',
-               align: 'center'
+               position: 'centerTop'
             });
         }.bind(this));
         this.subscribe('groups.get', function() {
             new CirTooltip({
                 hovered: $$('#sidebar .circle-thumb'),
-                template: 'side-tooltip'
+                template: 'side-tooltip',
+                position: 'bottomLeft'
             });
             new CirTooltip({
                 hovered: $$('#experience .circle-thumb'),
-                template: 'title-desc-tooltip'
+                template: 'title-desc-tooltip',
+                position: 'bottomLeft'
             });
         }.bind(this));
     },
@@ -154,18 +155,17 @@ var _startup = _tap.register({
         new CirTooltip({
             hovered: $$('#sidebar .follower-thumb'),
             template: 'follow-tooltip',
-            position: 'top',
-			align: 'center'
+			position: 'centerTop'
         });
         new CirTooltip({
             hovered: $$('#sidebar .circle-thumb'),
             template: 'side-tooltip',
-            position: 'top',
-			align: 'center'
+			position: 'centerLeft'
         });
         new CirTooltip({
             hovered: $$('#experience .circle-thumb'),
-            template: 'title-desc-tooltip'
+            template: 'title-desc-tooltip',
+            position: 'bottomLeft'
         });
         
         // Links detector

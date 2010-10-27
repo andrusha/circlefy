@@ -14,8 +14,7 @@ _edit.group = _tap.register({
         new CirTooltip({
             hovered:  inputs.combine($$('avatar-changer')),
             template: 'error-tooltip',
-            position: 'top',
-            align:    'right',
+            position: 'upperRight',
             sticky:   true
         });
 

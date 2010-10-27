@@ -1473,12 +1473,12 @@ padding:0;
   font-size: 11px;
   color: #FFF;
   text-shadow: 1px 1px #000;
-  background: url(../images/tooltip_small_left.png) no-repeat right center;
+  background: url(../images/tooltip_small_right.png) no-repeat right center;
   margin:0 0 0 -10px;
   }
 .tooltip-author h2 { font-size: 11px; font-weight: bold; }
 
-.position-top.align-center {
+.position-centerTop {
   position: absolute;
   padding: 0 0 5px;
   width: auto;
@@ -1491,7 +1491,7 @@ padding:0;
   text-shadow: 1px 1px #000;
   margin:-5px 0 0 0;
   }
-.position-left.align-middle {
+.position-centerLeft {
   position: absolute;
   padding: 0 5px 0 0;
   width: auto;
@@ -1499,12 +1499,12 @@ padding:0;
   font-size: 11px;
   color: #FFF;
   text-shadow: 1px 1px #000;
-  background: url(../images/tooltip_small_right.png) no-repeat right center;
+  background: url(../images/tooltip_small_left.png) no-repeat right center;
   color: #FFF;
   text-shadow: 1px 1px #000;
   margin:0 0 0 -5px;
   }
-.position-right.align-middle {
+.position-centerRight {
   position: absolute;
   padding: 0 0 0 5px;
   width: auto;
@@ -1517,7 +1517,7 @@ padding:0;
   text-shadow: 1px 1px #000;
   margin:0 0 0 5px;
   }
-.position-bottom.align-center {
+.position-centerBottom {
   position: absolute;
   padding: 5px 0 0;
   width: auto;
