@@ -84,9 +84,9 @@ if ($_f['show_reply']){
                     </a>
                     <? endif; ?>
                 <div class="data">
-                    <h3 class="title video"><a href="<?=$f['media']['link']?>"><?=$f['media']['title']?></a></h3>
+                    <h3 class="title video"><a href="/convo/<?=$f['id']?>"><?=$f['media']['title']?></a></h3>
                     <small><a href="<?=$f['media']['link']?>"><?=$f['media']['link']?></a></small>
-                    <em><?=$f['media']['description']?></em>
+                    <em><a href="/convo/<?=$f['id']?>"><?=$f['media']['description']?></a></em>
                 </div><!--data-->
                 <div class="clear"></div>
                 <? if ($f['media']['type'] == 1): ?>

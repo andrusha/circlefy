@@ -107,9 +107,9 @@
                             </a>
                         <# endif; #>
                         <div class="data">
-                            <h3 class="title video"><a href="<#: msg.media.link #>"><#: msg.media.title #></a></h3>
+                            <h3 class="title video"><a href="/convo/<#: msg.id  #>"><#: msg.media.title #></a></h3>
                             <small><a href="<#: msg.media.link #>"><#: msg.media.link #></a></small>
-                            <em><#: msg.media.description #></em>
+                            <em><a href="/convo/<#: msg.id  #>"><#: msg.media.description #></a></em>
                         </div>
                         <div class="clear"></div>
                         <# if (msg.media.type == 1): #>
