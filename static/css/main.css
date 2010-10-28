@@ -2048,9 +2048,11 @@ span.highlight {
 	background:#fff;
 	border:0;
 }
-.feed-item .message .display-video { position: relative;}
-.feed-item .message .display-video img { position: absolute; border: 0;}
+.feed-item .message .display-video, .feed-item .message .display-image { position: relative;}
+.feed-item .message .display-video img, .feed-item .message .display-image img { position: absolute; border: 0;}
 .feed-item .message .display-video .play-button { margin: 16px 30px;}
+.feed-item .message .display-video .media-type, 
+.feed-item .message .display-image .media-type { top: 5px; left: 5px; }
 
 .feed-item .message .data {
 	float:left;

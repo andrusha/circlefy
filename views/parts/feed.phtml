@@ -77,10 +77,12 @@ if ($_f['show_reply']){
                     <a href="#" class="display-video thumbnail">
                         <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-video media-thumbnail" />
                         <img src="/static/images/play.png" alt="" class="play-button" />
+                        <img src="/static/images/media-video.png" class="media-type" width="16" height="16" />
                     </a>
                     <? else: ?>
                     <a href="#" class="display-image thumbnail" data-embedcode="<?=$f['media']['code']?>" data-imageurl="<?=$f['media']['fullimage_url']?>">
                         <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-image media-thumbnail" />
+                        <img src="/static/images/media-photo.png" class="media-type" width="16" height="16" />
                     </a>
                     <? endif; ?>
                 <div class="data">
