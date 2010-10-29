@@ -2990,7 +2990,7 @@ Form.Validator.addAllThese([
 			else return '';
 		},
 		test: function(element, props){
-			if (typeOf(props.minLength)) return (element.get('value').length >= props.minLength || 0);
+			if (typeOf(props.minLength)) return (element.get('value').length >= (props.minLength || 0));
 			else return true;
 		}
 	}],
