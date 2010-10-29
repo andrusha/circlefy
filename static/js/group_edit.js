@@ -92,7 +92,7 @@ _edit.group = _tap.register({
         var data = Object.map(this.fields, function(elem, name) {
             if (elem.type == 'checkbox')
                 return elem.checked;
-            return elem.value;
+            return elem.get('value');
         });
 
         new Request.JSON({
