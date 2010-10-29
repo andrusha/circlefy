@@ -1397,7 +1397,7 @@ padding:0;
 #title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip, #error-tooltip {
   display: none;
 }
-.tooltip-error.position-top {
+.tooltip-error.position-centerTop {
   position: absolute;
   padding: 0 0 5px;
   margin:-5px 0 0 0;
@@ -1406,9 +1406,9 @@ padding:0;
   font-size: 11px;
   color: #FFF;
   text-shadow: 1px 1px #000;
-  background: url(../images/tooltip_red_down.png) no-repeat bottom center;
+  background: url(../images/tooltip_red_down.png) no-repeat bottom center !important;
   }
-.tooltip-error.position-bottom {
+.tooltip-error.position-centerBottom {
   position: absolute;
   padding: 5px 0 0 0;
   margin:15px 0 0 0;

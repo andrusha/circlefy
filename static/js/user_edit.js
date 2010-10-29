@@ -17,8 +17,7 @@ _edit.user = _tap.register({
         new CirTooltip({
             hovered:  inputs.combine(avatar),
             template: 'error-tooltip',
-            position: 'top',
-            align:    'right',
+            position: 'centerTop',
             sticky:   true
         });
 
