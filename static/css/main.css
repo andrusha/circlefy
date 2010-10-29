@@ -2192,7 +2192,28 @@ line-height:12px;
 
 .media-preview-loading { padding: 30px 250px;}
 .media-preview-loading span { display:block; float: right; line-height: 30px; height: 30px;}
-.video-embed-close a { display: block; width: 50px; height: 15px; text-align: center; border: 1px solid #f00; line-height: 15px; float: right;}
+.video-embed-close {
+display:block;
+position:absolute;
+right:0;
+float:none;
+width:52px;
+height:25px;
+}
+.video-embed-close a {
+-moz-border-radius:2px 2px 2px 2px;
+background:url(../images/feed_reply.gif) repeat-x center;
+border:1px solid #A6A6A6;
+color:#545454;
+font-size:11px;
+line-height:12px;
+font-weight:bold;
+height:auto;
+float:left;
+text-align:center;
+text-decoration:none;
+width:50px;
+}
 #sidebar .media { float: left; width: 180px;}
 #sidebar .media .thumbnail { padding:2px; border:1px solid #d1d1d1; width:100px; height:76px; background:#fff; display:block;}
 #sidebar .media .thumbnail img { width:100px; height:76px;}
