@@ -6,6 +6,9 @@ import simplejson as json
 from eventlet.green import time
 from collections import defaultdict
 
+import eventlet
+eventlet.monkey_patch(thread=True)
+
 # ________________________
 #/ Written by             \
 #|        Taso Du Val     |
