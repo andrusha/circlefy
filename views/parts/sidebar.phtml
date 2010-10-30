@@ -92,6 +92,8 @@
                 'manual' => 'moderated',
                 'ip'     => 'by ip',
                 'geo'    => 'geo location');
+            if ($_s['circle']['auth'] == 'manual') $title = 'Waiting Approval';
+            else $title = 'Leave circle';
         if (array_key_exists($_s['circle']['auth'], $auth)): ?>
             <div class="auth"><span>Authentication type:</span> <?=$auth[$_s['circle']['auth']]?></div>
         <? endif; ?>
@@ -103,8 +105,9 @@
 		   data-id="<?=$c['id']?>"
 		   data-followed="<?=($_s['state'] ? 1 : 0)?>"
            data-type="group"
+           data-auth="<?=$_s['circle']['auth']?>"
            def="Join circle"
-           alt="Leave circle"></a>       
+           alt="<?=$title?>"></a>       
 	
 
 	<? if($_s['moderator']): ?>

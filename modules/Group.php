@@ -18,7 +18,7 @@ class Group extends BaseModel {
     //ENUM('public', 'private', 'official')
     public static $statuses = array(
         'public' => 1, 'private' => 2, 'official' => 3);
-
+    
     //ENUM('blocked','pending','user', 'moderator', 'admin')
     public static $permissions = array(
         'blocked'   => 1, 'pending' => 2, 'user' => 3,
@@ -156,6 +156,31 @@ class Group extends BaseModel {
     */
     public function getMembers($online = null) {
         return UsersList::members($this, 'all', $online);
+    }
+    
+    /*
+        Moderate members
+        $action = true - approve, false - reject
+    */
+    public function moderateMembers($users, $action) {
+        if (!empty($users)) {
+            if ($action)
+                $query = "
+                    UPDATE `group_members`
+                       SET `permission` = #perm#
+                     WHERE `group_id` = #gid#
+                       AND `user_id` = #uid#";
+            else
+                $query = "
+                    DELETE
+                      FROM `group_members`
+                     WHERE `group_id` = #gid#
+                       AND `user_id` = #uid#";
+            foreach ($users as $k => $u) {
+                $this->db->query($query, array('gid' => $this->id, 'uid' => $u, 'perm' => Group::$permissions['user']));
+            }
+        }
+        return true;
     }
 
     /*

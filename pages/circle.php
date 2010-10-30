@@ -17,6 +17,11 @@ class page_circle extends Base {
             'members');
 
         $this->set(
+            UsersList::search('members', array('gid' => $group->id), U_PENDING)
+                     ->asArrayAll(),
+            'pending');
+
+        $this->set(
             TapsList::search('group', array('gid' => $group->id), T_USER_INFO | T_INSIDE | T_MEDIA)
                     ->lastResponses()
                     ->inject('group', $group)

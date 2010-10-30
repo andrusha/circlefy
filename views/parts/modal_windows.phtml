@@ -185,7 +185,7 @@
                 <ul>
                 <? foreach ($pending as $u): ?>
                 	<li>
-                        <span><input type="checkbox" /></span>
+                        <span><input type="checkbox" data-user="<?=$u['id']?>" /></span>
                         <img
                             width="40"
                             src="<?=USER_PIC_REL?>medium_<?=$u['id']?>.jpg"

@@ -10,7 +10,9 @@ var _follow = _tap.register({
             data  = {
                 id:    el.getData('id')*1,
                 type:  el.getData('type'),
-                state: (!(el.getData('followed')*1) ? 1 : 0)};
+                state: (!(el.getData('followed')*1) ? 1 : 0)},
+            auth  = el.getData('auth');
+                
 
         new Request({
             url: '/AJAX/follow',
@@ -18,6 +20,8 @@ var _follow = _tap.register({
             onSuccess: function(){
                 var response = JSON.decode(this.response.text);
                 if (response.success) {
+                    if (auth == 'manual') 
+                        el.set({'def': 'Join Circle', 'alt': 'Waiting Approval'});
                     el.setData('followed', data.state);
                     el.toggleClass('active');
                 }

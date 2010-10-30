@@ -52,7 +52,8 @@ $ajaxs = array(
                 'search'    => true,
                 'get'       => true,
                 'exists'    => true,
-                'update'    => true
+                'update'    => true,
+                'moderate'  => true
         ),
         'taps' => array(
                'responses' => true,

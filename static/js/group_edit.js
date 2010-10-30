@@ -6,8 +6,9 @@ _edit.group = _tap.register({
 
 	init: function() {
         var form   = this.form   = $('group-edit'),
-           fields = this.fields = {},
-           inputs = form.getElements('input:not([type="submit"]), textarea, select');
+            fields = this.fields = {},
+            inputs = form.getElements('input:not([type="submit"]), textarea, select'),
+            mod    = $('add');
 
         this.sidebar = $$('div.box.circle-title')[0];
 
@@ -21,6 +22,66 @@ _edit.group = _tap.register({
         inputs.each( function (el) {
            fields[el.name] = el;
         });
+
+        // Members moderation
+        if (mod) {
+            var accept_btn = mod.getElement('.accept'),
+                reject_btn = mod.getElement('.reject');
+            
+            accept_btn.addEvent('click', function() {
+                var users = new Array(),
+                    members = mod.getElements('input:checked');
+                
+                members.each(function(el) {
+                    var user = el.getData('user');
+                    users.push(user);
+                });
+                var data = {'id': $('edit-id').value, 'users': users, 'action': 'approve'};
+                if (users.length)
+                    new Request.JSON({
+                        url: '/AJAX/group/moderate',
+                        onSuccess: function (response) {
+                            if (!response.success)
+                                return;
+                            members.each(function(el) {
+                                el.getParent('li').dispose();
+                            });
+                            
+                            var other_members = mod.getElements('input[type="checkbox"]');
+                            
+                            if (other_members && !other_members.length) 
+                                mod.innerHTML = '<label>Member(s) approved successfully.</label>';
+                        }.bind(this)
+                    }).post(data);
+            });
+            reject_btn.addEvent('click', function() {
+                var users = new Array(),
+                    members = mod.getElements('input:checked');
+                
+                members.each(function(el) {
+                    var user = el.getData('user');
+                    users.push(user);
+                });
+                var data = {'id': $('edit-id').value, 'users': users, 'action': 'reject'};
+                if (users.length)
+                    new Request.JSON({
+                        url: '/AJAX/group/moderate',
+                        onSuccess: function (response) {
+                            if (!response.success)
+                                return;
+                            members.each(function(el) {
+                                el.getParent('li').dispose();
+                            });
+                            
+                            var other_members = mod.getElements('input[type="checkbox"]');
+                            
+                            if (other_members && !other_members.length) 
+                                mod.innerHTML = '<label>Member(s) rejected successfully.</label>';
+                        }.bind(this)
+                    }).post(data);
+                
+            });
+        }
 
         this.oldSymbol = fields.symbol.value;
 

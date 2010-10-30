@@ -210,13 +210,30 @@ class User extends BaseModel {
         TODO: Auth
     */
     public function join(Group $group) {
-        $query = "
-            INSERT
-              INTO group_members (group_id, user_id)
-            VALUES (#gid#, #uid#)
-                ON DUPLICATE KEY
-            UPDATE permission = VALUES(permission)";
-        return $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id))->affected_rows == 1;
+        $perm = Group::$permissions['user'];
+        $group = Group::byId($group->id);
+        
+        // Group is moderated
+        if ($group->auth == Group::$auths['manual']) {
+            $manual = true;
+            $perm = Group::$permissions['pending'];
+        }
+        
+        // Group is email based auth
+        // TODO
+        
+        if ($this->inGroup($group)) {
+            $query = "
+                UPDATE `group_members`
+                   SET `permission` = #perm#
+                 WHERE `group_id` = #gid# AND `user_id` = #uid#";
+        } else {
+            $query = "
+                INSERT
+                  INTO `group_members` (`group_id`, `user_id`, `permission`)
+                VALUES (#gid#, #uid#, #perm#)";
+        }
+        return $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id, 'perm' => $perm))->affected_rows == 1;
     }
 
     public function leave(Group $g) {
@@ -225,6 +242,17 @@ class User extends BaseModel {
                    WHERE group_id = #gid#
                      AND user_id  = #uid#";
         return $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->affected_rows == 1;
+    }
+    
+    /*
+        Is user member of group?
+    */
+    public function inGroup(Group $g) {
+        $query = "
+            SELECT * 
+              FROM group_members
+             WHERE group_id = #gid# AND user_id = #uid#";
+        return $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->num_rows == 1;
     }
 
     public function delete() {
