@@ -19,7 +19,13 @@
             <? if ($c['group_id']): ?>
                 <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb">
                     <span class="circle"></span>
-                    <img src="<?=GROUP_PIC_REL.'medium_'.$c['group']['id'].'.jpg'?>" alt="<?=$c['group']['name']?>" />
+                    <?
+                    if (file_exists(GROUP_PIC_PATH . 'medium_' . $c['group']['id'] .'.jpg'))
+                        $cimg = GROUP_PIC_REL . 'medium_' . $c['group']['id'] . '.jpg';
+                    else
+                        $cimg = '/static/images/group.png';
+                    ?>
+                    <img src="<?=$cimg?>" alt="<?=$c['group']['name']?>" />
                 </a>
             <? elseif ($c['reciever_id']): ?>
                 <a href="/user/<?=$c['sender']['id']?>" class="user">
@@ -75,7 +81,14 @@
 	<h3 class="username"><span class="group-name"><?=$c['name']?></span><? if($circle_type): ?>
 	<span class="circle_type" data-tiptitle="blah"><?=$circle_type?></span> 
 	<? endif; ?></h3>
-        <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>"><span class="circle"></span><img src="<?=GROUP_PIC_REL.'medium_'.$c['id'].'.jpg'?>" class="profile-thumb" alt="thumb" /></div>
+        <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>"><span class="circle"></span>
+            <?
+            if (file_exists(GROUP_PIC_PATH . 'medium_' . $c['id'] .'.jpg'))
+                $cimg = GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg';
+            else
+                $cimg = '/static/images/group.png';
+            ?>
+            <img src="<?=$cimg?>" class="profile-thumb" alt="thumb" /></div>
         <p><?=$c['descr']?></p>
         
         <div class="clear"></div>
@@ -92,7 +105,7 @@
                 'manual' => 'moderated',
                 'ip'     => 'by ip',
                 'geo'    => 'geo location');
-            if ($_s['circle']['auth'] == 'manual') $title = 'Waiting Approval';
+            if ($_s['circle']['auth'] == 'manual' && !$_s['moderator']) $title = 'Waiting Approval';
             else $title = 'Leave circle';
         if (array_key_exists($_s['circle']['auth'], $auth)): ?>
             <div class="auth"><span>Authentication type:</span> <?=$auth[$_s['circle']['auth']]?></div>

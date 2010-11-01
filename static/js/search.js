@@ -25,11 +25,13 @@ var _search = _tap.register({
             'focus': this.start.toHandler(this),
             'keyup': this.checkKeys.bind(this)
         });
+        /*
         this.list.addEvents({
-            'click:relay(li)': function () {
+            'click:relay(li)': function (e) {
                 this.publish('modal.show.group.create', []);
             }.bind(this)
         });
+        */
     },
 
     start: function(el) {
@@ -43,7 +45,7 @@ var _search = _tap.register({
     end: function(el){
         (function(){
             this.suggest.addClass('hidden');
-        }).bind(this).delay(300);
+        }).bind(this).delay(500);
     },
 
     /*
@@ -109,6 +111,13 @@ var _search = _tap.register({
                     onSuccess: function () {
                         var resp = JSON.decode(this.response.text);
                         Elements.from(_template.parse('search', resp.groups)).inject(self.list.empty());
+                        
+                        
+                        self.list.getElement('.create').addEvent('click', function(e){
+                            e.stop();
+                            self.publish('modal.show.group.create', []);
+                        });
+                        
                     }
                 });
             this.request.send({data: {search: keyword}});

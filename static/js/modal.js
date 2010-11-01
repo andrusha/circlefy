@@ -18,6 +18,7 @@ var _modal = _tap.register({
             'modal.show.login': function() { self.show('modal-login') },
             'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
+            'modal.show.group.create': function() { self.show('modal-group-create') },
             'modal.show.group-edit': function() { self.show('modal-group-edit') },
             'modal.show.user-edit': function() { self.show('modal-user-edit') },
             'modal.show.image-display': function(embed, sizes) {

@@ -26,7 +26,7 @@ div#curtain.show {
 #modal-sign-login {
 
 }
-#modal-group-edit {
+#modal-group-edit, #modal-group-create  {
 padding:20px 40px;	
 }
 

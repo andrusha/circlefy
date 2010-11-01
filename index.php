@@ -53,7 +53,8 @@ $ajaxs = array(
                 'get'       => true,
                 'exists'    => true,
                 'update'    => true,
-                'moderate'  => true
+                'moderate'  => true,
+                'create'    => true
         ),
         'taps' => array(
                'responses' => true,

@@ -257,7 +257,13 @@
             <div class="clear"></div>
 
             <div style="width: 500px; height: 50px; padding: 20px 0 0 0;">
-                <img src="<?=GROUP_PIC_REL?>medium_<?=$circle['id']?>.jpg" 
+                <?
+                if (file_exists(GROUP_PIC_PATH . 'medium_' . $circle['id'] .'.jpg'))
+                    $cimg = GROUP_PIC_REL . 'medium_' . $circle['id'] . '.jpg';
+                else
+                    $cimg = '/static/images/group.png';
+                ?>
+                <img src="<?=$cimg?>" 
                      id="avatar-changer"
                      data-tipid="tip-avatar-changer">
                      <span class="up">Upload a picture to represent this circle</span>
@@ -277,7 +283,7 @@
         <span class="modal-actions">
                 <a class="modal-cancel" href="#">close</a>
         </span>
-    </div>
+    </div><!--modal-->
 
 <? if (!$guest): ?>
 <!-- User edit dialog-->
@@ -330,5 +336,82 @@
         </form>
     </div><!--modal-->
 <? endif; ?>
+
+
+<!-- Group creation dialog-->
+    <div id="modal-group-create" class="modal-window">
+        <h1 class="wide">Create circle</h1>
+        
+        <form id="group-create">
+        
+            <div class="cont">
+            <label for="create-title">title   <small>what will your circle be called?</small></label>
+            <input type="text" id="create-title"
+                   name="title" 
+                   value=""
+                   class="required"
+                   data-tipid="tip-input-title"
+            />
+            </div>
+            
+            <div class="cont second">
+            <label for="create-symbol">symbol   <small>leave it for robots</small></label>
+            <input type="text" id="create-symbol"  disabled=""
+                   name="symbol"
+                   value=""
+                   class="groupDoesNotExists"
+                   data-tipid="tip-input-symbol"
+            />
+            </div>
+            
+            <div class="clear"></div>
+            
+            <label for="create-descr">description   <small>a brief explaination what this circle stands for</small></label>
+            <textarea name="descr" id="create-descr" 
+                      class="maxLength:250"
+                      data-tipid="tip-input-descr"
+            /></textarea>
+			
+            <div class="cont">
+        	<label for="create-type">circle type</label>
+            <select name="type" id="create-type">
+                <? foreach ($types as $val => $t): ?>
+                    <option value="<?=$val?>"><?=$t?></option>
+                <? endforeach; ?>
+            </select>
+            <!--
+            <div id="create-upload" class="hidden">
+                <div style="width: 250px; height: 50px; padding: 20px 0 0 0;">
+                    <img src="/static/images/group.png" 
+                         id="create-avatar-changer"
+                         data-tipid="tip-avatar-changer">
+                         <span class="up">Upload a picture to represent this circle</span>
+                </div>
+            </div>-->
+            <div id="create-secret">
+                <span>secret <input type="checkbox" name="secret" /></span>
+            </div>
+            </div>
+            
+            <div class="cont second">
+            <label for="create-auth">authentication type</label>
+            <select name="auth" id="create-auth">
+                <? foreach ($auths as $val => $t): ?>
+                    <option value="<?=$val?>"><?=$t?></option>
+                <? endforeach; ?>
+            </select>
+            <div id="auth-email-cont" class="hidden">
+                <label for="auth-email">enter your org/edu email</label>
+                <input type="text" name="auth-email" id="auth-email" value="" />
+            </div>
+            </div>
+            
+            <div class="clear"></div>
+            
+            <input type="submit" class="load" value="Create Circle"/>
+                    
+        </form>
+    </div><!--modal-->
+
 
 </div>

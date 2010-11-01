@@ -42,6 +42,14 @@ class page_homepage extends Base {
         }
         
         $this->set($feed, 'feed');
+        
+        $this->set(
+            array_flip(Group::$types),
+            'types');
+
+        $this->set(
+            array_flip(Group::$auths),
+            'auths');
 
 	}
 };

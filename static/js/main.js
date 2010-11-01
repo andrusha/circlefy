@@ -28,8 +28,9 @@ module: _live
 var _live = {};
 
 /*
- * namespace for all editing classes
+ * namespaces for all adding and editing classes
  */
+var _add  = {};
 var _edit = {};
 
 /*

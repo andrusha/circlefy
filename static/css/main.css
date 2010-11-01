@@ -1256,21 +1256,21 @@ padding:0;
 
 
 
-#group-edit label {
+#group-edit label, #group-create label {
 	color:#356494;
 	font-size:14px;
 	font-weight:bold;
 	display:block;
 	padding:0 0 5px 10px;
 }
-#group-edit label small {
+#group-edit label small, #group-create label small {
 	font-size:12px;
 	color:#545454;
 	font-weight:normal;
 	padding:0 0 0 5px;
 	display:inline;
 }
-#group-edit input[type=text] {
+#group-edit input[type=text], #group-create input[type=text] {
 	border:2px solid #346394;
 	display:block;
 	font-size:18px;
@@ -1282,7 +1282,7 @@ padding:0;
 	margin:0;
 	letter-spacing:1px;
 }
-#group-edit textarea {
+#group-edit textarea, #group-create textarea {
 	border:2px solid #346394;
 	display:block;
 	font-size:12px; line-height: 18px;
@@ -1294,7 +1294,7 @@ padding:0;
 	height:55px;
 	margin:0;
 }
-#group-edit input[type=submit] {
+#group-edit input[type=submit], #group-create input[type=submit] {
 	height:32px;
 	text-decoration:none;
 	border:1px solid #a6a6a6;
@@ -1313,7 +1313,7 @@ padding:0;
 	margin:15px 0;
 	width:500px;
 }
-#group-edit select {
+#group-edit select, #group-create select {
 	border:2px solid #346394;
 	display:block;
 	font-size:18px;
@@ -1325,7 +1325,7 @@ padding:0;
 	width:240px;
 	margin:0;
 }
-#group-edit span.up {
+#group-edit span.up, #group-create span.up {
 padding:0;
 display:block;
 float:left;
@@ -1334,25 +1334,28 @@ font-weight:normal;
 line-height:12px;
 padding:0 0 0 20px;
 }
-#avatar-changer {
+#group-create span.up {
+  width: 178px;
+}
+#avatar-changer, #create-avatar-changer {
 float:left;
 }
-#group-edit .cont {
+#group-edit .cont, #group-create .cont {
 	float:left;
 	width:240px;
 padding:0 20px 0 0;
 }
-#group-edit .cont.second {
+#group-edit .cont.second, #group-create .cont.second {
 padding:0;
 }
-#group-edit span {
+#group-edit span, #group-create span {
 	display:block;
 	font-size:14px;
 	font-weight:bold;
 	margin:20px 0;
 	padding:0
 }
-#group-edit span input[type=checkbox] {
+#group-edit span input[type=checkbox], #group-create span input[type=checkbox] {
 	margin:0 0 0 20px;
 	float:none;
 	display:inline;
@@ -2161,7 +2164,7 @@ display:block;
 font-weight:normal;
 line-height:12px;
 }
-#modal-group-edit {
+#modal-group-edit, #modal-group-create {
     position: absolute;
 }
 #modal-image-display .img-container { display: block; }

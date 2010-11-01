@@ -118,14 +118,20 @@ class Group extends BaseModel {
         
         @returns Group
     */
-    public static function create(User $creator, Group $parent, $name, $symbol, $descr, array $tags,
+    public static function create(User $creator, Group $parent = null, $name, $symbol, $descr, array $tags = null,
                                   $type = 'group', $auth = 'open', $status = 'public', $secret = 0) {
+        $fp = FirePHP::getInstance(true);
+        $fp->log(func_get_args());
+        
         $db = DB::getInstance();
 
         $db->startTransaction();
 
+        if (!is_int($type)) $type = Group::$types[$type];
+        if (!is_int($auth)) $auth = Group::$auths[$auth];
+
         $data = array('parent_id' => $parent->id, 'symbol' => $symbol, 'name' => $name,
-            'descr' => $descr, 'type' => Group::$types[$type], 'auth' => Group::$auths[$auth],
+            'descr' => $descr, 'type' => $type, 'auth' => $auth,
             'status' => Group::$statuses[$status], 'secret' => $secret);
 
         try {
@@ -140,12 +146,13 @@ class Group extends BaseModel {
         }
 
         $db->commit();
-
+        
         $data['id'] = $id;
         $group = new Group($data);
-        $group->tags->addTags($tags);
-        $group->commit();
-
+        if (!empty($tags)) {
+            $group->tags->addTags($tags);
+            $group->commit();
+        }
         return $group;
     }
 
