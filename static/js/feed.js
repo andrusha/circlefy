@@ -272,7 +272,7 @@ var _responses = _tap.register({
             window.scrollTo(0, window.getScrollSize().y);
         }
     
-        _body.addEvent('click:relay(a.reply)': this.setupResponse.toHandler(this));
+        _body.addEvent('click:relay(a.reply)', this.setupResponse.toHandler(this));
 
         this.subscribe({
             'responses.new': this.addResponses.bind(this),
