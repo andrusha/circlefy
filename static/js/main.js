@@ -143,7 +143,7 @@ var _tooltips = _tap.register({
             new CirTooltip({
                 hovered: $$('#experience .circle-thumb'),
                 template: 'title-desc-tooltip',
-                position: 'bottomLeft'
+                position: 'centerBottom'
             });
         }.bind(this));
     },
@@ -166,7 +166,7 @@ var _startup = _tap.register({
         new CirTooltip({
             hovered: $$('#experience .circle-thumb'),
             template: 'title-desc-tooltip',
-            position: 'bottomLeft'
+            position: 'centerBottom'
         });
         
         // Links detector
