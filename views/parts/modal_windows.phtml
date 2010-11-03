@@ -245,7 +245,7 @@
             </select>
             <div style="width: 250px; height: 50px; padding: 20px 0 0 0;">
                 <?
-                if (file_exists(GROUP_PIC_PATH . 'medium_' . $circle['id'] .'.jpg'))
+                if ($circle['has_avatar'])
                     $cimg = GROUP_PIC_REL . 'medium_' . $circle['id'] . '.jpg';
                 else
                     $cimg = '/static/images/group.png';

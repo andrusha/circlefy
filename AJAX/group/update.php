@@ -43,7 +43,10 @@ class ajax_update extends Base {
 
         $uploaded = GROUP_PIC_PATH . $group->id . '.jpg'; 
         move_uploaded_file($_FILES['Filedata']['tmp_name'], $uploaded);
-        $pictures = Images::makeUserpics($group->id, $uploaded, GROUP_PIC_PATH); 
+        $pictures = Images::makeUserpics($group->id, $uploaded, GROUP_PIC_PATH);
+        
+        $group->has_avatar = 1;
+        $group->update();
 
         return array('success' => 1, 
                      'large'  => GROUP_PIC_REL.'large_'.$group->id.'.jpg',

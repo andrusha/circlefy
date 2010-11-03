@@ -20,7 +20,7 @@
                 <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb">
                     <span class="circle"></span>
                     <?
-                    if (file_exists(GROUP_PIC_PATH . 'medium_' . $c['group']['id'] .'.jpg'))
+                    if ($c['group']['has_avatar'])
                         $cimg = GROUP_PIC_REL . 'medium_' . $c['group']['id'] . '.jpg';
                     else
                         $cimg = '/static/images/group.png';
@@ -83,7 +83,7 @@
 	<? endif; ?></h3>
         <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>"><span class="circle"></span>
             <?
-            if (file_exists(GROUP_PIC_PATH . 'medium_' . $c['id'] .'.jpg'))
+            if ($c['has_avatar'])
                 $cimg = GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg';
             else
                 $cimg = '/static/images/group.png';

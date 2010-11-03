@@ -26,10 +26,10 @@ class Group extends BaseModel {
 
     public static $fields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
         'symbol', 'name', 'descr', 'created_time', 'type', 'auth', 'status',
-        'online_count', 'secret', 'auth_email');
+        'online_count', 'secret', 'auth_email', 'has_avatar');
 
     protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
-        'created_time', 'type', 'auth', 'status', 'online_count', 'secret');
+        'created_time', 'type', 'auth', 'status', 'online_count', 'secret', 'has_avatar');
 
     protected static $addit = array('tags', 'members', 'messages_count',
         'members_count', 'responses_count');
@@ -119,7 +119,7 @@ class Group extends BaseModel {
         @returns Group
     */
     public static function create(User $creator, Group $parent = null, $name, $symbol, $descr, array $tags = null,
-                                  $type = 'group', $auth = 'open', $status = 'public', $secret = 0, $auth_email = null) {
+                                  $type = 'group', $auth = 'open', $status = 'public', $secret = 0, $auth_email = null, $has_avatar = 0) {
         
         $db = DB::getInstance();
 
@@ -130,7 +130,7 @@ class Group extends BaseModel {
 
         $data = array('parent_id' => $parent->id, 'symbol' => $symbol, 'name' => $name,
             'descr' => $descr, 'type' => $type, 'auth' => $auth,
-            'status' => Group::$statuses[$status], 'secret' => $secret, 'auth_email' => $auth_email);
+            'status' => Group::$statuses[$status], 'secret' => $secret, 'auth_email' => $auth_email, 'has_avatar' => $has_avatar);
 
         try {
             $id = $db->insert('group', $data);
