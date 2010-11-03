@@ -81,6 +81,21 @@ _add.group = _tap.register({
             }
         });
         */
+        
+        form.validator.ignoreField(fields['auth-email']);
+        
+        $('create-auth').addEvent('change', function(e){
+            var auth = e.target.getSelected().get('text')[0];
+            console.log(form.validator);
+            if (auth == 'email') {
+                $('auth-email-cont').removeClass('hidden');
+                form.validator.enforceField(fields['auth-email']);
+            } else {
+                $('auth-email-cont').addClass('hidden');
+                form.validator.ignoreField(fields['auth-email']);
+            }
+        });
+        
         this.subscribe('modal.hide', function () {
             Object.each(fields, function (el) {
                 el.fireEvent('hideTip');
@@ -101,10 +116,7 @@ _add.group = _tap.register({
             onSuccess: function (response) {
                 if (!response.success)
                     return;
-                //if (response.group.symbol != this.oldSymbol)
-                    document.location = '/circle/'+response.group.symbol+'?edit';
-                //else
-                //    this.updateInfo(response.group);
+                document.location = '/circle/'+response.group.symbol+'?edit';
             }.bind(this)
         }).post(data);
     }

@@ -26,7 +26,7 @@ class Group extends BaseModel {
 
     public static $fields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
         'symbol', 'name', 'descr', 'created_time', 'type', 'auth', 'status',
-        'online_count', 'secret');
+        'online_count', 'secret', 'auth_email');
 
     protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
         'created_time', 'type', 'auth', 'status', 'online_count', 'secret');
@@ -119,9 +119,7 @@ class Group extends BaseModel {
         @returns Group
     */
     public static function create(User $creator, Group $parent = null, $name, $symbol, $descr, array $tags = null,
-                                  $type = 'group', $auth = 'open', $status = 'public', $secret = 0) {
-        $fp = FirePHP::getInstance(true);
-        $fp->log(func_get_args());
+                                  $type = 'group', $auth = 'open', $status = 'public', $secret = 0, $auth_email = null) {
         
         $db = DB::getInstance();
 
@@ -132,7 +130,7 @@ class Group extends BaseModel {
 
         $data = array('parent_id' => $parent->id, 'symbol' => $symbol, 'name' => $name,
             'descr' => $descr, 'type' => $type, 'auth' => $auth,
-            'status' => Group::$statuses[$status], 'secret' => $secret);
+            'status' => Group::$statuses[$status], 'secret' => $secret, 'auth_email' => $auth_email);
 
         try {
             $id = $db->insert('group', $data);
@@ -220,5 +218,74 @@ class Group extends BaseModel {
     public function isPermitted(User $u) {
         return $this->userPermissions($u) >= Group::$permissions['moderator'] ||
                $u->type == User::$types['superadmin'];
+    }
+    
+    /*
+        Send activation email to user to confirm email address
+    */
+    public function sendActivation(User $u, $email) {
+        // generate random hash code
+        $token = "";
+        $charPool = '0123456789abcdefghijklmnopqrstuvwxyz';
+        for($p = 0; $p<25; $p++)
+        	$token .= $charPool[mt_rand(0,strlen($charPool)-1)];
+        $token = sha1(md5(sha1($token)));
+        
+        try {
+            $id = $this->db->insert('group_members', array(
+                'group_id' => $this->id,
+                 'user_id' => $u->id,
+              'permission' => Group::$permissions['pending'],
+               'join_code' => $token
+            ));
+            $added = true;
+        } catch (SQLException $e) {
+            $added = false;
+            throw $e;
+        }
+
+        if ($added) {
+            // Send email with link
+            $link = 'http://'. DOMAIN . '/circle/'. $this->symbol . '?confirm='.$token;
+            
+            $group_name = $group->name;
+            $body = <<<EOF
+Hi,
+
+This email is to confirm that this email address belongs to you 
+in order to give you access to $group_name.
+
+Please click in this link to confirm and join the circle:
+$link
+
+Thank you!,
+Circlefy Team.
+EOF;
+            mail($email,
+                 'Confirmation of Email for Circle',
+                 $body,
+                 "From: tap.info\r\n");
+        }
+        return $this;
+    }
+    
+    /*
+        Confirms user email to join to group.
+    */
+    public function confirmEmail($token) {
+        $query = "SELECT * 
+                  FROM `group_members` 
+                  WHERE `join_code` = #code#";
+        $db = DB::getInstance();
+        $r = $db->query($query, array('code' => $token));
+        if ($r->num_rows) {
+            $query = "
+                UPDATE `group_members`
+                   SET `permission` = #perm#
+                 WHERE `join_code` = #code#";
+            $db->query($query, array('code' => $token, 'perm' => Group::$permissions['user']));
+        }
+        
+        return $r;
     }
 };

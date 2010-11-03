@@ -32,6 +32,10 @@ var _modal = _tap.register({
                 self.show('modal-channel-suggestion');
                 _modal.suggestions.show(chain);
             },
+            'modal.show.group-email-auth': function() {
+                self.show('modal-email-auth');
+                _modal.group_email_auth.show();
+            },
             'modal.hide': this.hide.bind(this)
         });
 
@@ -451,6 +455,59 @@ _modal.image_preview = _tap.register({
             'top': (top > 0 ? top : 0) + "px",
             'left': ( wsize.x - msize.x ) / 2 + "px",
             'margin': '0'
+        });
+    }
+});
+
+/*
+    Group Email Auth
+*/
+
+_modal.group_email_auth = _tap.register({
+    show: function () {
+        var self   = this,
+              form = this.form = $('email-auth-form');
+          form.gid = $('email-auth-gid'),
+        form.email = $('email-auth-email'),
+              resp = $('auth-response');
+        
+      form.validator = new Form.Validator(form, {
+           fieldSelectors: '#email-auth-email'
+      });
+
+       new CirTooltip({
+           hovered:  form.email,
+           template: 'error-tooltip',
+           position: 'centerTop',
+           sticky:   true
+       });
+
+        resp.addClass('hidden');
+        form.removeClass('hidden');
+        
+        form.addEvent('submit', function(e) {
+            e.stop();
+            data = {'gid': form.gid.get('value'), 'email': form.email.get('value')};
+            new Request.JSON({
+                url: '/AJAX/group/join',
+                onSuccess: function (response) {
+                    if (response.success) {
+                        form.addClass('hidden');
+                        resp.removeClass('hidden');
+                        resp.getElement('p').innerHTML = 'An email was sent to the address you provided, click on the link to join this circle.';
+                        $('auth-email-close').addEvent('click', function() {
+                            _modal.publish('modal.hide', [false]);
+                        });
+                        return;
+                    } else {
+                        form.email.addClass('validation-failed');
+                        form.email.fireEvent('showCustomTip', [{content: response.reason}]);
+                        
+                    }
+                    
+                }.bind(this)
+            }).post(data);
+            
         });
     }
 });

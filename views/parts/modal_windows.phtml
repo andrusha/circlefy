@@ -402,7 +402,7 @@
             </select>
             <div id="auth-email-cont" class="hidden">
                 <label for="auth-email">enter your org/edu email</label>
-                <input type="text" name="auth-email" id="auth-email" value="" />
+                <input type="text" name="auth-email" id="auth-email" class="required validate-email" value="" />
             </div>
             </div>
             
@@ -411,6 +411,29 @@
             <input type="submit" class="load" value="Create Circle"/>
                     
         </form>
+    </div><!--modal-->
+
+<!-- Email Authorization -->
+    <div id="modal-email-auth" class="modal-window">
+        <h1 class="wide">Enter your circle email</h1>
+        <form id="email-auth-form">
+            <p>We will send you an email with a link to confirm your email address and join you to this circle.</p>
+            <div class="cont">
+			<label for="email-auth-email">Email Addres</label>
+            <input type="text" id="email-auth-email"
+                   name="email" 
+                   value=""
+                   class="required validate-email"
+                   data-tipid="tip-email-auth"
+            />
+            <input type="hidden" name="gid" value="<?=$circle['id']?>" id="email-auth-gid" />
+            <input type="submit" class="load" value="Confirm Email" />
+            </div>
+        </form>
+        <div id="auth-response" class="hidden">
+            <p></p>
+            <input type="button" name="auth-email-close" value="Close" id="auth-email-close" />
+        </div>
     </div><!--modal-->
 
 

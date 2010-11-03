@@ -11,6 +11,11 @@ class page_circle extends Base {
         $group->descr = FuncLib::linkify($group->descr);
         $this->set($group->asArray(), 'circle');
 
+        // Email confirmation
+        $auth_token = $_GET['confirm'];
+        if (!empty($auth_token))
+            $r = Group::confirmEmail($auth_token);
+
         $this->set(
             UsersList::search('members', array('gid' => $group->id, 'limit' => 14))
                      ->asArrayAll(),

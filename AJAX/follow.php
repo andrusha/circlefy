@@ -18,16 +18,25 @@ class ajax_follow extends Base {
     }
 
     private function group($gid, $state) {
-        $group = new Group($gid);
+        //$group = new Group($gid);
+        $group = Group::byId($gid);
 
         $perm = $group->userPermissions($this->user);
         if (($perm == Group::$permissions['not_in'] && !$state) ||
             ($perm != Group::$permissions['not_in'] && $state))
             return false;
-
-        if ($state)
+        
+        $gdata = $group->asArray(false);
+        if ($state) {
+            if (Group::$auths['email'] == $gdata['auth']) {
+                $ar = preg_split('/@/', $this->user->email);
+                $domain = $ar[1];
+                
+                if ($domain != $gdata['auth_email'])
+                    return false;
+            }
             $this->user->join($group);
-        else
+        } else
             $this->user->leave($group);
 
         return true;
