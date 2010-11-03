@@ -6,6 +6,8 @@
 
     Special magic of SeparatorIterator is fetching
     columns metadata before fetching a resulted columns
+
+    + basic typecasting
 */
 class SeparatorIterator implements Iterator {
     /* @var MySQLi_Result */
@@ -53,6 +55,10 @@ class SeparatorIterator implements Iterator {
             $table = $this->fields[$id]->table;
             if (!in_array($table, $this->tables))
                 $table = 'rest';
+
+            # NUM_FLAG = 32768
+            if ($this->fields[$id]->flags & 32768 && $val !== null)
+                $val = floatval($val);
 
             $row[$table][$this->fields[$id]->name] = $val;
         }

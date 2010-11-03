@@ -505,7 +505,7 @@ _live.typing = _tap.register({
         }).delay(1500);
         chatbox.store('typing', true);
         var id = _vars.feed.type != 'conversation' ? chatbox.getParent('div.feed-item').getData('id')*1 : _vars.feed.id*1;
-        _push.send({action: 'response.typing', cid: id, data: {cid: id, uid: _vars.user.id*1, uname: _vars.user.uname}});
+        _push.send({action: 'response.typing', data: {cid: id, uid: _vars.user.id*1, uname: _vars.user.uname}});
     },
 
     showTyping: function(data) {
@@ -551,7 +551,7 @@ module: _live.responses
 _live.responses = _tap.register({
     init: function() {
         this.subscribe({
-            'push.data.response': this.setResponse.bind(this)
+            'push.data.response.new': this.setResponse.bind(this)
         });
     },
 
@@ -929,7 +929,7 @@ _live.taps = _tap.register({
 _live.notifications = _tap.register({
     init: function() {
         this.subscribe({
-            'push.data.response': this.newConvoResponse.bind(this),
+            'push.data.response.new': this.newConvoResponse.bind(this),
             'push.data.tap.new': this.newTap.bind(this),
             'push.data.notify.follower': this.newFollower.bind(this),
         });

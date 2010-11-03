@@ -177,6 +177,10 @@ class User extends BaseModel {
                   UPDATE accept = VALUES(accept)";
         $this->db->listInsert($query, $values);
 
+        foreach ($values as $pair)
+            Comet::send('user.follow', array('user_id' => $this->id, 'friend_id' => $pair[1],
+                'status' => 1, 'user' => $this->asArray()));
+
         return $this;
     }
 
@@ -189,7 +193,10 @@ class User extends BaseModel {
                    WHERE friend_id = #friend#
                      AND user_id = #you#
                    LIMIT 1";
-        return $this->db->query($query, array('you' => $this->id, 'friend' => $friend->id))->affected_rows == 1;
+        $result = $this->db->query($query, array('you' => $this->id, 'friend' => $friend->id))->affected_rows == 1;
+        Comet::send('user.follow', array('user_id' => $this->id, 'friend_id' => $friend->id,
+            'status' => 0, 'user' => $this->asArray()));
+        return $result;
     }
     
     /*
@@ -210,7 +217,7 @@ class User extends BaseModel {
         TODO: Auth
     */
     public function join(Group $group) {
-        $perm = Group::$permissions['user'];
+         $perm = Group::$permissions['user'];
         $group = Group::byId($group->id);
         
         // Group is moderated
@@ -228,12 +235,14 @@ class User extends BaseModel {
                    SET `permission` = #perm#
                  WHERE `group_id` = #gid# AND `user_id` = #uid#";
         } else {
-            $query = "
+           $query = "
                 INSERT
                   INTO `group_members` (`group_id`, `user_id`, `permission`)
                 VALUES (#gid#, #uid#, #perm#)";
         }
-        return $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id, 'perm' => $perm))->affected_rows == 1;
+        $result = $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id, 'perm' => $perm))->affected_rows == 1;
+        Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 1));
+        return $result;
     }
 
     public function leave(Group $g) {
@@ -241,9 +250,12 @@ class User extends BaseModel {
                     FROM group_members
                    WHERE group_id = #gid#
                      AND user_id  = #uid#";
-        return $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->affected_rows == 1;
+        $result = $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->affected_rows == 1;
+        Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 0));
+        return $result;
     }
     
+
     /*
         Is user member of group?
     */

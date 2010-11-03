@@ -18,21 +18,7 @@ class ajax_respond extends Base {
         }
 
         $tap->addResponse($this->user, $msg)->makeActive($this->user);
-        $this->notify($tap);
 
 		$this->data = array('success' => 1);
     }
-
- 	private function notify(Tap $tap) {
-        $ids = UsersList::search('convo', array('mid' => $tap->id, 'active' => 1), U_ONLY_ID)->filter('id');
-
-        $data = $tap->format()->asArray();
-        end($data['replies']);
-
-        Comet::send('message',
-            array('action' => 'response',
-                  'users'  => $ids,
-                  'cid'    => $tap->id,
-                  'data'   => current($data['replies'])));
-	}
 };

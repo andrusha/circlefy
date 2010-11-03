@@ -19,37 +19,15 @@ class ajax_new extends Base {
             case 'group':
                 $group = new Group($id);
                 $tap = Tap::toGroup($group, $this->user, $msg, $media);
-                $this->notify($this->user, $group, null, $tap);
                 break;
 
             case 'friend':
                 $user = new User($id);
                 $tap = Tap::toUser($this->user, $user, $msg, $media);
-                $this->notify($this->user, null, $user, $tap);
                 break;
         }
 
         $tap->makeActive($this->user);
         $this->data = array('success' => 1);
-    }
-
-    /*
-        Notify all group members, that there is new tap
-    */
-    private function notify(User $tapper, $group, $to, Tap $tap){
-        $message = array(
-            'action' => 'tap.new',
-            'data' => $tap->format()->asArray());
-
-        if ($group instanceof Group) {
-            $uids = UsersList::search('members', array('gid' => $group->id), U_ONLY_ID)->filter('id');
-            $message['gid'] = $group->id;
-        } elseif ($to instanceof User) {
-            $uids = array($to->id, $tapper->id);
-        }
-
-        $message['users'] = $uids;
-
-        Comet::send('message', $message);
     }
 };

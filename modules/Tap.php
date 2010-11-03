@@ -68,7 +68,6 @@ class Tap extends BaseModel {
         if ($media) {
             // Remove the URL of the media published
             $text = str_replace($media['link'], '', $text);
-            
             $media_id = Media::create($media['mediatype'], 
                                       $media['link'], 
                                       $media['code'], 
@@ -83,6 +82,8 @@ class Tap extends BaseModel {
                   'media_id' => $media_id ? $media_id : null,
                   'group_id' => $g ? $g->id : null,
                   'reciever_id' => $to ? $to->id : null));
+
+        Comet::send('tap.new', Tap::byId($id)->format()->asArray());
 
         return $id;
     }
@@ -199,6 +200,7 @@ class Tap extends BaseModel {
         if (!isset($this->data['replies']))
             $this->data['replies'] = array();
 
+        $this->data['id'] = $this->id;
         $this->data['replies'][] = array(
             'id'         => $id,
             'message_id' => $this->id,
@@ -206,6 +208,10 @@ class Tap extends BaseModel {
             'text'       => $text,
             'time'       => time(),
             'user'       => $user);
+
+        $this->format();
+        end($this->data['replies']);
+        Comet::send('response.new', current($this->data['replies']));
 
         return $this;
     }
@@ -219,9 +225,11 @@ class Tap extends BaseModel {
                   VALUES (#mid#, #uid#, #status#)
                       ON DUPLICATE KEY
                   UPDATE active = #status#";
-        return $this->db->query($query, array('uid' => $user->id,
-                        'mid' => $this->id, 'status' => $status))
-                    ->affected_rows == 1;
+        $result = $this->db->query($query, array(
+            'uid' => $user->id, 'mid' => $this->id, 'status' => $status))
+                           ->affected_rows == 1;
+        Comet::send('convo.follow', array('message_id' => $this->id, 'user_id' => $user->id, 'status' => $status));
+        return $result;
     }
 
     /*

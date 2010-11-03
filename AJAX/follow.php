@@ -61,16 +61,6 @@ class ajax_follow extends Base {
             $this->user->follow($friend);
         else
              $this->user->unfollow($friend);
-        $this->notifyFriend($friend, $state);
-
         return true;
     }
-
-    private function notifyFriend(User $friend, $status) {
-        $data = array('status' => $status, 'user' => $this->user->asArray());
-        $message = array('action' => 'notify.follower', 'users' => array(intval($friend->id)), 'data' => $data);
-
-        Comet::send('message', $message);
-    }
-
 };
