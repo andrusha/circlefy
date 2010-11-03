@@ -24,8 +24,10 @@ var _follow = _tap.register({
                     el.setData('followed', data.state);
                     el.toggleClass('active');
                 } else {
-                    if (auth == 'email') {
-                        self.publish('modal.show.group-email-auth');
+                    if (!response.reason || response.reason != 'anon') {
+                        if (auth == 'email') {
+                            self.publish('modal.show.group-email-auth');
+                        }
                     }
                 }
             }

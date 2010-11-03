@@ -19,7 +19,7 @@ class ajax_join extends Base {
             $group = Group::byId($id);
             $gdata = $group->asArray(false);
             if (Group::$auths['email'] == $gdata['auth']) {
-                $ar = preg_split('/@/', $this->user->email);
+                $ar = preg_split('/@/', $email);
                 $domain = $ar[1];
 
                 if ($domain != $gdata['auth_email']) {

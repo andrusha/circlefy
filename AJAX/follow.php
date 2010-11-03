@@ -11,10 +11,14 @@ class ajax_follow extends Base {
         $type = $_POST['type'];
         $state = intval($_POST['state']);
 
-        if (in_array($type, array('user', 'group', 'convo', 'bulk')))
-            $res = $this->$type($id, $state);
+        if ($this->user->id) {
+            if (in_array($type, array('user', 'group', 'convo', 'bulk')))
+                $res = $this->$type($id, $state);
 
-        $this->data = array('success' => $res ? 1 : 0);
+            $this->data = array('success' => $res ? 1 : 0);
+        } else {
+            $this->data = array('success' => 0, 'reason' => 'anon');
+        }
     }
 
     private function group($gid, $state) {
