@@ -243,20 +243,7 @@
                     <option value="<?=$val?>" <?=($t == $circle['type'] ? ' selected' : '')?>><?=$t?></option>
                 <? endforeach; ?>
             </select>
-            </div>
-            
-            <div class="cont second">            
-            <label for="edit-auth">authentication type</label>
-            <select name="auth" id="edit-auth">
-                <? foreach ($auths as $val => $t): ?>
-                    <option value="<?=$val?>" <?=($t == $circle['auth'] ? ' selected' : '')?>><?=$t?></option>
-                <? endforeach; ?>
-            </select>
-            </div>
-            
-            <div class="clear"></div>
-
-            <div style="width: 500px; height: 50px; padding: 20px 0 0 0;">
+            <div style="width: 250px; height: 50px; padding: 20px 0 0 0;">
                 <?
                 if (file_exists(GROUP_PIC_PATH . 'medium_' . $circle['id'] .'.jpg'))
                     $cimg = GROUP_PIC_REL . 'medium_' . $circle['id'] . '.jpg';
@@ -268,7 +255,23 @@
                      data-tipid="tip-avatar-changer">
                      <span class="up">Upload a picture to represent this circle</span>
             </div>
+            </div>
             
+            <div class="cont second">            
+            <label for="edit-auth">authentication type</label>
+            <select name="auth" id="edit-auth">
+                <? foreach ($auths as $val => $t): ?>
+                    <option value="<?=$val?>" <?=($t == $circle['auth'] ? ' selected' : '')?>><?=$t?></option>
+                <? endforeach; ?>
+            </select>
+            <div id="edit-auth-email-cont" class="hidden">
+                <label for="edit-auth-email">organization domain</label>
+                <input type="text" name="edit-auth-email" id="edit-auth-email" class="required" value="<?=$circle['auth_email']?>" />
+            </div>
+            </div>
+            
+            <div class="clear"></div>
+
             <span>secret <input type="checkbox" name="secret" <?=($circle['secret'] ? ' checked' : '')?>/></span>
                        
             <input type="submit" class="load" value="Update Circle"/>

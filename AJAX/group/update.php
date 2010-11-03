@@ -24,12 +24,13 @@ class ajax_update extends Base {
     }
 
     private function update(Group $group) {
-       $group->symbol = $_POST['symbol'];
-       $group->name   = $_POST['title'];
-       $group->descr  = $_POST['descr'];
-       $group->type   = intval($_POST['type']);
-       $group->auth   = intval($_POST['auth']);
-       $group->secret = $_POST['secret'] == 'true' ? 1 : 0;
+       $group->symbol     = $_POST['symbol'];
+       $group->name       = $_POST['title'];
+       $group->descr      = $_POST['descr'];
+       $group->type       = intval($_POST['type']);
+       $group->auth       = intval($_POST['auth']);
+       $group->secret     = $_POST['secret'] == 'true' ? 1 : 0;
+       $group->auth_email = $_POST['edit-auth-email'] ? $_POST['edit-auth-email'] : null;
        $group->update();
 
        return array('success' => 1, 'group' => $group->asArray(false));

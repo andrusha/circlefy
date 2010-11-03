@@ -86,7 +86,6 @@ _add.group = _tap.register({
         
         $('create-auth').addEvent('change', function(e){
             var auth = e.target.getSelected().get('text')[0];
-            console.log(form.validator);
             if (auth == 'email') {
                 $('auth-email-cont').removeClass('hidden');
                 form.validator.enforceField(fields['auth-email']);

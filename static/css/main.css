@@ -1333,9 +1333,7 @@ font-size:12px;
 font-weight:normal;
 line-height:12px;
 padding:0 0 0 20px;
-}
-#group-create span.up {
-  width: 178px;
+width: 178px;
 }
 #avatar-changer, #create-avatar-changer {
 float:left;

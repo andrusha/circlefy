@@ -84,7 +84,21 @@ _edit.group = _tap.register({
         }
 
         this.oldSymbol = fields.symbol.value;
+        
+        if (fields.auth.getSelected().get('text')[0] == 'email')
+            $('edit-auth-email-cont').removeClass('hidden');
 
+        fields.auth.addEvent('change', function(e) {
+            var auth = e.target.getSelected().get('text')[0];
+            if (auth == 'email') {
+                $('edit-auth-email-cont').removeClass('hidden');
+                form.validator.enforceField(fields['edit-auth-email']);
+            } else {
+                $('edit-auth-email-cont').addClass('hidden');
+                form.validator.ignoreField(fields['edit-auth-email']);
+            }
+        });
+        
         fields.title.addEvent('keyup', function () {
             fields.symbol.value = fields.title.value.makeSymbol();
         });
