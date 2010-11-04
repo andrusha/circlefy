@@ -15,13 +15,5 @@ class page_convo extends Base {
 
         $this->set($tap->asArray(), 'convo'); 
         $this->set($tap->getStatus($this->user), 'state');
-
-        $this->set(
-            array_flip(Group::$types),
-            'types');
-
-        $this->set(
-            array_flip(Group::$auths),
-            'auths');
 	}
 };

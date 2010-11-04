@@ -5,7 +5,7 @@
 	color:					#fff;
 	text-align:				left;
 	z-index:				999;
-	text-shadow:				1px 1px #000;
+	text-shadow:	    	1px 1px #000;
 }
 
 
@@ -174,4 +174,10 @@
 #notifications .controls a:hover {
 	color:#000;
 	background:#eee;
+}
+#notifications .events  {
+    font:					12px/14px "Lucida Grande", Arial, Helvetica, Verdana, sans-serif;
+	color:					#fff;
+	text-align:				left;
+	text-shadow:	    	1px 1px #000;
 }

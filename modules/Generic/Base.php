@@ -36,6 +36,13 @@ abstract class Base {
         //actually, we need user everywhere
         if ($this->need_login)
             $this->user = Auth::identify();
+
+        // if user logged in and we browsing site page
+        // (not api request)
+        if (isset($this->user) && $this->user->id !== null &&
+            $this->view_output == 'HTML') {
+            TapsList::updateEvents($this->user);
+        }
     }
 
     public function __destruct() {
@@ -52,7 +59,9 @@ abstract class Base {
         switch($this->view_output){
             case 'HTML':
                 $this->set($this->user->asArray(false), 'me');
-                $this->set($this->user->guest,     'guest');
+                $this->set($this->user->guest,          'guest');
+                $this->set(array_flip(Group::$types),   'types');
+                $this->set(array_flip(Group::$auths),   'auths');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;
             

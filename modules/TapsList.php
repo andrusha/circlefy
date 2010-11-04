@@ -24,6 +24,7 @@ class TapsList extends Collection {
             gid        - group id
             search     - if we searching something
             start_from - start from in LIMIT
+            row_count  - rows count in LIMIT (default 10)
             from       - user who sent PM
             to         - user who recieve PM
             id         - tap id
@@ -55,7 +56,8 @@ class TapsList extends Collection {
             'friends'   => 'INNER JOIN friends       f  ON m.sender_id = f.friend_id',
             'convo'     => 'INNER JOIN conversations c  ON m.id        = c.message_id',
             'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id',
-            'media'     => 'LEFT  JOIN media         md ON md.id       = m.media_id'
+            'media'     => 'LEFT  JOIN media         md ON md.id       = m.media_id',
+            'events'    => 'INNER JOIN events        e  ON m.id        = e.message_id'
         );
 
         $distinct = false;
@@ -123,14 +125,18 @@ class TapsList extends Collection {
                 break;
 
             case 'byId':
-                $where[]  = 'm.id = #id#';
+                $where[] = 'm.id = #id#';
+                break;
+
+            case 'events':
+                $join[]  = 'events';
+                $where[] = 'e.user_id = #uid#';
                 break;
         }
 
         if ($options & T_SEARCH)
             $where[] = "m.text LIKE #search#";
 
-        $limit = ($options & T_LIMIT) ? $params['start_from'].', 10' : '0, 10';
 
         if ($options & T_USER_INFO) {
             $join[] = 'user';
@@ -165,6 +171,11 @@ class TapsList extends Collection {
             $where[] = 'gi.user_id IS NULL';
             $where[] = 'm.group_id IS NOT NULL';
         }
+    
+        if (!isset($params['row_count']))
+            $params['row_count'] = DEFAULT_ROW_COUNT;
+
+        $limit = ($options & T_LIMIT ? $params['start_from'].', ' : '').$params['row_count'];
 
         //construct and execute query from supplied params
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
@@ -290,7 +301,7 @@ class TapsList extends Collection {
     /*
         Makes a list of unique users involved in each conversation
 
-        @return TapseList
+        @return TapsList
     */
     public function involved() {
         foreach ($this->data as &$tap) {
@@ -319,5 +330,27 @@ class TapsList extends Collection {
         foreach ($this->data as $tap)
             $tap->format();
         return $this;
+    }
+
+    /*
+        Adds messages since the last login time
+        @return int count of new events
+    */
+    public static function updateEvents(User $u) {
+        $db = DB::getInstance();
+
+        // ignoring duplicte pairs, cuz unread event may be updated
+        $query = "INSERT IGNORE INTO events (user_id, message_id)
+                  SELECT DISTINCT u.id AS user_id, m.id AS message_id
+                    FROM message m
+                   INNER JOIN user           u ON u.id = #uid#
+                    LEFT JOIN group_members gm ON m.group_id = gm.group_id
+                    LEFT JOIN conversations c  ON m.id = c.message_id
+                   WHERE m.time >= u.last_login
+                     AND ((gm.user_id = #uid# OR c.user_id = #uid#)
+                         OR
+                        ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND m.reciever_id IS NOT NULL))";
+        $count = $db->query($query, array('uid' => $u->id))->affected_rows;
+        return $count;
     }
 };

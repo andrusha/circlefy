@@ -37,14 +37,5 @@ class page_user extends Base {
         $this->set(
             $this->user->following($user),
             'state');
-
-        $this->set(
-            array_flip(Group::$types),
-            'types');
-
-        $this->set(
-            array_flip(Group::$auths),
-            'auths');
-        
 	}
 };

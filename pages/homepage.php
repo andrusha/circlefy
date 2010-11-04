@@ -42,14 +42,15 @@ class page_homepage extends Base {
         }
         
         $this->set($feed, 'feed');
-        
-        $this->set(
-            array_flip(Group::$types),
-            'types');
 
-        $this->set(
-            array_flip(Group::$auths),
-            'auths');
-
-	}
+        if (!$this->user->guest) {
+            $this->set(
+                TapsList::search('events', 
+                                 array('uid' => $this->user->id, 'row_count' => 5),
+                                 T_USER_INFO | T_GROUP_INFO)
+                        ->format()
+                        ->asArrayAll(),
+                'events');
+        }
+    }
 };

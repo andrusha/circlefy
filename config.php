@@ -84,6 +84,7 @@ define("METRIC_KEY",  "05a951428ed5199e27d52356aae83a22");
 
 define("KEYWORDS_TRASHOLD",  3);
 define("GROUPS_FROM_LIKES", 10);
+define("DEFAULT_ROW_COUNT", 10);
 
 define("G_TAPS_COUNT",      1 << 0);
 define("G_USERS_COUNT",     1 << 1);
