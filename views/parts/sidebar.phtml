@@ -17,7 +17,7 @@
                 <?=$c['sender']['uname']?>
             </h3>
             <? if ($c['group_id']): ?>
-                <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb">
+                <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['group']['name']?>">
                     <span class="circle"></span>
                     <img src="<?=GROUP_PIC_REL . 'medium_' . $c['group']['id'] . '.jpg'?>" alt="<?=$c['group']['name']?>" />
                 </a>

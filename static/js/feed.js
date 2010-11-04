@@ -273,6 +273,7 @@ var _responses = _tap.register({
         }
     
         _body.addEvent('click:relay(a.reply)', this.setupResponse.toHandler(this));
+        _body.addEvent('click:relay(a.comments)', this.setupResponse.toHandler(this));
 
         this.subscribe({
             'responses.new': this.addResponses.bind(this),
@@ -845,7 +846,8 @@ _live.taps = _tap.register({
         });
 
         if (this.pause)
-            this.pause.addEvent('click', (function () {
+            this.pause.addEvent('click', (function (e) {
+                e.stop();
                 this.stream = !this.stream;
                 this.pause.toggleClass('active');
             }).bind(this));

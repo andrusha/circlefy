@@ -7,7 +7,7 @@
         <# for (var sugg from this): #>
         <li>
             <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
-           <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name #></a></h3>
+           <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name.limit(30) #></a></h3>
            <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
            <div class="clear"></div>
         </li>
@@ -224,7 +224,7 @@
     <ul id="template-circles">
     <!--
         <# for (circle from this): #>
-        <a href="/circle/<#: circle.symbol #>" class="circle-thumb" data-tipid="circle-<#: circle.id #>" data-tiptitle="<#: circle.name #>" data-tipcontent="<#: circle.descr #>&nbsp;">
+        <a href="/circle/<#: circle.symbol #>" class="circle-thumb" data-tipid="circle-<#: circle.id #>" data-tiptitle="<img src='/static/images/type_<#: circle.type #>.png' width='16' height='16' /> <#: circle.name #>" data-tipcontent="<#: circle.descr #>&nbsp;">
             <span class="circle"></span>
             <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id#>.jpg" />
         </a>
