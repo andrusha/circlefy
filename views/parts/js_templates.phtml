@@ -6,11 +6,7 @@
         <# if (this.length): #>
         <# for (var sugg from this): #>
         <li>
-           <# if (sugg.has_avatar == 1): #>
             <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
-           <# else: #>
-            <div class="thumb"><span></span><img src="/static/images/small_group.png" alt="search" /></div>
-           <# endif; #>
            <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name #></a></h3>
            <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
            <div class="clear"></div>
@@ -67,11 +63,7 @@
         <# for (var sugg from this): #>
         <li class="selected" data-id="<#: sugg.id #>">
             <input id="sugg_<#: sugg.id #>" name="suggest" type="checkbox" value="<#: sugg.id #>" title="<#: sugg.symbol #>" checked>
-            <# if (sugg.has_avatar == 1): #>
-                <img src="<?=GROUP_PIC_REL?>medium_<#: sugg.id #>.jpg"/>
-            <# else: #>
-                <img src="/static/images/group.png" />
-            <# endif; #>
+            <img src="<?=GROUP_PIC_REL?>medium_<#: sugg.id #>.jpg"/>
             <label for="sigg_<#: sugg.id #>"><#: sugg.name #></label>
          </li>
          <# endfor; #>
@@ -178,11 +170,7 @@
                         <div class="circle" data-tiptitle="<#: msg.group.name #>"  data-tipid="group-<#: msg.group.id #>">
                             <a href="/circle/<#: msg.group.symbol  #>">
                                 <span></span>
-                                <# if (msg.group.has_avatar == 1): #>
-                                    <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" />
-                                <# else: #>
-                                    <img src="/static/images/small_group.png" />
-                                <# endif; #>
+                                <img src="<?=GROUP_PIC_REL?>small_<#: msg.group.id #>.jpg" />
                             </a>
                         </div>
                     <# else if (msg.reciever_id): #>
@@ -238,11 +226,7 @@
         <# for (circle from this): #>
         <a href="/circle/<#: circle.symbol #>" class="circle-thumb" data-tipid="circle-<#: circle.id #>" data-tiptitle="<#: circle.name #>" data-tipcontent="<#: circle.descr #>&nbsp;">
             <span class="circle"></span>
-            <# if (circle.has_avatar == 1): #>
-                <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id#>.jpg" />
-            <# else: #>
-                <img src="/static/images/group.png" />
-            <# endif; #>
+            <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id#>.jpg" />
         </a>
         <# endfor; #>
         <div class="clear"></div>

@@ -3,13 +3,7 @@
 ?>
 <a href="/circle/<?=$c['symbol']?>" class="circle-thumb" class="circle-thumb" data-tipid="circle-<?=$c['id']?>" data-tiptitle="<img src='/static/images/type_<?=$c['type']?>.png' width='16' height='16' /> <?=$c['name']?>" data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>">
     <span class="circle"></span>
-    <?php
-    if ($c['has_avatar'])
-        $cimg = GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg';
-    else
-        $cimg = '/static/images/group.png';
-    ?>
-    <img src="<?=$cimg?>" />
+    <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" />
 </a>
 <?php
     endforeach;

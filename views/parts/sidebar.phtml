@@ -19,13 +19,7 @@
             <? if ($c['group_id']): ?>
                 <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb">
                     <span class="circle"></span>
-                    <?
-                    if ($c['group']['has_avatar'])
-                        $cimg = GROUP_PIC_REL . 'medium_' . $c['group']['id'] . '.jpg';
-                    else
-                        $cimg = '/static/images/group.png';
-                    ?>
-                    <img src="<?=$cimg?>" alt="<?=$c['group']['name']?>" />
+                    <img src="<?=GROUP_PIC_REL . 'medium_' . $c['group']['id'] . '.jpg'?>" alt="<?=$c['group']['name']?>" />
                 </a>
             <? elseif ($c['reciever_id']): ?>
                 <a href="/user/<?=$c['sender']['id']?>" class="user">
@@ -82,13 +76,7 @@
 	<span class="circle_type" data-tiptitle="blah"><?=$circle_type?></span> 
 	<? endif; ?></h3>
         <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>"><span class="circle"></span>
-            <?
-            if ($c['has_avatar'])
-                $cimg = GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg';
-            else
-                $cimg = '/static/images/group.png';
-            ?>
-            <img src="<?=$cimg?>" class="profile-thumb" alt="thumb" /></div>
+            <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" class="profile-thumb" alt="thumb" /></div>
         <p><?=$c['descr']?></p>
         
         <div class="clear"></div>

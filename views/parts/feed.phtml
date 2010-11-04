@@ -152,13 +152,7 @@ if ($_f['show_reply']){
                     <div class="circle" data-tiptitle="<?=$f['group']['name']?>" data-tipid="group-<?=$f['group_id']?>">
                         <a href="/circle/<?=$f['group']['symbol']?>">
                             <span></span>
-                            <?php
-                            if ($f['group']['has_avatar'])
-                                $cimg = GROUP_PIC_REL . 'small_' . $f['group']['id'] . '.jpg';
-                            else
-                                $cimg = '/static/images/small_group.png';
-                            ?>
-                            <img src="<?=$cimg?>" />
+                            <img src="<?=GROUP_PIC_REL . 'small_' . $f['group']['id'] . '.jpg'?>" />
                         </a>
                     </div><!--circle-->
                 <? elseif ($f['reciever_id']): ?>
