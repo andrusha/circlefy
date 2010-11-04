@@ -405,7 +405,8 @@ class GroupsList extends Collection {
         }
 
         // IV. Make creator a groups admin
-        $groups->bulkJoin($creator, 'admin');
+        // FIXIT: it actually makes no sense at all
+        //$groups->bulkJoin($creator, 'admin');
 
         return $groups;
     }
