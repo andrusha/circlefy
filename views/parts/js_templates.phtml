@@ -85,7 +85,7 @@
     <ul id="template-messages">
     <!--
         <# for (var msg from this): #>
-        <div class="feed-item<# if (!msg.responses): #> empty<# endif; #>"
+        <div class="feed-item<# if (msg.responses.length == 0): #> empty<# endif; #>"
              id="global-<#: msg.id  #>"
              data-id="<#: msg.id  #>"
              data-gid="<#: msg.group_id  #>">
