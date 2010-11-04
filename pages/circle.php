@@ -8,6 +8,9 @@ class page_circle extends Base {
 
         //TODO: do something if group doesn't exists
         $group = Group::init($symbol);
+        if (empty($group)) {
+            header('Location: /');
+        }
         $group->descr = FuncLib::linkify($group->descr);
         $this->set($group->asArray(), 'circle');
 
