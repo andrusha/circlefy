@@ -90,7 +90,8 @@ class EventDispatcher(object):
     def touch_message(self, mid, timestamp):
         "Update message timestamp to reply timestamp"
         sql = "UPDATE message SET time = FROM_UNIXTIME(%i) WHERE id = %i" % (timestamp, mid)
-        self.mysql.cursor(MySQLdb.cursors.DictCursor).execute(sql)
+        self.mysql.cursor().execute(sql)
+        self.mysql.commit()
 
     def convo_followers(self, convo):
         return set(self.cassandra.get('convo_followers', convo))

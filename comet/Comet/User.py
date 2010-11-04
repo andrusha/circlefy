@@ -17,8 +17,7 @@ class UserServer(AbstractServer):
         self.groups    = defaultdict(set)  #{group_id: [user_id, ...]
         self.convos    = defaultdict(set)  #{message_id: [user_id, ...]
 
-        self.mysql_conn   = mysql
-        self.mysql_cursor = self.mysql_conn.cursor (MySQLdb.cursors.DictCursor)
+        self.mysql = mysql
  
     def send_to(self, type, message, users = None, group = None, convo = None):
         "Send message to users in userlist or ones who see group/convo"
@@ -136,8 +135,8 @@ class UserConnection(AbstractConnection):
 
     def userOnline(self, status = 1):
         query = "UPDATE user SET online = %d WHERE id = %d" % (status, self.uid)
-        self.server.mysql_cursor.execute(query)
-        self.server.mysql_conn.commit()
+        self.server.mysql.cursor().execute(query)
+        self.server.mysql.commit()
 
     def groupOnline(self, gid_list, status = 1):
         if not gid_list:
@@ -145,8 +144,8 @@ class UserConnection(AbstractConnection):
         sql = '+ 1' if status else '- 1'
         gid_list = ', '.join(map(str, gid_list))
         query = "UPDATE `group` SET online_count = CASE WHEN online_count %s < 0 THEN 0 ELSE online_count %s END WHERE id IN (%s)" % (sql, sql, gid_list)
-        self.server.mysql_cursor.execute(query)
-        self.server.mysql_conn.commit()
+        self.server.mysql.cursor().execute(query)
+        self.server.mysql.commit()
 
     def send_message(self, type, data):
         try:

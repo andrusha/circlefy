@@ -63,6 +63,7 @@ if __name__ == "__main__":
         format = log_format, datefmt = log_datefmt)
 
     mysql = MySQLdb.connect (host = "localhost", user = "root", passwd = "root", db = "circlefy")
+    mysql.cursor().execute('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED')
     cassandra = Cassandra('circlefy')
 
     if options.init:
