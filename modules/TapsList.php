@@ -178,7 +178,7 @@ class TapsList extends Collection {
             {$join}
             WHERE {$where}
              ORDER
-                BY m.id DESC
+                BY m.time DESC
              LIMIT {$limit}";
         
         $taps = array();

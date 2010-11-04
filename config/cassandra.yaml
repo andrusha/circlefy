@@ -8,57 +8,12 @@ keyspaces:
           default_validation_class: LongType
           comment: 'gid = {uid: uid}'
 
-        - name: inverted_convos
+        - name: inverted_members
+          compare_with: LongType
+          default_validation_class: LongType
+          comment: 'uid = {gid: gid}'        
+
+        - name: convo_followers 
           compare_with: LongType
           default_validation_class: LongType
           comment: 'mid = {uid: uid}'        
-
-        - name: inverted_friends
-          compare_with: LongType
-          default_validation_class: LongType
-          comment: 'uid = {uid: uid}'        
-
-
-        - name: TIME_BY_MESSAGE
-          compare_with: LongType
-          default_validation_class: TimeUUIDType 
-          comment: 'Index; global: {mid: time}'
-
-        - name: global_events
-          compare_with: TimeUUIDType 
-          default_validation_class: LongType
-          comment: 'public: {time: mid}'
-
-        - name: group_events
-          compare_with: TimeUUIDType 
-          default_validation_class: LongType
-          comment: 'gid = {time: mid}, public/gid = {time: mid}, private/gid = {time: mid}'
-
-        - name: GROUP_BY_MESSAGE
-          compare_with: LongType
-          default_validation_class: LongType
-          comment: 'Index; mid = {gid: gid}'
-
-        - name: user_events
-          compare_with: TimeUUIDType 
-          default_validation_class: LongType
-          comment: 'uid = {time: mid} ; public events by user'
-
-        - name: feeds
-          column_type: Super
-          compare_with: BytesType
-          compare_subcolumns_with: TimeUUIDType
-          default_validation_class: LongType
-          comment: 'uid = {feed: {time:mid}, groups:{time:mid}, public/groups:{time:mid}, private/groups:{time:mid}, friends:{time:mid}, convos:{time:mid}, private: {time:mid}, unrecieved:{mid:mid}}'
-
-        - name: USER_BY_MESSAGE
-          compare_with: LongType
-          default_validation_class: LongType
-          comment: 'Index; mid = {uid: uid}'        
-
-        - name: misc 
-          column_type: Super
-          compare_with: BytesType
-          compare_subcolumns_with: TimeUUIDType
-          default_validation_class: LongType
-          comment: 'uid = {following: {time: uid}}'

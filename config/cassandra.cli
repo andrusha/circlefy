@@ -1,18 +1,6 @@
 create keyspace circlefy
 use circlefy
 
-create column family group_members with comparator=LongType and default_validation_class=LongType and comment = 'id = {uid:uid}'
-create column family inverted_convos with comparator=LongType and default_validation_class=LongType and comment = 'id = {uid:uid}'
-create column family inverted_friends with comparator=LongType and default_validation_class=LongType and comment = 'uid = {uid:uid}'
-
-create column family TIME_BY_MESSAGE with comparator=LongType and default_validation_class=TimeUUIDType and comment='global = {message: time} reverse mapping for unique index'
-
-create column family global_events with comparator=TimeUUIDType and default_validation_class=LongType and comment = 'public = {time: mid}'
-create column family group_events with comparator=TimeUUIDType and default_validation_class=LongType and comment = 'id = {time: mid}, public/id = {time: mid}, private/id = {time: mid}'
-create column family GROUP_BY_MESSAGE with comparator=LongType and default_validation_class=LongType and comment='Index; mid = {gid: gid}'
-create column family user_events with comparator=TimeUUIDType and default_validation_class=LongType and comment = 'id = {time: mid}'
-
-create column family feeds with column_type=Super and comparator=BytesType and subcomparator=TimeUUIDType and default_validation_class=LongType and comment = 'id = {feed: {time:mid}, groups:{time:mid}, public/groups:{time:mid}, private/groups:{time:mid}, friends:{time:mid}, convos:{time:mid}, unrecieved:{mid:mid}}'
-create column family USER_BY_MESSAGE with comparator=LongType and default_validation_class=LongType and comment='Index; mid = {uid: uid}'
-
-create column family misc with column_type=Super and comparator=BytesType and subcomparator=TimeUUIDType and default_validation_class=LongType and comment = 'id = {follwing: {time: uid}}'
+create column family group_members with comparator=LongType and default_validation_class=LongType and comment = 'gid = {uid:uid}'
+create column family inverted_members with comparator=LongType and default_validation_class=LongType and comment = 'uid = {gid:gid}'
+create column family convo_followers with comparator=LongType and default_validation_class=LongType and comment = 'mid = {uid:uid}'

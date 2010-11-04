@@ -135,7 +135,7 @@ class UserConnection(AbstractConnection):
                 del self.server.convos[cid]
 
     def userOnline(self, status = 1):
-        query = "UPDATE LOW_PRIORITY user SET online = %d WHERE id = %d" % (status, self.uid)
+        query = "UPDATE user SET online = %d WHERE id = %d" % (status, self.uid)
         self.server.mysql_cursor.execute(query)
         self.server.mysql_conn.commit()
 
@@ -144,7 +144,7 @@ class UserConnection(AbstractConnection):
             return
         sql = '+ 1' if status else '- 1'
         gid_list = ', '.join(map(str, gid_list))
-        query = "UPDATE LOW_PRIORITY `group` SET online_count = CASE WHEN online_count %s < 0 THEN 0 ELSE online_count %s END WHERE id IN (%s)" % (sql, sql, gid_list)
+        query = "UPDATE `group` SET online_count = CASE WHEN online_count %s < 0 THEN 0 ELSE online_count %s END WHERE id IN (%s)" % (sql, sql, gid_list)
         self.server.mysql_cursor.execute(query)
         self.server.mysql_conn.commit()
 

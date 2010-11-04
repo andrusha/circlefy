@@ -33,7 +33,7 @@ def clearViewers(mysql_conn):
 
 def main(mysql, cassandra):
     user_server      = UserServer(mysql)
-    event_dispatcher = EventDispatcher(cassandra, user_server)
+    event_dispatcher = EventDispatcher(mysql, cassandra, user_server)
     event_server     = EventServer(event_dispatcher)
     pinger           = Pinger(mysql, user_server)
     

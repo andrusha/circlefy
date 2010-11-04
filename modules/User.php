@@ -177,10 +177,6 @@ class User extends BaseModel {
                   UPDATE accept = VALUES(accept)";
         $this->db->listInsert($query, $values);
 
-        foreach ($values as $pair)
-            Comet::send('user.follow', array('user_id' => $this->id, 'friend_id' => $pair[1],
-                'status' => 1, 'user' => $this->asArray()));
-
         return $this;
     }
 
@@ -194,8 +190,6 @@ class User extends BaseModel {
                      AND user_id = #you#
                    LIMIT 1";
         $result = $this->db->query($query, array('you' => $this->id, 'friend' => $friend->id))->affected_rows == 1;
-        Comet::send('user.follow', array('user_id' => $this->id, 'friend_id' => $friend->id,
-            'status' => 0, 'user' => $this->asArray()));
         return $result;
     }
     
@@ -241,7 +235,8 @@ class User extends BaseModel {
                 VALUES (#gid#, #uid#, #perm#)";
         }
         $result = $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id, 'perm' => $perm))->affected_rows == 1;
-        Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 1));
+        if ($result)
+            Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 1));
         return $result;
     }
 
@@ -251,7 +246,7 @@ class User extends BaseModel {
                    WHERE group_id = #gid#
                      AND user_id  = #uid#";
         $result = $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->affected_rows == 1;
-        Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 0));
+        Comet::send('group.follow', array('group_id' => $g->id, 'user_id' => $this->id, 'status' => 0));
         return $result;
     }
     

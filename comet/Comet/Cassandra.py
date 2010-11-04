@@ -49,11 +49,12 @@ class Cassandra():
     def initTables(self, mysql):
         self.initFromDB(mysql, 'SELECT group_id, user_id FROM group_members', 
             'group_members', 'group_id', 'user_id')
+
+        self.initFromDB(mysql, 'SELECT group_id, user_id FROM group_members', 
+            'inverted_members', 'user_id', 'group_id')
+
         self.initFromDB(mysql, 'SELECT message_id, user_id FROM conversations',
-            'inverted_convos', 'user_id', 'message_id')
-        self.initFromDB(mysql, 'SELECT user_id, friend_id FROM friends',
-            'inverted_friends', 'friend_id', 'user_id')
-        self.initMessages(mysql)
+            'convo_followers',  'message_id', 'user_id')
 
     def initFromDB(self, mysql, sql, family, id_name, val_name):
        cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
@@ -67,24 +68,6 @@ class Cassandra():
        fam.truncate()
        logging.info('Initializing %s' % family)
        fam.batch_insert(inserting)
-
-    def initMessages(self, mysql):
-        from Events import CassandraMessage
-        logging.info('Initializing messages')
-        for family in ['TIME_BY_MESSAGE', 'global_events', 'group_events', 'GROUP_BY_MESSAGE', 'user_events', 'feeds', 'USER_BY_MESSAGE']:
-           fam = ColumnFamily(self.connection, family)
-           fam.truncate()
-        messages = CassandraMessage(self)
-        cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT m.id, m.sender_id, m.group_id, m.reciever_id, (g.permission > 0) AS private "
-                       "FROM message m LEFT JOIN group_members g ON g.group_id = m.group_id ORDER BY m.id ASC")
-        for row in cursor.fetchall():
-            mid, uid, gid, rid, private = (row['id'], row['sender_id'], 
-                row['group_id'], row['reciever_id'], row['private'])
-            if rid is not None:
-                messages.add_personal(mid, uid, rid)
-            else:
-                messages.add_group(mid, gid, uid, private)
 
     def insert(self, family, key, *args, **kwargs):
         self.families[family].insert(pack(key), *args, **kwargs)
