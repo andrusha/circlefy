@@ -116,7 +116,12 @@ if ($_f['show_reply']){
            
             <a href="#" alt="Close" def="Reply" class="reply"></a>
             <? if (!empty($f['responses']) && $f['responses']['count'] > 0): ?>
-                <a href="#" class="comments"><?=$f['responses']['count']?></a>
+                <a href="#" class="comments">
+                    <?=$f['responses']['count']?>
+                    <? if($f['new_replies']): ?>
+                    <span class="unread"><?=$f['new_replies']?></span>
+                    <? endif; ?>
+                </a>
             <? else:?>
                 <a href="#" class="comments"></a>
             <? endif; ?>

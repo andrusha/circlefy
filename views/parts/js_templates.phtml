@@ -85,7 +85,7 @@
     <ul id="template-messages">
     <!--
         <# for (var msg from this): #>
-        <div class="feed-item<# if (msg.responses.length == 0): #> empty<# endif; #>"
+        <div class="feed-item<# if (!msg.responses || msg.responses.length == 0): #> empty<# endif; #>"
              id="global-<#: msg.id  #>"
              data-id="<#: msg.id  #>"
              data-gid="<#: msg.group_id  #>">
@@ -139,7 +139,12 @@
                
                 <a href="#" alt="Close" def="Reply" class="reply"></a>
                 <# if (msg.responses && msg.responses.count): #>
-                    <a href="#" class="comments"><#: msg.responses.count  #></a>
+                    <a href="#" class="comments">
+                        <#: msg.responses.count #>
+                        <# if (msg.new_replies): #>
+                         <span class="unread"><#: msg.new_replies #></span>
+                        <# endif; #>
+                    </a>
                 <# else: #>
                     <a href="#" class="comments"></a>
                 <# endif; #>

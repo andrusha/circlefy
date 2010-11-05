@@ -30,7 +30,8 @@ class page_circle extends Base {
             'pending');
 
         $this->set(
-            TapsList::search('group', array('gid' => $group->id), T_USER_INFO | T_INSIDE | T_MEDIA)
+            TapsList::search('group', array('gid' => $group->id, 'uid' => $this->user->id),
+                             T_USER_INFO | T_INSIDE | T_MEDIA | T_NEW_REPLEIS)
                     ->lastResponses()
                     ->inject('group', $group)
                     ->format()

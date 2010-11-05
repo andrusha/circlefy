@@ -43,9 +43,9 @@ class EventDispatcher(object):
         recievers = None
 
         if action == 'tap.new':
-            recievers = self.on_new_message(data)
+            recievers = self.on_new_message(action, data)
         elif action == 'response.new':
-            recievers = self.on_new_response(data)
+            recievers = self.on_new_response(action, data)
         elif action == 'group.follow':
             gid, uid, status = map(int, [data['group_id'], data['user_id'], data['status']])
             self.on_group_follow(gid, uid, status)
@@ -53,27 +53,26 @@ class EventDispatcher(object):
             mid, uid, status = map(int, [data['message_id'], data['user_id'], data['status']])
             self.on_convo_follow(mid, uid, status)
         elif action == 'response.typing':
-            recievers = {'convo': int(data['cid'])}
+            self.user_server.send_to(action, data, convo = int(data['cid']))
         else:
             logging.warning('Unknow event! %s: %s' (action, data))
 
-        if recievers:
-            self.user_server.send_to(action, data, **recievers)
-
-    def on_new_message(self, message):
+    def on_new_message(self, action, message):
         "New message handler"
-        sender, reciever, group = map(int, [message['sender_id'], message['reciever_id'], message['group_id']])
+        sender, group = map(int, [message['sender_id'], message['group_id']])
 
         personal = message['reciever_id'] is not None 
         if personal:
-           return {'users': set([sender, reciever])}
+           return {'users': set([sender, int(message['reciever_id'])])}
 
         private = self.is_member(sender, group)
         recievers = {'users': self.group_users(group)}
         if not private:
             recievers['group'] = group
 
-        return recievers
+        unrecieved = self.user_server.send_to(action, message, **recievers)
+        if unrecieved:
+            self.on_unrecieved_message(int(message['id']), unrecieved)
 
     def is_member(self, user, group):
         return self.cassandra.get('inverted_members', user, columns = [group]) is not None
@@ -81,15 +80,18 @@ class EventDispatcher(object):
     def group_users(self, group):
         return set(self.cassandra.get('group_members', group))
 
-    def on_new_response(self, response):
+    def on_new_response(self, action, response):
         mid, timestamp = map(int, [response['message_id'], response['timestamp']])
         self.touch_message(mid, timestamp)
-        return {'users': self.convo_followers(mid),
-                'convo': mid}
+
+        unrecieved = self.user_server.send_to(action, response, 
+                        users = self.convo_followers(mid), convo = mid)
+        if unrecieved:
+            self.on_unrecieved_response(mid, unrecieved)
             
     def touch_message(self, mid, timestamp):
         "Update message timestamp to reply timestamp"
-        sql = "UPDATE message SET time = FROM_UNIXTIME(%i) WHERE id = %i" % (timestamp, mid)
+        sql = "UPDATE message SET modification_time = FROM_UNIXTIME(%i) WHERE id = %i" % (timestamp, mid)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 
@@ -109,3 +111,18 @@ class EventDispatcher(object):
             self.cassandra.insert('convo_followers', message, {user: user})
         else:
             self.cassandra.remove('convo_followers', message, columns=[user])
+
+    def on_unrecieved_message(self, message, users):
+        "Adds message to events queue for each user"
+        joined = (', %i, 1),(' % message).join(map(str, users))
+        sql = 'INSERT IGNORE INTO events (user_id, message_id, is_new) VALUES (%s, %i, 1)' % (joined, message)
+        self.mysql.cursor().execute(sql)
+        self.mysql.commit()
+
+    def on_unrecieved_response(self, message, users):
+        "Insert new reply event or update every event to +1"
+        joined = (', %i, 1),(' % message).join(map(str, users))
+        sql = 'INSERT INTO events (user_id, message_id, new_replies) VALUES (%s, %i, 1)' % (joined, message) + \
+              'ON DUPLICATE KEY UPDATE new_replies = new_replies + 1'
+        self.mysql.cursor().execute(sql)
+        self.mysql.commit()

@@ -6,7 +6,8 @@
 */
 class Tap extends BaseModel {
 
-    public static $fields = array('id', 'sender_id', 'text', 'time', 'group_id', 'reciever_id', 'media_id');
+    public static $fields = array('id', 'sender_id', 'text', 'time', 
+        'group_id', 'reciever_id', 'media_id', 'modification_time');
 
     public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
@@ -16,7 +17,8 @@ class Tap extends BaseModel {
 
     protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id', 'media_id');
 
-    protected static $addit = array('responses', 'group', 'sender', 'reciever', 'media', 'replies', 'involved');
+    protected static $addit = array('responses', 'group', 'sender', 'reciever', 
+        'media', 'replies', 'involved', 'is_new','new_replies');
 
     protected static $tableName = 'message';
 
@@ -78,10 +80,12 @@ class Tap extends BaseModel {
         }
         
         $id = $db->insert('message', 
-            array('sender_id' => $from->id, 'text' => $text,
+            array('sender_id' => $from->id, 
+                  'text' => $text,
                   'media_id' => $media_id ? $media_id : null,
                   'group_id' => $g ? $g->id : null,
-                  'reciever_id' => $to ? $to->id : null));
+                  'reciever_id' => $to ? $to->id : null,
+                  'modification_time' => 'CURRENT_TIMESTAMP'));
 
         Comet::send('tap.new', Tap::byId($id)->format()->asArray());
 
@@ -273,5 +277,10 @@ class Tap extends BaseModel {
         }
 
         return $perm;
+    }
+
+    public function deleteEvent(User $u) {
+        $query = 'DELETE FROM events WHERE user_id = #uid# AND message_id = #mid#';
+        $this->db->query($query, array('uid' => $u->id, 'mid' => $this->id));
     }
 };

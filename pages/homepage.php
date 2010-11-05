@@ -21,7 +21,8 @@ class page_homepage extends Base {
             'circles');
 
         if (!$this->user->guest) {
-            $feed = TapsList::search('feed', array('uid' => $this->user->id), T_USER_INFO | T_USER_RECV | T_GROUP_INFO | T_INSIDE | T_MEDIA) 
+            $feed = TapsList::search('feed', array('uid' => $this->user->id), 
+                        T_USER_INFO | T_USER_RECV | T_GROUP_INFO | T_INSIDE | T_MEDIA | T_NEW_REPLIES) 
                     ->lastResponses()
                     ->format()
                     ->asArrayAll();

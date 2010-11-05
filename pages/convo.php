@@ -12,6 +12,8 @@ class page_convo extends Base {
                        ->format()
                        ->getFirst();
 
+        if (!$this->user->guest)
+            $tap->deleteEvent($this->user);
 
         $this->set($tap->asArray(), 'convo'); 
         $this->set($tap->getStatus($this->user), 'state');

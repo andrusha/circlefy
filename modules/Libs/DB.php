@@ -184,7 +184,7 @@ class DB {
             foreach($value as $x)
                 $str .= ', '.$this->formatByType($x);
             return substr($str, 2);
-        } else if (is_int($value) || is_float($value)) {
+        } else if (is_int($value) || is_float($value) || in_array($value, array('CURRENT_TIMESTAMP'))) {
             //int values don't need to be escaped
             return strval($value);
         } else if ($value === null) {

@@ -36,13 +36,6 @@ abstract class Base {
         //actually, we need user everywhere
         if ($this->need_login)
             $this->user = Auth::identify();
-
-        // if user logged in and we browsing site page
-        // (not api request)
-        if (isset($this->user) && $this->user->id !== null &&
-            $this->view_output == 'HTML') {
-            TapsList::updateEvents($this->user);
-        }
     }
 
     public function __destruct() {

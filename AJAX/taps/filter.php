@@ -25,11 +25,13 @@ class ajax_filter extends Base {
         elseif ($inside == 2)
             $options |= T_OUTSIDE;
 
-        if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos')))
+        if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {
             $params['uid'] = $this->user->id;
-        elseif ($type == 'group')
+            $options |= T_NEW_REPLIES;
+        } elseif ($type == 'group') {
             $params['gid'] = $id;
-        elseif ($type == 'friend')
+            $options |= T_NEW_REPLIES;
+        } elseif ($type == 'friend')
             $params['uid'] = $id;
         elseif ($type == 'private') {
             $params['from'] = $id;

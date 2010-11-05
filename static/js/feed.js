@@ -387,6 +387,11 @@ var _responses = _tap.register({
         parent = list.getParent('div.feed-item');
         if (parent && items.length)
             parent.removeClass('empty');
+
+        var count = parent.getElement('a.comments');
+        if (count)
+            count.innerHTML = Number.from(count.innerHTML);
+
         this.publish('responses.updated');
         return this;
     },
@@ -394,7 +399,7 @@ var _responses = _tap.register({
     updateLast: function (reply, parent) {
         var count = parent.getElement('a.comments');
         if (count)
-            count.innerHTML = count.innerHTML*1 + 1;
+            count.innerHTML = Number.from(count.innerHTML) + 1;
 
         var latest = parent.getElement('div.latest-reply');
         if (latest) {
@@ -411,7 +416,7 @@ var _responses = _tap.register({
     updateConvo: function (reply, stats) {
         var count = stats.getElement('span');
         if (count)
-            count.innerHTML = count.innerHTML*1 + 1;
+            count.innerHTML = Number.from(count.innerHTML) + 1;
     },
 
 	/*

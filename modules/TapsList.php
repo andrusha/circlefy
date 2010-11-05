@@ -38,6 +38,7 @@ class TapsList extends Collection {
             T_MEDIA      - fetch media if avaliable
             T_INSIDE     - taps only from group members
             T_OUTSIDE    - taps only from not members of the group
+            T_NEW_REPLIES- return unread replies count
 
         @return TapsList
     */
@@ -57,7 +58,8 @@ class TapsList extends Collection {
             'convo'     => 'INNER JOIN conversations c  ON m.id        = c.message_id',
             'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id',
             'media'     => 'LEFT  JOIN media         md ON md.id       = m.media_id',
-            'events'    => 'INNER JOIN events        e  ON m.id        = e.message_id'
+            'events'    => 'INNER JOIN events        e  ON m.id        = e.message_id AND e.user_id = #uid#',
+            'events_l'  => 'LEFT  JOIN events        e  ON m.id        = e.message_id AND e.user_id = #uid#'
         );
 
         $distinct = false;
@@ -129,8 +131,9 @@ class TapsList extends Collection {
                 break;
 
             case 'events':
-                $join[]  = 'events';
-                $where[] = 'e.user_id = #uid#';
+                $join[]   = 'events';
+                $fields[] = 'e.is_new';
+                $fields[] = 'e.new_replies';
                 break;
         }
 
@@ -162,6 +165,12 @@ class TapsList extends Collection {
             $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Tap::$mediaFields));
         }
 
+        if ($options & T_NEW_REPLIES) {
+            if (!in_array('events', $join))
+                $join[] = 'events_l';
+            $fields[] = 'e.new_replies';
+        }
+
         if ($options & T_INSIDE || $options & T_OUTSIDE)
             $join[] = 'members_i';
 
@@ -180,6 +189,8 @@ class TapsList extends Collection {
         //construct and execute query from supplied params
         $join   = implode("\n", array_intersect_key($joins, array_flip(array_unique($join))));
         $where  = implode(' AND ', array_unique($where));
+        if ($where)
+            $where = 'WHERE '.$where;
         $fields = implode(', ', array_unique($fields));
 
         $distinct = $distinct ? 'DISTINCT' : '';
@@ -187,9 +198,9 @@ class TapsList extends Collection {
             SELECT {$distinct} {$fields} 
               FROM message m
             {$join}
-            WHERE {$where}
+            {$where}
              ORDER
-                BY m.time DESC
+                BY m.modification_time DESC
              LIMIT {$limit}";
         
         $taps = array();
@@ -330,27 +341,5 @@ class TapsList extends Collection {
         foreach ($this->data as $tap)
             $tap->format();
         return $this;
-    }
-
-    /*
-        Adds messages since the last login time
-        @return int count of new events
-    */
-    public static function updateEvents(User $u) {
-        $db = DB::getInstance();
-
-        // ignoring duplicte pairs, cuz unread event may be updated
-        $query = "INSERT IGNORE INTO events (user_id, message_id)
-                  SELECT DISTINCT u.id AS user_id, m.id AS message_id
-                    FROM message m
-                   INNER JOIN user           u ON u.id = #uid#
-                    LEFT JOIN group_members gm ON m.group_id = gm.group_id
-                    LEFT JOIN conversations c  ON m.id = c.message_id
-                   WHERE m.time >= u.last_login
-                     AND ((gm.user_id = #uid# OR c.user_id = #uid#)
-                         OR
-                        ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND m.reciever_id IS NOT NULL))";
-        $count = $db->query($query, array('uid' => $u->id))->affected_rows;
-        return $count;
     }
 };

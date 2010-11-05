@@ -477,6 +477,12 @@ div.feed-item.opened a.reply {
 div.feed-item.opened:hover a.reply {
     display: block;
 }
+div.feed-item span.unread {
+    color: green;
+}
+div.feed-item span.unread:before {
+    content: '+ ';
+}
 a.reply:after {
     content: attr(def);
 }
@@ -2219,3 +2225,4 @@ width:50px;
 #sidebar .media .thumbnail { padding:2px; border:1px solid #d1d1d1; width:100px; height:76px; background:#fff; display:block;}
 #sidebar .media .thumbnail img { width:100px; height:76px;}
 #sidebar .media small a { text-decoration:none; padding:0; color:#4177a5; font-size:10px; line-height:12px;}
+

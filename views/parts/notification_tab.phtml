@@ -1,15 +1,3 @@
-<div class="roar">
-            <# if (this.group_id): #>
-                <img src="<?=GROUP_PIC_REL?>small_<#: this.group_id #>.jpg" class="group_icon" />
-            <# endif; #>
-            <# if (this.user_id) : #>
-            	<img src="<?=USER_PIC_REL?>small_<#: this.user_id #>.jpg" class="avatar" />
-            <# endif; #>
-        	<h3><#: this.title #></h3>
-        	<p><#: this.text #></p>
-        	<div class="roar-bg"></div>
-        </div>
-
 <? if (!empty($events)): ?>
 <div id="notifications">
     
@@ -21,7 +9,7 @@
                 <img src="<?=GROUP_PIC_REL?>small_<?=$e['group_id']?>.jpg" class="group_icon" />
                 <? endif; ?>
                 <img src="<?=USER_PIC_REL?>small_<?=$e['sender_id']?>.jpg" class="avatar" />
-                <h3>Suddenly! New message</h3>
+                <h3><?=($e['is_new'] ? 'New message' : $e['new_replies'].' unread replies')?></h3>
                 <p><?=$e['text']?></p>
             </div>
             <? endforeach; ?>
