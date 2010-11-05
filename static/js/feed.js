@@ -517,10 +517,7 @@ _live.typing = _tap.register({
     },
 
     showTyping: function(data) {
-        //if (_vars.feed.type != 'conversation' && data.cid != _vars.feed.id)
-        //    return;
-
-        var item = $('typing-'+data.uid),
+        var item = $('typing-'+data.cid+'-'+data.uid),
             founded = false;
         if (!item)
             item = Elements.from(_template.parse('typing', data))[0];
