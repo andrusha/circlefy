@@ -272,8 +272,10 @@ var _responses = _tap.register({
             window.scrollTo(0, window.getScrollSize().y);
         }
     
-        _body.addEvent('click:relay(a.reply)', this.setupResponse.toHandler(this));
-        _body.addEvent('click:relay(a.comments)', this.setupResponse.toHandler(this));
+        _body.addEvents({
+                'click:relay(a.reply)': this.setupResponse.toHandler(this),
+                'click:relay(a.comments)': this.setupResponse.toHandler(this),
+            });
 
         this.subscribe({
             'responses.new': this.addResponses.bind(this),
@@ -333,6 +335,7 @@ var _responses = _tap.register({
                 var data = JSON.decode(this.response.text);
                 if (!data.responses) return;
                 self.addResponses(list.empty(), data.responses);
+                
                 self.publish('responses.loaded', id);
                 list.store('loaded', true);
             }
@@ -349,74 +352,73 @@ var _responses = _tap.register({
 	*/
     addResponses: function(list, data) {
         var items = Elements.from(_template.parse('replies', data)),
-            elems = list.getElements('div.reply-item'),
             parent = list.getParent('div.text');
 
-        elems.removeClass('last');
-        if (items.length) {
-            var last = items.getLast();
-            last.addClass('last');
-
-            //already have an reply and add one
-            if (parent)
-                this.updateLast(data.getLast(), parent);
-            else if (_vars.feed.type == 'conversation')
-                this.updateConvo(data.getLast(), $$('span.stats')[0]);
+        //quit if there is no items
+        if (!items.length) {
+            this.publish('responses.updated');
+            return this;
         }
 
-        items.getElements('span.reply-text').each(function (el) {
-            el = el[0];
-            el.innerHTML = el.innerHTML.replace(/\(hug\)/ig, '<img src="/static/images/bear.gif" alt="hug">');
-        });
-        
-        if (parent) {   
+        var elements = list.getElements('div.reply-item');
+        if (elements.length)
+            elements.getLast().removeClass('last');
+
+        this.preprocess(items.getElements('span.reply-text'));
+        items.getLast().addClass('last');
+
+        items.setStyles({opacity:0});
+        items.inject(list);
+        items.fade(1);
+        list.scrollTo(0, list.getScrollSize().y);
+
+        elements = list.getElements('div.reply-item');
+
+        if (_vars.feed.type == 'conversation') {
+            window.scrollTo(0, window.getScrollSize().y);
+            var count = $$('span.stats > span')[0];
+        } else {
+            this.updateLast(data.getLast(), parent);
+
             var resizer = parent.getElement('div.resizer');
-            if (items.length + elems.length <= 5 && resizer)
+            if (elements.length <= 5 && resizer)
                 resizer.addClass('hidden');
             else if (resizer)
                 resizer.removeClass('hidden');
+
+            parent = list.getParent('div.feed-item');
+            if (parent && items.length)
+                parent.removeClass('empty');
+
+            var count = parent.getElement('a.comments');
         }
 
-        items.setStyles({opacity:0});
-        items.fade(1);
-        items.inject(list);
-        list.scrollTo(0, list.getScrollSize().y);
-        if (_vars.feed.type == 'conversation')
-            window.scrollTo(0, window.getScrollSize().y);
-
-        parent = list.getParent('div.feed-item');
-        if (parent && items.length)
-            parent.removeClass('empty');
-
-        var count = parent.getElement('a.comments');
         if (count)
-            count.innerHTML = Number.from(count.innerHTML);
+            count.innerHTML = elements.length;
 
         this.publish('responses.updated');
-        return this;
+    },
+
+    preprocess: function(items) {
+        items.each(function (el) {
+            el = el[0];
+            //bearification
+            el.innerHTML = el.innerHTML.replace(/\(hug\)/ig, '<img src="/static/images/bear.gif" alt="hug">');
+        });
     },
 
     updateLast: function (reply, parent) {
-        var count = parent.getElement('a.comments');
-        if (count)
-            count.innerHTML = Number.from(count.innerHTML) + 1;
-
         var latest = parent.getElement('div.latest-reply');
-        if (latest) {
-            var img = latest.getElement('img');
-            img.src = '/static/user_pics/small_'+reply.user.id+'.jpg';
-            img.alt = reply.user.fname + ' ' + reply.user.lname;
-            var a   = latest.getElement('a');
-            a.href  = '/user/'+reply.user.uname;
-            a.innerHTML = reply.user.uname+':';
-            latest.getElement('span').innerHTML = reply.text.limit(40);
-        }
-    },
+        if (!latest)
+            return; 
 
-    updateConvo: function (reply, stats) {
-        var count = stats.getElement('span');
-        if (count)
-            count.innerHTML = Number.from(count.innerHTML) + 1;
+        var img = latest.getElement('img');
+        img.src = '/static/user_pics/small_'+reply.user.id+'.jpg';
+        img.alt = reply.user.fname + ' ' + reply.user.lname;
+        var a   = latest.getElement('a');
+        a.href  = '/user/'+reply.user.uname;
+        a.innerHTML = reply.user.uname+':';
+        latest.getElement('span').innerHTML = reply.text.limit(40);
     },
 
 	/*
