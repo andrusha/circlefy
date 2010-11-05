@@ -61,7 +61,8 @@ $ajaxs = array(
                'responses' => true,
                'respond'   => true,
                'filter'    => true,
-               'new'       => true
+               'new'       => true,
+               'events'    => true
         ),
         'follow' => true
     );

@@ -58,7 +58,8 @@ var _template = {
         'suggestions': 'template-suggestions',
         'typing':      'template-typing',
         'messages':    'template-messages',
-        'circles':     'template-circles'
+        'circles':     'template-circles',
+        'notifications':'template-notifications'
     },
 
 	/*

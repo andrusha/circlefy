@@ -6,22 +6,32 @@
             <? foreach($events as $e): ?>
             <div id="event-<?=$e['id']?>" class="event">
                 <? if (isset($e['group_id'])): ?>
-                <img src="<?=GROUP_PIC_REL?>small_<?=$e['group_id']?>.jpg" class="group_icon" />
+                    <a href="/circle/<?=$e['group']['symbol']?>">
+                        <img src="<?=GROUP_PIC_REL?>small_<?=$e['group_id']?>.jpg" class="group_icon" />
+                    </a>
                 <? endif; ?>
-                <img src="<?=USER_PIC_REL?>small_<?=$e['sender_id']?>.jpg" class="avatar" />
-                <h3><?=($e['is_new'] ? 'New message' : $e['new_replies'].' unread replies')?></h3>
-                <p><?=$e['text']?></p>
+                <a href="/user/<?=$e['sender']['uname']?>">
+                    <img src="<?=USER_PIC_REL?>small_<?=$e['sender_id']?>.jpg" class="avatar" />
+                </a>
+                <h3>
+                    <a href="/convo/<?=$e['id']?>">
+                        <?=($e['is_new'] ? 'New message' : $e['new_replies'].' unread replies')?>
+                    </a>
+                </h3>
+                <p>
+                    <a href="/convo/<?=$e['id']?>"><?=$e['text']?></a>
+                </p>
             </div>
             <? endforeach; ?>
         </div>
     
     	<div class="controls">
         
-        	<a href="#" class="paginate"><strong>&laquo;</strong> Previous</a>
+        	<button class="paginate" data-type="prev" disabled="true"><strong>&laquo;</strong> Previous</button>
             
-            <a href="#" class="paginate">Next <strong>&raquo;</strong></a>
+            <button class="paginate" data-type="next" <? if (count($events) < 5) :?>disabled="true"<? endif; ?>>Next <strong>&raquo;</strong></button>
             
-            <a href="#" class="close">Close <strong>&times;</strong></a>
+            <button class="close">Close <strong>&times;</strong></button>
         
         </div><!--controls-->
     

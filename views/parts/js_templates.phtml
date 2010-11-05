@@ -237,4 +237,30 @@
         <div class="clear"></div>
     -->
     </ul>
+
+    <? /*** Persistant notifications ***/ ?>
+    <ul id="template-notifications">
+    <!--
+        <# for (e from this): #>
+        <div id="event-<#: e.id #>" class="event">
+            <# if (e.group_id): #>
+                <a href="/circle/<#: e.group.symbol #>">
+                    <img src="<?=GROUP_PIC_REL?>small_<#: e.group_id #>.jpg" class="group_icon" />
+                </a>
+            <# endif; #>
+            <a href="/user/<#: e.sender.uname #>">
+                <img src="<?=USER_PIC_REL?>small_<#: e.sender_id #>.jpg" class="avatar" />
+            </a>
+            <h3>
+                <a href="/convo/<#: e.id #>">
+                    <# if (e.is_new): #> New message <# else: #> <#: e.new_replies #> unread replies <# endif; #>
+                </a>
+            </h3>
+            <p>
+                <a href="/convo/<#: e.id #>"><#: e.text #></a>
+            </p>
+        </div>
+        <# endfor; #>
+    -->
+    </ul>
 </div>

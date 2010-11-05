@@ -342,4 +342,11 @@ class TapsList extends Collection {
             $tap->format();
         return $this;
     }
+
+    public static function deleteAllEvents(User $u) {
+        $db = DB::getInstance();
+
+        $query = "DELETE FROM events WHERE user_id = #uid#";
+        $db->query($query, array('uid' => $u->id));
+    }
 };
