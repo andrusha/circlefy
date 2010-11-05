@@ -895,6 +895,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 }
 #sidebar .box {
 	padding:15px 0;
+	overflow: hidden;
 }
 #sidebar .box a {
 	color:#2878ca;
@@ -1403,6 +1404,9 @@ padding:0;
 }
 #title-desc-tooltip, #follow-tooltip, #name-tooltip, #side-tooltip, #error-tooltip {
   display: none;
+}
+.tooltip-content {
+  overflow: hidden;
 }
 .tooltip-error.position-centerTop {
   position: absolute;

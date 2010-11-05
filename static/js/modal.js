@@ -116,7 +116,9 @@ var _modal = _tap.register({
         var modalForm = $$('div.modal-window.show')[0];
         if (!modalForm)
             return;
-
+        
+        $$('.tooltip-error').tween('opacity', 0);
+        
         var myEffects = new Fx.Morph(modalForm, {duration: 500, transition: Fx.Transitions.Sine.easeOut});
             
         myEffects.chain( function() {
