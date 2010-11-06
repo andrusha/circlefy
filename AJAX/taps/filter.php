@@ -22,7 +22,7 @@ class ajax_filter extends Base {
         $options = T_GROUP_INFO | T_USER_INFO | T_MEDIA;
         if ($inside == 1)
             $options |= T_INSIDE;
-        elseif ($inside == 2)
+        elseif ($inside == 0)
             $options |= T_OUTSIDE;
 
         if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {

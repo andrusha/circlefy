@@ -6,18 +6,20 @@
     <a href="#" id="pause" def="Pause Stream" alt="Release Stream"></a>
 </h1>
 
-<? if (!$_f['user']): ?>
-    <div id="controls" <?=($_f['show_inside'] ? '' : 'class="hidden"')?>>
-        <a href="#" data-inside="1" class="tab active" id="authenticated">Authenticated users</a>
-        <a href="#" data-inside="2" class="tab">Regular users</a>
-        <div class="clear"></div>
-    </div><!--controls-->
-<? else: ?>
-    <div id="controls">
-        <a href="#" data-type="friend" class="tab active">Feed</a>
-        <a href="#" data-type="private" class="tab">Private Messages</a>
-        <div class="clear"></div>
-    </div><!--controls-->
+<? if ($_f['state'] !== false): ?>
+    <? if (!$_f['user']): ?>
+        <div id="controls" <?=($_f['show_inside'] ? '' : 'class="hidden"')?>>
+            <a href="#" data-inside="1" class="tab active" id="authenticated">Authenticated users</a>
+            <a href="#" data-inside="0" class="tab">Regular users</a>
+            <div class="clear"></div>
+        </div><!--controls-->
+    <? else: ?>
+        <div id="controls">
+            <a href="#" data-type="friend" class="tab active">Feed</a>
+            <a href="#" data-type="private" class="tab">Private Messages</a>
+            <div class="clear"></div>
+        </div><!--controls-->
+    <? endif; ?>
 <? endif; ?>
 
 <div class="warning hidden">

@@ -49,7 +49,6 @@ class TapsList extends Collection {
         $joins = array(
             'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id',
             'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
-            'members_i' => 'LEFT  JOIN group_members gi ON gi.group_id = m.group_id AND gi.user_id = m.sender_id',
             'group'     => 'INNER JOIN `group`       g  ON g.id        = m.group_id',
             'group_l'   => 'LEFT  JOIN `group`       g2 ON g2.id       = m.group_id',
             'user'      => 'INNER JOIN user          u  ON u.id        = m.sender_id',
@@ -162,7 +161,7 @@ class TapsList extends Collection {
         if ($options & T_MEDIA) {
             $join[] = 'media';
             $prefix = 'md.';
-            $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Tap::$mediaFields));
+            $fields = array_merge($fields, FuncLib::addPrefix($prefix ?: 'md.', Media::$fields));
         }
 
         if ($options & T_NEW_REPLIES) {
@@ -171,15 +170,10 @@ class TapsList extends Collection {
             $fields[] = 'e.new_replies';
         }
 
-        if ($options & T_INSIDE || $options & T_OUTSIDE)
-            $join[] = 'members_i';
-
         if ($options & T_INSIDE)
-            $where[] = '(gi.user_id IS NOT NULL OR m.group_id IS NULL)';
-        else if ($options & T_OUTSIDE) {
-            $where[] = 'gi.user_id IS NULL';
-            $where[] = 'm.group_id IS NOT NULL';
-        }
+            $where[] = 'm.private = 1';
+        else if ($options & T_OUTSIDE)
+            $where[] = 'm.private = 0';
     
         if (!isset($params['row_count']))
             $params['row_count'] = DEFAULT_ROW_COUNT;

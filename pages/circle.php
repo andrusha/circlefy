@@ -29,18 +29,20 @@ class page_circle extends Base {
                      ->asArrayAll(),
             'pending');
 
+        $member = $group->userPermissions($this->user) != Group::$permissions['not_in'];
+
+        $inside = $member ? T_INSIDE : T_OUTSIDE;
+
         $this->set(
             TapsList::search('group', array('gid' => $group->id, 'uid' => $this->user->id),
-                             T_USER_INFO | T_INSIDE | T_MEDIA | T_NEW_REPLEIS)
+                             T_USER_INFO | $inside | T_MEDIA | T_NEW_REPLEIS)
                     ->lastResponses()
                     ->inject('group', $group)
                     ->format()
                     ->asArrayAll(),
             'feed');
 
-        $this->set(
-           $group->userPermissions($this->user) != Group::$permissions['not_in'],
-           'state');
+        $this->set($member, 'state');
 
         $this->set(
             $group->isPermitted($this->user),

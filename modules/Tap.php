@@ -7,15 +7,12 @@
 class Tap extends BaseModel {
 
     public static $fields = array('id', 'sender_id', 'text', 'time', 
-        'group_id', 'reciever_id', 'media_id', 'modification_time');
+        'group_id', 'reciever_id', 'media_id', 'modification_time', 'private');
 
     public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
-    public static $mediaFields = array('id', 'type', 'link', 'code', 'title', 'description', 'thumbnail_url', 'fullimage_url');
-
-    public static $mediaTypes  = array('youtube' => 1, 'vimeo' => 2, 'flickr' => 3);
-
-    protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id', 'media_id');
+    protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id', 'media_id',
+        'modification_time', 'private');
 
     protected static $addit = array('responses', 'group', 'sender', 'reciever', 
         'media', 'replies', 'involved', 'is_new','new_replies');
@@ -64,7 +61,7 @@ class Tap extends BaseModel {
 
         @return int
     */
-    private static function add(User $from, $text, $media = null, Group $g = null, User $to = null) {
+    private static function add(User $from, $text, $media = null, Group $g = null, User $to = null, $private = 0) {
         $db = DB::getInstance();
 
         if ($media) {
@@ -85,7 +82,8 @@ class Tap extends BaseModel {
                   'media_id' => $media_id ? $media_id : null,
                   'group_id' => $g ? $g->id : null,
                   'reciever_id' => $to ? $to->id : null,
-                  'modification_time' => 'CURRENT_TIMESTAMP'));
+                  'modification_time' => 'CURRENT_TIMESTAMP',
+                  'private' => $private));
 
         Comet::send('tap.new', Tap::byId($id)->format()->asArray());
 
@@ -95,15 +93,17 @@ class Tap extends BaseModel {
     /*
         @return Tap
     */
-    public static function toGroup(Group $group, User $user, $text, $media) {
-        return Tap::byId(Tap::add($user, $text, $media, $group, null), true, false, true, (!empty($media) ? true : false));
+    public static function toGroup(Group $group, User $user, $text, $media, $private = 0) {
+        return Tap::byId(Tap::add($user, $text, $media, $group, null, $private),
+                         true, false, true, (!empty($media) ? true : false));
     }
 
     /*
         @return Tap
     */
     public static function toUser(User $from, User $to, $text, $media) {
-        return Tap::byId(Tap::add($from, $text, $media, null, $to), true, true, true, (!empty($media) ? true : false));
+        return Tap::byId(Tap::add($from, $text, $media, null, $to), 
+                         true, true, true, (!empty($media) ? true : false));
     }
 
     /*

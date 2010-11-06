@@ -629,10 +629,12 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.tapbox.value.isEmpty())
             return this.tapbox.focus();
+        var private = _vars.feed.inside || 0;
         var data = {
             msg: this.tapbox.value,
             type: this.sendType,
-            id: this.sendTo
+            id: this.sendTo,
+            private: private
         }
         if (this.tapbox.getData('mediatype') && this.tapbox.getData('mediatype').length) {
             var media = {
@@ -897,7 +899,7 @@ _live.taps = _tap.register({
     },
 
     process: function(data) {
-        if (_vars.feed.type == 'conversation')
+        if (_vars.feed.type == 'conversation' || data.private != _vars.feed.inside)
             return;
 
         this.pushed.combine([data]);
