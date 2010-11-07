@@ -10,11 +10,20 @@
             
             <h3 class="username">
                 <? if(!$c['reciever_id']): ?>
-                <img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
+                    <? if (!$c['anonymous']): ?>
+                        <img src="<?=USER_PIC_REL.'small_'.$c['sender']['id'].'.jpg'?>" alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>" width="16" />
+                    <? else: ?>
+                        <img src="/static/images/user.gif"/>
+                    <? endif; ?>
                 <? else: ?>
                 <img src="/static/images/envelope.png" />
                 <? endif; ?>
-                <?=$c['sender']['uname']?>
+
+                <? if (!$c['anonymous']): ?>
+                    <?=$c['sender']['uname']?>
+                <? else: ?>
+                    anonymous
+                <? endif; ?>
             </h3>
             <? if ($c['group_id']): ?>
                 <a href="/circle/<?=$c['group']['symbol']?>" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['group']['name']?>">
