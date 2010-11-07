@@ -342,13 +342,13 @@ class TapsList extends Collection {
 
         $limit = 'LIMIT '.($page*5).', 5';
         $query = "
-            (SELECT e.type, m.id, m.sender_id, m.text, m.time, m.group_id, m.reciever_id, m.media_id, m.modification_time, m.private, e.new_replies, u.id, u.uname, u.fname, u.lname, g2.id, g2.symbol, g2.name
+            (SELECT e.type, m.id, m.anonymous, m.sender_id, m.text, m.time, m.group_id, m.reciever_id, m.media_id, m.modification_time, m.private, e.new_replies, u.id, u.uname, u.fname, u.lname, g2.id, g2.symbol, g2.name
                FROM message m 
                LEFT JOIN `group` g2 ON g2.id = m.group_id 
               INNER JOIN user u ON u.id = m.sender_id
               INNER JOIN events e ON m.id = e.related_id AND e.type IN (0, 1) AND e.user_id = #uid#)
             UNION ALL
-            (SELECT e.type, null, u.id AS sender_id, null, null, null, null, null, f.time AS modifiction_time, null, null, u.id, u.uname, u.fname, u.lname, null, null, null
+            (SELECT e.type, null, null, u.id AS sender_id, null, null, null, null, null, f.time AS modifiction_time, null, null, u.id, u.uname, u.fname, u.lname, null, null, null
                FROM events e
               INNER JOIN friends f ON f.friend_id = e.user_id AND f.user_id = e.related_id
               INNER JOIN user u ON u.id = f.user_id

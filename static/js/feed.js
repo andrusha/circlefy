@@ -981,8 +981,13 @@ _live.notifications = _tap.register({
 
         var sender = data.sender;
 
+        if (!data.anonymous)
+            var ulink = '<a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname +'</a>';
+        else
+            var ulink = 'anonymous';
+
         if (data.group && data.group.id) {
-            _notifications.alert('New tap:<br><a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname +'</a>',
+            _notifications.alert('New tap:<br>' + ulink,
                 '"' + data.text + '"',
                 {user: sender.id, group: data.group.id});
 
@@ -990,7 +995,7 @@ _live.notifications = _tap.register({
                 document.location.href = 'http://'+document.domain+'/circle/'+data.group.symbol;
             });
         } else if (data.reciever && data.reciever.id) {
-            _notifications.alert('New PM:<br><a href="/user/'+sender.uname+'">' + sender.fname + ' ' + sender.lname + '</a>',
+            _notifications.alert('New PM:<br>' + ulink,
                 '"' + data.text + '"',
                 {userd: sender.id});
 
