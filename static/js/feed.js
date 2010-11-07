@@ -939,7 +939,7 @@ _live.notifications = _tap.register({
         this.subscribe({
             'push.data.response.new': this.newConvoResponse.bind(this),
             'push.data.tap.new': this.newTap.bind(this),
-            'push.data.notify.follower': this.newFollower.bind(this),
+            'push.data.user.follow': this.newFollower.bind(this),
         });
     },
 

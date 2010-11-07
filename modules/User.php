@@ -177,6 +177,10 @@ class User extends BaseModel {
                   UPDATE accept = VALUES(accept)";
         $this->db->listInsert($query, $values);
 
+        foreach ($values as $v)
+            Comet::send('user.follow', array('who' => $this->id, 'whom' => $v[1], 'status' => 1, 'user' =>
+                $this->asArray()));
+
         return $this;
     }
 
@@ -190,6 +194,8 @@ class User extends BaseModel {
                      AND user_id = #you#
                    LIMIT 1";
         $result = $this->db->query($query, array('you' => $this->id, 'friend' => $friend->id))->affected_rows == 1;
+        Comet::send('user.follow', array('who' => $this->id, 'whom' => $friend->id, 'status' => 0, 'user' =>
+            $this->asArray()));
         return $result;
     }
     
@@ -283,5 +289,10 @@ class User extends BaseModel {
         }
 
         $this->db->commit();
+    }
+    
+    public function deleteEvent(User $u) {
+        $query = 'DELETE FROM events WHERE user_id = #uid# AND type = 2 AND related_id = #fid#';
+        $this->db->query($query, array('uid' => $u->id, 'fid' => $this->id));
     }
 };

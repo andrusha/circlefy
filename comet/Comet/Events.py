@@ -54,6 +54,11 @@ class EventDispatcher(object):
             self.on_convo_follow(mid, uid, status)
         elif action == 'response.typing':
             self.user_server.send_to(action, data, convo = int(data['cid']))
+        elif action == 'user.follow':
+            uid, fid, status = map(int, [data['who'], data['whom'], data['status']])
+            unrecieved = self.user_server.send_to(action, data, users = set([fid]))
+            if unrecieved or not status:
+                self.on_user_follow(uid, fid, status)
         else:
             logging.warning('Unknow event! %s: %s' (action, data))
 
@@ -114,15 +119,25 @@ class EventDispatcher(object):
 
     def on_unrecieved_message(self, message, users):
         "Adds message to events queue for each user"
-        joined = (', %i, 1),(' % message).join(map(str, users))
-        sql = 'INSERT IGNORE INTO events (user_id, message_id, is_new) VALUES (%s, %i, 1)' % (joined, message)
+        joined = (', 0, %i),(' % message).join(map(str, users))
+        sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%s, 1, %i, 1)' % (joined, message)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 
     def on_unrecieved_response(self, message, users):
         "Insert new reply event or update every event to +1"
-        joined = (', %i, 1),(' % message).join(map(str, users))
-        sql = 'INSERT INTO events (user_id, message_id, new_replies) VALUES (%s, %i, 1)' % (joined, message) + \
+        joined = (', 1, %i, 1),(' % message).join(map(str, users))
+        sql = 'INSERT INTO events (user_id, type, related_id, new_replies) VALUES (%s, 1, %i, 1)' % (joined, message) + \
               'ON DUPLICATE KEY UPDATE new_replies = new_replies + 1'
+        self.mysql.cursor().execute(sql)
+        self.mysql.commit()
+
+    def on_user_follow(self, user, friend, status):
+        "Updates events on user following/unfollowing"
+        sql = ''
+        if status:
+            sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%i, 2, %i)' % (friend, user)
+        else:
+            sql = 'DELETE FROM events WHERE user_id = %i AND type = 2 AND related_id = %i' % (friend, user)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()

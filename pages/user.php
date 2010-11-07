@@ -8,6 +8,7 @@ class page_user extends Base {
 
         $user = User::init($uname);
         $user->stats = $user->getStats();
+        $user->deleteEvent($this->user);
 
         $this->set($user->asArray(), 'user');
 

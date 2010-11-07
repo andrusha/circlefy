@@ -18,9 +18,7 @@ class ajax_events extends Base {
 
             case 'fetch':
                 $page = intval($_POST['page']);
-                $items = TapsList::search('events', array('uid' => $this->user->id, 'row_count' => 5,
-                                          'start_from' => $page*5), T_USER_INFO | T_GROUP_INFO | T_LIMIT)
-                                 ->format()->asArrayAll();
+                $items = TapsList::fetchEvents($this->user, $page)->format()->asArrayAll();
                 $this->data = array('success' => 1, 'events' => array_values($items));
                 break;
         }

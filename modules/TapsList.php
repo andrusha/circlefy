@@ -57,8 +57,7 @@ class TapsList extends Collection {
             'convo'     => 'INNER JOIN conversations c  ON m.id        = c.message_id',
             'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id',
             'media'     => 'LEFT  JOIN media         md ON md.id       = m.media_id',
-            'events'    => 'INNER JOIN events        e  ON m.id        = e.message_id AND e.user_id = #uid#',
-            'events_l'  => 'LEFT  JOIN events        e  ON m.id        = e.message_id AND e.user_id = #uid#'
+            'events_l'  => 'LEFT  JOIN events        e  ON m.id        = e.related_id AND e.user_id = #uid# AND e.type IN (0, 1)'
         );
 
         $distinct = false;
@@ -127,12 +126,6 @@ class TapsList extends Collection {
 
             case 'byId':
                 $where[] = 'm.id = #id#';
-                break;
-
-            case 'events':
-                $join[]   = 'events';
-                $fields[] = 'e.is_new';
-                $fields[] = 'e.new_replies';
                 break;
         }
 
@@ -343,4 +336,41 @@ class TapsList extends Collection {
         $query = "DELETE FROM events WHERE user_id = #uid#";
         $db->query($query, array('uid' => $u->id));
     }
+
+    public static function fetchEvents(User $u, $page = 0) {
+        $db = DB::getInstance();
+
+        $limit = 'LIMIT '.($page*5).', 5';
+        $query = "
+            (SELECT e.type, m.id, m.sender_id, m.text, m.time, m.group_id, m.reciever_id, m.media_id, m.modification_time, m.private, e.new_replies, u.id, u.uname, u.fname, u.lname, g2.id, g2.symbol, g2.name
+               FROM message m 
+               LEFT JOIN `group` g2 ON g2.id = m.group_id 
+              INNER JOIN user u ON u.id = m.sender_id
+              INNER JOIN events e ON m.id = e.related_id AND e.type IN (0, 1) AND e.user_id = #uid#)
+            UNION ALL
+            (SELECT e.type, null, u.id AS sender_id, null, null, null, null, null, f.time AS modifiction_time, null, null, u.id, u.uname, u.fname, u.lname, null, null, null
+               FROM events e
+              INNER JOIN friends f ON f.friend_id = e.user_id AND f.user_id = e.related_id
+              INNER JOIN user u ON u.id = f.user_id
+              WHERE e.type = 2 AND e.user_id = #uid#)
+            ORDER BY modification_time DESC
+            {$limit}";
+        $events = array();
+        $res = $db->query($query, array('uid' => $u->id));
+
+        // !!! this shit doesn't work with unions anyway, so there is a _plain_ column array
+        foreach (DB::getSeparator($res, array('g2', 'u'), md5($query)) as $line) {
+            $tap = $line['rest'];
+            $line['g2'] = array_intersect_key($line['rest'], array_flip(array('group_id', 'name', 'symbol')));
+            $line['g2']['id'] = $line['g2']['group_id'];
+            $line['u'] = array_intersect_key($line['rest'], array_flip(array('user_id', 'uname', 'fname', 'lname')));
+            $line['u']['id'] = $line['u']['user_id'];
+
+            $tap['group'] = new Group($line['g2']);
+            $tap['sender'] = new User($line['u']);
+            $events[ intval($tap['id']) ] = new Tap($tap);
+        }
+
+        return new TapsList($events);
+    } 
 };
