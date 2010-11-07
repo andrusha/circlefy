@@ -12,6 +12,7 @@ class ajax_new extends Base {
         $msg  = strip_tags($_POST['msg']);
         $media = (!empty($_POST['media']['mediatype'])?$_POST['media']:null);
         $private = intval($_POST['private']);
+        $anon = intval($_POST['anon']);
         
         if (Tap::checkDuplicate($this->user, $msg))
             return $this->data = array('dupe' => true);
@@ -19,12 +20,12 @@ class ajax_new extends Base {
         switch ($type) {
             case 'group':
                 $group = new Group($id);
-                $tap = Tap::toGroup($group, $this->user, $msg, $media, $private);
+                $tap = Tap::toGroup($group, $this->user, $msg, $media, $private, $anon);
                 break;
 
             case 'friend':
                 $user = new User($id);
-                $tap = Tap::toUser($this->user, $user, $msg, $media);
+                $tap = Tap::toUser($this->user, $user, $msg, $media, $anon);
                 break;
         }
 

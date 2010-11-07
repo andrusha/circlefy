@@ -90,9 +90,21 @@
              data-id="<#: msg.id  #>"
              data-gid="<#: msg.group_id  #>">
         
-            <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" data-tiptitle="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" data-tipid="msg-<#: msg.id #>" />
+            <# if (!msg.anonymous): #>
+                <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" data-tiptitle="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" data-tipid="msg-<#: msg.id #>" />
+            <# else: #>
+                <img src="/static/images/user.gif" class="avatar-author" data-tiptitle="anon" data-tipid="author-anon" />
+            <# endif; #>
+
             <div class="text">
-                <h3 class="author"><a href="/user/<#: msg.sender.uname  #>"><#: msg.sender.uname  #></a> <small>, <#: msg.sender.fname  #> <#: msg.sender.lname  #></small></h3>
+                <h3 class="author">
+                    <# if (!msg.anonymous): #>
+                        <a href="/user/<#: msg.sender.uname  #>"><#: msg.sender.uname  #></a> 
+                        <small>, <#: msg.sender.fname  #> <#: msg.sender.lname  #></small>
+                    <# else: #>
+                        anonymous
+                    <# endif; #>
+                </h3>
                 <div class="message">
                     <a href="/convo/<#: msg.id  #>"><#: msg.text  #></a>
                     <# if (msg.media && msg.media.id): #>

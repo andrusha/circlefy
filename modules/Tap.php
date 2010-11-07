@@ -7,7 +7,8 @@
 class Tap extends BaseModel {
 
     public static $fields = array('id', 'sender_id', 'text', 'time', 
-        'group_id', 'reciever_id', 'media_id', 'modification_time', 'private');
+        'group_id', 'reciever_id', 'media_id', 'modification_time', 
+        'private', 'anonymous');
 
     public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
@@ -61,7 +62,8 @@ class Tap extends BaseModel {
 
         @return int
     */
-    private static function add(User $from, $text, $media = null, Group $g = null, User $to = null, $private = 0) {
+    private static function add(User $from, $text, $media = null, Group $g = null, User $to = null, $private = 0,
+        $anonymous = 0) {
         $db = DB::getInstance();
 
         if ($media) {
@@ -83,7 +85,8 @@ class Tap extends BaseModel {
                   'group_id' => $g ? $g->id : null,
                   'reciever_id' => $to ? $to->id : null,
                   'modification_time' => 'CURRENT_TIMESTAMP',
-                  'private' => $private));
+                  'private' => $private,
+                  'anonymous' => $anonymous));
 
         Comet::send('tap.new', Tap::byId($id)->format()->asArray());
 
@@ -93,16 +96,16 @@ class Tap extends BaseModel {
     /*
         @return Tap
     */
-    public static function toGroup(Group $group, User $user, $text, $media, $private = 0) {
-        return Tap::byId(Tap::add($user, $text, $media, $group, null, $private),
+    public static function toGroup(Group $group, User $user, $text, $media, $private = 0, $anon = 0) {
+        return Tap::byId(Tap::add($user, $text, $media, $group, null, $private, $anon),
                          true, false, true, (!empty($media) ? true : false));
     }
 
     /*
         @return Tap
     */
-    public static function toUser(User $from, User $to, $text, $media) {
-        return Tap::byId(Tap::add($from, $text, $media, null, $to), 
+    public static function toUser(User $from, User $to, $text, $media, $anon = 0) {
+        return Tap::byId(Tap::add($from, $text, $media, null, $to, 0, $anon), 
                          true, true, true, (!empty($media) ? true : false));
     }
 

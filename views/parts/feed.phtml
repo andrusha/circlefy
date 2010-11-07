@@ -68,10 +68,24 @@ if ($_f['show_reply']){
          id="global-<?=$f['id']?>"
          data-id="<?=$f['id']?>"
          data-gid="<?=$f['group_id']?>">
-    
-        <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipid="author-<?=$f['id']?>" />
+   
+        <? if (!$f['anonymous']): ?>
+            <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipid="author-<?=$f['id']?>" />
+        <? else: ?>
+            <img src="/static/images/user.gif" class="avatar-author" data-tiptitle="anon" data-tipid="author-anon" />
+        <? endif; ?>
+
         <div class="text">
-            <h3 class="author"><a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small></h3>
+            <h3 class="author">
+
+            <? if (!$f['anonymous']): ?>
+                <a href="/user/<?=$f['sender']['uname']?>"><?=$f['sender']['uname']?></a> 
+                <small>, <?=$f['sender']['fname']?> <?=$f['sender']['lname']?></small>
+            <? else: ?>
+                anonymous
+            <? endif; ?>
+
+            </h3>
             <div class="message">
                 <a href="/convo/<?=$f['id']?>"><?=$f['text']?></a>
                 <? if (!empty($f['media']['id'])): ?>

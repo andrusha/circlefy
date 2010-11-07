@@ -629,12 +629,14 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.tapbox.value.isEmpty())
             return this.tapbox.focus();
-        var private = _vars.feed.inside || 0;
+        var private = _vars.feed.inside || 0,
+            anon = _vars.feed.anon || 0;
         var data = {
             msg: this.tapbox.value,
             type: this.sendType,
             id: this.sendTo,
-            private: private
+            private: private,
+            anon: anon
         }
         if (this.tapbox.getData('mediatype') && this.tapbox.getData('mediatype').length) {
             var media = {
@@ -780,9 +782,26 @@ _controls = _tap.register({
     }
 });
 
-/*
-666 commit GET!
+_anon = _tap.register({
+    init: function() {
+        var anon = this.anon = $$('a.anonym')[0];
+        if (!anon)
+            return;
+    
+        this.img = anon.getSiblings('img.avatar');
 
+        anon.addEvent('click', this.toggle.toHandler(this));
+    },
+
+    toggle: function(el, e) {
+        e.stop();
+        this.img.toggleClass('avatar').toggleClass('anonym');
+        this.anon.toggleClass('anonym').toggleClass('avatar');
+        _vars.feed.anon = !!_vars.feed.anon ? 0 : 1;
+    }
+});
+
+/*
 module: _live.stream
 	controls the automatic tap streaming
 
