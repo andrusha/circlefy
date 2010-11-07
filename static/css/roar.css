@@ -115,7 +115,6 @@
 	right:5px;
 	width:234px;
 	height:auto;
-	background:#346394;
 	border:1px solid #0c1e31;
 	z-index:11;
 }
@@ -123,18 +122,19 @@
 #notifications .toggle {
 	display:block;
 	padding:3px 5px;
-	width:218px;
+	width:224px;
 	color:#fff;
 	text-shadow:1px 1px #000101;
 	font-weight:bold;
 	text-decoration:none;
-	background:url(../images/notifications_arrow.gif) no-repeat right center;
+	background:url(../images/notifications_arrow.gif) no-repeat right center #346394;
 }
 #notifications .controls {
 	display:block;
 	width:228px;
 	height:22px;
 	padding:3px;
+    background-color:#346394;
 }
 #notifications .controls .paginate {
 	width:84px;
@@ -180,4 +180,52 @@
 	color:					#fff;
 	text-align:				left;
 	text-shadow:	    	1px 1px #000;
+}
+#notifications .events .event {
+    background-color: rgba(52,99,148,0.3);
+    width: 100%;
+    height: 80px;
+}
+#notifications .events .avatar {
+    clear:both;
+    float:left;
+    display:block;
+    margin-left:10px;
+    margin-top:15px;
+    position:absolute;
+    height:15px;
+    width:15px;
+}
+#notifications .events .group_icon {
+    clear: both;
+    float:right;
+    margin-top: 15px;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+}
+#notifications .events h3 {
+	padding:	13px 50px 0;
+	margin:		0;
+	border:		0;
+	font-size:	11px;
+	color:		#ccc;
+}
+#notifications .events p {
+	padding:				10px 10px 15px;
+	margin:					0;
+	font-size:				12px;
+	color:					#fff;
+}
+#notifications .events a {
+	color:white;
+	text-decoration:none;
+}
+#notifications .events a:hover {
+	text-decoration:underline;
+}
+
+#notifications .events h3 a {
+    font-weight: bold;
+    font-size:  14px;
 }
