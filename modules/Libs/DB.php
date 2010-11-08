@@ -44,10 +44,22 @@ class DB {
 
         $firephp = FirePHP::getInstance(true);
         $firephp->group('SQL', array('Collapsed' => true));
+        $total = 0;
         foreach ($this->queries as $q) {
             list($q, $t) = $q;
             $firephp->log($q, $t);
+
+            $explain = array();
+            $explain[] = array('id', 'select_type', 'table', 'type', 'possible_keys',
+                             'key', 'key_len', 'ref', 'rows', 'extra');
+            $result = $this->db->query('EXPLAIN '.$q);
+            while ($row = $result->fetch_row())
+                $explain[] = $row;
+            $firephp->table('Explain', $explain);
+
+            $total += $t;
         }
+        $firephp->log($total, 'Total');
         $firephp->groupEnd();
         $this->queries = array();
 
