@@ -161,6 +161,7 @@ border-top-right-radius: 0px;
 	color:#545454;
 	font-family:Helvetica, Arial, sans-serif;
 	padding:8px 30px 8px 8px;
+	outline:none; /* remove webkit glow */
 }
 #header #access {
 	display:block;
@@ -318,6 +319,7 @@ border-top-right-radius: 0px;
 	font-size:12px;
 	color:#545454;
 	margin:0 3px 0 0;
+	outline:none; /* remove webkit glow */
 }
 #reply input[type=submit] {
 	width:76px;
@@ -505,6 +507,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 .conversation .reply-item .thumb img {
 	width:25px;
 	height:25px;
+	border: 0;
 }
 .feed-item.last {
 	border-bottom:none;
@@ -892,6 +895,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	font-family:Helvetica, Arial, sans-serif;
 	padding:5px 30px 5px 10px;
 	margin:15px 0;
+	outline:none; /* remove webkit glow */
 }
 #sidebar .box {
 	padding:15px 0;
@@ -1722,6 +1726,7 @@ padding:0;
 	line-height:18px;
 	padding:5px;
 	float:left;
+	outline:none; /* remove webkit glow */
 }
 .replies .field input[type=submit] {
 	width:50px;

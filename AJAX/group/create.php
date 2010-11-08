@@ -36,9 +36,15 @@ class ajax_create extends Base {
         );
         
         // create symlinks to default images
-        symlink(GROUP_PIC_PATH.'/small_group.png', GROUP_PIC_PATH . '/small_'. $group->id .'.jpg');
-        symlink(GROUP_PIC_PATH.'/medium_group.png', GROUP_PIC_PATH . '/medium_'. $group->id .'.jpg');
-        symlink(GROUP_PIC_PATH.'/large_group.png', GROUP_PIC_PATH . '/large_'. $group->id .'.jpg');
+        $small_img  = GROUP_PIC_PATH . '/small_'. $group->id .'.jpg';
+        $medium_img = GROUP_PIC_PATH . '/medium_'. $group->id .'.jpg';
+        $large_img  = GROUP_PIC_PATH . '/large_'. $group->id .'.jpg';
+        @unlink($small_img);
+        @unlink($medium_img);
+        @unlink($large_img);
+        symlink(GROUP_PIC_PATH.'/small_group.png', $small_img);
+        symlink(GROUP_PIC_PATH.'/medium_group.png', $medium_img);
+        symlink(GROUP_PIC_PATH.'/large_group.png', $large_img);
         
         return array('success' => 1, 'group' => $group->asArray(false));
     }
