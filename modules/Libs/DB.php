@@ -51,7 +51,7 @@ class DB {
 
             $total += $t;
 
-            if (stripos($q, 'delete') !== false || stripos($q, 'update') !== false)
+            if (stripos($q, 'delete') !== false || stripos($q, 'update') !== false || stripos($q, 'insert') !== false)
                 continue;
 
             $explain = array();
