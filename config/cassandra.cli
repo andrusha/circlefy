@@ -2,5 +2,4 @@ create keyspace circlefy
 use circlefy
 
 create column family group_members with comparator=LongType and default_validation_class=LongType and comment = 'gid = {uid:uid}'
-create column family inverted_members with comparator=LongType and default_validation_class=LongType and comment = 'uid = {gid:gid}'
 create column family convo_followers with comparator=LongType and default_validation_class=LongType and comment = 'mid = {uid:uid}'

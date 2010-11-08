@@ -21,7 +21,15 @@
         foreach ($_h['scripts'] as $s)
             echo "<script type='text/javascript' src='/static/js/$s'></script>\n";
 ?>
-
+<? if ($guest):?>
+<script type='text/javascript'>
+_tap.register({
+    init: function() {
+        this.publish('modal.show.sign-login', []);
+    }
+});
+</script>
+<? endif; ?>
 <!-- START GLOBAL JS SCRIPTS -->
 <script type="text/javascript" src="/static/js/follow.js"></script>
 <!-- END GLOBAL JS SCRIPTS -->

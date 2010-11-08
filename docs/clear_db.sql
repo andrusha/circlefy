@@ -12,3 +12,5 @@ TRUNCATE TABLE notification_settings;
 TRUNCATE TABLE friends;
 TRUNCATE TABLE user;
 
+TRUNCATE TABLE events;
+TRUNCATE TABLE media;

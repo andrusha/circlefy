@@ -64,13 +64,12 @@ class EventDispatcher(object):
 
     def on_new_message(self, action, message):
         "New message handler"
-        sender, group = map(int, [message['sender_id'], message['group_id']])
+        sender, group, private = map(int, [message['sender_id'], message['group_id'], message['private']])
 
         personal = message['reciever_id'] is not None 
         if personal:
            return {'users': set([sender, int(message['reciever_id'])])}
 
-        private = self.is_member(sender, group)
         recievers = {'users': self.group_users(group)}
         if not private:
             recievers['group'] = group
@@ -78,9 +77,6 @@ class EventDispatcher(object):
         unrecieved = self.user_server.send_to(action, message, **recievers)
         if unrecieved:
             self.on_unrecieved_message(int(message['id']), unrecieved)
-
-    def is_member(self, user, group):
-        return self.cassandra.get('inverted_members', user, columns = [group]) is not None
 
     def group_users(self, group):
         return set(self.cassandra.get('group_members', group))
@@ -120,7 +116,7 @@ class EventDispatcher(object):
     def on_unrecieved_message(self, message, users):
         "Adds message to events queue for each user"
         joined = (', 0, %i),(' % message).join(map(str, users))
-        sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%s, 1, %i, 1)' % (joined, message)
+        sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%s, 0, %i)' % (joined, message)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 

@@ -50,9 +50,6 @@ class Cassandra():
         self.initFromDB(mysql, 'SELECT group_id, user_id FROM group_members', 
             'group_members', 'group_id', 'user_id')
 
-        self.initFromDB(mysql, 'SELECT group_id, user_id FROM group_members', 
-            'inverted_members', 'user_id', 'group_id')
-
         self.initFromDB(mysql, 'SELECT message_id, user_id FROM conversations',
             'convo_followers',  'message_id', 'user_id')
 
