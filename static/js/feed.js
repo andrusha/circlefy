@@ -666,8 +666,16 @@ var _tapbox = _tap.register({
     parseSent: function(response) {
         var resp = JSON.decode(response);
         if (resp.success) {
-            //yay
+            this.publish('feed.change');
+            
+            // reset tapbox
             this.tapbox.value = '';
+            this.tapbox.setData('mediatype', '');
+            this.tapbox.setData('link', '');
+            this.tapbox.setData('code', '');
+            this.tapbox.setData('title', '');
+            this.tapbox.setData('description', '');
+            this.tapbox.setData('thumbnail_url', '');
             this.tapbox.getParent('form#reply').getElement('div.media-preview').addClass("hidden");
         }
     }

@@ -39,7 +39,7 @@
     <!--
         <# for (var repl from this): #>
         <div id="conversation-<#: repl.id #>" class="reply-item">
-            <div class="thumb"><img src="<?=USER_PIC_REL?>medium_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" width="25" /></div>
+            <div class="thumb"><a href="/user/<#: repl.user.uname #>"><img src="<?=USER_PIC_REL?>medium_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" width="25" /></a></div>
             <span class="text">
                 <h3 class="username">
                     <a href="/user/<#: repl.user.uname #>"><#: repl.user.uname #></a>:
