@@ -49,6 +49,11 @@ class DB {
             list($q, $t) = $q;
             $firephp->log($q, $t);
 
+            $total += $t;
+
+            if (stripos($q, 'delete') !== false || stripos($q, 'update') !== false)
+                continue;
+
             $explain = array();
             $explain[] = array('id', 'select_type', 'table', 'type', 'possible_keys',
                              'key', 'key_len', 'ref', 'rows', 'extra');
@@ -56,8 +61,6 @@ class DB {
             while ($row = $result->fetch_row())
                 $explain[] = $row;
             $firephp->table('Explain', $explain);
-
-            $total += $t;
         }
         $firephp->log($total, 'Total');
         $firephp->groupEnd();
