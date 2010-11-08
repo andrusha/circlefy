@@ -37,15 +37,25 @@
             <div class="sep"></div>
             <p class="forms" id="fb-button">
                 <label for="fb-login-button" style="padding-right: 28px">Facebook</label>
-                <fb:login-button 
-                    id="fb-login-button"
-                    show-faces="true"
-                    width="300"
-                    perms="<?=FBPERMISSIONS?>"
-                    class="validate-facebook"
-                    name="facebook"
-                    data-tipid="tip-signup-facebook"
-                ></fb:login-button>
+                <span id="fb-signup-faces">
+                    <fb:login-button 
+                        show-faces="true"
+                        width="300"
+                        perms="<?=FBPERMISSIONS?>"
+                        class="fb-login-button validate-facebook"
+                        name="facebook"
+                        data-tipid="tip-signup-facebook"
+                    ></fb:login-button>
+                </span>
+                <span id="fb-signup-no-faces">
+                    <fb:login-button 
+                        width="300"
+                        perms="<?=FBPERMISSIONS?>"
+                        class="fb-login-button validate-facebook"
+                        name="facebook"
+                        data-tipid="tip-signup-facebook"
+                    ></fb:login-button>
+                </span>
             </p>
 
             <p class="modal-actions">
@@ -76,7 +86,8 @@
                                     <p class="forms">
                                         <label for="facebook" class="smaller">Login with Facebook</label>
                                         <input name="facebook" type="checkbox">
-                                        <span class="fb"><fb:login-button show-faces="true" width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
+                                        <span class="fb" id="fb-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>" show-faces="true"></fb:login-button></span>
+                                        <span class="fb hidden" id="fb-no-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
                                     </p>
                                     <span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
                     </form>

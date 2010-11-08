@@ -140,14 +140,14 @@ _modal.signup = _tap.register({
     init: function() {
         var form   = this.form   = $('signup-form'),
             fields = this.fields = {},
-            inputs = form.getElements('input:not([type="submit"]), #fb-login-button');
+            inputs = form.getElements('input:not([type="submit"]), .fb-login-button');
 
        inputs.each( function (el) {
            fields[el.name] = el;
        });
 
        form.validator = new Form.Validator(form, {
-            fieldSelectors: 'input,#fb-login-button',
+            fieldSelectors: 'input,.fb-login-button',
             onFormValidate: this.submitForm.bind(this)
        });
 
@@ -348,12 +348,16 @@ _modal.login = _tap.register({
                 this.form.fb.checked = true;
                 this.fbToggle();
                 this.form.fb.getParent().removeClass('hidden');
+                $$('#fb-faces,#fb-signup-faces').removeClass('hidden');
+                $$('#fb-no-faces,#fb-signup-no-faces').addClass('hidden');
             }.bind(this), 
             'facebook.logged_out': function () {
                 this.facebook = false;
                 this.form.fb.checked = false;
                 this.fbToggle();
-                this.form.fb.getParent().addClass('hidden');
+                //this.form.fb.getParent().addClass('hidden');
+                $$('#fb-faces,#fb-signup-faces').addClass('hidden');
+                $$('#fb-no-faces,#fb-signup-no-faces').removeClass('hidden');
             }.bind(this)
         });
 
