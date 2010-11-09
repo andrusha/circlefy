@@ -1096,6 +1096,7 @@ margin:15px 0;
 	float:left;
 	margin:0 5px 13px;
 }
+.user-thumb { float:right !important;}
 .circle-thumb img {
 	border:none;
 	position:relative;
