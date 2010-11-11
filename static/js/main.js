@@ -169,6 +169,11 @@ var _startup = _tap.register({
             template: 'title-desc-tooltip',
             position: 'centerBottom'
         });
+        new CirTooltip({
+            hovered: $$('#reply .anonym img'),
+            template: 'name-tooltip',
+            position: 'centerTop'
+        });
         
         // Links detector
         new MediaEmbed({
