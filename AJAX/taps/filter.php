@@ -12,6 +12,7 @@ class ajax_filter extends Base {
         $search  = $_POST['search'];
         $more    = intval($_POST['more']);
         $inside  = intval($_POST['inside']);
+        $anon    = intval($_POST['anon']);
 
         if (!in_array($type, array('public', 'feed', 'aggr_groups', 'aggr_friends', 'aggr_convos', 'group', 'friend', 'private'))) {
             $this->data = array('success' => false, 'data' => array());
@@ -25,6 +26,9 @@ class ajax_filter extends Base {
         elseif ($inside == 0)
             $options |= T_OUTSIDE;
 
+        if ($anon)
+            $options |= T_ANON;
+
         if (in_array($type, array('feed', 'aggr_groups', 'aggr_friends', 'aggr_convos'))) {
             $params['uid'] = $this->user->id;
             $options |= T_NEW_REPLIES;
@@ -36,6 +40,9 @@ class ajax_filter extends Base {
         elseif ($type == 'private') {
             $params['from'] = $id;
             $params['to'] = $this->user->id;
+        } elseif ($type == 'public') {
+            $options &= ~T_INSIDE;
+            $options |= T_OUTSIDE;
         }
 
         if (in_array($type, array('feed', 'aggr_friends', 'aggr_convos', 'private')))

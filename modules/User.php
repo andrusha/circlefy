@@ -217,7 +217,7 @@ class User extends BaseModel {
         TODO: Auth
     */
     public function join(Group $group) {
-         $perm = Group::$permissions['user'];
+        $perm = Group::$permissions['user'];
         $group = Group::byId($group->id);
         
         // Group is moderated
@@ -241,8 +241,7 @@ class User extends BaseModel {
                 VALUES (#gid#, #uid#, #perm#)";
         }
         $result = $this->db->query($query, array('gid' => $group->id, 'uid' => $this->id, 'perm' => $perm))->affected_rows == 1;
-        if ($result)
-            Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 1));
+        Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $this->id, 'status' => 1));
         return $result;
     }
 
@@ -294,5 +293,10 @@ class User extends BaseModel {
     public function deleteEvent(User $u) {
         $query = 'DELETE FROM events WHERE user_id = #uid# AND type = 2 AND related_id = #fid#';
         $this->db->query($query, array('uid' => $u->id, 'fid' => $this->id));
+    }
+
+    public function firstTap(Group $g) {
+        $query = 'SELECT id FROM message WHERE sender_id = #uid# AND group_id = #gid# LIMIT 1';
+        return $this->db->query($query, array('uid' => $this->id, 'gid' => $g->id))->num_rows == 1;
     }
 };

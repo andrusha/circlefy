@@ -106,3 +106,4 @@ define("T_MEDIA",      1 << 5);
 define("T_INSIDE",     1 << 6);
 define("T_OUTSIDE",    1 << 7);
 define("T_NEW_REPLIES",1 << 8);
+define("T_ANON",       1 << 9);

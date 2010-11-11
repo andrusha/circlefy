@@ -38,5 +38,8 @@ class page_user extends Base {
         $this->set(
             $this->user->following($user),
             'state');
+
+        if (!$this->user->guest)
+            $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
 	}
 };

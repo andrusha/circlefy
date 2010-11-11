@@ -1,7 +1,7 @@
 <?php
     $_h = array(
         'title'   => $convo['sender']['fname'].' '.$convo['sender']['lname']."'s conversation".(!empty($convo['group']) ? ' in '.$convo['group']['name'].' circle' : ''),
-        'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'feed.js', 'Swiff.Uploader.js', 'user_edit.js', 'group_create.js'),
+        'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'feed.js', 'Swiff.Uploader.js', 'user_edit.js', 'group_create.js', 'notification.js'),
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,

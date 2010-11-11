@@ -13,16 +13,17 @@ var _follow = _tap.register({
             self  = this;
                 
 
-        new Request({
+        new Request.JSON({
             url: '/AJAX/follow',
-            data: data,
-            onSuccess: function(){
-                var response = JSON.decode(this.response.text);
+            onSuccess: function(response){
                 if (response.success) {
                     if (auth == 'manual') 
                         el.set({'def': 'Join Circle', 'alt': 'Waiting Approval'});
                     el.setData('followed', data.state);
                     el.toggleClass('active');
+                    var controls = $('controls');
+                    if (controls)
+                        controls.toggleClass('hidden');
                 } else {
                     if (!response.reason || response.reason != 'anon') {
                         if (auth == 'email') {
@@ -31,7 +32,7 @@ var _follow = _tap.register({
                     }
                 }
             }
-        }).send();
+        }).post(data);
     }
 });
 

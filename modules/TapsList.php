@@ -39,6 +39,7 @@ class TapsList extends Collection {
             T_INSIDE     - taps only from group members
             T_OUTSIDE    - taps only from not members of the group
             T_NEW_REPLIES- return unread replies count
+            T_ANON       - returns only anonymous messages
 
         @return TapsList
     */
@@ -66,12 +67,16 @@ class TapsList extends Collection {
 
         if ($options & T_INSIDE && $options & T_OUTSIDE)
             throw new LogicException('If you want to get inside & outside in the same time, just specify nothing');
+
+        if ($type == 'public' && $options & T_INSIDE)
+            throw new LogicException('You cant have public feed with private messages');
         
         switch ($type) {
             case 'public':
                 $join[]  = 'group';
                 $where[] = 'm.group_id IS NOT NULL';
                 $where[] = 'g.secret = 0';
+                $where[] = 'm.private = 0';
                 break;
 
             case 'feed':
@@ -167,6 +172,9 @@ class TapsList extends Collection {
             $where[] = 'm.private = 1';
         else if ($options & T_OUTSIDE)
             $where[] = 'm.private = 0';
+
+        if ($options & T_ANON)
+            $where[] = 'm.anonymous = 1';
     
         if (!isset($params['row_count']))
             $params['row_count'] = DEFAULT_ROW_COUNT;

@@ -79,7 +79,8 @@ class EventDispatcher(object):
             self.on_unrecieved_message(int(message['id']), unrecieved)
 
     def group_users(self, group):
-        return set(self.cassandra.get('group_members', group))
+        users = self.cassandra.get('group_members', group)
+        return set(users) if users else set()
 
     def on_new_response(self, action, response):
         mid, timestamp = map(int, [response['message_id'], response['timestamp']])
@@ -102,10 +103,8 @@ class EventDispatcher(object):
     def on_group_follow(self, group, user, status):
         if status:
             self.cassandra.insert('group_members', group, {user: user})
-            self.cassandra.insert('inverted_members', user, {group: group})
         else:
             self.cassandra.remove('group_members', group, columns=[user])
-            self.cassandra.remove('inverted_members', user, columns=[group])
 
     def on_convo_follow(self, message, user, status):
         if status:
@@ -117,6 +116,7 @@ class EventDispatcher(object):
         "Adds message to events queue for each user"
         joined = (', 0, %i),(' % message).join(map(str, users))
         sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%s, 0, %i)' % (joined, message)
+        print sql
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 
