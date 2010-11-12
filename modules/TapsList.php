@@ -70,7 +70,7 @@ class TapsList extends Collection {
 
         if ($type == 'public' && $options & T_INSIDE)
             throw new LogicException('You cant have public feed with private messages');
-        
+
         switch ($type) {
             case 'public':
                 $join[]  = 'group';
@@ -94,7 +94,9 @@ class TapsList extends Collection {
                 break;
 
             case 'group':
+                $join[]  = 'members';
                 $where[] = 'm.group_id = #gid#';
+                $fields[] = 'gm.context';
                 break;
 
             case 'aggr_friends':
@@ -142,7 +144,7 @@ class TapsList extends Collection {
             $join[] = 'user';
             $fields = array_merge($fields, FuncLib::addPrefix('u.', User::$fields));
         }
-
+        
         if ($options & T_USER_RECV) {
             $join[] = 'user_l';
             $fields = array_merge($fields, FuncLib::addPrefix('u2.', User::$fields));
@@ -207,8 +209,11 @@ class TapsList extends Collection {
             if (!empty($line['g']) || !empty($line['g2']))
                 $tap['group'] = new Group($line['g'] ?: $line['g2']);
 
-            if (!empty($line['u']))
+            if (!empty($line['u'])) {
                 $tap['sender'] = new User($line['u']);
+                // TODO: a better way to add context into sender info object
+                $tap['sender_context'] = $line['rest']['context'];
+            }
 
             if (!empty($line['u2']))
                 $tap['reciever'] = new User($line['u2']);

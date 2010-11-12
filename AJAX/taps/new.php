@@ -13,7 +13,7 @@ class ajax_new extends Base {
         $media = (!empty($_POST['media']['mediatype'])?$_POST['media']:null);
         $private = intval($_POST['private']);
         $anon = intval($_POST['anon']);
-        
+
         if (Tap::checkDuplicate($this->user, $msg))
             return $this->data = array('dupe' => true);
 

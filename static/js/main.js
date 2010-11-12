@@ -130,9 +130,14 @@ var _tooltips = _tap.register({
     init: function() {
         this.subscribe('feed.init; feed.changed', function() {
             new CirTooltip({
-               hovered: $$('#feed .avatar-author, #feed .circle'),
+               hovered: $$('#feed .circle'),
                template: 'name-tooltip',
                position: 'centerTop'
+            });
+            new CirTooltip({
+                hovered: $$('#feed .avatar-author'),
+                template: 'title-desc-tooltip',
+                position: 'centerTop'
             });
         }.bind(this));
         this.subscribe('groups.get', function() {

@@ -68,9 +68,9 @@ if ($_f['show_reply']){
          data-gid="<?=$f['group_id']?>">
    
         <? if (!$f['anonymous']): ?>
-            <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipid="author-<?=$f['id']?>" />
+            <img src="<?=USER_PIC_REL.'medium_'.$f['sender']['id'].'.jpg'?>" class="avatar-author" data-tiptitle="<?=$f['sender']['fname']?> <?=$f['sender']['lname']?>" data-tipcontent="<?=$f['sender_context']?>&nbsp;" data-tipid="author-<?=$f['id']?>" />
         <? else: ?>
-            <img src="/static/images/user.gif" class="avatar-author" data-tiptitle="anon" data-tipid="author-anon" />
+            <img src="/static/images/user.gif" class="avatar-author" data-tiptitle="anon" data-tipcontent="&nbsp;" data-tipid="author-anon" />
         <? endif; ?>
 
         <div class="text">
