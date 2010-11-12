@@ -36,6 +36,10 @@ var _modal = _tap.register({
                 self.show('modal-email-auth');
                 _modal.group_email_auth.show();
             },
+            'modal.show.first-tap': function(data) {
+                self.show('modal-first-tap');
+                _modal.first_tap.show(data);
+            },
             'modal.hide': this.hide.bind(this)
         });
 
@@ -511,6 +515,49 @@ _modal.group_email_auth = _tap.register({
                         
                     }
                     
+                }.bind(this)
+            }).post(data);
+            
+        });
+    }
+});
+
+
+/*
+    First Tap modal
+*/
+_modal.first_tap = _tap.register({
+    show: function (data) {
+        var self     = this,
+            form     = this.form = $('firsttapform');
+            form.ctx = $('circle-context'),
+            form.gid = $('first-tap-gid');
+        
+        form.validator = new Form.Validator(form, {
+             fieldSelectors: '#circle-context'
+        });
+        
+        // TODO: fix error tooltip
+        new CirTooltip({
+            hovered:  form.ctx,
+            template: 'error-tooltip',
+            position: 'centerTop',
+            sticky:   true
+        });
+        
+        form.removeEvents('submit');
+        form.addEvent('submit', function(e) {
+            e.stop();
+            data = {'gid': form.gid.get('value'), 'context': form.ctx.get('value')};
+            new Request.JSON({
+                url: '/AJAX/group/context',
+                onSuccess: function (response) {
+                    if (response.success) {
+                        _vars.feed.first_tap = 0;
+                        _modal.publish('modal.hide', [false]);
+
+                        _tapbox.form.fireEvent('submit', {'stop': $empty, 'preventDefault': $empty});
+                    }
                 }.bind(this)
             }).post(data);
             

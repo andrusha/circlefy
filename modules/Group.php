@@ -288,4 +288,18 @@ EOF;
         
         return $r;
     }
+
+    /*
+        Save user context in group
+    */
+    public function saveContext(User $user, $context) {
+        $query = "
+            UPDATE `group_members`
+               SET `context` = #ctx#
+             WHERE `group_id` = #gid#
+               AND `user_id` = #uid#";
+        $db = DB::getInstance();
+        $r = $db->query($query, array('ctx' => $context, 'gid' => $this->id, 'uid' => $user->id));
+        return $r;
+    }
 };

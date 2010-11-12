@@ -444,5 +444,28 @@
         </div>
     </div><!--modal-->
 
+<!-- First Tap -->
+    <div id="modal-first-tap" class="modal-window">
+        <h2>How are you related to this circle?</h2>
+        <form id="firsttapform" method="POST">
+            <input type="hidden" name="gid" value="<?=$circle['id']?>" id="first-tap-gid" />
+            <p class="forms" style="margin-top:30px;">  
+                <label class="inblock">Enter what's your relation with <?=$circle['name']?></label>
+                <input name="circle-context" 
+                       id="circle-context" 
+                       type="text" 
+                       maxlength="50"
+                       class="basic required"
+                       data-tipid="tip-context"
+                />
+                <div class="clear"></div>
+                <em>Example: Class of 2008, CS Major</em>
+            </p>
+            <span class="modal-actions"><button id="first-tap-button" type="submit">Post</button></span>
+        </form>
+        <span class="modal-actions">
+                <a class="modal-cancel" href="#">close</a>
+        </span>
+    </div>
 
 </div>

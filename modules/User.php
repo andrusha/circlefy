@@ -297,6 +297,6 @@ class User extends BaseModel {
 
     public function firstTap(Group $g) {
         $query = 'SELECT id FROM message WHERE sender_id = #uid# AND group_id = #gid# LIMIT 1';
-        return $this->db->query($query, array('uid' => $this->id, 'gid' => $g->id))->num_rows == 1;
+        return $this->db->query($query, array('uid' => $this->id, 'gid' => $g->id))->num_rows > 0;
     }
 };

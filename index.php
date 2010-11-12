@@ -55,7 +55,8 @@ $ajaxs = array(
                 'update'    => true,
                 'moderate'  => true,
                 'create'    => true,
-                'join'      => true
+                'join'      => true,
+                'context'   => true
         ),
         'taps' => array(
                'responses' => true,

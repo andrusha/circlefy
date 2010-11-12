@@ -652,11 +652,15 @@ var _tapbox = _tap.register({
             data.media = media;
         }
         
-        new Request({
-            url: '/AJAX/taps/new',
-            data: data,
-            onSuccess: this.parseSent.bind(this)
-        }).send();
+        if (_vars.feed.first_tap) {
+            this.publish('modal.show.first-tap', [data]);
+        } else {
+            new Request({
+                url: '/AJAX/taps/new',
+                data: data,
+                onSuccess: this.parseSent.bind(this)
+            }).send();
+        }
     },
 
 	/*

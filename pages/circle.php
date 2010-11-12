@@ -45,6 +45,8 @@ class page_circle extends Base {
 
         $this->set($member, 'state');
 
+        $this->set(!$this->user->firstTap($group), 'first_tap');
+
         $this->set(
             $group->isPermitted($this->user),
             'moderator');
