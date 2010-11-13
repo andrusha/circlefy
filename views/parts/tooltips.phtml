@@ -4,7 +4,7 @@
   <div id="tooltip-<#: this.id #>" class="tooltip-title-desc">
     <div class="bg">
     <h2 class="tooltip-title"><#: this.title #></h2>
-    <# if (this.content.trim()): #>
+    <# if (this.content && this.content.trim()): #>
         <div class="tooltip-content"><#: this.content #></div>
     <# endif; #>
     </div>

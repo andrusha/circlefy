@@ -3,14 +3,23 @@
     <? if ($_f['status'] == 'official'): ?>
         <span class="official">Official</span>
     <? endif; ?>
-    <a href="#" id="pause" def="Pause Stream" alt="Release Stream"></a>
 </h1>
 
 <? if (!$_f['user']): ?>
-    <div id="controls" <?=($_f['show_inside'] ? '' : 'class="hidden"')?>>
-        <a href="#" data-inside="1" class="tab<?=($state ? ' active' : '')?>" id="authenticated">Authenticated users</a>
-        <a href="#" data-inside="0" class="tab<?=($state ? '' : ' active')?>">Regular users</a>
+    <div id="controls" class="border">
+        <a href="#" id="pause" def="Pause Stream" alt="Release Stream"></a>
+         
+         <div id="filters" class="collapsed">
+            <button id="collapser"></button>
+            <span>Filter options:</span>
+            <a href="#" data-type="all" class="filter active"><span>Everyting</span></a>
+            <a href="#" data-type="inner" class="filter"><span>Authencied</span></a>
+            <a href="#" data-type="outer" class="filter"><span>Regular</span></a>
+            <a href="#" data-type="anon" class="filter"><span>Anonymous</span></a>
+        </div><!--filters-->       
+        
         <div class="clear"></div>
+        
     </div><!--controls-->
 <? else: ?>
     <div id="controls" <?=($_f['show_private'] ? '' : 'class="hidden"')?>>

@@ -32,7 +32,7 @@ class page_circle extends Base {
 
         $member = $group->userPermissions($this->user) != Group::$permissions['not_in'];
 
-        $inside = $member ? T_INSIDE : T_OUTSIDE;
+        $inside = $member ? 0 : T_OUTSIDE;
 
         $this->set(
             TapsList::search('group', array('gid' => $group->id, 'uid' => $this->user->id),

@@ -208,9 +208,9 @@ border-top-right-radius: 0px;
 	padding:3px 6px;
 	float:left;
 	margin:7px 0 0 0;
-	position:absolute;
 	top:0;
 	right:0;
+    margin-top: -20px;
 }
 #pause:after {
     content: attr(def);
@@ -231,10 +231,12 @@ border-top-right-radius: 0px;
 	border:1px solid #ccc;
 	padding:10px;
 	font-size:10px;
+    margin-top: -29px;
 }
-#controls #filters span {
+#controls #filters #collapser{
 	background:url(../images/filter.gif) no-repeat left center;
 	padding:5px 5px 5px 25px;
+    border:none;
 }
 #filters .filter {
 	display:inline;
@@ -253,11 +255,20 @@ border-top-right-radius: 0px;
 #filters .filter:hover {
 	color:#2878ca;
 }
+#filters.collapsed {
+    padding-right: 0px;
+} 
+#filters.collapsed .filter, #filters.collapsed span {
+    display: none;
+}
 #controls #filters .filter span {
 	background:url(../images/filter_drop.png) no-repeat right center;
 	padding:0 12px 0 0;
 }
 
+#filters .filter.active {
+    border-color: green;
+}
 
 
 

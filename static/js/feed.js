@@ -88,14 +88,15 @@ var _stream = _tap.register({
 		3. keyword (string, opt) if present, performs a search rather than just loading taps
         4. more (int) if you want to load more
 	*/
-    changeFeed: function(type, id, info, keyword, more, inside) {
+    changeFeed: function(type, id, info, keyword, more, inside, anon) {
         var self = this,
             data = {},
             info = info ? info : {};
 
         _vars.feed.type = data.type = type ? type : _vars.feed.type;
         _vars.feed.id   = data.id   = id ? id : _vars.feed.id;
-        _vars.feed.inside = data.inside = !!(inside | inside === 0) ? inside : (_vars.feed.inside ? _vars.feed.inside : 0);
+        _vars.feed.inside = data.inside = (!!inside || inside === 0) ? inside : (_vars.feed.inside ? _vars.feed.inside : 0);
+        _vars.feed.anon = data.anon = anon ? 1 : 0;
 
         _vars.feed.keyword = data.search = keyword ? keyword : (_vars.feed.keyword ? _vars.feed.keyword : '');
         data.more = this.pos = !!(more | more === 0) ? more : this.pos;
@@ -746,8 +747,9 @@ _warning = _tap.register({
         this.warning.addClass('hidden');
     }
 });
+_controls = {};
 
-_controls = _tap.register({
+_controls.tabs = _tap.register({
     init: function() {
         this.controls = $('controls');
         if (!this.controls)
@@ -761,8 +763,11 @@ _controls = _tap.register({
                 this.hide();
             this.tabs.removeClass('active');
 
-            if (_vars.feed.inside)
-                this.controls.getElement('a.tab[data-inside="'+_vars.feed.inside+'"]').addClass('active');
+            if (_vars.feed.inside) {
+                var tab = this.controls.getElement('a.tab[data-inside="'+_vars.feed.inside+'"]');
+                if (tab)
+                    tab.addClass('active');
+            }
             if (_vars.feed.type) {
                 var el = this.controls.getElement('a.tab[data-type="'+_vars.feed.type+'"]');
                 if (el)
@@ -784,13 +789,69 @@ _controls = _tap.register({
     toggle: function(el, e) {
         this.tabs.removeClass('active');
         el.addClass('active');
-        if (el.getData('inside')) {
-            _vars.feed.inside = el.getData('inside');
-            this.publish('feed.change', [null, null, null, null, 0, _vars.feed.inside]);
-        } else if (el.getData('type')) {
-            _vars.feed.type = el.getData('type');
-            this.publish('feed.change', [_vars.feed.type, null, null, null, 0]);
+        _vars.feed.type = el.getData('type');
+        this.publish('feed.change', [_vars.feed.type, null, null, null, 0, 0, 0]);
+    }
+});
+
+_controls.filters = _tap.register({
+    init: function() {
+        var controls = this.controls = $('filters'),
+            collaps = $('collapser');
+
+        if (!collaps)
+            return;
+
+        var filters = this.filters = controls.getElements('.filter');
+
+        collaps.addEvent('click', function( e) {
+            e.stop();
+            controls.toggleClass('collapsed');
+        });
+
+        filters.addEvent('click', this.toggle.toHandler(this));
+
+        this.subscribe('feed.changed', function () {
+            filters.removeClass('active');
+            var inside = _vars.feed.inside,
+                anon = _vars.feed.anon,
+                type = 'all'; 
+
+            if (inside)
+                type = inside == 1 ? 'inner' : 'outer'; 
+            else if (anon) 
+                type = 'anon';
+
+            this.controls.getElements('.filter[data-type="'+type+'"]').addClass('active');
+        }.bind(this));
+    },
+
+    toggle: function(el, e) {
+        e.stop();
+        var type = el.getData('type'),
+            inside = null,
+            anon = null;
+
+        switch (type) {
+            case 'inner':
+                inside = 1;
+                break;
+
+            case 'outer':
+                inside = 2;
+                break;
+
+            case 'anon':
+                anon = 1;
+                break;
         }
+        _vars.feed.anon = anon;
+        _vars.feed.inside = inside;
+
+        this.filters.removeClass('active');
+        el.addClass('active');
+
+        this.publish('feed.change', [null, null, null, null, 0, inside, anon]);
     }
 });
 

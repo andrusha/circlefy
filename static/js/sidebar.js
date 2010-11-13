@@ -54,7 +54,7 @@ var _list = _tap.register({
             type = parent.getData('type'),
             id = _vars.user.id,
             data = {'feed': el.text },
-            inside = parent.getData('inside');
+            inside = parent.getData('inside') || 0;
 
         if (_vars.guest && type != 'public')
             return;
@@ -62,7 +62,7 @@ var _list = _tap.register({
         parent.getSiblings('li').removeClass('active');
         parent.addClass('active');
 
-		this.publish('feed.change', [type, id, data, null, null, inside]);
+		this.publish('feed.change', [type, id, data, null, null, inside, 0]);
 	},
 });
 
