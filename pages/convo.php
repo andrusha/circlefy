@@ -24,13 +24,10 @@ class page_convo extends Base {
 
         $this->set($tap->asArray(), 'convo'); 
         $this->set($tap->getStatus($this->user), 'state');
-
-        if (!$this->user->guest)
-            $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
 	}
 
     private function isAllowed(Tap $tap) {
-        if (!isset($tap->id))
+        if ($tap->id === null)
             return false;
 
         $personal = isset($tap->reciever_id);
@@ -40,7 +37,7 @@ class page_convo extends Base {
         if ($personal)
             return $this->user->id == $tap->sender_id || $this->user->id == $tap->reciever_id;
         elseif ($tap->private)
-            return $this->user->inGroup($tap->group);
+            return $this->user->inGroup(new Group($tap->group_id));
 
         return true;
     }

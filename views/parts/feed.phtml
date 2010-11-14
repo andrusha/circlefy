@@ -48,6 +48,18 @@ if ($_f['show_reply']){
     <img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" />
     <textarea title="<?=$title?>"></textarea>
     <input type="submit" value=" " />
+    <div id="feed-selector">
+        <ul class="dropdown">
+            <li class="selected"
+                data-inside="0"
+                ><a href="#">Everyone</a>
+            </li>
+            <li class=""
+                data-inside="1">
+                <a href="#">Circle members</a>
+            </li>
+        </ul>
+    </div>
     <div class="clear"></div>
     <div class="media-preview-loading hidden"><img src="/static/images/media-spinner.gif" /><span>Loading...</span></div>
     <div class="media-preview hidden">

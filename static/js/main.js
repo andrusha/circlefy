@@ -25,7 +25,8 @@ _tap.register({
 module: _live
 	namespace for live push events
 */
-var _live = {};
+var _live = {},
+    _controls = {};
 
 /*
  * namespaces for all adding and editing classes

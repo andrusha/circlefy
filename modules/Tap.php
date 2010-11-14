@@ -283,7 +283,7 @@ class Tap extends BaseModel {
     }
 
     public function deleteEvent(User $u) {
-        $query = 'DELETE FROM events WHERE user_id = #uid# AND type = 1 AND related_id = #mid#';
+        $query = 'DELETE FROM events WHERE user_id = #uid# AND type IN (0, 1) AND related_id = #mid#';
         $this->db->query($query, array('uid' => $u->id, 'mid' => $this->id));
     }
 };

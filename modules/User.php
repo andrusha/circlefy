@@ -263,7 +263,8 @@ class User extends BaseModel {
         $query = "
             SELECT * 
               FROM group_members
-             WHERE group_id = #gid# AND user_id = #uid#";
+             WHERE group_id = #gid# AND user_id = #uid#
+             LIMIT 1";
         return $this->db->query($query, array('gid' => $g->id, 'uid' => $this->id))->num_rows == 1;
     }
 

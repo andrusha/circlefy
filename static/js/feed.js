@@ -630,9 +630,9 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.tapbox.value.isEmpty())
             return this.tapbox.focus();
-        var private = _vars.feed.inside || 0,
-            anon = _vars.feed.anon || 0;
-        var data = {
+        var private = _controls.selector.getInside(), 
+            anon = _controls.anon.getAnon(),
+            data = {
             msg: this.tapbox.value,
             type: this.sendType,
             id: this.sendTo,
@@ -747,7 +747,6 @@ _warning = _tap.register({
         this.warning.addClass('hidden');
     }
 });
-_controls = {};
 
 _controls.tabs = _tap.register({
     init: function() {
@@ -829,8 +828,8 @@ _controls.filters = _tap.register({
     toggle: function(el, e) {
         e.stop();
         var type = el.getData('type'),
-            inside = null,
-            anon = null;
+            inside = 0,
+            anon = 0;
 
         switch (type) {
             case 'inner':
@@ -855,7 +854,7 @@ _controls.filters = _tap.register({
     }
 });
 
-_anon = _tap.register({
+_controls.anon = _tap.register({
     init: function() {
         var anon = this.anon = $$('a.anonym')[0];
         if (!anon)
@@ -870,7 +869,32 @@ _anon = _tap.register({
         e.stop();
         this.img.toggleClass('avatar').toggleClass('anonym');
         this.anon.toggleClass('anonym').toggleClass('avatar');
-        _vars.feed.anon = !!_vars.feed.anon ? 0 : 1;
+        //_vars.feed.anon = !!_vars.feed.anon ? 0 : 1;
+    },
+
+    getAnon: function() {
+        return this.anon.hasClass('avatar') ? 1 : 0;
+    }
+});
+
+_controls.selector = _tap.register({
+    init: function() {
+        var selector = this.selector = $('feed-selector');
+        if (!selector)
+            return;
+
+        var list = this.list = selector.getElement('ul.dropdown');
+        list.getElements('a').addEvent('click', this.toggle.toHandler(this));
+    },
+
+    toggle: function(el, e) {
+        e.stop();
+        this.list.getElements('li').removeClass('selected');
+        el.getParent('li').addClass('selected');
+    },
+
+    getInside: function() {
+        return this.list.getElement('li.selected').getData('inside');
     }
 });
 

@@ -2251,3 +2251,14 @@ width:50px;
 #sidebar .media .thumbnail img { width:100px; height:76px;}
 #sidebar .media small a { text-decoration:none; padding:0; color:#4177a5; font-size:10px; line-height:12px;}
 
+/*** Post type selector ***/
+#feed-selector .dropdown li{
+    list-style: circle;
+}
+#feed-selector .dropdown li.selected {
+    list-style: disc;
+}
+#feed-selector .dropdown li.selected a {
+    color: green;
+}
+/*** /Post type selector ***/
