@@ -4,6 +4,7 @@
 <a href="/circle/<?=$c['symbol']?>" class="circle-thumb" class="circle-thumb" data-tipid="circle-<?=$c['id']?>" data-tiptitle="<img src='/static/images/type_<?=$c['type']?>.png' width='16' height='16' /> <?=$c['name']?>" data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>">
     <span class="circle"></span>
     <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" />
+	<span style="position:absolute;color:black;font-weight:bold;top:14px;width:50px;font-size:10px;left:2px;"><?=substr($c['name'],0,12);?></span>
 </a>
 <?php
     endforeach;

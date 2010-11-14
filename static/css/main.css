@@ -23,7 +23,7 @@ input[type=submit] {
 }
 
 body {
-	background:url(../images/bg.gif) repeat;
+/*	background:url(../images/bg.gif) repeat;*/
 	font-family:Helvetica, Arial, sans-serif;
 	color:#545454;
 	text-shadow:1px 1px #fff;
@@ -2262,3 +2262,38 @@ width:50px;
     color: green;
 }
 /*** /Post type selector ***/
+
+/*Taso*/
+
+.main-post-button {
+        background:#d1e2f4;
+        padding:5px 20px;
+        border:none;
+        text-decoration:none;
+        color:#202020;
+        font-size:12px;
+        border-radius:2px;
+        -webkit-border-radius:2px;
+        -moz-border-radius:2px;
+        box-shadow:1px 1px 0px #bababa;
+        -moz-box-shadow: 1px 1px 0px #bababa;
+        -webkit-box-shadow: 1px 1px 0px #bababa;
+        margin:0 auto 15px;
+        display:block;
+        text-shadow:1px 1px #fff;
+        font-weight:bold;
+		width:24px;
+		margin-top:11px;
+		margin-left:4px;
+		float:left;
+}
+.main-post-button:hover {
+        background:#40729d;
+        color:#fff;
+        text-shadow:1px 1px #000;
+        box-shadow:1px 1px 0px #3d3d3d;
+        -moz-box-shadow: 1px 1px 0px #3d3d3d;
+        -webkit-box-shadow: 1px 1px 0px #3d3d3d;
+	cursor:pointer;
+}
+
