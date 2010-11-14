@@ -83,7 +83,8 @@ if ($_f['show_reply']){
                 $id++;
                 $last = $count == $id;
     ?>
-    <div class="feed-item<?=($last ? ' last' : '')?><?=(empty($f['responses']) ? ' empty' : '')?>"
+    <div class="feed-item<?=($last ? ' last' : '')?><?=(empty($f['responses']) ? ' empty' : '')?><?=($f['unread'] ?
+    ' new' : '')?>"
          id="global-<?=$f['id']?>"
          data-id="<?=$f['id']?>"
          data-gid="<?=$f['group_id']?>">

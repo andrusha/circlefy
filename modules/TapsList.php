@@ -48,8 +48,9 @@ class TapsList extends Collection {
 
         // `m` index reserverd for message table
         $joins = array(
-            'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id',
+            'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id AND gm.user_id = m.sender_id',
             'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
+            'members_l2'=> 'LEFT  JOIN group_members gm2 ON m.group_id = gm2.group_id AND gm2.user_id = m.sender_id',
             'group'     => 'INNER JOIN `group`       g  ON g.id        = m.group_id',
             'group_l'   => 'LEFT  JOIN `group`       g2 ON g2.id       = m.group_id',
             'user'      => 'INNER JOIN user          u  ON u.id        = m.sender_id',
@@ -96,7 +97,6 @@ class TapsList extends Collection {
             case 'group':
                 $join[]  = 'members';
                 $where[] = 'm.group_id = #gid#';
-                $fields[] = 'gm.context';
                 break;
 
             case 'aggr_friends':
@@ -168,6 +168,7 @@ class TapsList extends Collection {
             if (!in_array('events', $join))
                 $join[] = 'events_l';
             $fields[] = 'e.new_replies';
+            $fields[] = '(e.type = 0) AS unread';
         }
 
         if ($options & T_INSIDE)
@@ -177,6 +178,14 @@ class TapsList extends Collection {
 
         if ($options & T_ANON)
             $where[] = 'm.anonymous = 1';
+
+        if (in_array('members_l', $join)) {
+            $join[]   = 'members_l2';
+            $fields[] = 'gm2.context';
+        }
+
+        if (in_array('members', $join))
+            $fields[] = 'gm.context';
     
         if (!isset($params['row_count']))
             $params['row_count'] = DEFAULT_ROW_COUNT;
