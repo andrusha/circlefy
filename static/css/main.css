@@ -236,8 +236,9 @@ border-top-right-radius: 0px;
 }
 #controls #filters #collapser{
 	background:url(../images/filter.gif) no-repeat left center;
-	padding:5px 5px 5px 25px;
+	padding:12px 5px 5px 25px;
     border:none;
+float:left;
 }
 #filters .filter {
 	display:inline;
