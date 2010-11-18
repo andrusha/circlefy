@@ -40,6 +40,7 @@ var _modal = _tap.register({
                 self.show('modal-first-tap');
                 _modal.first_tap.show(data);
             },
+            'modal.show.post-tap': function() { self.show('modal-post-tap') },
             'modal.hide': this.hide.bind(this)
         });
 

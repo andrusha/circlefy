@@ -468,4 +468,29 @@
         </span>
     </div>
 
+<!-- Post Tap -->
+    <div id="modal-post-tap" class="modal-window">
+        <h2>Post</h2>
+        
+        <form id="posttapform" method="POST">
+            <label for="postmessage">Message</label>
+            <textarea name="postmessage" 
+                      id="postmessage" 
+                      data-tipid="tip-post-message"
+                      class="required"
+            /></textarea>
+            <div class="clear"></div>
+            <label for="group-search-post">Circle</label>
+            <input id="group-search-post" class="required groupSelected" type="text" autocomplete="off" value="" title="" rel="" data-tipid="tip-post-circle" />
+            <div id="post-search-results" class="hidden">
+              <ul></ul>
+            </div><!--searchresults-->
+            <div class="clear"></div>
+            <span class="modal-actions"><input type="submit" id="post-tap-button" class="load" value="Post"/></span>
+        </form>
+        <span class="modal-actions">
+                <a class="modal-cancel" href="#">close</a>
+        </span>
+    </div>
+
 </div>

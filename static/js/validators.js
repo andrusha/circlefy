@@ -154,3 +154,17 @@ Form.Validator.add('validate-facebook', {
         return status;
     }
 });
+
+Form.Validator.add('groupSelected', {
+    errorMsg: function (elem) {
+        return 'You must search for a circle to post this message';
+    },
+    test: function (elem, props) {
+        var cid    = elem.getData('gid'),
+            name   = elem.getData('name'),
+            status = false;
+        if (cid && (elem.value == name))
+            status = true;
+        return status;
+    }
+});

@@ -60,7 +60,8 @@ var _template = {
         'typing':      'template-typing',
         'messages':    'template-messages',
         'circles':     'template-circles',
-        'notifications':'template-notifications'
+        'notifications':'template-notifications',
+        'post-search': 'template-post-search'
     },
 
 	/*
@@ -217,5 +218,13 @@ var _startup = _tap.register({
                 }
             });
         }.bind(this));
+        
+        // Post a tap
+        var post_btn = $$('.main-post-button')[0];
+        post_btn.addEvent('click', function(e) {
+            e.stop();
+            
+            self.publish('modal.show.post-tap');
+        })
     }
 });

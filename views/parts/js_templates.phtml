@@ -26,6 +26,21 @@
         </li>
     -->
     </ul>
+    
+    <? /*** Search suggestions for new post template ***/ ?>
+    <ul id="template-post-search">
+    <!--
+        <# if (this.length): #>
+        <# for (var sugg from this): #>
+        <li rel="<#: sugg.id #>" data-name="<#: sugg.name #>">
+            <div class="thumb"><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
+           <h3 class="title"><#: sugg.name.limit(30) #></h3>
+           <div class="clear"></div>
+        </li>
+        <# endfor; #>
+        <# endif; #>
+    -->
+    </ul>
 
     <? /*** Placeholder for 'searching' state of group suggestions ***/ ?>
     <ul id="template-search-placeholder">
