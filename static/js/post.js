@@ -79,6 +79,7 @@ var _post = _tap.register({
                     url: '/AJAX/group/search',
                     link: 'cancel',
                     onSuccess: function () {
+                        console.log(this.response);
                         var resp = JSON.decode(this.response.text);
                         Elements.from(_template.parse('post-search', resp.groups)).inject(self.list.empty());
                         
@@ -97,7 +98,7 @@ var _post = _tap.register({
                         });
                     }
                 });
-            this.request.send({data: {search: keyword}});
+            this.request.send({data: {search: keyword, byUser: 1}});
         } else if (keyword.length <= 1)
             this.list.empty();
         this.keyword = keyword;

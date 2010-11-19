@@ -193,6 +193,14 @@ class GroupsList extends Collection {
             case 'like':
                 $where = 'g.name LIKE #search#';
                 break;
+
+            case 'byUserAndLike':
+                $fields[]      = 'gm.permission';
+                $join[]        = 'members';
+                $where         = 'gm.user_id = #uid# AND g.name LIKE #search#';
+                $user          = Auth::identify();
+                $params['uid'] = $user->id;
+                break;
         }
 
         //we can freely join and group by table if there
@@ -232,7 +240,6 @@ class GroupsList extends Collection {
              WHERE {$where}
              {$group}
              {$limit}";
-
         $groups = array();
         $result = $db->query($query, $params);
         if ($result->num_rows)
