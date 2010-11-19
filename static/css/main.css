@@ -2210,6 +2210,8 @@ background-color:#DDD;
         font-size:10px;
         height:10px;
 	line-height:1px;
+    text-transform: capitalize;
+    clip: rect(0px, 100px, 19px, 0px);
 }
 .type-label img {
     vertical-align:bottom;
