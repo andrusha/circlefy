@@ -311,7 +311,7 @@ margin:0 0 0 10px;
 #reply {
 	background:url(../images/filter_semi.png) repeat;
 	border:1px solid #ccc;
-	padding:10px;
+	padding:10px 10px 45px 10px;
 	display:block;
 	margin:15px 0;
 	position:relative;
@@ -2290,9 +2290,9 @@ width:50px;
 #feed-selector {
 	display:block;
 	background:url(../images/filter_bg.gif) repeat-x left center;
-	padding:6px 6px 6px 0px;
+	padding:4px 6px 8px 0px;
 width:40px;
-height:13px;
+height:12px;
 position:absolute;
 	border:1px solid #a6a6a6;
 	font-size:11px;
@@ -2302,7 +2302,8 @@ position:absolute;
 	border-radius:2px;
 	-moz-border-radius:2px;
 	-webkit-border-radius:2px;
-	margin:0 0 0 3px;
+	margin:0;
+top:75px;
 }
 #feed-selector:hover {
 	color:#2878ca;
@@ -2315,8 +2316,20 @@ position:absolute;
 #feed-selector .dropdown {
 display:none;
 }
+#feed-selector .dropdown a {
+color:#999;
+text-decoration:line-through;
+text-shadow:1px 1px #000;
+}
 #feed-selector:hover .dropdown {
 display:block;
+background:#333;
+border:1px solid #000;
+position:relative;
+margin:-2px 0 0 0;
+width:150px;
+padding:5px 10px;
+z-index:10;
 }
 #feed-selector .dropdown li{
     list-style: none;
@@ -2325,7 +2338,8 @@ display:block;
     list-style: none;
 }
 #feed-selector .dropdown li.selected a {
-    color: green;
+    color: #fff;
+text-decoration:none;
 }
 /*** /Post type selector ***/
 
