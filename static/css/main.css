@@ -2038,10 +2038,10 @@ span.highlight {
 
 
 
-#reply .media-preview, #feed .media {
+#reply .media-preview, #feed .media, #posttapform .media-preview {
 	padding:10px 0 0 0;
 }
-#reply .media-preview .thumbnail, #feed .media .thumbnail {
+#reply .media-preview .thumbnail, #feed .media .thumbnail, #posttapform .media-preview .thumbnail {
 	width:135px;
 	height:100px;
 	background:#fff;
@@ -2050,37 +2050,38 @@ span.highlight {
 	float:left;
 }
 #feed .media .thumbnail-video, #feed .media .thumbnail-image { width: 135px; height: 100px; background: #fff; border: 0;}
-#reply .media-preview .data, #feed .media .data {
+#reply .media-preview .data, #feed .media .data, #posttapform .media-preview .data {
 	float:left;
 	width:450px;
 	padding:0 0 0 10px;
 	height:auto;
 }
-#reply .media-preview .data .title, #feed .media .data .title {
+#posttapform .media-preview .data { width: 348px;}
+#reply .media-preview .data .title, #feed .media .data .title, #posttapform .media-preview .data .title {
 	font-size:14px;
 	color:#4177a5;
 	font-weight:normal;
 	padding:2px 0 0 0;
 }
-#reply .media-preview .data .title.video, #feed .media .data .title.video {
+#reply .media-preview .data .title.video, #feed .media .data .title.video, #posttapform .media-preview .data .title.video {
 	background:url(../images/media_video.png) no-repeat top right;
 	padding:2px 22px 0 0;
 	display:inline;
 }
-#reply .media-preview .data .title a {
+#reply .media-preview .data .title a, #posttapform .media-preview .data .title a {
 	color:#4177a5;
 	text-decoration:none;
 }
-#reply .media-preview .data small {
+#reply .media-preview .data small, #posttapform .media-preview .data small {
 	color:#959595;
 	font-size:10px;
 	display:block;
 }
-#reply .media-preview .data small a {
+#reply .media-preview .data small a, #posttapform .media-preview .data small a {
 	color:#959595;
 	text-decoration:none;
 }
-#reply .media-preview .data em, #feed .media .data em {
+#reply .media-preview .data em, #feed .media .data em, #posttapform .media-preview .data em {
 	display:block;
 	padding:10px 0 0 0;
 }

@@ -697,8 +697,8 @@ var MediaEmbed = new Class ({
         if (!this.options.element)
             return;
 
-        this.preview = this.options.element.getParent('form#reply').getElement('div.media-preview');
-        this.preview_loading = this.options.element.getParent('form#reply').getElement('div.media-preview-loading');
+        this.preview = this.options.element.getParent('form').getElement('div.media-preview');
+        this.preview_loading = this.options.element.getParent('form').getElement('div.media-preview-loading');
 
         if (!this.preview)
             return;

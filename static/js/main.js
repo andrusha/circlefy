@@ -225,6 +225,9 @@ var _startup = _tap.register({
             e.stop();
             
             self.publish('modal.show.post-tap');
-        })
+        });
+        new MediaEmbed({
+            element: $$('#posttapform textarea')
+        });
     }
 });

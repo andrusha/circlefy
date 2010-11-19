@@ -109,16 +109,30 @@ var _post = _tap.register({
             return;
         
         var gid  = this.search.getData('gid'),
-            msg  = $('postmessage').value,
+            pmsg = $('postmessage'),
+            msg  = pmsg.value,
             self = this;
         
+        var data = {id: gid,
+                    type: 'group',
+                    msg: msg};
+        
+        if (pmsg.getData('mediatype') && pmsg.getData('mediatype').length) {
+            var media = {
+                'mediatype': pmsg.getData('mediatype'),
+                'link': pmsg.getData('link'),
+                'code': pmsg.getData('embed'),
+                'title': pmsg.getData('title'),
+                'description': pmsg.getData('description'),
+                'thumbnail_url': pmsg.getData('thumbnail')
+            }
+            if (pmsg.getData('fullimage'))
+                media.fullimage_url = pmsg.getData('fullimage');
+            data.media = media;
+        }
         new Request({
             url: '/AJAX/taps/new',
-            data: {
-                id: gid,
-                type:  'group',
-                msg:  msg
-            },
+            data: data,
             onSuccess: function(){
                 var response = JSON.decode(this.response.text);
                 if (response.success) {
