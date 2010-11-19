@@ -353,7 +353,7 @@ class GroupsList extends Collection {
         $db = DB::getInstance();
         $db->startTransaction();
         try {
-            $query = "INSERT INTO `group` (fb_id, symbol, name, descr) VALUES #values#";
+            $query = "INSERT INTO `group` (fb_id, symbol, name, descr, type) VALUES #values#";
             $db->listInsert($query, $list);
             $fbids = array_map(function ($x) { return $x[0]; }, $list);
             $groups = GroupsList::search('byFbIDs', array('fbids' => $fbids));
@@ -376,13 +376,44 @@ class GroupsList extends Collection {
         if (empty($fgids))
             return new GroupsList(array());
 
+        $typeRouter = function ($info) {
+            $map = array('school'   => array('school', 'university', 'institute'),
+                         'company'  => array('company', 'organization'),
+                         'location' => array('city'));
+
+            if ($info['type'] == 'event')
+                return Group::$types['event'];
+
+            $cat = strtolower($info['category']);
+            foreach ($map as $type => $names)
+                if (in_array($cat, $names))
+                    return Group::$types[$type];
+
+            return Group::$types['group'];
+        };
+
+        $groupFilter = function ($info) {
+            $name = $info['name'];
+
+            if (strlen($name) > 35)
+                return false;
+   
+            // filter spam-groups
+            $banned = array('i', 'me', 'my', 'you', 'should', 'what', 'could');
+            $words  = explode(' ', strtolower($name));
+            if (count(array_intersect($words, $banned)) > 1)
+                return false;
+
+            return true;
+        };
+
         $fb = new Facebook();
 
         // I. Fetch info from FB, prepare it for bulk insert
         $FBinfo = $fb->bulkInfo($fgids);
         $insert = array();
         foreach ($FBinfo as $fgid => $info) {
-            if (strlen($info['name']) > 35)
+            if (!$groupFilter($info))
                 continue;
 
             if (!empty($info['mission']))
@@ -390,8 +421,9 @@ class GroupsList extends Collection {
             $descr   = FuncLib::makePreview(strip_tags($info['description']), 250);
             $symbol  = FuncLib::makeSymbol($info['name'], 64);
             $gname   = FuncLib::makePreview($info['name'], 80);
+            $type    = $typeRouter($info); 
 
-            $insert[] = array($fgid, $symbol, $gname, $descr);
+            $insert[] = array($fgid, $symbol, $gname, $descr, $type);
         }
 
         // II. Insert formatted info about group into DB
@@ -403,8 +435,17 @@ class GroupsList extends Collection {
 
             $tags    = FuncLib::extractTags($info['name'], $info['description'], $info['category'], $info['mission']);
 
-            $pic_url = 'http://graph.facebook.com/'.$g->fb_id.'/picture?type=large';
-            $picture = Images::fetchAndMake(GROUP_PIC_PATH, $pic_url, $g->id.'.jpg');
+            try {
+                $pic_url = 'http://graph.facebook.com/'.$g->fb_id.'/picture?type=large';
+                $picture = Images::fetchAndMake(GROUP_PIC_PATH, $pic_url, $g->id.'.jpg');
+            } catch (NetworkException $e) {
+                $g->setDefaultAvatar();
+            } catch (ImagickException $e) {
+                if (DEBUG)
+                    FirePHP::getInstance(true)->trace($e);
+
+                $g->setDefaultAvatar();
+            }
 
             //TODO: make bulk tags addition
             $g->tags->addTags($tags);
@@ -417,4 +458,5 @@ class GroupsList extends Collection {
 
         return $groups;
     }
+
 };

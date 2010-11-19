@@ -300,4 +300,12 @@ class User extends BaseModel {
         $query = 'SELECT id FROM message WHERE sender_id = #uid# AND group_id = #gid# LIMIT 1';
         return $this->db->query($query, array('uid' => $this->id, 'gid' => $g->id))->num_rows > 0;
     }
+
+    public function setDefaultAvatar() {
+        foreach (array('small', 'medium', 'large') as $size) {
+            $img = USER_PIC_PATH."/$size_{$user->id}.jpg";
+            @unlink($img);
+            symlink(USER_PIC_PATH."/$size_user.png", $img);
+        }
+    }
 };

@@ -11,6 +11,7 @@ class Images {
         $img->cropImage($min, $min, 0, 0);
         $img->resizeImage($size, $size, imagick::FILTER_LANCZOS, 1);
 
+        @unlink($out);
         $img->writeImage($out);
 
         return $out;
@@ -50,7 +51,8 @@ class Images {
         }
         $picName = $picsDir.'/'.$picName;
 
-        file_put_contents($picName, file_get_contents($picUrl));
+        $curl = new Curl();
+        $curl->saveFile($picUrl, $picName);
 
         $id = basename($picName, '.'.Images::getFileExt($picName));
         $result = Images::makeUserpics($id, $picName, $picsDir);
@@ -65,7 +67,8 @@ class Images {
             return null;
 
         $url = "http://$base/favicon.ico";
-        file_put_contents($name, file_get_contents($url));
+        $curl = new Curl();
+        $curl->saveFile($url, $name);
 
         return basename($name);
     }

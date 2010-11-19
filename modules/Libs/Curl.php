@@ -22,7 +22,11 @@ class Curl {
                 CURLOPT_TIMEOUT => 60,
                 CURLOPT_COOKIEFILE => $cookie_file,
                 CURLOPT_COOKIEJAR => $cookie_file,
-                ));
+            ));
+    }
+
+    function __destruct() {
+        curl_close($this->curl);
     }
 
     /*
@@ -64,6 +68,7 @@ class Curl {
                 CURLOPT_HTTPGET => 1));
 
         $result = curl_exec($this->curl);
+        $this->errorHandler($this->curl);
 
         curl_setopt($this->curl, CURLOPT_HTTPGET, 0);
 
@@ -86,6 +91,7 @@ class Curl {
                 CURLOPT_POSTFIELDS => $post_data));
 
         $result = curl_exec($this->curl);
+        $this->errorHandler($this->curl);
 
         curl_setopt_array($this->curl,
             array(CURLOPT_POST => 0,
@@ -112,25 +118,39 @@ class Curl {
         $url = $this->makeUrl($url, $gets);
 
         $file = fopen($fname, 'w');
+        if ($file === false)
+            throw new NetworkException("Unable to create file $fname");
+    
+        // workaround for unsetting file property
+        $curl = curl_copy_handle($this->curl);
 
-        curl_setopt_array($this->curl,
+        curl_setopt_array($curl,
             array(
                 CURLOPT_FILE => $file,
                 CURLOPT_BINARYTRANSFER => 1,
-                CURLOPT_HTTPGET => 1
+                CURLOPT_HTTPGET => 1,
+                CURLOPT_URL => $url
             ));
 
-        curl_exec($this->curl);
+        curl_exec($curl);
+        $this->errorHandler($curl);
 
-        curl_setopt_array($this->curl,
-            array(
-                CURLOPT_FILE => NULL,
-                CURLOPT_BINARYTRANSFER => 0,
-                CURLOPT_HTTPGET => 0
-            ));
+        curl_close($curl);
 
         fclose($file);
 
         return true;
+    }
+
+    private function errorHandler($curl) {
+        $errno = curl_errno($curl);
+        if ($errno == 0)
+            return;
+        
+        $error = "Curl error $errno: ".curl_error($curl);
+        if (DEBUG)
+            FirePHP::getInstance(true)->trace($error);
+        
+        throw new NetworkException($error);
     }
 };

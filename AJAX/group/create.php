@@ -34,17 +34,8 @@ class ajax_create extends Base {
                                ($_POST['secret'] == 'true' ? 1 : 0),
                                $domain
         );
-        
-        // create symlinks to default images
-        $small_img  = GROUP_PIC_PATH . '/small_'. $group->id .'.jpg';
-        $medium_img = GROUP_PIC_PATH . '/medium_'. $group->id .'.jpg';
-        $large_img  = GROUP_PIC_PATH . '/large_'. $group->id .'.jpg';
-        @unlink($small_img);
-        @unlink($medium_img);
-        @unlink($large_img);
-        symlink(GROUP_PIC_PATH.'/small_group.png', $small_img);
-        symlink(GROUP_PIC_PATH.'/medium_group.png', $medium_img);
-        symlink(GROUP_PIC_PATH.'/large_group.png', $large_img);
+
+        $group->setDefaultAvatar();
         
         return array('success' => 1, 'group' => $group->asArray(false));
     }

@@ -49,6 +49,7 @@ define("D_USER",     "root");
 define("D_DATABASE", "circlefy");
 
 define("APC", function_exists('apc_fetch'));
+define("STDOUT", fopen('php://stdout', 'w'));
 
 define("DOMAIN",         $_SERVER['HTTP_HOST']);
 define("USER_PIC_REL",   "/static/user_pics/");

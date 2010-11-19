@@ -10,8 +10,11 @@ class Facebook extends BaseModel {
     private $fuid = null;
     private $access_token = null;
 
+    private $curl = null;
+
     public function __construct() {
         parent::__construct(null);
+        $this->curl = new Curl();
 
         if ($info = $this->infoFromCookies()) {
             $this->fuid = intval($info['uid']);
@@ -62,8 +65,18 @@ class Facebook extends BaseModel {
         if (empty($ids))
             return array();
 
-        $url = 'https://graph.facebook.com/?ids='.implode(',', $ids).'&access_token='.urlencode($this->access_token);
-        return json_decode(file_get_contents($url), true);
+        try {
+            $raw = $this->curl->get('https://graph.facebook.com/', 
+                array('ids' => implode(',', $ids), 'metadata' => 1, 
+                      'locale' => 'en_US', 'access_token' => $this->access_token));
+        } catch (NetworkException $e) {
+            return array();
+        }
+
+        $result = json_decode($raw, true); 
+        if (DEBUG)
+            FirePHP::getInstance(true)->log($result, 'FB-groups');
+        return $result;
     }
 
     /*
@@ -83,12 +96,21 @@ class Facebook extends BaseModel {
             $selector = 'data';
         }
 
-        $url = 'https://graph.facebook.com/'.$id.$add.'?access_token=' . urlencode($this->access_token);
-        $info = json_decode(file_get_contents($url), true);
+        try {
+            $raw = $this->curl->get('https://graph.facebook.com/'.$id.$add,
+                array('metadata' => 1, 'locale' => 'en_US', 'access_token' => $this->access_token));
+        } catch (NetworkException $e) {
+            return array();
+        }
+
+        $info = json_decode($raw, true);
         if (isset($selector))
             $info = $info[$selector];
 
         $this->fetched_info[$uid][$type] = $info;
+        if (DEBUG)
+            FirePHP::getInstance(true)->log($info, $type.' for '.$id);
+
         return $info;
    }
     
@@ -163,11 +185,21 @@ class Facebook extends BaseModel {
         $user = User::create(User::$types['user'], $uname, $pass, $email, $info['first_name'],
                             $info['last_name'], $_SERVER['REMOTE_ADDR'], intval($this->fuid));
 
-        //download & resize userpics
-        $big_name = USER_PIC_PATH.$this->fuid.'.jpg';
-        $big_url = 'http://graph.facebook.com/'.$this->fuid.'/picture?type=large';
-        file_put_contents($big_name, file_get_contents($big_url));
-        list($big_name, $large, $medium, $small) = Images::makeUserpics($user->id, $big_name, USER_PIC_PATH);
+        try {
+            //download & resize userpics
+            $big_name = USER_PIC_PATH.$this->fuid.'.jpg';
+            $this->curl->saveFile('http://graph.facebook.com/'.$this->fuid.'/picture', $big_name, array('type' => 'large'));
+            list($big_name, $large, $medium, $small) = Images::makeUserpics($user->id, $big_name, USER_PIC_PATH);
+        } catch (NetworkEeception $e) {
+            // if we can't fetch user image for some reason - link default ones
+            $user->setDefaultAvatar();
+        } catch (ImagickException $e) {
+            if (DEBUG)
+                FirePHP::getInstance(true)->trace($e);
+
+            $user->setDefaultAvatar();
+        }
+
 
         Auth::setSession($user);
    
@@ -209,8 +241,11 @@ class Facebook extends BaseModel {
         $url = "https://graph.facebook.com/{$this->fuid}/feed";
         $post = array_merge($status, array('access_token' => $this->access_token));
 
-        $curl = new Curl();
-        $curl->open($url, $post);
+        try {
+            $this->curl->open($url, $post);
+        } catch (NetworkException $e) {
+            return false;
+        }
 
         return true;
     }

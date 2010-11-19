@@ -42,3 +42,6 @@ class AuthException extends UserException {};
 abstract class ActionsExceptions extends Exception {};
 class ActionDataException extends ActionsExceptions {};
 class ActionTypeException extends ActionsExceptions {};
+
+// Curl.php
+class NetworkException extends Exception {};

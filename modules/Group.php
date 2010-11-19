@@ -222,6 +222,8 @@ class Group extends BaseModel {
     
     /*
         Send activation email to user to confirm email address
+
+        TODO: we should move all email things to separate class
     */
     public function sendActivation(User $u, $email) {
         // generate random hash code
@@ -301,5 +303,13 @@ EOF;
         $db = DB::getInstance();
         $r = $db->query($query, array('ctx' => $context, 'gid' => $this->id, 'uid' => $user->id));
         return $r;
+    }
+
+    public function setDefaultAvatar() {
+        foreach (array('small', 'medium', 'large') as $size) {
+            $img = GROUP_PIC_PATH."/$size_{$this->id}.jpg";
+            @unlink($img);
+            symlink(GROUP_PIC_PATH."/$size_group.png", $img);
+        }
     }
 };

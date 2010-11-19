@@ -36,11 +36,8 @@ class ajax_suggest extends Base {
 
         // Select 10 or less random likes
         $interests = array();
-        foreach(array_merge($this->fb->books, $this->fb->movies, $this->fb->groups, $this->fb->likes) as $i) {
-            if (DEBUG)
-                FirePHP::getInstance(true)->log($i);
+        foreach(array_merge($this->fb->books, $this->fb->movies, $this->fb->groups, $this->fb->likes) as $i)
             $interests[ intval($i['id']) ] = trim($i['name']);
-        }
 
         if (!empty($interests))
             $interests = array_intersect_key(
