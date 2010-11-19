@@ -2387,13 +2387,18 @@ margin:0;
 }
 #posttapform textarea {
 float:left;
-width:300px;
+width:340px;
 padding:5px;
 border:2px solid #2e72a4;
 font-size:16px;
 font-family:Helvetica, Arial, sans-serif;
 line-height:18px;
 margin:0 0 15px 0;
+}
+#posttapform input {
+width:340px;
+margin:0 0 15px 0;
+float:left;
 }
 #posttapform button {
 	background:#d1e2f4;
@@ -2408,7 +2413,7 @@ margin:0 0 15px 0;
 	box-shadow:1px 1px 0px #bababa;
 	-moz-box-shadow: 1px 1px 0px #bababa;
 	-webkit-box-shadow: 1px 1px 0px #bababa;
-	margin:0 10px 15px 150px;
+	margin:0 10px 15px 185px;
 	display:block;
 	float:left;
 	text-shadow:1px 1px #fff;
