@@ -182,7 +182,7 @@
 	text-shadow:	    	1px 1px #000;
 }
 #notifications .events .event {
-    background-color: rgba(52,99,148,0.3);
+    background-color: #538DC2;
     width: 100%;
     height: 80px;
 }
@@ -205,19 +205,20 @@
     height: 15px;
 }
 #notifications .events h3 {
-	padding:	13px 50px 0;
+	padding:	7px 50px 0;
 	margin:		0;
 	border:		0;
 	font-size:	11px;
 	color:		#ccc;
 }
 #notifications .events p {
-	padding:				10px 10px 15px;
+	padding:				0px 34px 15px;
 	margin:					0;
 	font-size:				12px;
 	color:					#fff;
 }
 #notifications .events a {
+	vertical-align: middle;
 	color:white;
 	text-decoration:none;
 }
@@ -227,5 +228,5 @@
 
 #notifications .events h3 a {
     font-weight: bold;
-    font-size:  14px;
+    font-size:  11px;
 }
