@@ -177,7 +177,7 @@ class UsersList extends Collection {
                 break;
 
             case 'like':
-                $where[] = '(u.uname LIKE #search# OR u.fname LIKE #search# OR u.lname LIKE #search#)';
+                $where[] = '(u.uname LIKE #search# OR CONCAT(u.fname, \' \', u.lname) LIKE #search#)';
                 break;
         }
 
