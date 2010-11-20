@@ -41,5 +41,6 @@ class page_user extends Base {
 
         if (!$this->user->guest)
             $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
+        $this->set('user', 'page');
 	}
 };

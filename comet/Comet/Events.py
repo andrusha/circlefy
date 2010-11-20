@@ -12,6 +12,8 @@ import time
 import MySQLdb
 from Abstract import AbstractServer, AbstractConnection
 
+intcast = lambda *args: map(lambda smth: int(smth) if smth is not None else None, args)
+
 class EventServer(AbstractServer):
     def __init__(self, dispatcher):
         logging.info('Starting events server')
@@ -64,11 +66,11 @@ class EventDispatcher(object):
 
     def on_new_message(self, action, message):
         "New message handler"
-        sender, group, private = map(int, [message['sender_id'], message['group_id'], message['private']])
+        sender, group, private, reciever = intcast(message['sender_id'], 
+            message['group_id'], message['private'], message['reciever_id'])
 
-        personal = message['reciever_id'] is not None 
-        if personal:
-           return {'users': set([sender, int(message['reciever_id'])])}
+        if reciever is not None:
+           return {'users': set([sender, reciever])}
 
         recievers = {'users': self.group_users(group)}
         if not private:
@@ -116,7 +118,6 @@ class EventDispatcher(object):
         "Adds message to events queue for each user"
         joined = (', 0, %i),(' % message).join(map(str, users))
         sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%s, 0, %i)' % (joined, message)
-        print sql
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 

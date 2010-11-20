@@ -24,6 +24,7 @@ class page_convo extends Base {
 
         $this->set($tap->asArray(), 'convo'); 
         $this->set($tap->getStatus($this->user), 'state');
+        $this->set('convo', 'page');
 	}
 
     private function isAllowed(Tap $tap) {

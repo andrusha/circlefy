@@ -108,6 +108,7 @@ class TapsList extends Collection {
             case 'friend':
                 $where[] = 'm.sender_id = #uid#';
                 $where[] = 'm.group_id IS NOT NULL';
+                $where[] = 'm.anonymous = 0';
                 break;
 
             case 'aggr_private':

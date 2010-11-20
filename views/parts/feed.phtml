@@ -48,7 +48,7 @@ if ($_f['show_reply']){
     <img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" />
     <textarea title="<?=$title?>"></textarea>
     <input type="submit" value=" " />
-    <div id="feed-selector">
+    <div id="feed-selector" <? if ($page == 'user'): ?>class="hidden"<? endif; ?>>
     	<img src="/static/images/lock.png" alt="lock" />
         <ul class="dropdown">
             <li class="selected"

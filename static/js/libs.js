@@ -676,7 +676,7 @@ var CirTooltip = new Class({
             this.hide(tip);
     },
     hide: function(element){
-        element.tween('opacity', 0);
+        element.dispose();
     },
     show: function(){
         $('tooltip-'+this.currentElement).tween('opacity', 1);

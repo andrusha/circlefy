@@ -46,5 +46,6 @@ class page_homepage extends Base {
 
         if (!$this->user->guest)
             $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
+        $this->set('homepage', 'page');
     }
 };

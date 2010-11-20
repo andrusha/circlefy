@@ -17,8 +17,15 @@ abstract class Auth {
         header('Cache-Control: no-store, no-cache, must-revalidate');
     
         //if user already logged in - do nothing
-        if ($_SESSION['uid'] !== null)
-            return User::init(intval($_SESSION['uid']));
+        if ($_SESSION['uid'] !== null) {
+            $user = User::init(intval($_SESSION['uid']));
+            if ($user === null) {
+                self::logOut();
+                $user = new User(null);
+                session_start();
+            }
+            return $user;
+        }
 
         return new User(null); //Auth::createGuest(); //haha, fuck guests
     }
