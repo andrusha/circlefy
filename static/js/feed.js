@@ -653,10 +653,6 @@ var _tapbox = _tap.register({
             data.media = media;
         }
 
-        _vars.feed.inside = private;
-        _vars.feed.anon = anon;
-        this.publish('feed.change', []);
-        
         if (_vars.feed.first_tap) {
             this.publish('modal.show.first-tap', [data]);
         } else {
@@ -675,8 +671,6 @@ var _tapbox = _tap.register({
     parseSent: function(response) {
         var resp = JSON.decode(response);
         if (resp.success) {
-            this.publish('feed.change');
-            
             // reset tapbox
             this.tapbox.value = '';
             this.tapbox.setData('mediatype', '');
@@ -1019,7 +1013,8 @@ _live.taps = _tap.register({
     },
 
     process: function(data) {
-        if (_vars.feed.type == 'conversation' || data.private != _vars.feed.inside)
+        if (_vars.feed.type == 'conversation' || 
+            (data.private != _vars.feed.inside && data.sender_id != _vars.user.id))
             return;
 
         this.pushed.combine([data]);
