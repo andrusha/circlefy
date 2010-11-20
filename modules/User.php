@@ -68,7 +68,10 @@ class User extends BaseModel {
             'email' => $email, 'fname' => $fname, 'lname' => $lname, 'ip' => $ip);
         $id = (int)$db->insert('user', $data);
         $data['id'] = $id;
-        return new User($data);
+        $user = new User($data);
+        Mailer::welcome($user);
+
+        return $user;
     }
 
     /*
@@ -180,6 +183,12 @@ class User extends BaseModel {
         foreach ($values as $v)
             Comet::send('user.follow', array('who' => $this->id, 'whom' => $v[1], 'status' => 1, 'user' =>
                 $this->asArray()));
+
+        if ($friends instanceof User)
+            Mailer::newFollower($friends, $this);
+        elseif ($friends instanceof UsersList)
+            foreach($friends as $f)
+                Mailer::newFollower($f, $this);
 
         return $this;
     }

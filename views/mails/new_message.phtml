@@ -1,0 +1,6 @@
+<? // Email on new follower
+   include(MAIL_HEADER); ?>
+<?=$fname?> <?=$lname?> sent new<?=($private ? ' private' : '')?> message to <?=$circle?> circle.
+
+"<?=$text?>"
+<? include(MAIL_FOOTER); ?>

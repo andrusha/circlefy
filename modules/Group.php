@@ -222,16 +222,13 @@ class Group extends BaseModel {
     
     /*
         Send activation email to user to confirm email address
-
-        TODO: we should move all email things to separate class
     */
     public function sendActivation(User $u, $email) {
         // generate random hash code
         $token = "";
-        $charPool = '0123456789abcdefghijklmnopqrstuvwxyz';
-        for($p = 0; $p<25; $p++)
-        	$token .= $charPool[mt_rand(0,strlen($charPool)-1)];
-        $token = sha1(md5(sha1($token)));
+        for($p = 0; $p<3; $p++)
+        	$token .= (string)mt_rand();
+        $token = sha1('circl'.$token.'efy');
         
         try {
             $id = $this->db->insert('group_members', array(
@@ -247,27 +244,10 @@ class Group extends BaseModel {
         }
 
         if ($added) {
-            // Send email with link
             $link = 'http://'. DOMAIN . '/circle/'. $this->symbol . '?confirm='.$token;
-            
-            $group_name = $group->name;
-            $body = <<<EOF
-Hi,
-
-This email is to confirm that this email address belongs to you 
-in order to give you access to $group_name.
-
-Please click in this link to confirm and join the circle:
-$link
-
-Thank you!,
-Circlefy Team.
-EOF;
-            mail($email,
-                 'Confirmation of Email for Circle',
-                 $body,
-                 "From: tap.info\r\n");
+            Mailer::joinConfirm($this->user, $email, $group, $link);
         }
+
         return $this;
     }
     

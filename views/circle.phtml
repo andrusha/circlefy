@@ -5,7 +5,7 @@
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'group', 'id' => $circle['id'], 'inside' => $state ? 1 : 0, 'first_tap' => $first_tap ? 1 : 0),
+                           'feed'  => array('type' => 'group', 'id' => $circle['id'], 'inside' => 0, 'first_tap' => $first_tap ? 1 : 0),
                            'comet' => array('groups' => array($circle['id']))),
         'guest'   => $guest);
     if ($moderator)

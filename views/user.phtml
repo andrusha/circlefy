@@ -5,7 +5,7 @@
         'styles'  => array('roar.css', 'modal.css'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'friend', 'id' => $user['id']),
+                           'feed'  => array('type' => 'friend', 'id' => $user['id'], 'inside' => 0),
                            'comet' => array('groups' => array())),
         'guest'   => $guest);
     include(HEADER);

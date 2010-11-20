@@ -15,7 +15,7 @@ define('DEBUG', true);
 function __autoload($classname) {
     $generics = array('Base', 'BaseModel', 'Collection');
     $libs = array('DB', 'Action', 'Comet', 'Curl', 'Exceptions', 'FuncLib',
-        'Images', 'Mail', 'FirePHP', 'SeparatorIterator');
+        'Images', 'Mailer', 'FirePHP', 'SeparatorIterator');
     $db = array('MySQL', 'Postgress');
     $add_path = '';
     if (in_array($classname, $generics))
@@ -56,6 +56,9 @@ define("USER_PIC_REL",   "/static/user_pics/");
 define("GROUP_PIC_REL",  "/static/group_pics/");
 define("USER_PIC_PATH",  "/var/data/user_pics");
 define("GROUP_PIC_PATH", "/var/data/group_pics");
+
+define("MAIL_HEADER", BASE_PATH.'views/mails/header.phtml');
+define("MAIL_FOOTER", BASE_PATH.'views/mails/footer.phtml');
 
 define("HEADER",      BASE_PATH.'views/parts/header.phtml');
 define("FOOTER",      BASE_PATH.'views/parts/footer.phtml');

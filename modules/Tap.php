@@ -97,16 +97,25 @@ class Tap extends BaseModel {
         @return Tap
     */
     public static function toGroup(Group $group, User $user, $text, $media, $private = 0, $anon = 0) {
-        return Tap::byId(Tap::add($user, $text, $media, $group, null, $private, $anon),
+        $tap = Tap::byId(Tap::add($user, $text, $media, $group, null, $private, $anon),
                          true, false, true, (!empty($media) ? true : false));
+
+        foreach(UsersList::search('members', array('gid' => $group->id)) as $user)
+            Mailer::newMessage($user, $tap);
+
+        return $tap;
     }
 
     /*
         @return Tap
     */
     public static function toUser(User $from, User $to, $text, $media, $anon = 0) {
-        return Tap::byId(Tap::add($from, $text, $media, null, $to, 0, $anon), 
-                         true, true, true, (!empty($media) ? true : false));
+        $tap = Tap::byId(Tap::add($from, $text, $media, null, $to, 0, $anon), 
+                        true, true, true, (!empty($media) ? true : false));
+
+        Mailer::newPersonal($to, $tap);
+
+        return $tap;
     }
 
     /*
