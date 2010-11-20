@@ -1690,6 +1690,12 @@ padding:0;
     background:rgba(255,255,255,.4);
     position:relative;
 }
+.feed-item:hover .replies .timestamp {
+float:right;
+line-height:5px;
+padding:0;
+margin:0;
+}
 .replies .arrow {
 	width:21px;
 	height:11px;
