@@ -121,7 +121,7 @@
             <# if (!msg.anonymous): #>
                 <img src="<?=USER_PIC_REL?>medium_<#: msg.sender.id #>.jpg" alt="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" class="avatar-author" data-tiptitle="<#: msg.sender.fname  #> <#: msg.sender.lname  #>" data-tipid="msg-<#: msg.id #>" />
             <# else: #>
-                <img src="/static/images/user.gif" class="avatar-author" data-tiptitle="anon" data-tipid="author-anon" />
+                <img src="/static/images/user.gif" class="avatar-author" data-tiptitle="anon" data-tipid="author-anon" width="50" height="50" />
             <# endif; #>
 
             <div class="text">
