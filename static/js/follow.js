@@ -21,9 +21,6 @@ var _follow = _tap.register({
                         el.set({'def': 'Join Circle', 'alt': 'Waiting Approval'});
                     el.setData('followed', data.state);
                     el.toggleClass('active');
-                    var controls = $('controls');
-                    if (controls)
-                        controls.toggleClass('hidden');
                 } else {
                     if (!response.reason || response.reason != 'anon') {
                         if (auth == 'email') {

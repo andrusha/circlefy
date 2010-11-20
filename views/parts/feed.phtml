@@ -111,27 +111,27 @@ if ($_f['show_reply']){
                 <a href="/convo/<?=$f['id']?>"><?=$f['text']?></a>
                 <? if (!empty($f['media']['id'])): ?>
                     <? if ($f['media']['type'] == 1): ?>
-                    <a href="#" class="display-video thumbnail">
-                        <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-video media-thumbnail" />
-                        <img src="/static/images/play.png" alt="" class="play-button" />
-                        <img src="/static/images/media-video.png" class="media-type" width="16" height="16" />
-                    </a>
+                        <a href="#" class="display-video thumbnail">
+                            <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-video media-thumbnail" />
+                            <img src="/static/images/play.png" alt="" class="play-button" />
+                            <img src="/static/images/media-video.png" class="media-type" width="16" height="16" />
+                        </a>
                     <? else: ?>
-                    <a href="#" class="display-image thumbnail" data-embedcode="<?=$f['media']['code']?>" data-imageurl="<?=$f['media']['fullimage_url']?>">
-                        <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-image media-thumbnail" />
-                        <img src="/static/images/media-photo.png" class="media-type" width="16" height="16" />
-                    </a>
+                        <a href="#" class="display-image thumbnail" data-embedcode="<?=$f['media']['code']?>" data-imageurl="<?=$f['media']['fullimage_url']?>">
+                            <img src="<?=$f['media']['thumbnail_url'] ?>" alt="" class="thumbnail-image media-thumbnail" />
+                            <img src="/static/images/media-photo.png" class="media-type" width="16" height="16" />
+                        </a>
                     <? endif; ?>
-                <div class="data">
-                    <h3 class="title video"><a href="/convo/<?=$f['id']?>"><?=$f['media']['title']?></a></h3>
-                    <small><a href="<?=$f['media']['link']?>"><?=$f['media']['link']?></a></small>
-                    <em><a href="/convo/<?=$f['id']?>"><?=$f['media']['description']?></a></em>
-                </div><!--data-->
-                <div class="clear"></div>
-                <? if ($f['media']['type'] == 1): ?>
-                <div class="video-embed-close hidden"><a href="#">Close &times;</a></div>
-                <div class="video-embed hidden"><?=stripslashes($f['media']['code'])?></div>
-                <? endif; ?>
+                    <div class="data">
+                        <h3 class="title video"><a href="/convo/<?=$f['id']?>"><?=$f['media']['title']?></a></h3>
+                        <small><a href="<?=$f['media']['link']?>"><?=$f['media']['link']?></a></small>
+                        <em><a href="/convo/<?=$f['id']?>"><?=$f['media']['description']?></a></em>
+                    </div><!--data-->
+                    <div class="clear"></div>
+                    <? if ($f['media']['type'] == 1): ?>
+                        <div class="video-embed-close hidden"><a href="#">Close &times;</a></div>
+                        <div class="video-embed hidden"><?=stripslashes($f['media']['code'])?></div>
+                    <? endif; ?>
                 <? endif; ?>
             </div><!--message-->
             <div class="clear"></div>
@@ -203,7 +203,7 @@ if ($_f['show_reply']){
                             <img src="<?=USER_PIC_REL.'small_'.$f['reciever']['id'].'.jpg'?>" />
                         </a>
                     </div><!--user-->
-                    <div class="circle" data-tiptitle="Private message" data-tipid="user-pm-<?=$f['sender']['id']?>">
+                    <div class="circle" data-tiptitle="Personal message" data-tipid="user-pm-<?=$f['sender']['id']?>">
 						<a href="/convo/<?=$f['id']?>" class="privatemessage">PM</a>
                     </div><!--circle-->
                 <? endif; ?>
@@ -211,6 +211,9 @@ if ($_f['show_reply']){
                <!-- there would be icon, selected depending on what type of content message have -->
                 <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
                 <span class="timestamp" data-timestamp="<?=$f['timestamp']?>"><?=$f['time']?></span>
+                <? if ($f['private']): ?>
+                    <div class="messagetomembers">*private*</div>
+                <? endif; ?>
             </div>
             <div class="clear"></div>
         </div><!--text-->

@@ -230,6 +230,9 @@
                     <# endif; #>
                  <div class="icons">
                     <span class="timestamp" data-timestamp="<#: msg.timestamp #>"><#: msg.time  #></span>
+                    <# if (msg.private): #>
+                        <div class="messagetomembers">*private*</div>
+                    <# endif; #>
                 </div>
             </div>
         

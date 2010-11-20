@@ -652,6 +652,10 @@ var _tapbox = _tap.register({
                 media.fullimage_url = this.tapbox.getData('fullimage');
             data.media = media;
         }
+
+        _vars.feed.inside = private;
+        _vars.feed.anon = anon;
+        this.publish('feed.change', []);
         
         if (_vars.feed.first_tap) {
             this.publish('modal.show.first-tap', [data]);
