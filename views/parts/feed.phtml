@@ -210,10 +210,10 @@ if ($_f['show_reply']){
              <div class="icons">
                <!-- there would be icon, selected depending on what type of content message have -->
                 <!--<a href="#"><img src="/static/images/feed_type_photo.jpg" alt="tap type" /></a>-->
-                <span class="timestamp" data-timestamp="<?=$f['timestamp']?>"><?=$f['time']?>
+                <span class="timestamp" data-timestamp="<?=$f['timestamp']?>"><?=$f['time']?></span>
                 <? if ($f['private']): ?>
                     <div class="messagetomembers"><img src="/static/images/lock.png" alt="lock" /></div>
-                <? endif; ?></span>
+                <? endif; ?>
             </div>
             <div class="clear"></div>
         </div><!--text-->
