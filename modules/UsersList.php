@@ -175,6 +175,10 @@ class UsersList extends Collection {
                 $where[] = 'c.message_id = #mid#';
                 $where[] = 'c.active = #active#';
                 break;
+
+            case 'like':
+                $where[] = '(u.uname LIKE #search# OR u.fname LIKE #search# OR u.lname LIKE #search#)';
+                break;
         }
 
         if ($options & U_BY_UNAME)

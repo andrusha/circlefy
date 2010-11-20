@@ -18,5 +18,14 @@ class ajax_search extends Base {
             GroupsList::search($type, array('search' => $search, 'limit' => 5, 'uid' => $user->id), G_TAPS_COUNT | G_USERS_COUNT)
                     ->asArrayAll(),
             'groups');
+        if ($type == 'like') {
+            // TODO: fix the keys in asArrayAll response
+            $usersList = UsersList::search('like', array('search' => $search, 'limit' => 5, 'id' => $user->id))->asArrayAll();
+            $users = array();
+            if (!empty($usersList))
+                foreach ($usersList as $user)
+                    $users[] = $user;
+            $this->set($users, 'users');
+        }
     }
 };

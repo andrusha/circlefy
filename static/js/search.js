@@ -110,7 +110,7 @@ var _search = _tap.register({
                     link: 'cancel',
                     onSuccess: function () {
                         var resp = JSON.decode(this.response.text);
-                        Elements.from(_template.parse('search', resp.groups)).inject(self.list.empty());
+                        Elements.from(_template.parse('search', resp)).inject(self.list.empty());
                         
                         
                         self.list.getElement('.create').addEvent('click', function(e){

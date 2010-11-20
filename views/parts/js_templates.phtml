@@ -3,19 +3,30 @@
     <? /*** Search suggestions template ***/ ?>
     <ul id="template-search">
     <!--
-        <# if (this.length): #>
-        <# for (var sugg from this): #>
-        <li>
-            <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
-           <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name.limit(30) #></a></h3>
-           <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
-           <div class="clear"></div>
-        </li>
-        <# endfor; #>
-        <# else: #>
-        <li>
-            <h3>Nothing found. Create your own circle:</h3>
-        </li>
+        <# if (this.groups.length): #>
+            <# for (var sugg from this.groups): #>
+            <li>
+                <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
+               <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name.limit(30) #></a></h3>
+               <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
+               <div class="clear"></div>
+            </li>
+            <# endfor; #>
+        <# endif; #>
+
+        <# if (this.users.length): #>
+            <# for (var sugg from this.users): #>
+            <li>
+                <div class="thumb"><span></span><img src="<?=USER_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
+               <h3 class="title"><a href="/user/<#: sugg.uname #>"><#: sugg.fname #> <#: sugg.lname #></a></h3>
+               <div class="clear"></div>
+            </li>
+            <# endfor; #>
+        <# endif; #>
+        <# if (!this.groups.length && !this.users.length): #>
+            <li>
+                <h3>Nothing found. Create your own circle:</h3>
+            </li>
         <# endif; #>
 
         <li class="create">
