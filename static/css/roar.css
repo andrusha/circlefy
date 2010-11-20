@@ -137,7 +137,7 @@
     background-color:#346394;
 }
 #notifications .controls .paginate {
-	width:84px;
+	width:114px;
 	height:20px;
 	background:url(../images/filter_bg.gif) repeat-x bottom left;
 	float:left;
@@ -156,7 +156,7 @@
 	height:20px;
 	background:url(../images/filter_bg.gif) repeat-x bottom left;
 	float:left;
-	display:block;
+	display:none;
         font-size:10px;
         text-decoration:none;
         color:#333;
