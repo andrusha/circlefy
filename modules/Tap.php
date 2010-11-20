@@ -16,7 +16,7 @@ class Tap extends BaseModel {
         'modification_time', 'private');
 
     protected static $addit = array('responses', 'group', 'sender', 'reciever', 
-        'media', 'replies', 'involved', 'is_new','new_replies');
+        'media', 'replies', 'involved', 'is_new','new_replies', 'type');
 
     protected static $tableName = 'message';
 
@@ -289,10 +289,5 @@ class Tap extends BaseModel {
         }
 
         return $perm;
-    }
-
-    public function deleteEvent(User $u) {
-        $query = 'DELETE FROM events WHERE user_id = #uid# AND type IN (0, 1) AND related_id = #mid#';
-        $this->db->query($query, array('uid' => $u->id, 'mid' => $this->id));
     }
 };

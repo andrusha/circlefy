@@ -8,7 +8,7 @@ class page_user extends Base {
 
         $user = User::init($uname);
         $user->stats = $user->getStats();
-        $user->deleteEvent($this->user);
+        Events::readUserEvent($this->user, $user);
 
         $this->set($user->asArray(), 'user');
 
@@ -38,9 +38,5 @@ class page_user extends Base {
         $this->set(
             $this->user->following($user),
             'state');
-
-        if (!$this->user->guest)
-            $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
-        $this->set('user', 'page');
 	}
 };

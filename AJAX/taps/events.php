@@ -12,13 +12,13 @@ class ajax_events extends Base {
 
         switch($action) {
             case 'all_read':
-                TapsList::deleteAllEvents($this->user);
+                Events::readAllEvents($this->user);
                 $this->data = array('success' => 1);
                 break;
 
             case 'fetch':
                 $page = intval($_POST['page']);
-                $items = TapsList::fetchEvents($this->user, $page)->format()->asArrayAll();
+                $items = Events::forUser($this->user, $page)->format()->asArrayAll();
                 $this->data = array('success' => 1, 'events' => array_values($items));
                 break;
         }

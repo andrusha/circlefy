@@ -48,6 +48,29 @@ abstract class Collection implements IteratorAggregate, Countable {
     }
 
     /*
+        Filters data by specified function
+
+        @param function $function
+        @return Collection instance of child collection
+    */
+    public function filterData($function) {
+        $class = get_called_class();
+        return new $class(array_filter($this->data, $function));
+    }
+
+    /*
+        Maps a function through all data-set
+        Returns _new_ dataset
+
+        @param function $function
+        @return Collection instance of child collection
+    */
+    public function map($function) {
+        $class = get_called_class();
+        return new $class(array_map($function, $this->data));
+    }
+
+    /*
         Injects some value for every item in collection
     */
     public function inject($key, $val) {
@@ -103,5 +126,15 @@ abstract class Collection implements IteratorAggregate, Countable {
         }
 
         return $this;
+    }
+
+    /*
+        Returns empty collection - may be useful
+
+        @return Collection instance of proper child
+    */
+    public static function makeEmpty() {
+        $class = get_called_class();
+        return new $class(array());
     }
 };

@@ -43,9 +43,5 @@ class page_homepage extends Base {
         }
         
         $this->set($feed, 'feed');
-
-        if (!$this->user->guest)
-            $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
-        $this->set('homepage', 'page');
     }
 };

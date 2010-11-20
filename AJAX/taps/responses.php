@@ -11,7 +11,7 @@ class ajax_responses extends Base {
         
         $tap = new Tap($id);
         if (!$this->user->guest)
-            $tap->deleteEvent($this->user);
+            Events::readMessageEvent($this->user, $tap);
         $tap = $tap->getReplies()->format()->asArray();
         $responses = $tap['replies'];
         $this->data = array('success' => count($responses) > 0,'responses' => $responses);

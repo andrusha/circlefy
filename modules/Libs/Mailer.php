@@ -68,4 +68,14 @@ class Mailer {
                 array('your_name' => $u->fname, 'fname' => $m->sender->fname, 'lname' => $m->sender->lname,
                       'text' => $m->text)));
     }
+
+    public static function digest(User $u, TapsList $messages, TapsList $replies, TapsList $followers) {
+        if (count($messages) == 0 && count($replies) == 0 && count($followers) == 0)
+            return;
+
+        self::send($u->email, 'Circlefy digest for '.date('m.d.Y'),
+            self::formEmail('digest',
+                array('your_name' => $u->fname, 'messages' => $messages->asArrayAll(), 
+                      'responses' => $replies->asArrayAll(), 'followers' => $followers->asArrayAll())));
+    }
 };

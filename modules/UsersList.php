@@ -88,6 +88,7 @@ class UsersList extends Collection {
         @param str   $type
             byUname - user with specific uname
             byId    - user with specific id
+            byIds   - fetch a list of users with specified ids
             following - users whom you are following
             followers - your followers (they follow you)
             members   - group members
@@ -99,6 +100,7 @@ class UsersList extends Collection {
         @param array $params
             uname  - username
             id     - user id
+            ids    - array of user ids
             gid    - group id
             mid    - message id
             active - conversation status
@@ -141,6 +143,10 @@ class UsersList extends Collection {
 
             case 'byId':
                 $where[] = 'u.id = #id#';
+                break;
+
+            case 'byIds':
+                $where[] = 'u.id IN (#ids#)';
                 break;
 
             case 'following':

@@ -17,14 +17,11 @@ class page_convo extends Base {
             exit();
         }
 
-        if (!$this->user->guest) {
-            $tap->deleteEvent($this->user);
-            $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
-        }
+        if (!$this->user->guest)
+            Events::readMessageEvent($this->user, $tap);
 
         $this->set($tap->asArray(), 'convo'); 
         $this->set($tap->getStatus($this->user), 'state');
-        $this->set('convo', 'page');
 	}
 
     private function isAllowed(Tap $tap) {

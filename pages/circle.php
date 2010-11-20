@@ -51,9 +51,6 @@ class page_circle extends Base {
             $group->isPermitted($this->user),
             'moderator');
 
-        if (!$this->user->guest)
-            $this->set(TapsList::fetchEvents($this->user, $page)->format()->asArrayAll(), 'events');
-
         $this->set('circle', 'page');
 	}
 };

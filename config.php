@@ -10,7 +10,10 @@ if (!empty($_FILES) && !empty($_POST) && $_POST['PHPSESSID'])
 session_start();
 
 define('BASE_PATH', realpath(dirname(__FILE__)).'/');
-define('DEBUG', true);
+if (isset($debug_redifine))
+    define('DEBUG', $debug_redifine);
+else
+    define('DEBUG', true);
 
 function __autoload($classname) {
     $generics = array('Base', 'BaseModel', 'Collection');

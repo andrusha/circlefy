@@ -55,6 +55,10 @@ abstract class Base {
                 $this->set($this->user->guest,          'guest');
                 $this->set(array_flip(Group::$types),   'types');
                 $this->set(array_flip(Group::$auths),   'auths');
+                if (!$this->user->guest)
+                    $this->set(Events::forUser($this->user)->format()->asArrayAll(), 'events');
+
+                $this->set($this->page_name, 'page');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;
             

@@ -1,0 +1,31 @@
+<? //Grop join confirmation for email authorization 
+   include(MAIL_HEADER); ?>
+As for <?=date('jS F')?> you have missed some interesting stuff going on.
+
+<? if (!empty($followers)): ?>
+<?=count($followers)?> new follower<?=(count($followers) > 1 ? 's' : '')?>:
+    <? foreach ($followers as $f): ?>
+* <?=$f['fname']?> <?=$f['lname']?>
+    <? endforeach; ?>
+<? endif; ?>
+
+
+<? if (!empty($messages)): ?>
+<?=count($messages)?> new message<?=(count($messages) > 1 ? 's' : '')?>:
+    <? foreach ($messages as $m): ?>
+        <? if ($m['reciever']['id']): ?>
+* <?=$m['sender']['fname']?> <?=$m['sender']['lname']?> sent you a private message "<?=$m['text']?>"
+        <? else: ?>
+* <?=$m['sender']['fname']?> <?=$m['sender']['lname']?> wrote in <?$m['group']['name']?> about "<?=$m['text']?>"
+        <? endif; ?>
+    <? endforeach; ?>
+<? endif; ?>
+
+
+<? if (!empty($responses)): ?>
+<?=count($responses)?> conversation update<?=(count($response) > 1 ? 's' : '')?>:
+    <? foreach ($responses as $r): ?>
+* <?=$r['new_replies']?> new repl<?=($r['new_replies'] > 1 ? 'ies' : 'y')?> in conversation about "<?=$r['text']?>"
+    <? endforeach; ?>
+<? endif; ?>
+<? include(MAIL_FOOTER); ?>

@@ -300,11 +300,6 @@ class User extends BaseModel {
         $this->db->commit();
     }
     
-    public function deleteEvent(User $u) {
-        $query = 'DELETE FROM events WHERE user_id = #uid# AND type = 2 AND related_id = #fid#';
-        $this->db->query($query, array('uid' => $u->id, 'fid' => $this->id));
-    }
-
     public function firstTap(Group $g) {
         $query = 'SELECT id FROM message WHERE sender_id = #uid# AND group_id = #gid# LIMIT 1';
         return $this->db->query($query, array('uid' => $this->id, 'gid' => $g->id))->num_rows > 0;
