@@ -234,6 +234,10 @@ border-top-right-radius: 0px;
     margin-top: -29px;
 	height:19px;
 }
+#controls #filters.collapsed:hover {
+padding-left:30px;
+background:url(../images/filters-expand.gif) no-repeat 1px 1px;
+}
 #controls #filters #collapser{
 	background:url(../images/filter.gif) no-repeat left center;
 	margin:0;
