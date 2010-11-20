@@ -580,6 +580,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 	font-size:10px;
 	color:#999;
 	line-height:12px;
+	float:left;
 }
 .feed-item h3 a {
 	color:#346394;
