@@ -88,7 +88,6 @@ class Tap extends BaseModel {
                   'private' => $private,
                   'anonymous' => $anonymous));
 
-        Comet::send('tap.new', Tap::byId($id)->format()->asArray());
 
         return $id;
     }
@@ -99,6 +98,8 @@ class Tap extends BaseModel {
     public static function toGroup(Group $group, User $user, $text, $media, $private = 0, $anon = 0) {
         $tap = Tap::byId(Tap::add($user, $text, $media, $group, null, $private, $anon),
                          true, false, true, (!empty($media) ? true : false));
+
+        Comet::send('tap.new', $tap->format()->asArray());
 
         foreach(UsersList::search('members', array('gid' => $group->id)) as $user)
             Mailer::newMessage($user, $tap);
@@ -113,6 +114,7 @@ class Tap extends BaseModel {
         $tap = Tap::byId(Tap::add($from, $text, $media, null, $to, 0, $anon), 
                         true, true, true, (!empty($media) ? true : false));
 
+        Comet::send('tap.new', $tap->format()->asArray());
         Mailer::newPersonal($to, $tap);
 
         return $tap;

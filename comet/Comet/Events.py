@@ -70,11 +70,11 @@ class EventDispatcher(object):
             message['group_id'], message['private'], message['reciever_id'])
 
         if reciever is not None:
-           return {'users': set([sender, reciever])}
-
-        recievers = {'users': self.group_users(group)}
-        if not private:
-            recievers['group'] = group
+            recievers = {'users': set([sender, reciever])}
+        else: 
+            recievers = {'users': self.group_users(group)}
+            if not private:
+                recievers['group'] = group
 
         unrecieved = self.user_server.send_to(action, message, **recievers)
         if unrecieved:
