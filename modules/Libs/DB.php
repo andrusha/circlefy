@@ -31,6 +31,16 @@ class DB {
     */
     private $updates = array();
 
+    /*
+        A list of pending inserts
+
+        array(
+            table => array(
+                array(
+                    column => value
+    */
+    private $inserts = array();
+
     private function __construct() {}
 
     function __destruct() {
@@ -38,6 +48,9 @@ class DB {
             throw new TransactionException('You forgot to commit or rollback transactions');
     }
 
+    /*
+        Sending debug log to browser (making explain queries too)
+    */
     public function flush_log() {
         if (empty($this->queries))
             return;
@@ -254,5 +267,27 @@ class DB {
         $this->query($query, array_merge($columns, array('id' => $id)));
 
         unset($this->updates[$table][$id]);
+    }
+
+    /*
+        You should provide same array keys for each table
+        or it would cauze SQLException
+    */
+    public function lazyInsert($table, array $values) {
+        $this->inserts[$table][] = $values;
+        return $this;
+    }
+
+    public function commitLazyInsert($table) {
+        if (empty($this->inserts[$table]))
+            return;
+
+        $columns = $this->inserts[$table];
+        $fields  = implode(',', array_keys(current($columns)));
+        $query   = "INSERT INTO `$table` ($fields) VALUES #values#";
+
+        $this->listInsert($query, $columns);
+
+        unset($this->inserts[$table]);
     }
 };

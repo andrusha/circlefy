@@ -6,6 +6,10 @@
     It also chaches different results
 */
 class GroupsList extends Collection {
+    public function __construct(array $data) {
+        parent::__construct($data);
+    }
+
     /*
         Uses temporary caches user groups,
         may be handy in a lot types of queries
@@ -139,6 +143,9 @@ class GroupsList extends Collection {
             bySymbol - fetch group by symbol
             byFbIDs  - groups by their Facebook ID
             like     - search on group name by LIKE
+            byUserAndLike - performs like search within followed groups
+            siblings - returns all sibling groups
+            parent   - returns closest parent group
 
         @param array $params
             uid    - user id
@@ -147,6 +154,7 @@ class GroupsList extends Collection {
             fbids  - a list of facebook group (likes, etc) ids
             limit  - how many lines fetch from db
             search - search string for group
+            depth  - used in group_relations queries
 
         @param int   $options
             G_TAPS_COUNT      - fetch number of messages in group
@@ -167,9 +175,10 @@ class GroupsList extends Collection {
             $fields = FuncLib::addPrefix('g.', Group::$fields);
 
         $joins = array(
-            'members'  => 'INNER JOIN group_members gm  ON g.id = gm.group_id',
-            'members2' => 'LEFT  JOIN group_members gm2 ON g.id = gm2.group_id',
-            'messages' => 'LEFT  JOIN message m         ON m.group_id = g.id');
+            'members'   => 'INNER JOIN group_members gm  ON g.id = gm.group_id',
+            'members2'  => 'LEFT  JOIN group_members gm2 ON g.id = gm2.group_id',
+            'messages'  => 'LEFT  JOIN message m         ON m.group_id = g.id',
+            'relations' => 'INNER JOIN group_relations gr ON g.id = gr.descendant');
 
         switch ($type) {
             case 'byUser':
@@ -195,11 +204,20 @@ class GroupsList extends Collection {
                 break;
 
             case 'byUserAndLike':
-                $fields[]      = 'gm.permission';
-                $join[]        = 'members';
-                $where         = 'gm.user_id = #uid# AND g.name LIKE #search#';
-                $user          = Auth::identify();
-                $params['uid'] = $user->id;
+                $fields[] = 'gm.permission';
+                $join[]   = 'members';
+                $where    = 'gm.user_id = #uid# AND g.name LIKE #search#';
+                break;
+
+            case 'siblings':
+                $join[] = 'relations';
+                $where  = 'gr.ancestor = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
+                break;
+
+            case 'parent':
+                $join[] = 'relations';
+                $where  = 'gr.descendant = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth# - 1';
+                $limit  = 'LIMIT 1';
                 break;
         }
 
@@ -357,6 +375,9 @@ class GroupsList extends Collection {
             $db->listInsert($query, $list);
             $fbids = array_map(function ($x) { return $x[0]; }, $list);
             $groups = GroupsList::search('byFbIDs', array('fbids' => $fbids));
+
+            GroupRelations::init($groups); 
+
             $db->commit();
         } catch (SQLException $e) {
             $db->rollback();

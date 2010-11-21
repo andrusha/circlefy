@@ -24,11 +24,11 @@ class Group extends BaseModel {
         'blocked'   => 1, 'pending' => 2, 'user' => 3,
         'moderator' => 4, 'admin'   => 5, 'not_in' => -1);
 
-    public static $fields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
+    public static $fields = array('id', 'tags_group_id', 'fb_id',
         'symbol', 'name', 'descr', 'created_time', 'type', 'auth', 'status',
         'online_count', 'secret', 'auth_email');
 
-    protected static $intFields = array('id', 'parent_id', 'tags_group_id', 'fb_id',
+    protected static $intFields = array('id', 'tags_group_id', 'fb_id',
         'created_time', 'type', 'auth', 'status', 'online_count', 'secret');
 
     protected static $addit = array('tags', 'members', 'messages_count',
@@ -118,7 +118,7 @@ class Group extends BaseModel {
         
         @returns Group
     */
-    public static function create(User $creator, Group $parent = null, $name, $symbol, $descr, array $tags = null,
+    public static function create(User $creator, $name, $symbol, $descr, array $tags = null,
                                   $type = 'group', $auth = 'open', $status = 'public', $secret = 0, $auth_email = null) {
         
         $db = DB::getInstance();
@@ -128,7 +128,7 @@ class Group extends BaseModel {
         if (!is_int($type)) $type = Group::$types[$type];
         if (!is_int($auth)) $auth = Group::$auths[$auth];
 
-        $data = array('parent_id' => $parent->id, 'symbol' => $symbol, 'name' => $name,
+        $data = array('symbol' => $symbol, 'name' => $name,
             'descr' => $descr, 'type' => $type, 'auth' => $auth,
             'status' => Group::$statuses[$status], 'secret' => $secret, 'auth_email' => $auth_email);
 
@@ -138,19 +138,23 @@ class Group extends BaseModel {
                 array('group_id' => $id, 'user_id' => $creator->id,
                       'permission' => Group::$permissions['admin']));
 
+            $data['id'] = $id;
+            $group = new Group($data);
+
+            //nested transactions here
+            GroupRelations::init($group);
+
+            $db->commit();
         } catch (SQLException $e) {
             $db->rollback();
             throw $e;
         }
-
-        $db->commit();
-        
-        $data['id'] = $id;
-        $group = new Group($data);
+                
         if (!empty($tags)) {
             $group->tags->addTags($tags);
             $group->commit();
         }
+
         return $group;
     }
 

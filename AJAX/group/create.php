@@ -23,7 +23,6 @@ class ajax_create extends Base {
         }
         
         $group = Group::create($this->user,
-                               null,
                                $_POST['title'],
                                $_POST['symbol'],
                                $_POST['descr'],
