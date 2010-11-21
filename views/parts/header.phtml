@@ -30,6 +30,46 @@ _tap.register({
 });
 </script>
 <? endif; ?>
+<? if ($firsttime): ?>
+<script type='text/javascript'>
+_tap.register({
+    init: function() {
+        this.welcome.delay(2000);
+        this.reminder.delay(11000);
+        <? if (isset($_GET['beatles'])): ?>
+        this.beatles.delay(17000);
+        <? endif; ?>
+    },
+
+    welcome: function() {
+        var options = {color: 'darkgreen', duration: 10000};
+        _notifications.alert('Hey, <?=$me['fname']?>!', 
+                             'Welcome to Circlefy!', 
+                             options);
+
+        _notifications.alert('A few words', 
+            'Circlefy is a real-time communication platform, where you can join and connect with your social circles<br>Have fun!', 
+            options);
+    },
+
+    reminder: function() {
+        _notifications.alert('Jobs is our slave', 
+            "All activity you'll receive in real-time, just like you would on Mac or so", 
+            {color: 'darkgreen', duration: 4000});
+    },
+
+    beatles: function() {
+        var text = "Love, love, love, love, love, love, love, love, love.\nThere's nothing you can do that can't be done.\nNothing you can sing that can't be sung.\nNothing you can say but you can learn how to play the game\nIt's easy.\nThere's nothing you can make that can't be made.\nNo one you can save that can't be saved.\nNothing you can do but you can learn how to be you\nin time - It's easy.\n\nAll you need is love, all you need is love,\nAll you need is love, love, love is all you need.\nLove, love, love, love, love, love, love, love, love.\nAll you need is love, all you need is love,\nAll you need is love, love, love is all you need.\nThere's nothing you can know that isn't known.\nNothing you can see that isn't shown.\nNowhere you can be that isn't where you're meant to be.\n\nIt's easy.\nAll you need is love, all you need is love,\nAll you need is love, love, love is all you need.\nAll you need is love (all together now)\nAll you need is love (everybody)\nAll you need is love, love, love is all you need.";
+
+        var id = 0;
+        lines = text.split("\n");
+        lines.each(function(line){
+            (function() {_notifications.alert('', line, {color: 'red', duration: 1500})}).delay((id++)*1000);
+        });
+    }
+});
+</script>
+<? endif; ?>
 <!-- START GLOBAL JS SCRIPTS -->
 <script type="text/javascript" src="/static/js/follow.js"></script>
 <!-- END GLOBAL JS SCRIPTS -->

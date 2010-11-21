@@ -58,6 +58,9 @@ abstract class Base {
                 if (!$this->user->guest)
                     $this->set(Events::forUser($this->user)->format()->asArrayAll(), 'events');
 
+
+                if (isset($_GET['firsttime']))
+                    $this->set(true, 'firsttime');
                 $this->set($this->page_name, 'page');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;

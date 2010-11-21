@@ -17,7 +17,7 @@
         <# if (this.users.length): #>
             <# for (var sugg from this.users): #>
             <li>
-                <div class="thumb"><span></span><img src="<?=USER_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
+                <div class="thumb"><img src="<?=USER_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
                <h3 class="title"><a href="/user/<#: sugg.uname #>"><#: sugg.fname #> <#: sugg.lname #></a></h3>
                <div class="clear"></div>
             </li>

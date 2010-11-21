@@ -192,7 +192,7 @@ _modal.signup = _tap.register({
                 if (response.success) {
                     indic_msg.set('text', 'Logging you in..');
                     self.publish('modal.show.suggestions', [ function () {
-                        window.location.reload();
+                        window.location.search = 'firsttime';
                     }]);
                 } else {
                     indic_msg.text = 'Error durning account creation';
