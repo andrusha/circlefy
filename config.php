@@ -13,7 +13,7 @@ define('BASE_PATH', realpath(dirname(__FILE__)).'/');
 if (isset($debug_redifine))
     define('DEBUG', $debug_redifine);
 else
-    define('DEBUG', true);
+    define('DEBUG', stripos($_SERVER['HTTP_USER_AGENT'], 'firefox') !== false);
 
 function __autoload($classname) {
     $generics = array('Base', 'BaseModel', 'Collection');

@@ -37,6 +37,22 @@ $pages = array(
             'allowed'  => true,
             'template' => 'conversation'
         ),
+        'what'     => array(
+            'allowed'  => true,
+            'template' => 'what'
+        ),
+        'about'    => array(
+            'allowed'  => true,
+            'template' => 'about'
+        ),
+        'devs'     => array( 
+            'allowed'  => true,
+            'template' => 'devs'
+        ),
+        'contact'  => array(
+            'allowed'  => true,
+            'template' => 'contact'
+        )
     );
 
 $ajaxs = array(

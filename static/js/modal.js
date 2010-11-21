@@ -56,7 +56,8 @@ var _modal = _tap.register({
         Object.each({'button.signup-button': 'modal.show.signup', 
                      'button.login-button':  'modal.show.login',
                      'li.suggestions':       'modal.show.suggestions', 
-                     'a#access':             'modal.show.sign-login', 
+                     'a#access':             'modal.show.sign-login',
+                     'a.login-signup':       'modal.show.sign-login',
                      'span#edit_circle > a': 'modal.show.group-edit',
                      'li.settings':          'modal.show.user-edit'},
            function (event, selector) {

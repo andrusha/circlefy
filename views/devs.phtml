@@ -1,0 +1,25 @@
+<?php
+    $_h = array(
+        'title'   => 'developers',
+        'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'Swiff.Uploader.js', 'user_edit.js', 'group_create.js', 'notification.js', 'post.js'),
+        'styles'  => array('roar.css', 'modal.css'),
+        'vars'    => array('user'  => $me,
+                           'guest' => $guest,
+                           'feed'  => array('type' => null, 'id' => null, 'inside' => 0) 
+                            ),
+        'guest'   => $guest);
+    include(HEADER);
+?>
+    
+    <div id="content">
+        <div class="text">
+            <p class="callout">Hey, we're developers too, and we know just how exciting it is to integrate new technologies!</p>
+            <p>That's why we're planning to launch an API for Circlefy in the near future, so that other developers could also join in on the fun, and change the way we communicate.</p>
+            <p>Right now our focus is getting the basics up and running so we'll all be sure that everyone's apps run just fine. But eventually, we'll open Circlefy to third-party developers via an API so that you'll be able to make your own apps that could integrate with our application.</p>
+            <p>If you're interested in developing for or integrating Circlefy, then don't hesitate to drop us a message!</p>
+        </div>
+    </div><!--content-->
+
+<?php
+    include(FOOTER);
+?>

@@ -1,0 +1,28 @@
+<?php
+    $_h = array(
+        'title'   => 'contact us',
+        'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'Swiff.Uploader.js', 'user_edit.js', 'group_create.js', 'notification.js', 'post.js'),
+        'styles'  => array('roar.css', 'modal.css'),
+        'vars'    => array('user'  => $me,
+                           'guest' => $guest,
+                           'feed'  => array('type' => null, 'id' => null, 'inside' => 0) 
+                            ),
+        'guest'   => $guest);
+    include(HEADER);
+?>
+    
+    <div id="content">
+        <div class="text">
+            <p class="callout">Want to tell us what you think about tap? Want to share some ideas or suggestions? Got some questions that need to be answered? Then send us a message!</p>
+
+            <h2>Circlefy Us!</h2>
+            <p>If you're on Circlefy, you could send us a tap at <strong>Support</strong>, for any questions, comments or suggestions.</p>
+
+            <h2>Email Us</h2>
+            <p>If you're an old-fashioned email kind of person, then don't hesitate to send us one at our official address: <strong>info-nospm@circlefy.info</strong> (just make sure to take out the 'nospm' part).</p>
+        </div>
+    </div><!--content-->
+
+<?php
+    include(FOOTER);
+?>

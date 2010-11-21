@@ -21,7 +21,7 @@
         foreach ($_h['scripts'] as $s)
             echo "<script type='text/javascript' src='/static/js/$s'></script>\n";
 ?>
-<? if ($guest):?>
+<? if ($guest && !in_array($page, array('what', 'about', 'devs', 'contact'))):?>
 <script type='text/javascript'>
 _tap.register({
     init: function() {

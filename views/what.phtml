@@ -1,0 +1,39 @@
+<?php
+    $_h = array(
+        'title'   => 'what is this?',
+        'scripts' => array('main.js', 'push.js', 'search.js', 'modal.js', 'Swiff.Uploader.js', 'user_edit.js', 'group_create.js', 'notification.js', 'post.js'),
+        'styles'  => array('roar.css', 'modal.css'),
+        'vars'    => array('user'  => $me,
+                           'guest' => $guest,
+                           'feed'  => array('type' => null, 'id' => null, 'inside' => 0) 
+                            ),
+        'guest'   => $guest);
+    include(HEADER);
+?>
+    
+    <div id="content">
+        <div class="text">
+            <p class="callout">Circlefy is a new social-communication tool that gives you real-time connection to individuals, groups and even geographical areas, without the burden of memorizing any special usernames or address. With Circlefy, you can send messages to anyone in the world, even if you don’t know where they are or how to address you messages.</p>
+
+            <p>Everything in Circlefy works in real-time: send a tap and it instantly appears on other people’s feeds. Conversations are also instantaneous: you’ll be able to respond to taps and see the responses from other people in real time.</p>
+
+            <h2>How Does it Work?</h2>
+
+            <p>It’s simple: all you have to do is compose your message, called a “tap,” and select the individuals or groups you’re sending to. You can add as many individuals or groups you want to get the tap. Hit send and your tap is automatically sent to their feeds.</p>
+
+            <p>You can also respond directly to any taps in your feed, turning it into an active conversation.</p>
+
+            <h2>Why Does it Work?</h2>
+            <p>Because Circlefy connects you to people that matter.</p>
+            <p>Unlike other available social communication tools, Circlefy lets you focus your message to the people who you know want to receive it. Gone are the days of sending out messages in the hope of getting someone to actually reply.</p>
+            <p>With Circlefy, you send messages to your groups. Whether it's a group of friends, a group of people you share the same interest with or even a geographical area you're in, Circlefy lets you communicate with people who'll be happy to read your messages.</p>
+
+            <h2>How Do I Join?</h2>
+            <p>Simple! Just fill up the signup form on your right and hit submit! Signing up is a one time process and it's totally free.</p>
+            <p>After signing up, you'll automatically be logged in. Join groups, create new ones, and then tap 'em!</p>
+        </div>
+    </div><!--content-->
+
+<?php
+    include(FOOTER);
+?>
