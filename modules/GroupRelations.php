@@ -92,7 +92,7 @@ class GroupRelations {
        
         $q = "SELECT depth FROM `".self::table."` WHERE ancestor = #gid# AND ancestor = descendant";
         $res = $db->query($q, array('gid' => $g->id));
-        if (!$res->num_rows())
+        if (!$res->num_rows)
             throw new LogicException("Group relations haven't been initialized for `$g->id` group");
 
         $res = $res->fetch_assoc();
@@ -103,7 +103,7 @@ class GroupRelations {
         @return Group
     */
     public static function getClosestParent(Group $g, $info = true) {
-        $depth = getDepth($g);
+        $depth = self::getDepth($g);
         
         $group = GroupsList::search('parent', 
                                     array('gid' => $g->id, 'depth' => $depth),

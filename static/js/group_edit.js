@@ -219,7 +219,19 @@ _edit.group = _tap.register({
                 this.search.input.setData('name', gname);
                 this.search.input.value = title;
                 this.search.suggest.addClass('hidden');
+
+                this.linkGroup(_vars.feed.id, group);
             }).bind(this));
         }, this);
     },
+
+    linkGroup: function(child, parent) {
+        new Request.JSON({
+            url: '/AJAX/group/link',
+            onSuccess: function (resp) {
+                if (!resp.success)
+                    alert('Dirty little bastard!');
+            }
+        }).post({child: child, parent: parent});
+    }
 });
