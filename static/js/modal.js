@@ -58,7 +58,7 @@ var _modal = _tap.register({
                      'li.suggestions':       'modal.show.suggestions', 
                      'a#access':             'modal.show.sign-login',
                      'a.login-signup':       'modal.show.sign-login',
-                     'span#edit_circle > a': 'modal.show.group-edit',
+                     'button#edit_circle':   'modal.show.group-edit',
                      'li.settings':          'modal.show.user-edit',
                      'button.main-post-button': 'modal.show.post-tap'},
            function (event, selector) {

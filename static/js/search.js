@@ -1,13 +1,13 @@
 _tap.mixin({
     name: 'searching',
 
-    initSearch: function(search, suggest, byUser) {
+    initSearch: function(search, suggest, type) {
         this.search = search; 
         this.suggest = suggest;
         this.list = this.suggest.getElement('ul');
         this.keyword = null;
         this.last_keypress = new Date().getTime()/1000;
-        this.byUser = byUser;
+        this.searchType = type;
 
         search.overtext = new OverText(search, {
             positionOptions: {
@@ -78,11 +78,9 @@ _tap.mixin({
                 this.request = new Request.JSON({
                     url: '/AJAX/group/search',
                     link: 'cancel',
-                    onSuccess: (function (resp) {
-                        this.onSearch(resp);
-                    }).bind(this)
+                    onSuccess: this.onSearch.bind(this)
                 });
-            this.request.post({search: keyword, byUser: this.byUser});
+            this.request.post({search: keyword, type: this.searchType});
         } else if (keyword.length <= 1)
             this.list.empty();
         this.keyword = keyword;
@@ -97,15 +95,15 @@ var _search = _tap.register({
     mixins: 'searching',
 
     init: function(){
-        this.initSearch($('group-search'), $('search-results'), 0);
+        this.initSearch($('group-search'), $('search-results'), 'withUsers');
     },
 
     onSearch: function(resp) {
         Elements.from(_template.parse('search', resp)).inject(this.list.empty());
         
-        this.list.getElement('.create').addEvent('click', function(e){
+        this.list.getElement('.create').addEvent('click', (function(e){
             e.stop();
             this.publish('modal.show.group.create', []);
-        });
+        }).bind(this));
     }
 });

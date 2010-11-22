@@ -6,7 +6,7 @@ var _post = _tap.register({
     mixins: 'searching',
 
     init: function(){
-        this.initSearch($('group-search-post'), $('post-search-results'), 1);
+        this.initSearch($('group-search-post'), $('post-search-results'), 'yourGroups');
 
         this.form = $('posttapform');
         this.form.validator = new Form.Validator(this.form, {

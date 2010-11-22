@@ -5,7 +5,11 @@
             $id++;
             $last = $count == $id; ?>
     <div class="reply-item<?=($last ? ' last' : '')?>" id="conversation-<?=$r['id']?>">
-        <div class="thumb"><a href="/user/<?=$r['user']['uname']?>"><img src="<?=USER_PIC_REL.'medium_'.$r['user']['id'].'.jpg'?>" alt="<?=$r['user']['fname']?> <?=$r['user']['lname']?>" /></div>
+        <div class="thumb">
+            <a href="/user/<?=$r['user']['uname']?>">
+                <img src="<?=USER_PIC_REL.'medium_'.$r['user']['id'].'.jpg'?>" alt="<?=$r['user']['fname']?> <?=$r['user']['lname']?>" />
+            </a>
+        </div>
         <span class="text">
             <h3 class="username">
                 <a href="/user/<?=$r['user']['uname']?>"><?=$r['user']['uname']?></a>:

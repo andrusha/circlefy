@@ -16,7 +16,7 @@
                         <img src="/static/images/user.gif"/>
                     <? endif; ?>
                 <? else: ?>
-                <img src="/static/images/envelope.png" />
+                    <img src="/static/images/envelope.png" />
                 <? endif; ?>
 
                 <? if (!$c['anonymous']): ?>
@@ -121,7 +121,7 @@
 	
 
 	<? if($_s['moderator']): ?>
-    	<span id="edit_circle"> <a href="#">Edit Circle</a></span>
+    	<button id="edit_circle">Edit Circle</button>
 	<? endif; ?>       
  
         <div class="clear"></div>
