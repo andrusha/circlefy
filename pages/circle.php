@@ -43,6 +43,13 @@ class page_circle extends Base {
                     ->asArrayAll(),
             'feed');
 
+        $parent = GroupRelations::getClosestParent($group);
+        if ($parent->id !== null) {
+            $this->set($parent->asArray(), 'parent');
+            $this->set(GroupRelations::getSiblings($group)->asArrayAll(), 'siblings');
+        }
+        $this->set(GroupRelations::getChilds($group)->asArrayAll(), 'childs');
+
         $this->set($member, 'state');
 
         $this->set(!$this->user->firstTap($group), 'first_tap');
@@ -50,6 +57,7 @@ class page_circle extends Base {
         $this->set(
             $group->isPermitted($this->user),
             'moderator');
+
 
         $this->set('circle', 'page');
 	}

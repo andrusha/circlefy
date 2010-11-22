@@ -10,6 +10,8 @@
 class GroupRelations {
     const table = 'group_relations';
 
+    private static $depthCache = array();
+
     /*
         Initialize newly created groups in relations table
 
@@ -87,7 +89,10 @@ class GroupRelations {
     /*
         @return int depth
     */
-    public static function getDepth(Group $g) {
+    public static function getDepth(Group $g, $cache = false) {
+        if ($cache && isset(self::$depthCache[$g->id]))
+            return self::$depthCache[$g->id];
+
         $db = DB::getInstance();
        
         $q = "SELECT depth FROM `".self::table."` WHERE ancestor = #gid# AND ancestor = descendant";
@@ -96,14 +101,17 @@ class GroupRelations {
             throw new LogicException("Group relations haven't been initialized for `$g->id` group");
 
         $res = $res->fetch_assoc();
-        return intval($res['depth']);
+        $depth = intval($res['depth']);
+        self::$depthCache[$g->id] = $depth;
+
+        return $depth;
     }
 
     /*
         @return Group
     */
     public static function getClosestParent(Group $g, $info = true) {
-        $depth = self::getDepth($g);
+        $depth = self::getDepth($g, true);
         
         $group = GroupsList::search('parent', 
                                     array('gid' => $g->id, 'depth' => $depth),
@@ -114,6 +122,29 @@ class GroupRelations {
             return new Group(null);
 
         return $group;
+    }
+
+    /*
+        @return GroupsList
+    */
+    public static function getChilds(Group $g) {
+        $depth  = self::getDepth($g, true);
+
+        $groups = GroupsList::search('childs', 
+                                    array('gid' => $g->id, 'depth' => $depth, 'limit' => 4));
+
+        return $groups;
+    }
+
+    /*
+        @return GroupsList
+    */
+    public static function getSiblings(Group $g) {
+        $parent = self::getClosestParent($g, false);
+        if ($parent->id === null)
+            return GroupsList::getEmpty();
+        
+        return self::getChilds($parent);
     }
 
 };

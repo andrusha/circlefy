@@ -220,6 +220,65 @@
     </div><!--box-->
     <? endif; ?>
 
+ <? /*** Group parent ***/ ?>
+    <? if (!empty($_s['parent'])): ?>
+    <div class="box">
+    
+        <h3 class="title">Outer circle</h3>
+        <div class="circles">
+        <?php
+            $_cl['list'] = array($_s['parent']);
+            include(CIRCLE_LIST);
+        ?>
+        </div>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+<? /*** Group siblings ***/ ?>
+    <? if (!empty($_s['siblings'])): ?>
+    <div class="box">
+    
+        <h3 class="title">Near circles
+        <? if (count($_s['siblings']) >= 4): ?>
+            <a href="#" class="view-all"
+               data-type="siblings"
+               data-id="<?=$_s['circle']['id']?>">view all...</a>
+        <? endif; ?>
+        </h3>
+        <div class="circles">
+        <?php
+            $_cl['list'] = $_s['siblings'];
+            include(CIRCLE_LIST);
+        ?>
+        </div>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
+
+<? /*** Group childs ***/ ?>
+    <? if (!empty($_s['childs'])): ?>
+    <div class="box">
+    
+        <h3 class="title">Inner circles
+        <? if (count($_s['childs']) >= 4): ?>
+            <a href="#" class="view-all"
+               data-type="childs"
+               data-id="<?=$_s['circle']['id']?>">view all...</a>
+        <? endif; ?>
+        </h3>
+        <div class="circles">
+        <?php
+            $_cl['list'] = $_s['childs'];
+            include(CIRCLE_LIST);
+        ?>
+        </div>
+        <div class="clear"></div>
+        
+    </div><!--box-->
+    <? endif; ?>
 
 <? /*** Joined groups ***/ ?>
     <? if (!empty($_s['circles'])): ?>

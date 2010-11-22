@@ -1130,7 +1130,7 @@ margin:15px 0;
 	float:right;
 	margin: 0 0 10px 10px;
 }
-.conversation .circle-thumb img, .side .circle-thumb img {
+.conversation .circle-thumb img, .side .box.circle-title .circle-thumb img {
 	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
 	/* For IE 8 */
 	-MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
@@ -1138,7 +1138,7 @@ margin:15px 0;
 	-khtml-opacity: 1;    /* for really really old safari */  
 	opacity: 1;    /* css standard, currently it works in most modern browsers like firefox,  */
 }
-.side .circle-thumb {
+.side .box.circle-title .circle-thumb {
 	float:right;
 	margin: 0 0 10px 10px;
 }

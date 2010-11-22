@@ -144,7 +144,7 @@ class GroupsList extends Collection {
             byFbIDs  - groups by their Facebook ID
             like     - search on group name by LIKE
             byUserAndLike - performs like search within followed groups
-            siblings - returns all sibling groups
+            childs   - returns all child groups
             parent   - returns closest parent group
 
         @param array $params
@@ -178,7 +178,8 @@ class GroupsList extends Collection {
             'members'   => 'INNER JOIN group_members gm  ON g.id = gm.group_id',
             'members2'  => 'LEFT  JOIN group_members gm2 ON g.id = gm2.group_id',
             'messages'  => 'LEFT  JOIN message m         ON m.group_id = g.id',
-            'relations' => 'INNER JOIN group_relations gr ON g.id = gr.descendant');
+            'relations' => 'INNER JOIN group_relations gr ON g.id = gr.descendant',
+            'relationsA'=> 'INNER JOIN group_relations gr ON g.id = gr.ancestor');
 
         switch ($type) {
             case 'byUser':
@@ -209,14 +210,14 @@ class GroupsList extends Collection {
                 $where    = 'gm.user_id = #uid# AND g.name LIKE #search#';
                 break;
 
-            case 'siblings':
+            case 'childs':
                 $join[] = 'relations';
-                $where  = 'gr.ancestor = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
+                $where  = 'gr.ancestor = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth# + 1';
                 break;
 
             case 'parent':
-                $join[] = 'relations';
-                $where  = 'gr.descendant = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth# - 1';
+                $join[] = 'relationsA';
+                $where  = 'gr.descendant = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
                 $limit  = 'LIMIT 1';
                 break;
         }
