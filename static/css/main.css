@@ -236,6 +236,7 @@ border-top-right-radius: 0px;
 }
 #controls #filters.collapsed:hover {
 background:url(../images/filters-expand.gif) no-repeat 1px 1px;
+background-color:rgba(200, 200, 200, 0.3);
 }
 #controls #filters.collapsed {
 padding:0;
@@ -1769,6 +1770,8 @@ margin:0;
 .replies .list .reply-item .thumb img {
 	width:20px;
 	height:20px;
+    border: 0;
+    image-rendering: optimizeQuality;
 }
 .replies .list .reply-item span.text {
         float:left;
