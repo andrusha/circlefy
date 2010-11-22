@@ -206,20 +206,20 @@ _edit.group = _tap.register({
     },
 
     onSearch: function(resp) {
-        Elements.from(_template.parse('post-search', resp.groups)).inject(this.list.empty());
+        Elements.from(_template.parse('post-search', resp.groups)).inject(this.search.list.empty());
         
-        this.list.getElements('li').each(function(el) {
+        this.search.list.getElements('li').each(function(el) {
             el.addEvent('click', (function(e) {
                 e.stop();
                 var group = el.get('rel'),
                     gname = el.getData('name'),
                     title = el.getElement('.title').get('text');
                 
-                this.search.setData('gid', group);
-                this.search.setData('name', gname);
-                this.search.value = title;
-                this.suggest.addClass('hidden');
+                this.search.input.setData('gid', group);
+                this.search.input.setData('name', gname);
+                this.search.input.value = title;
+                this.search.suggest.addClass('hidden');
             }).bind(this));
-        });
+        }, this);
     },
 });

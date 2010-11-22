@@ -137,8 +137,8 @@
         
         <h3 class="username"><span class="<?=($u['online'] ? 'online' : 'offline')?>"><?=$u['uname']?></span>
         <small><?=$u['fname']?> <?=$u['lname']?></small></h3>
-        <div href="#" class="circle-thumb user-thumb" data-tipid="tip-circle-user" data-tiptitle="<?=$u['uname']?>"><span class="circle"></span>
-            <img src="<?=USER_PIC_REL.'medium_'.$u['id'].'.jpg'?>" class="profile-thumb" alt="<?=$u['uname']?>'s avatar" /></div>
+        <div href="#" class="user-thumb" data-tipid="tip-circle-user" data-tiptitle="<?=$u['uname']?>">
+            <img src="<?=USER_PIC_REL.'medium_'.$u['id'].'.jpg'?>" class="avatar-author profile-thumb" alt="<?=$u['uname']?>'s avatar" /></div>
         <p>Random description of the
         channel. Could be very short</p>
         

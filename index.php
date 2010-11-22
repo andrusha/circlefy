@@ -72,7 +72,8 @@ $ajaxs = array(
                 'moderate'  => true,
                 'create'    => true,
                 'join'      => true,
-                'context'   => true
+                'context'   => true,
+                'link'      => true
         ),
         'taps' => array(
                'responses' => true,

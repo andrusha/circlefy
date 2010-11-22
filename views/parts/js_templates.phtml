@@ -274,7 +274,8 @@
         <# for (circle from this): #>
         <a href="/circle/<#: circle.symbol #>" class="circle-thumb" data-tipid="circle-<#: circle.id #>" data-tiptitle="<img src='/static/images/type_<#: circle.type #>.png' width='16' height='16' /> <#: circle.name #>" data-tipcontent="<#: circle.descr #>&nbsp;">
             <span class="circle"></span>
-            <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id#>.jpg" />
+            <img src="<?=GROUP_PIC_REL?>medium_<#: circle.id #>.jpg" />
+            <span class="circle-title"><#: circle.name.substr(0,6) #></span>
         </a>
         <# endfor; #>
         <div class="clear"></div>

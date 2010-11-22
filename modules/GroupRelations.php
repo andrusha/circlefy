@@ -27,8 +27,8 @@ class GroupRelations {
         try {
             foreach ($group as $g)
                 $db->lazyInsert(self::table,
-                    array('ancestor'   => $group->id,
-                          'descendant' => $group->id,
+                    array('ancestor'   => $g->id,
+                          'descendant' => $g->id,
                           'depth'      => 0));
 
             $db->commitLazyInsert(self::table);

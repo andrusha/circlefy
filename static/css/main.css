@@ -576,7 +576,7 @@ div.feed-item.opened .replies, div.feed-item.opened .resizer {
 .feed-item:hover {
 	background:rgba(255,255,255,.4);
 }
-.feed-item img.avatar-author {
+img.avatar-author {
 	float:left;
 	padding:2px;
 	background:#fff;
@@ -1014,7 +1014,6 @@ margin:15px 0;
 }
 #sidebar .profile-thumb {
 	float:right;
-	border:none;
 	margin:0 0 10px 10px;
 }
 #sidebar .box p {
@@ -1192,6 +1191,21 @@ margin:15px 0;
 }
 .user-circles .circle-thumb {
 	margin-right:8px;
+    text-decoration: none;
+}
+.circle-thumb .circle-title {
+    text-decoration:none;
+    text-align:center;
+    position:absolute;
+    color:black;
+    font-weight:bold;
+    top:26px;
+    vertical-align:middle;
+    width:48px;
+    font-size:11px;
+    left:1px;
+    background:#A1E2F4;
+    clip: rect(0px, 100px, 19px, 0px);
 }
 .activity {
 	font-size:10px;
@@ -2238,7 +2252,6 @@ background-color:#DDD;
         height:10px;
 	line-height:1px;
     text-transform: capitalize;
-    clip: rect(0px, 100px, 19px, 0px);
 }
 .type-label img {
     vertical-align:bottom;
