@@ -1690,6 +1690,8 @@ padding:0;
         color:#d0d0d0;
         font-style:normal;
 }
+#group-search-clear { position: absolute; right:6px; top:9px;}
+input.selected { background-color: #dda;}
 /*** </Search results> ***/
 
 /*** <Relies feed> ***/

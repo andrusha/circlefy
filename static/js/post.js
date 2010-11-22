@@ -31,12 +31,26 @@ var _post = _tap.register({
                 e.stop();
                 var group = el.get('rel'),
                     gname = el.getData('name'),
-                    title = el.getElement('.title').get('text');
+                    title = el.getElement('.title').get('text'),
+                    clear = $('group-search-clear');
                 
                 this.search.input.setData('gid', group);
                 this.search.input.setData('name', gname);
                 this.search.input.value = title;
+                this.search.input.addClass('selected');
                 this.search.suggest.addClass('hidden');
+                clear.removeClass('hidden');
+                
+                clear.addEvent('click', (function(e) {
+                    e.stop();
+                    this.search.input.setData('gid', '');
+                    this.search.input.setData('name', '');
+                    this.search.input.value = '';
+                    this.search.input.removeClass('selected');
+                    this.search.suggest.addClass('hidden');
+                    this.search.suggest.getElement('ul').innerHTML = '';
+                    clear.addClass('hidden');
+                }).bind(this));
             }).bind(this));
         }, this);
     },
