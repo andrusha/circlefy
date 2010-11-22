@@ -78,7 +78,8 @@ var _post = _tap.register({
                     self.search.input.setData('gid', '');
                     self.search.input.setData('name', '');
                     $('postmessage').value = '';
-                     self.publish('modal.hide');
+                    self.publish('modal.hide');
+                    _notifications.alert('Success', "You've posted! Any replies you will receive notifications for", {color: 'darkgreen', duration: 2000});
                 }
             }
             
