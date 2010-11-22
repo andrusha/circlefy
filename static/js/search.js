@@ -2,23 +2,24 @@ _tap.mixin({
     name: 'searching',
 
     initSearch: function(search, suggest, type) {
-        this.search = search; 
-        this.suggest = suggest;
-        this.list = this.suggest.getElement('ul');
-        this.keyword = null;
-        this.last_keypress = new Date().getTime()/1000;
-        this.searchType = type;
+        var search = this.search = {
+            input:         search,
+            suggest:       suggest,
+            list:          suggest.getElement('ul'),
+            keyword:       null,
+            last_keypress: new Date().getTime()/1000,
+            type:          type};
 
-        search.overtext = new OverText(search, {
+        search.input.overtext = new OverText(search.input, {
             positionOptions: {
                 offset: {x: 10, y: 9},
-                relativeTo: search,
+                relativeTo: search.input,
                 relFixedPosition: false,
                 ignoreScroll: true,
                 ignoreMargin: true
             }}).show();
 
-        search.addEvents({
+        search.input.addEvents({
             'blur': this.end.toHandler(this),
             'focus': this.start.toHandler(this),
             'keyup': this.checkKeys.bind(this)
@@ -26,7 +27,7 @@ _tap.mixin({
     },
  
     start: function(el) {
-        this.suggest.removeClass('hidden');
+        this.search.suggest.removeClass('hidden');
     },
 
     /*
@@ -35,7 +36,7 @@ _tap.mixin({
     */
     end: function(el){
         (function(){
-            this.suggest.addClass('hidden');
+            this.search.suggest.addClass('hidden');
         }).bind(this).delay(500);
     },
 
@@ -51,15 +52,15 @@ _tap.mixin({
         //2 - minimal timeout before searches
         var now = new Date().getTime()/1000,
             delta = 0.5 - (now - this.last_keypress);
-        this.last_keypress = now;
+        this.search.last_keypress = now;
 
-        Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.list.empty());
+        Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.search.list.empty());
         if (delta < 0) {
-            clearTimeout(this.search_event);
+            clearTimeout(this.search.search_event);
             this.goSearch(e);
         } else {
-            clearTimeout(this.search_event);
-            this.search_event = (function () {
+            clearTimeout(this.search.search_event);
+            this.search.search_event = (function () {
                 this.goSearch(e);
             }).delay(delta*1000, this);
         }
@@ -70,20 +71,20 @@ _tap.mixin({
         performs the search
     */
     goSearch: function(e){
-        var keyword = this.search.value,
+        var keyword = this.search.input.value,
             self = this;
         //do not search for empty strings, strings < 2 chars & same keywords 
-        if (!keyword.isEmpty() && keyword.length > 1 && this.keyword != keyword){
-            if (!this.request)
-                this.request = new Request.JSON({
+        if (!keyword.isEmpty() && keyword.length > 1 && this.search.keyword != keyword){
+            if (!this.search.request)
+                this.search.request = new Request.JSON({
                     url: '/AJAX/group/search',
                     link: 'cancel',
                     onSuccess: this.onSearch.bind(this)
                 });
-            this.request.post({search: keyword, type: this.searchType});
+            this.search.request.post({search: keyword, type: this.search.type});
         } else if (keyword.length <= 1)
-            this.list.empty();
-        this.keyword = keyword;
+            this.search.list.empty();
+        this.search.keyword = keyword;
     } 
 });
 
@@ -99,9 +100,9 @@ var _search = _tap.register({
     },
 
     onSearch: function(resp) {
-        Elements.from(_template.parse('search', resp)).inject(this.list.empty());
+        Elements.from(_template.parse('search', resp)).inject(this.search.list.empty());
         
-        this.list.getElement('.create').addEvent('click', (function(e){
+        this.search.list.getElement('.create').addEvent('click', (function(e){
             e.stop();
             this.publish('modal.show.group.create', []);
         }).bind(this));
