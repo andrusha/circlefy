@@ -679,7 +679,8 @@ var CirTooltip = new Class({
         element.dispose();
     },
     show: function(){
-        $('tooltip-'+this.currentElement).tween('opacity', 1);
+        //$('tooltip-'+this.currentElement).tween('opacity', 1);
+        $('tooltip-'+this.currentElement).show();
     }
 });
 
