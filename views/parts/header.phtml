@@ -3,6 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/roar.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/modal.css" />
 <?php
     if (isset($_h['styles']))
         foreach ($_h['styles'] as $s)
@@ -10,9 +12,23 @@
 ?>
 <script type="text/javascript" src="/static/js/mootools-core.js"></script>
 <script type="text/javascript" src="/static/js/mootools-more.js"></script>
+<script type="text/javascript" src="/static/js/Swiff.Uploader.js"></script>
 <script type="text/javascript" src="/static/js/libs.js"></script>
 <script type="text/javascript" src="/static/js/validators.js"></script>
 <script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script> 
+<script type="text/javascript" src="/static/js/main.js"></script>
+<script type="text/javascript" src="/static/js/push.js"></script>
+
+<script type="text/javascript" src="/static/js/search.js"></script>
+<script type="text/javascript" src="/static/js/modal.js"></script>
+
+<script type="text/javascript" src="/static/js/user_edit.js"></script>
+<script type="text/javascript" src="/static/js/group_create.js"></script>
+<script type="text/javascript" src="/static/js/follow.js"></script>
+
+<script type="text/javascript" src="/static/js/notification.js"></script>
+<script type="text/javascript" src="/static/js/post.js"></script>
+
 <?php
     if(isset($_h['vars']))
         echo "<script type='text/javascript'>\n_vars = ".json_encode($_h['vars'])."\n</script>\n";
@@ -70,9 +86,6 @@ _tap.register({
 });
 </script>
 <? endif; ?>
-<!-- START GLOBAL JS SCRIPTS -->
-<script type="text/javascript" src="/static/js/follow.js"></script>
-<!-- END GLOBAL JS SCRIPTS -->
 
 <title>circlefy - <?=$_h['title']?></title>
 </head>
@@ -92,9 +105,7 @@ _tap.register({
             </form>
             </div><!--left-->
 
-	    <div class="main-post-button">
-		Post
-	    </div>
+	    <button class="main-post-button">Post</button>
 
             <? if ($_h['guest']): ?>
             <a href="#" id="access">create account or login</a>

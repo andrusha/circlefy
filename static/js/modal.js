@@ -59,7 +59,8 @@ var _modal = _tap.register({
                      'a#access':             'modal.show.sign-login',
                      'a.login-signup':       'modal.show.sign-login',
                      'span#edit_circle > a': 'modal.show.group-edit',
-                     'li.settings':          'modal.show.user-edit'},
+                     'li.settings':          'modal.show.user-edit',
+                     'button.main-post-button': 'modal.show.post-tap'},
            function (event, selector) {
                 $$(selector).addEvent('click', function (e) {
                     e.stop();

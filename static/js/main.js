@@ -219,13 +219,7 @@ var _startup = _tap.register({
             });
         }.bind(this));
         
-        // Post a tap
-        var post_btn = $$('.main-post-button')[0];
-        post_btn.addEvent('click', function(e) {
-            e.stop();
-            
-            self.publish('modal.show.post-tap');
-        });
+        // FIXIT: place all modal-related stuff to modal.js 
         new MediaEmbed({
             element: $$('#posttapform textarea')
         });

@@ -1,16 +1,13 @@
-/*
-module: _search
-    controls the global searchbox
-*/
-var _search = _tap.register({
+_tap.mixin({
+    name: 'searching',
 
-    init: function(){
-        var search = this.search = $('group-search');
-
-        this.suggest = $('search-results');
+    initSearch: function(search, suggest, byUser) {
+        this.search = search; 
+        this.suggest = suggest;
         this.list = this.suggest.getElement('ul');
         this.keyword = null;
         this.last_keypress = new Date().getTime()/1000;
+        this.byUser = byUser;
 
         search.overtext = new OverText(search, {
             positionOptions: {
@@ -20,20 +17,14 @@ var _search = _tap.register({
                 ignoreScroll: true,
                 ignoreMargin: true
             }}).show();
+
         search.addEvents({
             'blur': this.end.toHandler(this),
             'focus': this.start.toHandler(this),
             'keyup': this.checkKeys.bind(this)
         });
-        /*
-        this.list.addEvents({
-            'click:relay(li)': function (e) {
-                this.publish('modal.show.group.create', []);
-            }.bind(this)
-        });
-        */
     },
-
+ 
     start: function(el) {
         this.suggest.removeClass('hidden');
     },
@@ -48,13 +39,11 @@ var _search = _tap.register({
         }).bind(this).delay(500);
     },
 
-    /*
+     /*
     handler: checkKeys()
         checks whether the search keys are valid or when enter is pressed
     */
     checkKeys: function(e){
-        //var updown = ({'down': 1, 'up': -1})[e.key];
-        //if (updown) return this.navigate(updown);
         if (e.key == 'enter') return this.goSearch(e);
         //skip all meta-keys except del & backspace
         if ((e.code < 48) && !([8, 46].contains(e.code)))  return;
@@ -76,26 +65,7 @@ var _search = _tap.register({
         }
     },
 
-    /*
-    method: navigate()
-        controls the up/down keys for the search results
-        
-        args:
-        1. updown (number) the number of movements to do (up: positive, down: negative)
-    */
-    navigate: function(updown){
-        var current = (this.selected !== null) ? this.selected : -1,
-            items = this.list.getElements('li:not(.notice)');
-        var selected = this.selected = current + updown;
-        if (items.length != 0 && !(selected < 0) && selected < items.length){
-            items.removeClass('selected');
-            items[selected].addClass('selected');
-        } else {
-            this.selected = (selected < 0) ? 0 : items.length - 1;
-        }
-    },
-
-    /*
+     /*
     handler: goSearch()
         performs the search
     */
@@ -105,24 +75,37 @@ var _search = _tap.register({
         //do not search for empty strings, strings < 2 chars & same keywords 
         if (!keyword.isEmpty() && keyword.length > 1 && this.keyword != keyword){
             if (!this.request)
-                this.request = new Request({
+                this.request = new Request.JSON({
                     url: '/AJAX/group/search',
                     link: 'cancel',
-                    onSuccess: function () {
-                        var resp = JSON.decode(this.response.text);
-                        Elements.from(_template.parse('search', resp)).inject(self.list.empty());
-                        
-                        
-                        self.list.getElement('.create').addEvent('click', function(e){
-                            e.stop();
-                            self.publish('modal.show.group.create', []);
-                        });
-                        
-                    }
+                    onSuccess: (function (resp) {
+                        this.onSearch(resp);
+                    }).bind(this)
                 });
-            this.request.send({data: {search: keyword}});
+            this.request.post({search: keyword, byUser: this.byUser});
         } else if (keyword.length <= 1)
             this.list.empty();
         this.keyword = keyword;
+    } 
+});
+
+/*
+module: _search
+    controls the global searchbox
+*/
+var _search = _tap.register({
+    mixins: 'searching',
+
+    init: function(){
+        this.initSearch($('group-search'), $('search-results'), 0);
+    },
+
+    onSearch: function(resp) {
+        Elements.from(_template.parse('search', resp)).inject(this.list.empty());
+        
+        this.list.getElement('.create').addEvent('click', function(e){
+            e.stop();
+            this.publish('modal.show.group.create', []);
+        });
     }
 });
