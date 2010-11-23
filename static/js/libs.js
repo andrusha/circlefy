@@ -770,6 +770,60 @@ var MediaEmbed = new Class ({
     }
 });
 
+var Line = new Class({
+    Implements: [Options],
+
+    options: {
+        color: 'red'
+    },
+
+    draw: function (from, to, options) {
+        this.setOptions(options || {});
+        var from = from, to = to;
+
+        from.coord = from.getCoordinates();
+        to.coord = to.getCoordinates();
+
+        /* `from` should be above `to` */ 
+        if ((from.coord.left < from.coord.left) || (to.coord.top > to.coord.top))
+            [from, to] = [to, from];
+
+        /*          ( from )
+         *    |---(C)--(A)
+         *    |    |  /|
+         *    |    |/  |
+         *    |   /|   | 
+         *    |/ )alfa |
+         *   (B)-------|
+         * ( to )
+         */
+        var A = {x: from.coord.left + from.coord.width/2,
+                 y: from.coord.top  + from.coord.height},
+            B = {x: to.coord.left   + to.coord.width/2,
+                 y: to.coord.top},
+            C = {x: B.x + (A.x - B.x)/2,
+                 y: A.y,
+                 h: B.y - A.y},
+            alfa = Math.atan2(A.x - B.x, B.y - A.y);
+
+        
+        var transform = 'rotate(' + alfa + 'rad) scale(1, ' + 1 / Math.sin(alfa) + ')',
+            line = new Element('div', {
+                class: 'line',
+                styles: {
+                    height: C.h,
+                    left:   C.x,
+                    top:    C.y,
+                    '-moz-transform':    transform, 
+                    '-webkit-transform': transform,
+                    transform:           transform, 
+                    'background-color':  this.options.color
+                },
+            });
+        line.inject(document.body);
+    }
+});
+
 // GENERALS
 
 if (!window.console) {

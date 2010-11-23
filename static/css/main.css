@@ -2486,3 +2486,13 @@ font-size:16px;
 .messagetomembers{
 float:right;
 }
+
+.line {
+    position: absolute;
+    z-index: 9999;
+    width:  2px;
+    opacity: 0.9;
+	border-radius:1px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}

@@ -220,63 +220,82 @@
     </div><!--box-->
     <? endif; ?>
 
- <? /*** Group parent ***/ ?>
-    <? if (!empty($_s['parent'])): ?>
+ <? /*** Tree ***/ ?>
+    <? if (!empty($_s['parent']) || !empty($_s['siblings']) || !empty($_s['childs'])): ?>
     <div class="box">
-    
-        <h3 class="title">Outer circle</h3>
-        <div class="circles">
-        <?php
-            $_cl['list'] = array($_s['parent']);
-            include(CIRCLE_LIST);
-        ?>
-        </div>
-        <div class="clear"></div>
-        
-    </div><!--box-->
-    <? endif; ?>
 
-<? /*** Group siblings ***/ ?>
-    <? if (!empty($_s['siblings'])): ?>
-    <div class="box">
     
-        <h3 class="title">Near circles
-        <? if (count($_s['siblings']) >= 4): ?>
-            <a href="#" class="view-all"
-               data-type="siblings"
-               data-id="<?=$_s['circle']['id']?>">view all...</a>
-        <? endif; ?>
-        </h3>
-        <div class="circles">
-        <?php
-            $_cl['list'] = $_s['siblings'];
-            include(CIRCLE_LIST);
-        ?>
-        </div>
-        <div class="clear"></div>
-        
-    </div><!--box-->
-    <? endif; ?>
+        <h3 class="title">Circles tree</h3>
+        <? if (!empty($_s['parent'])): ?>
+            <div class="circles" style="margin-bottom: 50px; overflow: hidden">
+           
+            <? 
+                $c = $_s['parent'];
+                $lineto = '';
+                if (!empty($_s['siblings'])) {
+                    foreach ($_s['siblings'] as $s)
+                        $lineto .= ',tree-'.$s['id'];
+                    $lineto = substr($lineto, 1);
+                }
+            ?>
+            <a href="/circle/<?=$c['symbol']?>" 
+               class="circle-thumb"
+               data-tipid="circle-<?=$c['id']?>" 
+               data-tiptitle="<img src='/static/images/type_<?=$c['type']?>.png' width='16' height='16' /> <?=$c['name']?>" 
+               data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>"
+               data-lineto="<?=$lineto?>">
+                <span class="circle"></span>
+                <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" />
+                <span class="circle-title"><?=substr($c['name'],0,6);?></span>
+            </a>
 
-<? /*** Group childs ***/ ?>
-    <? if (!empty($_s['childs'])): ?>
-    <div class="box">
-    
-        <h3 class="title">Inner circles
-        <? if (count($_s['childs']) >= 4): ?>
-            <a href="#" class="view-all"
-               data-type="childs"
-               data-id="<?=$_s['circle']['id']?>">view all...</a>
+            </div>
+            <div class="clear"></div>
         <? endif; ?>
-        </h3>
-        <div class="circles">
-        <?php
-            $_cl['list'] = $_s['childs'];
-            include(CIRCLE_LIST);
-        ?>
-        </div>
-        <div class="clear"></div>
-        
+
+        <? if (!empty($_s['siblings'])): ?>
+            <div class="circles" style="margin-bottom: 50px; overflow: hidden;">
+
+            <? 
+                foreach ($_s['siblings'] as $c):
+                $lineto = '';
+                if (!empty($_s['childs']) && $c['id'] == $_s['circle']['id']) {
+                    foreach ($_s['childs'] as $s)
+                        $lineto .= ',tree-'.$s['id'];
+                    $lineto = substr($lineto, 1);
+                }
+            ?>
+            <a href="/circle/<?=$c['symbol']?>" 
+               id="tree-<?=$c['id']?>"
+               class="circle-thumb"
+               data-tipid="circle-<?=$c['id']?>" 
+               data-tiptitle="<img src='/static/images/type_<?=$c['type']?>.png' width='16' height='16' /> <?=$c['name']?>" 
+               data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>"
+               data-lineto="<?=$lineto?>">
+                <span class="circle"></span>
+                <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" />
+                <? if ($c['id'] == $_s['circle']['id']): ?>
+                    <span class="circle-title" style="color: red">you here</span>
+                <? else: ?>
+                    <span class="circle-title"><?=substr($c['name'],0,6);?></span>
+                <? endif; ?>
+            </a>
+            <? endforeach; ?>
+
+            </div>       
+            <div class="clear"></div>
+        <? endif; ?>
+
+        <? if (!empty($_s['childs'])): ?>
+            <div class="circles">
+            <?php
+                $_cl['list'] = $_s['childs'];
+                include(CIRCLE_LIST);
+            ?>
+            </div>
+            <div class="clear"></div>
+        <? endif; ?>
+
     </div><!--box-->
     <? endif; ?>
 

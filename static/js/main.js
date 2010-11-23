@@ -223,5 +223,21 @@ var _startup = _tap.register({
         new MediaEmbed({
             element: $$('#posttapform textarea')
         });
+
+        this.drawLines();
+    },
+
+    drawLines: function() {
+        var liner = new Line();
+        $$('[data-lineto]').each(function(elem) {
+            if (!elem.getData('lineto'))
+                return;
+
+            elem.getData('lineto').split(',').each(function(id) {
+                liner.draw(elem, $(id));
+            }, this);
+        }, this);
     }
 });
+
+
