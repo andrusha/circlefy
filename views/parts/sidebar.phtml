@@ -111,9 +111,9 @@
         <div class="clear"></div>
 
          <a href="#" 
-           class="follow <?=($_s['state'] ? ' active' : '')?>" 
+           class="follow <?=(($_s['state'] || $_s['pending']) ? ' active' : '')?>" 
 		   data-id="<?=$c['id']?>"
-		   data-followed="<?=($_s['state'] ? 1 : 0)?>"
+		   data-followed="<?=(($_s['state'] || $_s['pending']) ? 1 : 0)?>"
            data-type="group"
            data-auth="<?=$_s['circle']['auth']?>"
            def="Join circle"

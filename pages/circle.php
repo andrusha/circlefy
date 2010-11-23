@@ -21,7 +21,7 @@ class page_circle extends Base {
             $r = Group::confirmEmail($auth_token);
 
         $this->set(
-            UsersList::search('members', array('gid' => $group->id, 'limit' => 14))
+            UsersList::search('membersNotPending', array('gid' => $group->id, 'limit' => 14))
                      ->asArrayAll(),
             'members');
 
@@ -30,13 +30,14 @@ class page_circle extends Base {
                      ->asArrayAll(),
             'pending');
 
-        $member = $group->userPermissions($this->user) != Group::$permissions['not_in'];
+        $member = Group::$permissions[$group->userPermissions($this->user)] >= Group::$permissions['user'];
+        $pending = $group->userPermissions($this->user) == 'pending';
 
         $inside = $member ? 0 : T_OUTSIDE;
 
         $this->set(
             TapsList::search('group', array('gid' => $group->id, 'uid' => $this->user->id),
-                             T_USER_INFO | $inside | T_MEDIA | T_NEW_REPLEIS)
+                             T_USER_INFO | $inside | T_MEDIA | T_NEW_REPLIES)
                     ->lastResponses()
                     ->inject('group', $group)
                     ->format()
@@ -51,6 +52,7 @@ class page_circle extends Base {
         $this->set(GroupRelations::getChilds($group)->asArrayAll(), 'childs');
 
         $this->set($member, 'state');
+        $this->set($pending, 'user_pending');
 
         $this->set(!$this->user->firstTap($group), 'first_tap');
 

@@ -185,6 +185,12 @@ class UsersList extends Collection {
             case 'like':
                 $where[] = "(u.uname LIKE #search# OR CONCAT(u.fname, ' ', u.lname) LIKE #search#)";
                 break;
+
+            case 'membersNotPending':
+                $join[]  = 'members';
+                $where[] = 'gm.group_id = #gid#';
+                $where[] = 'gm.permission > '.Group::$permissions['pending'];
+                break;
         }
 
         if ($options & U_BY_UNAME)
