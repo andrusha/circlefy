@@ -14,7 +14,7 @@ class ajax_create extends Base {
         $domain = null;
         if (Group::$auths['email'] == $_POST['auth']) {
             if (!empty($_POST['auth-email']) && 
-                filter_var($_POST['auth-email'], FILTER_VALIDATE_EMAIL) !== false) 
+                Validation::email($_POST['auth-email']) !== false) 
             {
                 $ar = preg_split('/@/', $_POST['auth-email']);
                 $domain = $ar[1];

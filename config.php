@@ -18,7 +18,7 @@ else
 function __autoload($classname) {
     $generics = array('Base', 'BaseModel', 'Collection');
     $libs = array('DB', 'Action', 'Comet', 'Curl', 'Exceptions', 'FuncLib',
-        'Images', 'Mailer', 'FirePHP', 'SeparatorIterator');
+        'Images', 'Mailer', 'FirePHP', 'SeparatorIterator', 'Validation');
     $db = array('MySQL', 'Postgress');
     $add_path = '';
     if (in_array($classname, $generics))
