@@ -291,9 +291,9 @@ class Group extends BaseModel {
 
     public function setDefaultAvatar() {
         foreach (array('small', 'medium', 'large') as $size) {
-            $img = GROUP_PIC_PATH."/$size_{$this->id}.jpg";
+            $img = GROUP_PIC_PATH."/{$size}_{$this->id}.jpg";
             @unlink($img);
-            symlink(GROUP_PIC_PATH."/$size_group.png", $img);
+            symlink(GROUP_PIC_PATH."/{$size}_group.png", $img);
         }
     }
 };
