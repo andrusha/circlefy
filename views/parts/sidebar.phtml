@@ -102,7 +102,12 @@
                 'manual' => 'moderated',
                 'ip'     => 'by ip',
                 'geo'    => 'geo location');
-            if ($_s['circle']['auth'] == 'manual' && !$_s['moderator']) $title = 'Waiting Approval';
+            if ($_s['circle']['auth'] == 'manual' && !$_s['moderator']) {
+                if ($_s['pending'])
+                    $title = 'Waiting Approval';
+                else
+                    $title = 'Leave circle';
+            }
             else $title = 'Leave circle';
         if (array_key_exists($_s['circle']['auth'], $auth)): ?>
             <div class="auth"><span>Authentication type:</span> <?=$auth[$_s['circle']['auth']]?></div>

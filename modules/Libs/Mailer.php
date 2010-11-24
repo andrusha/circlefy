@@ -56,7 +56,8 @@ class Mailer {
         self::send($u->email, $m->sender->uname.' left new message at '.$m->group->name,
             self::formEmail('new_message', 
                 array('your_name' => $u->fname, 'fname' => $m->sender->fname, 'lname' => $m->sender->lname,
-                      'circle' => $m->group->name, 'private' => $m->private, 'text' => $m->text)));
+                      'circle' => $m->group->name, 'private' => $m->private, 'text' => $m->text,
+                      'mid' => $m->id)));
     }
 
     public static function newPersonal(User $u, Tap $m) {
@@ -66,7 +67,7 @@ class Mailer {
         self::send($u->email, $m->sender->uname.' sent you a private message',
             self::formEmail('new_personal',
                 array('your_name' => $u->fname, 'fname' => $m->sender->fname, 'lname' => $m->sender->lname,
-                      'text' => $m->text)));
+                      'text' => $m->text, 'mid' => $m->id)));
     }
 
     public static function digest(User $u, TapsList $messages, TapsList $replies, TapsList $followers) {

@@ -1,6 +1,16 @@
 <?php
 
 class Validation {
+    public static $errors = array('invalid_email'   => 'Invalid email address',
+                                  'invalid_url'     => 'Invalid URL address',
+                                  'int_error'       => 'Value must be an integer',
+                                  'int_range_error' => 'Value must be an integer between %s and %s',
+                                  'float_error'     => 'Value must be a float number',
+                                  'float_dec_error' => 'Value must be a float number with %s decimal(s)',
+                                  'boolean'         => 'Value must be of type Boolean',
+                                  'ip_address'      => 'Invalid IP Address',
+                                  'regexp'          => 'Value doesn\'t match given regular expression'
+    );
     
     public static function email($str) {
         return filter_var($str, FILTER_VALIDATE_EMAIL);
