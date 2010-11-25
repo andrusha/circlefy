@@ -84,8 +84,10 @@
 	<h3 class="username"><span class="group-name"><?=$c['name']?></span><? if($circle_type): ?>
 	<span class="circle_type" data-tiptitle="blah"><?=$circle_type?></span> 
 	<? endif; ?></h3>
-        <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>"><span class="circle"></span>
-            <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" class="profile-thumb" alt="thumb" /></div>
+        <div href="#" class="circle-thumb" data-tipid="tip-circle-main" data-tiptitle="<?=$c['name']?>">
+            <span class="circle"></span>
+            <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" class="profile-thumb" alt="thumb" />
+        </div>
         <p><?=$c['descr']?></p>
         
         <div class="clear"></div>
@@ -289,21 +291,26 @@
                 $id = 0; 
                 foreach ($elems as $c):
                     $id++;
-                    if ($id == 1)
-                        $lineclass = 'round right';
-                    elseif ($id == $cells_count)
-                        $lineclass = 'round left';
-                    else
-                        $lineclass = 'straight horizontal';
+                    $lineclass = '';
+                    if ($cells_count > 1) {
+                        if ($id == 1)
+                            $lineclass = 'round right';
+                        elseif ($id == $cells_count)
+                            $lineclass = 'round left';
+                        else
+                            $lineclass = 'straight horizontal';
+                    }
             ?>
                 <div class="cell" style="width: <?=$cell_width?>px">
                     <div class="container">
                         <? if ($part): ?>
-                            <? if ($lineclass != 'straight horizontal'): ?>
+                            <? if ($lineclass && $lineclass != 'straight horizontal'): ?>
                                 <div class="line <?=$lineclass?>" style="left: <?=$line_left?>px; width: <?=$line_left?>px"></div>
                                 <div class="line straight" style="left: <?=$line_left?>px"></div>
                             <? else: ?>
-                                <div class="line <?=$lineclass?>" style="left: 0px; width: <?=$cell_width?>px"></div>
+                                <? if ($lineclass): ?>
+                                    <div class="line <?=$lineclass?>" style="left: 0px; width: <?=$cell_width?>px"></div>
+                                <? endif; ?>
                                 <div class="line straight long" style="left: <?=$line_left?>px"></div>
                             <? endif; ?>
                         <? endif; ?>

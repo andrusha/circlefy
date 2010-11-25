@@ -13,6 +13,7 @@ class ajax_link extends Base {
         }
 
         GroupRelations::link($child, $parent);
+        $this->set(Group::byId($parent->id)->asArray(), 'group');
         $this->set(true, 'success');
     }
 };

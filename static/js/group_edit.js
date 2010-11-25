@@ -228,10 +228,20 @@ _edit.group = _tap.register({
     linkGroup: function(child, parent) {
         new Request.JSON({
             url: '/AJAX/group/link',
-            onSuccess: function (resp) {
+            onSuccess: (function (resp) {
                 if (!resp.success)
                     alert('Dirty little bastard!');
-            }
+                else
+                    this.changeLinked(resp.group);
+            }).bind(this)
         }).post({child: child, parent: parent});
+    },
+
+    changeLinked: function(group) {
+        var parent = $('parent-circle'),
+            img = parent.getElement('img');
+
+        parent.removeClass('hidden');
+        img.src = img.src.replace(/medium_[0-9]*\.jpg/i, 'medium_'+group.id+'.jpg?');
     }
 });

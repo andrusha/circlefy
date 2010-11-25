@@ -167,7 +167,7 @@ var _startup = _tap.register({
 			position: 'centerTop'
         });
         new CirTooltip({
-            hovered: $$('#sidebar .circle-thumb'),
+            hovered: $$('#sidebar .circle-thumb, #modal-group-edit .circle-thumb'),
             template: 'side-tooltip',
 			position: 'centerTop'
         });
@@ -224,7 +224,7 @@ var _startup = _tap.register({
             element: $$('#posttapform textarea')
         });
 
-        //this.drawLines();
+        this.drawLines();
     },
 
     drawLines: function() {

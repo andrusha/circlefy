@@ -45,12 +45,18 @@ class page_circle extends Base {
             'feed');
 
         $parent = GroupRelations::getClosestParent($group);
+        $childs = GroupRelations::getChilds($group);
         if ($parent->id !== null) {
             $this->set($parent->asArray(), 'parent');
             $this->set(GroupRelations::getSiblings($group)->asArrayAll(), 'siblings');
-        } else
-            $this->set($group->asArray(), 'parent');
-        $this->set(GroupRelations::getChilds($group)->asArrayAll(), 'childs');
+        } 
+        
+        if (count($childs)) {
+            if ($parent->id === null)
+                $this->set($group->asArray(), 'parent');
+
+            $this->set($childs->asArrayAll(), 'childs');
+        }
 
         $this->set($member, 'state');
         $this->set($pending, 'user_pending');

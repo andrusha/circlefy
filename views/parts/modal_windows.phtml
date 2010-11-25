@@ -281,11 +281,17 @@
 
             <div class="clear"></div>
             <label for="group-search-link">Parent circle</label>
+
+            <div id="parent-circle" class="circle-thumb <?=(!$parent ? ' hidden' : '')?>" data-tipid="tip-circle-main" data-tiptitle="<?=$parent['name']?>" style="margin-left: 24px">
+                <span class="circle" style="margin:0;"></span>
+                <img src="<?=GROUP_PIC_REL . 'medium_' . $parent['id'] . '.jpg'?>" class="profile-thumb" alt="thumb" style="opacity: 1" />
+            </div>
+
             <div style="position:relative">
-            <input id="group-search-link" class="" type="text" autocomplete="off" value="" title="" rel="" />
-            <div id="link-search-results" class="hidden">
-              <ul></ul>
-            </div><!--searchresults-->
+                <input id="group-search-link" class="" type="text" autocomplete="off" value="<?=($parent?$parent['name']:'')?>" title="" rel="" style="width:340px" />
+                <div id="link-search-results" class="search-results hidden">
+                  <ul></ul>
+                </div><!--searchresults-->
             </div>                      
 
             <input type="submit" class="load" value="Update Circle"/>
@@ -502,7 +508,7 @@
             <label for="group-search-post">Circle</label>
             <div style="position:relative">
             <input id="group-search-post" class="required groupSelected" type="text" autocomplete="off" value="" title="" rel="" data-tipid="tip-post-circle" />
-            <div id="post-search-results" class="hidden">
+            <div id="post-search-results" class="search-results hidden">
               <ul></ul>
             </div><!--searchresults-->
             <a href="#" class="hidden" id="group-search-clear"><img src="/static/images/clear.png" /></a>
