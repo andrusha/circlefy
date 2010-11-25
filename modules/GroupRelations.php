@@ -6,6 +6,12 @@
     We implementing here Clojure table with cached depth
 
     See: http://www.slideshare.net/billkarwin/models-for-hierarchical-data?from=fblanding [starting slide 33]
+
+    Links - ancestor != descendant
+    Link weight - how many nodes between ancestor and descendant (min 1)
+
+    Self-links - ancestor = descendant
+    Self-link weight - how deep node in tree (min 0 if it is tree root)
 */
 class GroupRelations {
     const table = 'group_relations';
@@ -48,16 +54,19 @@ class GroupRelations {
     public static function link(Group $children, Group $parent) {
         self::unlink($children);
         self::updateDepth($children, $parent);
-
+        
         $query = "INSERT INTO `".self::table."` (ancestor, descendant, depth) 
-                  SELECT t2.ancestor AS ancestor, t.descendant, t.depth 
+                  SELECT t2.ancestor AS ancestor, t.descendant, t.depth - t3.depth
                     FROM ".self::table." t
                    INNER
                     JOIN ".self::table." t2
                       ON t2.descendant = #pid#
+                   INNER
+                    JOIN ".self::table." t3
+                      ON t3.ancestor = t3.descendant AND t3.ancestor = t2.ancestor
                    WHERE t.ancestor    = #gid#";
         
-        DB::getInstance()->query($query, array('pid' => $parent->id, 'gid' => $children->id));
+        DB::getInstance()->query($query, array('pid' => $parent->id, 'gid' => $children->id, 'depth' => $depth));
     }
 
     /*
@@ -111,10 +120,8 @@ class GroupRelations {
         @return Group
     */
     public static function getClosestParent(Group $g, $info = true, $cached = true) {
-        $depth = self::getDepth($g, $cached);
-        
         $group = GroupsList::search('parent', 
-                                    array('gid' => $g->id, 'depth' => $depth),
+                                    array('gid' => $g->id, 'depth' => '1'),
                                     ($info ? 0 : G_JUST_ID))
                            ->getFirst();
 
@@ -128,10 +135,8 @@ class GroupRelations {
         @return GroupsList
     */
     public static function getChilds(Group $g) {
-        $depth  = self::getDepth($g, true);
-
         $groups = GroupsList::search('childs', 
-                                    array('gid' => $g->id, 'depth' => $depth, 'limit' => 4));
+                                    array('gid' => $g->id, 'depth' => 1, 'limit' => 4));
 
         return $groups;
     }

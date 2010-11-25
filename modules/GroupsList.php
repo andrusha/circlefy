@@ -212,7 +212,7 @@ class GroupsList extends Collection {
 
             case 'childs':
                 $join[] = 'relations';
-                $where  = 'gr.ancestor = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth# + 1';
+                $where  = 'gr.ancestor = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
                 break;
 
             case 'parent':
