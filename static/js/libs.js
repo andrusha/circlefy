@@ -774,7 +774,7 @@ var Line = new Class({
     Implements: [Options],
 
     options: {
-        color: 'red'
+        color: '#CCCCCC'
     },
 
     draw: function (from, to, options) {
@@ -807,7 +807,7 @@ var Line = new Class({
             alfa = Math.atan2(A.x - B.x, B.y - A.y);
 
         
-        var transform = 'rotate(' + alfa + 'rad) scale(1, ' + 1 / Math.sin(alfa) + ')',
+        var transform = 'rotate(' + alfa + 'rad) scale('+1/Math.cos(alfa)+', ' + 1 / Math.sin(alfa) + ')',
             line = new Element('div', {
                 class: 'line',
                 styles: {

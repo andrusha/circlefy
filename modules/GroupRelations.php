@@ -64,7 +64,7 @@ class GroupRelations {
         Delete all links to group and reset depth counter for it childrens
     */
     public static function unlink(Group $children) {
-        $parent = self::getClosestParent($children, false);
+        $parent = self::getClosestParent($children, false, false);
         if ($parent->id === null)
             return;
 
@@ -110,8 +110,8 @@ class GroupRelations {
     /*
         @return Group
     */
-    public static function getClosestParent(Group $g, $info = true) {
-        $depth = self::getDepth($g, true);
+    public static function getClosestParent(Group $g, $info = true, $cached = true) {
+        $depth = self::getDepth($g, $cached);
         
         $group = GroupsList::search('parent', 
                                     array('gid' => $g->id, 'depth' => $depth),

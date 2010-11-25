@@ -224,7 +224,7 @@ var _startup = _tap.register({
             element: $$('#posttapform textarea')
         });
 
-        this.drawLines();
+        //this.drawLines();
     },
 
     drawLines: function() {

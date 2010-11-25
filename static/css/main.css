@@ -2487,12 +2487,58 @@ font-size:16px;
 float:right;
 }
 
-.line {
-    position: absolute;
-    z-index: 9999;
-    width:  2px;
-    opacity: 0.9;
-	border-radius:1px;
-	-moz-border-radius:2px;
-	-webkit-border-radius:2px;
+/*** Tree visualisation ***/
+.circles {
+    overflow: hidden;
 }
+
+.circles .cell {
+    float:left;
+    overflow:hidden;
+}
+
+.circles .cell .container {
+    display:block;
+    overflow:hidden;
+    position:relative;
+}
+
+.cell .line {
+    position: relative;
+}
+
+.cell .line.straight {
+    background-color: red;
+    height: 25px;
+    width: 2px;
+}
+
+.cell .line.straight.long {
+    height: 35px;
+}
+
+.cell .line.straight.horizontal {
+    height: 2px;
+}
+
+.cell .line.round {
+    height: 10px;
+    width: 10px;
+    border-top: 2px solid red;
+}
+
+.cell .line.round.right {
+    border-left: 2px solid red;
+    border-radius:         7px 0px 0px 0px;
+    -moz-border-radius:    7px 0px 0px 0px;
+    -webkit-border-radius: 7px 0px 0px 0px;
+}
+
+.cell .line.round.left {
+    margin-left: -50%; 
+    border-right: 2px solid red;
+    border-radius:         0px 7px 0px 0px;
+    -moz-border-radius:    0px 7px 0px 0px;
+    -webkit-border-radius: 0px 7px 0px 0px;
+}
+/*** /Tree visualisation ***/

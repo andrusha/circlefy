@@ -48,7 +48,8 @@ class page_circle extends Base {
         if ($parent->id !== null) {
             $this->set($parent->asArray(), 'parent');
             $this->set(GroupRelations::getSiblings($group)->asArrayAll(), 'siblings');
-        }
+        } else
+            $this->set($group->asArray(), 'parent');
         $this->set(GroupRelations::getChilds($group)->asArrayAll(), 'childs');
 
         $this->set($member, 'state');
