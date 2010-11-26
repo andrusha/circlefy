@@ -214,6 +214,9 @@ if ($_f['show_reply']){
                 <? if ($f['private']): ?>
                     <div class="messagetomembers"><img src="/static/images/lock.png" alt="lock" /></div>
                 <? endif; ?>
+                <? if ($f['sender_id'] == $me['id']): ?>
+                    <button class="message-remove" data-id="<?=$f['id']?>">remove</button>
+                <? endif; ?>
             </div>
             <div class="clear"></div>
         </div><!--text-->

@@ -896,6 +896,24 @@ _controls.selector = _tap.register({
     }
 });
 
+_controls.tap_actions = _tap.register({
+    init: function() {
+        this.setup();
+        this.subscribe('feed.changed', this.setup.bind(this));
+    },
+
+    setup: function() {
+        $$('button.message-remove').addEvent('click', this.remove.toHandler(this));
+    },
+
+    remove: function(el, e) {
+        e.stop();
+        new Request.JSON({
+            url: '/AJAX/taps/delete',
+        }).post({id: el.getData('id')});
+    }
+});
+
 /*
 module: _live.stream
 	controls the automatic tap streaming
@@ -998,16 +1016,13 @@ _live.taps = _tap.register({
     },
 
     deleteTap: function(data) {
-        gid = data['gid'];
-        cid = data['cid'];
+        cid = data['id'];
 
-        var tap = $('tid_'+cid);
+        var tap = $('global-'+cid);
         if (!tap)
             return;
         
-        var body = tap.getElement('p.tap-body');
-        body.set('text', 'This tap deleted');
-        tap.addClass('deleted');
+        tap.addClass('deleted').addClass('hidden');
 
         this.publish('tap.deleted', [cid]);
     },

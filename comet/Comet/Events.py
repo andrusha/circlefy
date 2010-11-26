@@ -42,12 +42,13 @@ class EventDispatcher(object):
     def __call__(self, frame):
         action = frame['action']
         data = frame['data']
-        recievers = None
 
         if action == 'tap.new':
-            recievers = self.on_new_message(action, data)
+            self.on_new_message(action, data)
+        elif action == 'tap.delete':
+            self.on_delete_message(action, data)
         elif action == 'response.new':
-            recievers = self.on_new_response(action, data)
+            self.on_new_response(action, data)
         elif action == 'group.follow':
             gid, uid, status = map(int, [data['group_id'], data['user_id'], data['status']])
             self.on_group_follow(gid, uid, status)
@@ -138,3 +139,14 @@ class EventDispatcher(object):
             sql = 'DELETE FROM events WHERE user_id = %i AND type = 2 AND related_id = %i' % (friend, user)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
+
+    def on_delete_message(self, action, message):
+        "Delete message from events queue and cassandra tables"
+        cid = int(message['id'])
+        sql = 'DELETE FROM events WHERE related_id = %i' % cid
+        self.mysql.cursor().execute(sql)
+        self.mysql.commit()
+
+        self.cassandra.remove('convo_followers', cid)
+
+        self.user_server.send_to(action, message, convo = cid)

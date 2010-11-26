@@ -80,7 +80,8 @@ $ajaxs = array(
                'respond'   => true,
                'filter'    => true,
                'new'       => true,
-               'events'    => true
+               'events'    => true,
+               'delete'    => true
         ),
         'follow' => true
     );

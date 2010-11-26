@@ -233,6 +233,9 @@
                     <# if (msg.private): #>
                         <div class="messagetomembers"><img src="/static/images/lock.png" alt="lock" /></div>
                     <# endif; #>
+                    <# if (msg.sender_id == _vars.user.id): #>
+                        <button class="message-remove" data-id="<#: msg.id #>">remove</button>
+                    <# endif; #>
                 </div>
             </div>
         
