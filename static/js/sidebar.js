@@ -86,21 +86,22 @@ var _view_all = _tap.register({
                     var list = parent.getElement('div.circles');
             }
 
-            el.addClass('hidden');
             this.getGroups(id, list);
+        } else if (['following', 'followers', 'members'].contains(type)) {
+            var list = el.getParent('div.box').getElement('div.followers');
+            this.getUsers(type, id, list);
+        } else if (type == 'involved') {
+            var list = el.getParent('div.box');
+            list.getElements('.follower-thumb').removeClass('hidden');
         }
+
+        el.addClass('hidden');
     },
 
     getGroups: function (id, list) {
-        var self = this;
-        new Request({
+        new Request.JSON({
             url: '/AJAX/group/get',
-            data: {
-                type: 'byUser',
-                id: id
-            },
-            onSuccess: function() {
-                var response = JSON.decode(this.response.text);
+            onSuccess: (function(response) {
                 if (!response.success)
                     return;
 
@@ -108,8 +109,23 @@ var _view_all = _tap.register({
                 list.empty();
                 items.inject(list);
                 
-                self.publish('groups.get', [items]);
-            }
-        }).send();
+                this.publish('groups.get', [items]);
+            }).bind(this)
+        }).post({type: 'byUser', id: id});
+    },
+
+    getUsers: function (type, id, list) {
+        new Request.JSON({
+            url: '/AJAX/user/get',
+            onSuccess: (function(response) {
+                if (!response.success)
+                    return;
+
+                var items = Elements.from(_template.parse('followers', response.data));
+                items.inject(list.empty());
+
+                this.publish('users.get', [items]);
+            }).bind(this)
+        }).post({type: type, id: id});
     }
 });

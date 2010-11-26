@@ -61,7 +61,8 @@ var _template = {
         'messages':    'template-messages',
         'circles':     'template-circles',
         'notifications':'template-notifications',
-        'post-search': 'template-post-search'
+        'post-search': 'template-post-search',
+        'followers':   'template-followers'
     },
 
 	/*

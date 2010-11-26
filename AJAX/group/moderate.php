@@ -21,26 +21,27 @@ class ajax_moderate extends Base {
 
         switch ($action) {
             case 'approve':
-                $group->moderateMembers($users, true);
+                $perm = $group->moderateMembers($users, true);
                 break;
             
             case 'reject':
-                $group->moderateMembers($users, false);
+                $perm = $group->moderateMembers($users, false);
                 break;
             
             case 'ban':
-                $group->moderateMembers($users, true, Group::$permissions['blocked']);
+                $perm = $group->moderateMembers($users, true, Group::$permissions['blocked']);
                 break;
             
             case 'promote':
-                $group->moderateMembers($users, true, Group::$permissions['moderator']);
+                $perm = $group->moderateMembers($users, true, Group::$permissions['moderator']);
                 break;
             
             case 'demote':
-                $group->moderateMembers($users, true, Group::$permissions['user']);
+                $perm = $group->moderateMembers($users, true, Group::$permissions['user']);
                 break;
         }
 
         $this->set(true, 'success');
+        $this->set($perm, 'permission');
     }
 };

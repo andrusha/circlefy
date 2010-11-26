@@ -189,7 +189,8 @@ class Group extends BaseModel {
 
             $this->db->query($query, array('gid' => $this->id, 'users' => $users, 'perm' => $perm));
         }
-        return true;
+
+        return $action ? $perm : null;
     }
 
     /*

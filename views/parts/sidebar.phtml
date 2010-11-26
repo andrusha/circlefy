@@ -218,11 +218,13 @@
                data-id="<?=$_s['circle']['id']?>">view all...</a>
         <? endif; ?>
         </h3>
+        <div class="followers">
         <?php
             $_f['members'] = $_s['members'];
             $fk = 'gmembers';
             include(FOLLOWERS);
         ?>
+        </div>
         <div class="clear"></div>
         
     </div><!--box-->
@@ -380,11 +382,13 @@
                data-id="<?=$_s['user']['id']?>">view all...</a>
         <? endif; ?>
         </h3>
+        <div class="followers">
         <?php
             $_f['members'] = $_s['followers'];
             $fk = 'follower';
             include(FOLLOWERS);
         ?>
+        </div>
         <div class="clear"></div>
         
     </div><!--box-->
@@ -401,11 +405,13 @@
                data-id="<?=$_s['user']['id']?>">view all...</a>
         <? endif; ?>
         </h3>
+        <div class="followers">
         <?php
             $_f['members'] = $_s['following'];
             $fk = 'following';
             include(FOLLOWERS);
         ?>
+        </div>
         <div class="clear"></div>
         
     </div><!--box-->
@@ -419,14 +425,16 @@
         <? if (count($_s['convo']['involved']) >= 16): ?>
             <a class="view-all" href="#"
                data-type="involved"
-               data-id="">view all...</a>
+               data-id="0">view all...</a>
         <? endif; ?>
         </h3>
+        <div class="followers">
         <?php
             $_f['members'] = $_s['convo']['involved'];
             $_f['limit'] = 16;
             include(FOLLOWERS);
         ?>
+        </div>
         <div class="clear"></div>
         
     </div><!--box-->

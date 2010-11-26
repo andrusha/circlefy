@@ -285,6 +285,17 @@
     -->
     </ul>
 
+    <? /*** Following/followers/members simple user list ***/ ?>
+    <ul id="template-followers">
+    <!--
+        <# for (m from this): #>
+            <a href="/user/<#: m.uname #>" class="follower-thumb" data-tiptitle="<#: m.fname #> <#: m.lname #>" data-tipcontent="&nbsp;" data-tipid="follow-<#: m.id #>">
+                <img src="<?=USER_PIC_REL?>small_<#: m.id #>.jpg" />
+            </a>
+        <# endfor; #>
+    -->
+    </ul>
+
     <? /*** Persistant notifications ***/ ?>
     <ul id="template-notifications">
     <!--
