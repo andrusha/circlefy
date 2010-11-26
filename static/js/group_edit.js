@@ -245,3 +245,24 @@ _edit.group = _tap.register({
         img.src = img.src.replace(/medium_[0-9]*\.jpg/i, 'medium_'+group.id+'.jpg?');
     }
 });
+
+_edit.members = _tap.register({
+    init: function() {
+        $$('button.moderate').addEvent('click', this.moderate.toHandler(this));
+    },
+
+    moderate: function(el, e) {
+        e.stop();
+        
+        var action = el.getData('action'),
+            uid = el.getData('uid'),
+            gid = el.getData('gid');
+
+        new Request.JSON({
+            url: '/AJAX/group/moderate',
+            onSuccess: function (resp) {
+
+            }
+        }).post({action: action, id: gid, users: [uid]});
+    }
+});

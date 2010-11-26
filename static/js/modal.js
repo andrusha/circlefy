@@ -20,6 +20,7 @@ var _modal = _tap.register({
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.group.create': function() { self.show('modal-group-create') },
             'modal.show.group-edit': function() { self.show('modal-group-edit') },
+            'modal.show.edit-members': function() { self.show('modal-edit-members') },
             'modal.show.user-edit': function() { self.show('modal-user-edit') },
             'modal.show.image-display': function(embed, sizes) {
                 _modal.image_preview.show(embed, sizes);
@@ -60,6 +61,7 @@ var _modal = _tap.register({
                      'a.login-signup':       'modal.show.sign-login',
                      'button#edit_circle':   'modal.show.group-edit',
                      'li.settings':          'modal.show.user-edit',
+                     'button#edit_members':  'modal.show.edit-members',
                      'button.main-post-button': 'modal.show.post-tap'},
            function (event, selector) {
                 $$(selector).addEvent('click', function (e) {

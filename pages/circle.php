@@ -21,7 +21,7 @@ class page_circle extends Base {
             $r = Group::confirmEmail($auth_token);
 
         $this->set(
-            UsersList::search('membersNotPending', array('gid' => $group->id, 'limit' => 14))
+            UsersList::search('members', array('gid' => $group->id, 'limit' => 14))
                      ->asArrayAll(),
             'members');
 

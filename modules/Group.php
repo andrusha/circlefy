@@ -171,23 +171,23 @@ class Group extends BaseModel {
         Moderate members
         $action = true - approve, false - reject
     */
-    public function moderateMembers($users, $action) {
+    public function moderateMembers($users, $action, $perm = null) {
+        $perm = $perm !== null ? $perm : Group::$permissions['user'];
         if (!empty($users)) {
             if ($action)
                 $query = "
                     UPDATE `group_members`
                        SET `permission` = #perm#
                      WHERE `group_id` = #gid#
-                       AND `user_id` = #uid#";
+                       AND `user_id` IN (#users#)";
             else
                 $query = "
                     DELETE
                       FROM `group_members`
                      WHERE `group_id` = #gid#
-                       AND `user_id` = #uid#";
-            foreach ($users as $k => $u) {
-                $this->db->query($query, array('gid' => $this->id, 'uid' => $u, 'perm' => Group::$permissions['user']));
-            }
+                       AND `user_id` IN (#users#)";
+
+            $this->db->query($query, array('gid' => $this->id, 'users' => $users, 'perm' => $perm));
         }
         return true;
     }

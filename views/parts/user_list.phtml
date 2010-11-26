@@ -1,0 +1,40 @@
+<? if (!empty($_ul['users'])): ?>
+<ul>
+<? foreach ($_ul['users'] as $u): ?>
+    <li>
+        <span>
+            <? if (!$_ul['show_actions']): ?>
+                <input type="checkbox" data-user="<?=$u['id']?>" />
+            <? else: ?>
+                <?=$u['permission']?>
+            <? endif; ?>
+        </span>
+        <img
+            width="40"
+            src="<?=USER_PIC_REL?>medium_<?=$u['id']?>.jpg"
+            data-tiptitle="<?=$u['fname']?> <?=$u['lname']?>"
+            data-tipid="tip-pending-<?=$u['id']?>"
+        />
+        <a href="/user/<?=$u['uname']?>" class="view">view</a>
+        <? if ($_ul['show_actions']): ?>
+            <? if (in_array($u['permission'], array('admin', 'moderator'))): ?>
+                <button class="moderate view" 
+                        data-action="demote" 
+                        data-uid="<?=$u['id']?>"
+                        data-gid="<?=$circle['id']?>">demote</button>
+            <? elseif (in_array($u['permission'], array('moderator', 'user'))): ?>
+                <button class="moderate view" 
+                        data-action="promote"
+                        data-uid="<?=$u['id']?>"
+                        data-gid="<?=$circle['id']?>">promote</button>
+            <? endif; ?>
+            <button class="moderate view" 
+                    data-action="ban"
+                    data-uid="<?=$u['id']?>"
+                    data-gid="<?=$circle['id']?>">ban</button>
+        <? endif; ?>
+    </li>
+<? endforeach; ?>
+    <div class="clear"></div>
+</ul>
+<? endif; ?>

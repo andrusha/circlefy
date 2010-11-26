@@ -190,24 +190,13 @@
         <h1 class="wide">Manage circle</h1>
         
         <? if (!empty($pending)): ?>
-        	<div id="add">
+        	<div id="add" class="add">
             	<label>pending members <small>these members need to be aproved before they can start browsing the circle</small></label>
                 
-                <ul>
-                <? foreach ($pending as $u): ?>
-                	<li>
-                        <span><input type="checkbox" data-user="<?=$u['id']?>" /></span>
-                        <img
-                            width="40"
-                            src="<?=USER_PIC_REL?>medium_<?=$u['id']?>.jpg"
-                            data-tiptitle="<?=$u['fname']?> <?=$u['lname']?>"
-                            data-tipid="tip-pending-<?=$u['id']?>"
-                        />
-                        <a href="/user/<?=$u['uname']?>" class="view">view</a>
-                    </li>
-                <? endforeach; ?>
-                    <div class="clear"></div>
-                </ul>
+                <?php
+                    $_ul = array('users' => $pending);
+                    include(USER_LIST);
+                ?>
 
                 <input type="submit" class="accept" value="Accept members" />
                 <input type="submit" class="reject" value="Reject members" />
@@ -528,6 +517,23 @@
             
             <span class="modal-actions"><button id="post-tap-button" class="load">Post</button></span>
         </form>
+        <span class="modal-actions">
+                <a class="modal-cancel" href="#">close</a>
+        </span>
+    </div>
+
+<? /*** Group members edit dialog ***/ ?>
+    <div id="modal-edit-members" class="modal-window">
+        <div class="add">
+            <label>Circle members <small>feel free to edit user in any way you wish</label>
+            
+            <?php
+                $_ul = array('users' => $members, 'show_actions' => true);
+                include(USER_LIST);
+            ?>
+
+            <div class="clear"></div>
+        </div><!--add-->
         <span class="modal-actions">
                 <a class="modal-cancel" href="#">close</a>
         </span>

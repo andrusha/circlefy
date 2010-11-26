@@ -33,7 +33,14 @@ class User extends BaseModel {
         $exclude = array('pass', 'ip', 'last_login');
         if ($formatted)
             $exclude[] = 'email' ;
-        return array_diff_key($this->data, array_flip($exclude));
+        $data = array_diff_key($this->data, array_flip($exclude));
+
+        if ($data['permission']) {
+            $permissions = array_flip(Group::$permissions);
+            $data['permission'] = $permissions[$data['permission']];
+        }
+
+        return $data;
     }
 
     /*

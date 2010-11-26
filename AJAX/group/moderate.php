@@ -19,13 +19,28 @@ class ajax_moderate extends Base {
             return;
         }
 
-        $this->data = $this->moderate($group, $users, $action);
-    }
+        switch ($action) {
+            case 'approve':
+                $group->moderateMembers($users, true);
+                break;
+            
+            case 'reject':
+                $group->moderateMembers($users, false);
+                break;
+            
+            case 'ban':
+                $group->moderateMembers($users, true, Group::$permissions['blocked']);
+                break;
+            
+            case 'promote':
+                $group->moderateMembers($users, true, Group::$permissions['moderator']);
+                break;
+            
+            case 'demote':
+                $group->moderateMembers($users, true, Group::$permissions['user']);
+                break;
+        }
 
-    private function moderate(Group $group, $users, $action) {
-        
-        $group->moderateMembers($users, ($action == 'approve') ? true : false);
-        
-        return array('success' => 1);
+        $this->set(true, 'success');
     }
 };
