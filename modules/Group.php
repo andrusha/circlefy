@@ -250,7 +250,7 @@ class Group extends BaseModel {
 
         if ($added) {
             $link = 'http://'. DOMAIN . '/circle/'. $this->symbol . '?confirm='.$token;
-            Mailer::joinConfirm($this->user, $email, $group, $link);
+            Mailer::joinConfirm($u, $email, $this, $link);
         }
 
         return $this;
