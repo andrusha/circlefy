@@ -232,7 +232,11 @@ class Tap extends BaseModel {
 
         $this->format();
         end($this->data['replies']);
+
         Comet::send('response.new', current($this->data['replies']));
+
+        if (!$exists && false)
+            Mailer::newReply($user, $this, current($this->data['replies']));
 
         return $this;
     }

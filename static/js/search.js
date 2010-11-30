@@ -7,8 +7,8 @@ _tap.mixin({
             suggest:       suggest,
             list:          suggest.getElement('ul'),
             keyword:       null,
-            last_keypress: new Date().getTime()/1000,
-            type:          type};
+            type:          type,
+            selected:      null};
 
         search.input.overtext = new OverText(search.input, {
             positionOptions: {
@@ -24,6 +24,7 @@ _tap.mixin({
             'focus': this.start.toHandler(this),
             'keyup': this.checkKeys.bind(this)
         });
+        search.input.getParent('form').addEvent('submit', function (e) { e.stop(); });
     },
  
     start: function(el) {
@@ -45,25 +46,38 @@ _tap.mixin({
         checks whether the search keys are valid or when enter is pressed
     */
     checkKeys: function(e){
-        if (e.key == 'enter') return this.goSearch(e);
+        // up, down
+        if ([38, 40, 13].contains(e.code)) {
+            e.stop();
+            return this.navigate(e.code);
+        }
+
         //skip all meta-keys except del & backspace
         if ((e.code < 48) && !([8, 46].contains(e.code)))  return;
 
-        //2 - minimal timeout before searches
-        var now = new Date().getTime()/1000,
-            delta = 0.5 - (now - this.last_keypress);
-        this.search.last_keypress = now;
+        this.goSearch(e);
+    },
 
-        Elements.from($('template-search-placeholder').innerHTML.cleanup()).inject(this.search.list.empty());
-        if (delta < 0) {
-            clearTimeout(this.search.search_event);
-            this.goSearch(e);
-        } else {
-            clearTimeout(this.search.search_event);
-            this.search.search_event = (function () {
-                this.goSearch(e);
-            }).delay(delta*1000, this);
+    navigate: function(code) {
+        var found    = this.search.list.getElements('li:not(.create)'),
+            selected = this.search.selected || found.indexOf(this.search.list.getElement('li.selected')) || 0;
+        if (found.length == 0)
+            return;
+
+        //enter
+        if (code == 13) {
+            found[selected].fireEvent('click');
+            return;
         }
+
+        if (code == 38) //up
+            selected = selected <= 0 ?  found.length - 1 : selected - 1;
+        else if (code == 40) //down
+            selected = selected == found.length - 1 ? 0 : selected + 1;
+
+        found.removeClass('selected');
+        found[selected].addClass('selected');
+        this.search.selected = selected;
     },
 
      /*
@@ -74,18 +88,45 @@ _tap.mixin({
         var keyword = this.search.input.value,
             self = this;
         //do not search for empty strings, strings < 2 chars & same keywords 
-        if (!keyword.isEmpty() && keyword.length > 1 && this.search.keyword != keyword){
+        if (!keyword.isEmpty() && keyword.length >= 1 && this.search.keyword != keyword){
             if (!this.search.request)
                 this.search.request = new Request.JSON({
                     url: '/AJAX/group/search',
                     link: 'cancel',
-                    onSuccess: this.onSearch.bind(this)
+                    onSuccess: (function (resp) {
+                        this.search.selected = null;
+                        this.onSearch(resp);
+                        this.bindSearchEvents();
+                    }).bind(this)
                 });
             this.search.request.post({search: keyword, type: this.search.type});
         } else if (keyword.length <= 1)
             this.search.list.empty();
         this.search.keyword = keyword;
-    } 
+    },
+
+    bindSearchEvents: function() {
+        var found = this.search.list.getElements('li:not(.create)'),
+            self  = this;
+
+        found.addEvents({
+            'mouseover': function(e) {
+                if (!this.hasClass('selected'))
+                    found.removeClass('selected');
+                this.addClass('selected');
+                self.search.selected = null;
+            },
+            'mouseout': function(e) {
+                this.removeClass('selected');
+                self.search.selected = null;
+            },
+            'click': function(e) {
+                if (e)
+                    e.stop();
+                document.location.href = this.getElement('a').href;
+            }
+        });
+    }
 });
 
 /*

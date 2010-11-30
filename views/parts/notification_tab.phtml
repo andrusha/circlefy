@@ -4,7 +4,7 @@
     <div class="list">
         <div class="events">
             <? foreach($events as $e): ?>
-            <div id="event-<?=$e['id']?>" class="event">
+            <div id="event-<?=($e['type'] == 2 ? 2 : 1)?>-<?=$e['id']?>" class="event">
                 <? if (isset($e['group_id'])): ?>
                     <a href="/circle/<?=$e['group']['symbol']?>">
                         <img src="<?=GROUP_PIC_REL?>small_<?=$e['group_id']?>.jpg" class="group_icon" />

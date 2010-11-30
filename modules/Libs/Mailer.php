@@ -5,7 +5,13 @@
     collections of functions actually
 */
 class Mailer {
+    private static $queue = array();
+
     private function __construct() {}
+
+    function __destruct() {
+        self::sendQueue();
+    }
 
     private static function formEmail($_template, array $_vars) {
         extract($_vars);
@@ -18,12 +24,17 @@ class Mailer {
         if (DEBUG)
             FirePHP::getInstance(true)->log(array('email' => $email, 'subject' => $subject, 'body' => $body), 'Mail');
 
-        $status = mail($email, $subject, $body, "From: Circlefy Robot <robot@circlefy.com>\r\n");
+        self::$queue[] = array($mail, $subject, $body);
+    }
 
-        if (!$status && DEBUG)
-            FirePHP::getInstance(true)->error("Mail sending error to `$email`");
+    private static function sendQueue() {
+        foreach (self::$queue as $item) {
+            list($email, $subject, $body) = $item;
+            $status = mail($email, $subject, $body, "From: Circlefy Robot <robot@circlefy.com>\r\n");
 
-        return $status;
+            if (!$status && DEBUG)
+                FirePHP::getInstance(true)->error("Mail sending error to `$email`");
+        }
     }
 
     public static function joinConfirm(User $u, $email, Group $g, $link) {
@@ -68,6 +79,16 @@ class Mailer {
             self::formEmail('new_personal',
                 array('your_name' => $u->fname, 'fname' => $m->sender->fname, 'lname' => $m->sender->lname,
                       'text' => $m->text, 'mid' => $m->id)));
+    }
+
+    public static function newReply(User $u, Tap $t, array $m) {
+        if ($u->email === null)
+            $u = User::init($u->id);
+
+        self::send($u->email, $m['user']['uname'].' left new reply',
+            self::formEmail('new_reply',
+                array('your_name' => $u->fname, 'fname' => $m['user']['fname'], 'lname' => $m['user']['lname'],
+                      'text' => $m['text'], 'mid' => $t->id)));
     }
 
     public static function digest(User $u, TapsList $messages, TapsList $replies, TapsList $followers) {

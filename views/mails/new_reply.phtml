@@ -1,0 +1,10 @@
+<? // Email on new reply 
+   include(MAIL_HEADER); ?>
+<?=$fname?> <?=$lname?> sent new reply
+
+"<?=$text?>"
+
+Click here to go to circle:
+http://<?=DOMAIN?>/convo/<?=$mid?>
+
+<? include(MAIL_FOOTER); ?>

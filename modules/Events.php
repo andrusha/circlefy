@@ -77,6 +77,14 @@ class Events {
         return array($users, $events);
     }
 
+    public static function exists(User $u, $type, $id) {
+        $query = 'SELECT user_id FROM events 
+                   WHERE user_id = #uid# AND type = #type# AND related_id = #id# 
+                   LIMIT 1';
+        return DB::getInstance()->query($query, 
+                array('uid' => $u->id, 'type' => $type, 'id' => $id))->num_rows == 1;
+    }
+
     /*
         @return TapsList
     */
@@ -90,24 +98,15 @@ class Events {
     }
 
     public static function readUserEvent(User $who, User $whom) {
-        $db = DB::getInstance();
-
-        $query = 'DELETE FROM events WHERE user_id = #uid# AND type = 2 AND related_id = #fid#';
-        $db->query($query, array('uid' => $who->id, 'fid' => $whom->id));
+        Comet::send('event.delete', array('type' => 2, 'event_id' => $whom->id, 'user_id' => $who->id));
     }
 
     public static function readMessageEvent(User $who, Tap $tap) {
-        $db = DB::getInstance();
-
-        $query = 'DELETE FROM events WHERE user_id = #uid# AND type IN (0, 1) AND related_id = #mid#';
-        $db->query($query, array('uid' => $who->id, 'mid' => $tap->id));
+        Comet::send('event.delete', array('type' => 1, 'event_id' => $tap->id, 'user_id' => $who->id));
     }
 
     public static function readAllEvents(User $u) {
-        $db = DB::getInstance();
-
-        $query = "DELETE FROM events WHERE user_id = #uid#";
-        $db->query($query, array('uid' => $u->id));
+        Comet::send('event.delete.all', array('user_id' => $u->id));
     }
 
 };

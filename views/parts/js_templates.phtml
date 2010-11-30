@@ -300,7 +300,7 @@
     <ul id="template-notifications">
     <!--
         <# for (e from this): #>
-        <div id="event-<#: e.id #>" class="event">
+        <div id="event-<# if (e.type == 2): #>2<# else: #>1<# endif; #>-<#: e.id #>" class="event">
             <# if (e.group_id): #>
                 <a href="/circle/<#: e.group.symbol #>">
                     <img src="<?=GROUP_PIC_REL?>small_<#: e.group_id #>.jpg" class="group_icon" />

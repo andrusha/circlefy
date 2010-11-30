@@ -62,6 +62,10 @@ class EventDispatcher(object):
             unrecieved = self.user_server.send_to(action, data, users = set([fid]))
             if unrecieved or not status:
                 self.on_user_follow(uid, fid, status)
+        elif action == 'event.delete':
+            self.on_delete_event(action, data)
+        elif action == 'event.delete.all':
+            self.on_delete_event(action, data, all = True)
         else:
             logging.warning('Unknow event! %s: %s' (action, data))
 
@@ -150,3 +154,18 @@ class EventDispatcher(object):
         self.cassandra.remove('convo_followers', cid)
 
         self.user_server.send_to(action, message, convo = cid)
+
+    def on_delete_event(self, action, event, all = False):
+        "Delete event by type"
+        uid, type, id = intcast(event['user_id'], event['type'], event['event_id'])
+
+        where = 'WHERE user_id = %i' % uid
+        if not all:
+            where += ' AND related_id = %i' % id
+            where += ' AND type IN (0, 1)' if type in (0, 1) else (' AND type = %i' % type)
+
+        sql = 'DELETE FROM events %s' % where
+        self.mysql.cursor().execute(sql)
+        self.mysql.commit()
+
+        self.user_server.send_to(action, event, users = set([uid]))

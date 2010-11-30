@@ -1656,6 +1656,7 @@ padding:0;
         text-shadow:1px 1px #000;
         height:35px;
         padding:5px 10px 5px 0px;
+        cursor: pointer;
 }
 .search-results li.create {
         background:#346394;
@@ -1672,7 +1673,7 @@ padding:0;
 .search-results li.create:hover .thumb span {
         background:none;
 }
-.search-results li:hover {
+/*.search-results li:hover, */.search-results li.selected {
         background:#000;
 }
 .search-results li:hover .thumb span{
@@ -1686,7 +1687,7 @@ padding:0;
         color:#2878ca;
         text-decoration:none;
 }
-.search-results li:hover h3.title a{
+/*.search-results li:hover h3.title a, */.search-results li.selected h3.title a{
         color:#fff;
 }
 .search-results li small{
@@ -2214,7 +2215,8 @@ textarea.validation-failed, input.validation-failed {
 
 /* TASO CSS */
 
-#edit_circle{ 
+
+#edit_circle,.message-remove,#edit_members,#first-tap-button{ 
 margin-left:8px;
 border:1px #CCC solid;
 display:inline-block;
@@ -2227,6 +2229,25 @@ font-weight:bold;
 -moz-border-radius:2px 2px 2px 2px;
 -webkit-border-radius:2px 2px 2px 2px;
 border-radius:2px 2px 2px 2px;
+}
+
+#edit_members{
+margin-top:10px;
+background-color:#EDC;
+}
+
+.message-remove{
+background:#EED;
+padding:2px;
+}
+
+#first-tap-button{
+background:#EED;
+padding:4px;
+}
+
+#circle-context{
+float:none;
 }
 
 .pm-label{

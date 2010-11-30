@@ -604,6 +604,7 @@ var _tapbox = _tap.register({
             }}).show();
 
         form.addEvent('submit', this.send.toHandler(this));
+        this.setupTapBox();
     },
 
 	/*
@@ -613,10 +614,14 @@ var _tapbox = _tap.register({
     setupTapBox: function() {
         var msg = this.tapbox,
             limit = 240,
-            allowed = {'enter': 1,'up': 1,'down': 1,'left': 1, 'right': 1,'backspace': 1,'delete': 1};
+            allowed = {'enter': 1,'up': 1,'down': 1,'left': 1, 'right': 1,'backspace': 1,'delete': 1},
+            self = this;
 
         msg.addEvents({
             'keypress': function(e) {
+                if (e.control && e.key == 'enter')
+                    return self.form.fireEvent('submit', [e]);
+
                 if (msg.value.length >= limit && !allowed[e.key]) return e.stop();
             }
         });
