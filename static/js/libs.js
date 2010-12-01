@@ -169,7 +169,7 @@ var Roar = new Class({
 	Implements: [Options, Events, Chain],
 
 	options: {
-		duration: 3000,
+		duration: 10000,
 		position: 'upperLeft',
 		container: null,
 		bodyFx: null,

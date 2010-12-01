@@ -53,7 +53,7 @@ class TapsList extends Collection {
 
         // `m` index reserverd for message table
         $joins = array(
-            'members'   => 'INNER JOIN group_members gm ON m.group_id  = gm.group_id AND gm.user_id = m.sender_id',
+            'members'   => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id AND gm.user_id = m.sender_id',
             'members_l' => 'LEFT  JOIN group_members gm ON m.group_id  = gm.group_id',
             'members_l2'=> 'LEFT  JOIN group_members gm2 ON m.group_id = gm2.group_id AND gm2.user_id = m.sender_id',
             'group'     => 'INNER JOIN `group`       g  ON g.id        = m.group_id',

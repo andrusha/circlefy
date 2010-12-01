@@ -1141,8 +1141,8 @@ _live.notifications = _tap.register({
     },
 
     newMember: function(data) {
-        var uname = data.user.uname,
-            ureal_name = data.user.fname + ' ' + data.user.lname;
+        var uname = '',
+            ureal_name = '';
 
         var title = 'New member:<br><a href="/user/'+uname+'">' + ureal_name + '</a>';
         var message = 'Hail new circle member!';
