@@ -5,6 +5,12 @@
 <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/roar.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/modal.css" />
+<!--[if !IE 7]>
+	<style type="text/css">
+        /*** Sticky footer IE fix ***/
+		#wrap {display:table;height:100%}
+	</style>
+<![endif]-->
 <?php
     if (isset($_h['styles']))
         foreach ($_h['styles'] as $s)
@@ -92,6 +98,7 @@ _tap.register({
 
 <body>
 
+<div id="global-wrap"><div id="global-main">
     <div id="header" <?=($_h['fixed'] ? 'style="position: fixed"' : '')?>>
     	<div class="wrap">
         	

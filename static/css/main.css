@@ -32,6 +32,41 @@ body {
 	position:relative;
 }
 
+/*** Sticky footer fix ***/
+
+body, html {
+    height: 100%;
+}
+
+/*Opera Fix*/
+body:before {/* thanks to Maleika (Kohoutec)*/
+    content:"";
+    height:100%;
+    float:left;
+    width:0;
+    margin-top:-32767px;/* thank you Erik J - negate effect of float*/
+}
+
+#global-wrap {
+    min-height: 100%;
+}
+
+#global-main {
+    overflow: auto;
+    padding-bottom: 50px;
+}
+
+#footer {
+    position: relative;
+    margin-top: -50px !important;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    height: 49px;
+    clear: both;
+}
+
+/*** /Sticky footer fix ***/
+
 .clear {
 	clear:both;
 	display:block;
