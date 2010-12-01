@@ -60,8 +60,7 @@ body:before {/* thanks to Maleika (Kohoutec)*/
     position: relative;
     margin-top: -50px !important;
     padding-bottom: 0px !important;
-    padding-top: 0px !important;
-    height: 49px;
+    height: 34px;
     clear: both;
 }
 
