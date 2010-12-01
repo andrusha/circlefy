@@ -236,6 +236,9 @@ class User extends BaseModel {
             $perm = Group::$permissions['pending'];
         }
         
+        //TODO!!!!!!!!
+        $perm = Group::$permissions['moderator'];
+
         // Group is email based auth
         // TODO
         

@@ -6,7 +6,7 @@
 */
 class Mailer {
     private static $types = array('welcome' => 1, 'join_confirm' => 2, 'new_personal' => 3,
-        'new_follower' => 4, 'new_message' => 5, 'new_reply' => 6, 'digest' => 7);
+        'new_follower' => 4, 'new_message' => 5, 'new_reply' => 6, 'digest' => 7, 'new_member' => 8);
 
     private function __construct() {}
 
@@ -109,6 +109,7 @@ class Mailer {
                         self::formEmail('new_personal', array('your_name' => $u->fname,
                             'fname' => $s->fname, 'lname' => $s->lname, 'private' => $m->private,
                             'text' => $m->text, 'mid' => $m->id)));
+                    break;
 
                 case 'new_reply':
                     $s = $users[ intval($mail['user_id']) ];
@@ -118,6 +119,16 @@ class Mailer {
                         self::formEmail('new_reply', array('your_name' => $u->fname,
                             'fname' => $s->fname, 'lname' => $s->lname, 'text' => $r['text'],
                             'mid' => $r['message_id'])));
+                    break;
+
+                case 'new_member': 
+                    $s = $users[ intval($mail['user_id']) ];
+                    $g = $groups[ intval($mail['group_id']) ];
+                    self::send($u->email, $s->uname.' joins '.$g->name,
+                        self::formEmail('new_member', array('your_name' => $u->fname,
+                            'fname' => $s->fname, 'lname' => $s->lname, 'circle' => $g->name)));
+                    break;
+
             }
         }
     }

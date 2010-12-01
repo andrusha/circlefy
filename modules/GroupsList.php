@@ -30,8 +30,10 @@ class GroupsList extends Collection {
 
     /*
         Make user member of list of groups
+
+        TODO!!!!!!!!!!!!!
     */
-    public function bulkJoin(User $user, $perm = 'user') {
+    public function bulkJoin(User $user, $perm = 'moderator') {
         if (empty($this->data))
             return $this;
 
