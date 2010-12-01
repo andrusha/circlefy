@@ -93,7 +93,7 @@ $page = $_GET['page'];
 $ajax = $_GET['ajax'];
 $type = $_GET['type'];
 
-if (isset($page) && !isset($ajax)) {
+if (isset($page) && !isset($ajax) || (!isset($page) && !isset($ajax))) {
     if (array_key_exists($page, $pages) && $pages[$page]['allowed']) {
         //hooray
     } else {
