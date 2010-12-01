@@ -101,9 +101,6 @@ class Tap extends BaseModel {
 
         Comet::send('tap.new', $tap->format()->asArray());
 
-        foreach(UsersList::search('members', array('gid' => $group->id)) as $user)
-            Mailer::newMessage($user, $tap);
-
         return $tap;
     }
 
@@ -115,7 +112,6 @@ class Tap extends BaseModel {
                         true, true, true, (!empty($media) ? true : false));
 
         Comet::send('tap.new', $tap->format()->asArray());
-        Mailer::newPersonal($to, $tap);
 
         return $tap;
     }
@@ -234,9 +230,6 @@ class Tap extends BaseModel {
         end($this->data['replies']);
 
         Comet::send('response.new', current($this->data['replies']));
-
-        if (!$exists && false)
-            Mailer::newReply($user, $this, current($this->data['replies']));
 
         return $this;
     }

@@ -5,13 +5,11 @@
     collections of functions actually
 */
 class Mailer {
-    private static $queue = array();
+    private static $types = array('welcome' => 1, 'join_confirm' => 2, 'new_personal' => 3,
+        'new_follower' => 4, 'new_message' => 5, 'new_reply' => 6, 'digest' => 7);
 
     private function __construct() {}
 
-    function __destruct() {
-        self::sendQueue();
-    }
 
     private static function formEmail($_template, array $_vars) {
         extract($_vars);
@@ -20,75 +18,136 @@ class Mailer {
         return ob_get_clean();
     }
 
-    private static function send($email, $subject, $body) {
-        if (DEBUG)
-            FirePHP::getInstance(true)->log(array('email' => $email, 'subject' => $subject, 'body' => $body), 'Mail');
-
-        self::$queue[] = array($mail, $subject, $body);
+    private static function send($email, $subject, $text) {
+        $status = mail($email, $subject, $text, "From: Circlefy Robot <robot@circlefy.com>\r\n");
+        if (!$status && DEBUG)
+            FirePHP::getInstance(true)->error("Mail sending error to `$email`");
     }
 
-    private static function sendQueue() {
-        foreach (self::$queue as $item) {
-            list($email, $subject, $body) = $item;
-            $status = mail($email, $subject, $body, "From: Circlefy Robot <robot@circlefy.com>\r\n");
+    private static function queue(User $u, $type, $email = null, $user_id = null, 
+                                  $message_id = null, $group_id = null, $reply_id = null) {
+        DB::getInstance()->insert('email_queue', 
+            array('reciever_id' => $u->id, 'alt_email' => $email,
+                  'type' => self::$types[$type], 'user_id' => $user_id,
+                  'message_id' => $message_id, 'group_id' => $group_id, 'reply_id' => $reply_id));
+    }
 
-            if (!$status && DEBUG)
-                FirePHP::getInstance(true)->error("Mail sending error to `$email`");
+    public static function sendQueue() {
+        //WARNING: it's a piece of shit, but it works, so, you better don't touch it
+
+        $db = DB::getInstance();
+
+        $db->startTransaction();
+
+        $data = $users = $taps = $groups = $replies = array();
+        try {
+            $query = 'SELECT id, type, reciever_id, alt_email, user_id, message_id, group_id, reply_id
+                        FROM email_queue
+                       ORDER BY type ASC, id ASC
+                       LIMIT 10';
+
+            $result = $db->query($query, array());
+            if ($result->num_rows == 0)
+                return;
+            
+            $result = $db->query($query, array());
+            while ($res = $result->fetch_assoc()) {
+                $data[ intval($res['id']) ] = $res;
+                $users[] = intval($res['reciever_id']);
+                $users[] = intval($res['user_id']);
+                $taps[]  = intval($res['message_id']);
+                $groups[]= intval($res['group_id']);
+                $replies[]=intval($res['reply_id']);
+            }
+
+            $query = 'DELETE FROM email_queue WHERE id IN (#ids#)';
+            $db->query($query, array('ids' => array_keys($data)));
+
+            $db->commit();
+        } catch (SQLException $e) {
+            $db->rollback();
+            throw $e;
+        }
+
+        $users = UsersList::search('byIds', array('ids' => array_unique($users)))->asArray();
+        $taps  = TapsList::search('byIds', array('ids' => array_unique($taps)))->asArray();
+        $groups = GroupsList::search('byIds', array('ids' => array_unique($groups)))->asArray();
+        $replies = TapsList::repliesById(array_unique($replies));
+
+        $types = array_flip(self::$types);
+        foreach($data as $mail) {
+            $type = $types[intval($mail['type'])];
+            $u = $users[ intval($mail['reciever_id']) ];
+
+            switch ($type) {
+                case 'welcome':
+                    self::send($u->email, 'Welcome to circlefy!',
+                        self::formEmail('welcome', array('your_name' => $u->fname)));
+                    break;
+                
+                case 'new_follower':
+                    $f = $users[ intval($mail['user_id']) ];
+                    self::send($u->email, $f->uname.' now following you',
+                        self::formEmail('new_follower', array('your_name' => $u->fname,
+                            'fname' => $f->fname, 'lname' => $f->lname)));
+                    break;
+
+                case 'new_message':
+                    $s = $users[ intval($mail['user_id']) ];
+                    $m = $taps[ intval($mail['message_id']) ];
+                    $g = $groups[ intval($mail['group_id']) ];
+                    self::send($u->email, $s->uname.' left new message at '.$g->name,
+                        self::formEmail('new_message', array('your_name' => $u->fname,
+                            'fname' => $s->fname, 'lname' => $s->lname, 'private' => $m->private,
+                            'circle' => $g->name, 'text' => $m->text, 'mid' => $m->id)));
+                    break;
+
+                case 'new_personal':
+                    $s = $users[ intval($mail['user_id']) ];
+                    $m = $taps[ intval($mail['message_id']) ];
+                    self::send($u->email, $s->uname.' sent you a private message',
+                        self::formEmail('new_personal', array('your_name' => $u->fname,
+                            'fname' => $s->fname, 'lname' => $s->lname, 'private' => $m->private,
+                            'text' => $m->text, 'mid' => $m->id)));
+
+                case 'new_reply':
+                    $s = $users[ intval($mail['user_id']) ];
+                    $r = $replies[ intval($mail['reply_id']) ];
+                    
+                    self::send($u->email, $s->uname.' left new reply',
+                        self::formEmail('new_reply', array('your_name' => $u->fname,
+                            'fname' => $s->fname, 'lname' => $s->lname, 'text' => $r['text'],
+                            'mid' => $r['message_id'])));
+            }
         }
     }
 
     public static function joinConfirm(User $u, $email, Group $g, $link) {
+        //self::queue($u, 'join_confirm', $email, null, $g->id);
+        //hehe, hacky
         self::send($email, 'Confirmation of Email for Circle',
-            self::formEmail('join_confirm', 
-                array('your_name' => $u->fname, 'group_name' => $g->name, 'link' => $link)));
+            self::formEmail('join_confirm', array('your_name' => $u->fname,
+                'group_name' => $g->name, 'link' => $link)));
     }
 
     public static function newFollower(User $u, User $follower) {
-        if ($u->email === null)
-            $u = User::init($u->id);
-
-        if ($follower->uname === null)
-            $follower = User::init($follower->id);
-
-        self::send($u->email, $follower->uname.' now following you',
-            self::formEmail('new_follower',
-                array('your_name' => $u->fname, 'fname' => $follower->fname, 'lname' => $follower->lname)));
+        self::queue($u, 'new_follower', null, $follower->id);
     }
 
     public static function welcome(User $u) {
-        self::send($u->email, 'Welcome to circlefy!',
-            self::formEmail('welcome', array('your_name' => $u->fname)));
+        self::queue($u, 'welcome');
     }
 
     public static function newMessage(User $u, Tap $m) {
-        if ($u->email === null)
-            $u = User::init($u->id);
-
-        self::send($u->email, $m->sender->uname.' left new message at '.$m->group->name,
-            self::formEmail('new_message', 
-                array('your_name' => $u->fname, 'fname' => $m->sender->fname, 'lname' => $m->sender->lname,
-                      'circle' => $m->group->name, 'private' => $m->private, 'text' => $m->text,
-                      'mid' => $m->id)));
+        self::queue($u, 'new_message', null, $m->sender_id, $m->id, $m->group_id);
     }
 
     public static function newPersonal(User $u, Tap $m) {
-        if ($u->email === null)
-            $u = User::init($u->id);
-
-        self::send($u->email, $m->sender->uname.' sent you a private message',
-            self::formEmail('new_personal',
-                array('your_name' => $u->fname, 'fname' => $m->sender->fname, 'lname' => $m->sender->lname,
-                      'text' => $m->text, 'mid' => $m->id)));
+        self::queue($u, 'new_personal', null, $m->sender_id, $m->id);
     }
 
-    public static function newReply(User $u, Tap $t, array $m) {
-        if ($u->email === null)
-            $u = User::init($u->id);
-
-        self::send($u->email, $m['user']['uname'].' left new reply',
-            self::formEmail('new_reply',
-                array('your_name' => $u->fname, 'fname' => $m['user']['fname'], 'lname' => $m['user']['lname'],
-                      'text' => $m['text'], 'mid' => $t->id)));
+    public static function newReply(User $u, array $m) {
+        self::queue($u, 'new_reply', null, $m['user_id'], $m['message_id'], null, $m['id']);
     }
 
     public static function digest(User $u, TapsList $messages, TapsList $replies, TapsList $followers) {

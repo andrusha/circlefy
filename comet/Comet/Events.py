@@ -11,6 +11,7 @@ import logging
 import time
 import MySQLdb
 from Abstract import AbstractServer, AbstractConnection
+from Mail import Mailer
 
 intcast = lambda *args: map(lambda smth: int(smth) if smth is not None else None, args)
 
@@ -37,6 +38,7 @@ class EventDispatcher(object):
         self.user_server = user_server
         self.mysql = mysql
         self.cassandra = cassandra
+        self.mailer = Mailer(mysql)
         logging.info('Initializing event dispatcher')
 
     def __call__(self, frame):
@@ -83,7 +85,7 @@ class EventDispatcher(object):
 
         unrecieved = self.user_server.send_to(action, message, **recievers)
         if unrecieved:
-            self.on_unrecieved_message(int(message['id']), unrecieved)
+            self.on_unrecieved_message(int(message['id']), unrecieved, data = message)
 
     def group_users(self, group):
         users = self.cassandra.get('group_members', group)
@@ -96,7 +98,7 @@ class EventDispatcher(object):
         unrecieved = self.user_server.send_to(action, response, 
                         users = self.convo_followers(mid), convo = mid)
         if unrecieved:
-            self.on_unrecieved_response(mid, unrecieved)
+            self.on_unrecieved_response(mid, unrecieved, data = response)
             
     def touch_message(self, mid, timestamp):
         "Update message timestamp to reply timestamp"
@@ -119,20 +121,27 @@ class EventDispatcher(object):
         else:
             self.cassandra.remove('convo_followers', message, columns=[user])
 
-    def on_unrecieved_message(self, message, users):
+    def on_unrecieved_message(self, message, users, data = None):
         "Adds message to events queue for each user"
         joined = (', 0, %i),(' % message).join(map(str, users))
         sql = 'INSERT IGNORE INTO events (user_id, type, related_id) VALUES (%s, 0, %i)' % (joined, message)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 
-    def on_unrecieved_response(self, message, users):
+        type = 'new_personal' if data['reciever_id'] is not None else 'new_message'
+        self.mailer.queue(users, type, message_id = data['id'], 
+            group_id = data['group_id'], user_id = data['sender_id'])
+
+    def on_unrecieved_response(self, message, users, data = None):
         "Insert new reply event or update every event to +1"
         joined = (', 1, %i, 1),(' % message).join(map(str, users))
         sql = 'INSERT INTO events (user_id, type, related_id, new_replies) VALUES (%s, 1, %i, 1)' % (joined, message) + \
               'ON DUPLICATE KEY UPDATE new_replies = new_replies + 1'
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
+
+        self.mailer.queue(users, 'new_reply', message_id = data['message_id'], 
+            user_id = data['user_id'], reply_id = data['id'])
 
     def on_user_follow(self, user, friend, status):
         "Updates events on user following/unfollowing"
@@ -143,6 +152,9 @@ class EventDispatcher(object):
             sql = 'DELETE FROM events WHERE user_id = %i AND type = 2 AND related_id = %i' % (friend, user)
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
+
+        if status:
+            self.mailer.queue(friend, 'new_follower', user_id = user)
 
     def on_delete_message(self, action, message):
         "Delete message from events queue and cassandra tables"

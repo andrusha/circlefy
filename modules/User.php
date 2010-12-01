@@ -191,12 +191,6 @@ class User extends BaseModel {
             Comet::send('user.follow', array('who' => $this->id, 'whom' => $v[1], 'status' => 1, 'user' =>
                 $this->asArray()));
 
-        if ($friends instanceof User)
-            Mailer::newFollower($friends, $this);
-        elseif ($friends instanceof UsersList)
-            foreach($friends as $f)
-                Mailer::newFollower($f, $this);
-
         return $this;
     }
 

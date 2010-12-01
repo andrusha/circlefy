@@ -146,6 +146,7 @@ class GroupsList extends Collection {
             byUserAndLike - performs like search within followed groups
             childs   - returns all child groups
             parent   - returns closest parent group
+            byIds    - return a groups by ids
 
         @param array $params
             uid    - user id
@@ -155,6 +156,7 @@ class GroupsList extends Collection {
             limit  - how many lines fetch from db
             search - search string for group
             depth  - used in group_relations queries
+            ids    - list of ids
 
         @param int   $options
             G_TAPS_COUNT      - fetch number of messages in group
@@ -219,6 +221,10 @@ class GroupsList extends Collection {
                 $join[] = 'relationsA';
                 $where  = 'gr.descendant = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
                 $limit  = 'LIMIT 1';
+                break;
+
+            case 'byIds':
+                $where = 'g.id IN (#ids#)';
                 break;
         }
 

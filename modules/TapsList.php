@@ -21,6 +21,7 @@ class TapsList extends Collection {
             aggr_convos   - aggregate list of conversations
             active_convos - only active conversations
             byId          - fetch one tap by ID
+            byIds         - fetch taps by list of ids
 
         @param array $params array of params related to that filter
             uid        - user id
@@ -31,6 +32,7 @@ class TapsList extends Collection {
             from       - user who sent PM
             to         - user who recieve PM
             id         - tap id
+            ids        - id list
 
         @param int $options
             T_LIMIT      - specify limit start from
@@ -137,6 +139,10 @@ class TapsList extends Collection {
 
             case 'byId':
                 $where[] = 'm.id = #id#';
+                break;
+
+            case 'byIds':
+                $where[] = 'm.id IN (#ids#)';
                 break;
         }
 
@@ -354,5 +360,18 @@ class TapsList extends Collection {
         foreach ($this->data as $tap)
             $tap->format();
         return $this;
+    }
+
+    public static function repliesById(array $ids) {
+        $query = 'SELECT '.implode(', ', Tap::$replyFields).' 
+                    FROM reply
+                   WHERE id IN (#ids#)';
+        $res = DB::getInstance()->query($query, array('ids' => $ids));
+        $data = array();
+        if ($res->num_rows)
+            while ($r = $res->fetch_assoc())
+                $data[ intval($r['id']) ] = $r;
+
+        return $data;
     }
 };
