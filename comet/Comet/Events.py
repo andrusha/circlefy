@@ -112,9 +112,14 @@ class EventDispatcher(object):
     def on_group_follow(self, group, user, status):
         if status:
             self.cassandra.insert('group_members', group, {user: user})
-            self.mailer.queue('new_member', self.group_users(group), user_id = user, group_id = group)
         else:
             self.cassandra.remove('group_members', group, columns=[user])
+
+        if status:
+            unrecieved = self.user_server.send_to('member.new', {'group_id': group, 'user_id': user, 'status': status}, 
+                        users = self.group_users(group))
+            if unrecieved:
+                self.mailer.queue(unrecieved, 'new_member', user_id = user, group_id = group)
 
     def on_convo_follow(self, message, user, status):
         if status:

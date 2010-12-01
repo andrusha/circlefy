@@ -1075,6 +1075,7 @@ _live.notifications = _tap.register({
             'push.data.response.new': this.newConvoResponse.bind(this),
             'push.data.tap.new': this.newTap.bind(this),
             'push.data.user.follow': this.newFollower.bind(this),
+            'push.data.member.new': this.newMember.bind(this)
         });
     },
 
@@ -1138,6 +1139,19 @@ _live.notifications = _tap.register({
         	document.location.gref = 'http://'+document.domain+'/user/'+uname;
     	});
     },
+
+    newMember: function(data) {
+        var uname = data.user.uname,
+            ureal_name = data.user.fname + ' ' + data.user.lname;
+
+        var title = 'New member:<br><a href="/user/'+uname+'">' + ureal_name + '</a>';
+        var message = 'Hail new circle member!';
+        _notifications.alert(title, message, {user: data.user_id, group: data.group_id});
+
+    	_notifications.items.getLast().addEvent('click', function() {
+        	document.location.gref = 'http://'+document.domain+'/user/'+uname;
+    	});
+    }
 });
 
 /*

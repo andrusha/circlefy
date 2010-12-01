@@ -52,6 +52,9 @@ class GroupsList extends Collection {
             UPDATE permission = ".Group::$permissions[$perm];
         $db->listInsert($query, $list);
 
+        foreach ($this->data as $group)
+            Comet::send('group.follow', array('group_id' => $group->id, 'user_id' => $user->id, 'status' => 1));
+
         return $this;
     }
 
