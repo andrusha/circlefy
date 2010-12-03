@@ -76,6 +76,9 @@ class Mailer {
 
         $types = array_flip(self::$types);
         foreach($data as $mail) {
+            if ($mail['reciever_id'] == $mail['user_id'])
+                continue;
+
             $type = $types[intval($mail['type'])];
             $u = $users[ intval($mail['reciever_id']) ];
 
