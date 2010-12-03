@@ -171,6 +171,7 @@ class User extends BaseModel {
         @param User|UsersList $friend 
     */    
     public function follow($friends) {
+        $values = array();
         if ($friends instanceof UsersList) 
             foreach ($friends as $f)
                 $values[] = array($this->id, $f->id);
