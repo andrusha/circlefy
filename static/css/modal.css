@@ -23,6 +23,11 @@ div#curtain.show {
 }
 #modal-login {
 }
+
+.login-message{
+float:right;
+}
+
 #modal-sign-login {
 
 }
