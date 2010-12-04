@@ -7,6 +7,8 @@ var _modal = _tap.register({
 
         var curtain = this.curtain = $('curtain');
         var container = this.container = $('modal-container');
+        this.next = '';
+        this.facebooked = false;
 
         $$('a.modal-cancel').addEvent('click', function(e) {
             e.stop();
@@ -14,6 +16,8 @@ var _modal = _tap.register({
         });
         
         this.subscribe({
+            'modal.show.signup': function() { self.show('modal-signup') },
+            'modal.show.login': function() { self.show('modal-login') },
             'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
             'modal.show.sign-login': function() { self.show('modal-sign-login') },
             'modal.show.group.create': function() { self.show('modal-group-create') },
@@ -39,8 +43,22 @@ var _modal = _tap.register({
                 self.show('modal-first-tap');
                 _modal.first_tap.show(data);
             },
+            'modal.show.facebook': function() { 
+                if (self.next && self.facebooked)
+                    self.publish(self.next);
+                else {
+                    self.show('modal-facebook');
+                    _modal.facebook.show();
+                }
+            },
             'modal.show.post-tap': function() { self.show('modal-post-tap') },
-            'modal.hide': this.hide.bind(this)
+            'modal.hide': this.hide.bind(this),
+            'facebook.logged_in':  function () { 
+                this.facebooked = true;
+             }.bind(this), 
+            'facebook.logged_out': function () {
+                this.facebooked = false;
+             }.bind(this)
         });
 
         //close modal on Esc
@@ -50,6 +68,18 @@ var _modal = _tap.register({
                     this.publish('modal.hide', [false]);
                 }.bind(this)
             }
+        });
+
+        $$('button.signup-button').addEvent('click', function(e) {
+            e.stop();
+            self.next = 'modal.show.signup';
+            self.publish('modal.show.facebook');
+        });
+        
+        $$('button.login-button').addEvent('click', function(e) {
+            e.stop();
+            self.next = 'modal.show.login';
+            self.publish('modal.show.facebook');
         });
 
         Object.each({'li.suggestions':       'modal.show.suggestions', 
@@ -80,7 +110,6 @@ var _modal = _tap.register({
         }
 
         var modalForm = $(name);
-        modalForm.showed = true;
         this.curtain.set('styles', {
             'opacity': '0.7',
             'display': 'block'
@@ -123,7 +152,6 @@ var _modal = _tap.register({
         if (!modalForm)
             return;
         
-        modalForm.showed = false;
         $$('.tooltip-error').tween('opacity', 0);
         
         var myEffects = new Fx.Morph(modalForm, {duration: 500, transition: Fx.Transitions.Sine.easeOut});
@@ -142,21 +170,36 @@ var _modal = _tap.register({
     }
 });
 
-_modal.signlogin = _tap.register({
+_modal.facebook = _tap.register({
+    init: function() {
+        this.showed = false;
+
+        this.subscribe({
+            'facebook.logged_in':  function () { 
+                if (this.showed)
+                    this.publish(_modal.next);
+             }.bind(this), 
+        });
+    },
+
+    show: function() {
+        this.showed = true;
+    }
+});
+
+_modal.signup = _tap.register({
 
     init: function() {
         var form   = this.form   = $('signup-form'),
             fields = this.fields = {},
             inputs = form.getElements('input:not([type="submit"]), .fb-login-button');
-        
-        this.showed = false;
 
        inputs.each( function (el) {
            fields[el.name] = el;
        });
 
        form.validator = new Form.Validator(form, {
-            fieldSelectors: 'input,.signup-button,.login-button',
+            fieldSelectors: 'input,.fb-login-button',
             onFormValidate: this.submitForm.bind(this)
        });
 
@@ -166,43 +209,13 @@ _modal.signlogin = _tap.register({
             position: 'centerTop',
             sticky:   true
         });
-
-        this.subscribe({
-            'facebook.logged_in':  function () { 
-                //fuck it
-                if (false && !_vars.user.id)
-                    this.auth(null, null, 'facebook');
-            }.bind(this) 
-        });
-
     },
 
-    submitForm: function(ok, form, e) {
+    submitForm: function(passed, form, e) {
         e.stop();
-        if (!ok)
+        if (!passed)
             return;
 
-        var type = e.event.explicitOriginalTarget.value;
-        var uname = this.fields.uname.value,
-            pass  = this.fields.pass.value;
-        if (type == 'signup') {
-            var field = this.fields.uname,
-                validator = Form.Validator.getValidator('userDoesNotExists'),
-                ok = validator.test(field);
-            if (!ok) {
-                text = validator.getError(field);
-                field.fireEvent('showCustomTip', [{content: text}]);
-                return;
-            }
-            field.fireEvent('hideTip');
-
-            this.signup(uname, pass);
-        } else if (type == 'login') {
-            this.auth(uname, pass, 'user');
-        }
-    },
-
-    signup: function(uname, pass) {
         var self = this;
         var indic = this.form.getElement('span.indicator');
         var indic_msg = indic.getElement('span.indic-msg');
@@ -211,8 +224,8 @@ _modal.signlogin = _tap.register({
             url: '/AJAX/user/facebook',
             data: {
                 action: 'create',
-                uname:  uname,
-                pass:   pass 
+                uname:  this.fields.uname.value,
+                pass:   this.fields.pass.value
             },
             onRequest: function(){
                 self.form.getElement('span.modal-actions').setStyle('display', 'none');
@@ -229,39 +242,6 @@ _modal.signlogin = _tap.register({
                 } else {
                     indic_msg.text = 'Error durning account creation';
                 }
-            }
-        }).send();
-    },
-
-    auth: function(user, pass, type) {
-        var el = $$('button.login-button')[0];
-        var position = el.getPosition();
-        position = [position.x+63, position.y+25];
-
-        _notifications.alert('Please wait', "We are processing your request... <img src='/images/ajax_loading.gif'>",
-            { color: 'black',  duration: 10000, position: position});
-        var executing = _notifications.items.getLast();
-
-        data = {'user': user,
-                'pass': pass,
-                'type': type};
-        new Request({
-            url: '/AJAX/user/login',
-            data: data,
-            onSuccess: function() {
-                var response = JSON.decode(this.response.text);
-                _notifications.remove(executing);
-
-                if(response.status == 'REGISTERED') {
-                    _notifications.alert('Success', 'Welcome back.  Logging you in...',
-                        {color: 'darkgreen', duration: 2000, position: position});
-
-                    (function () { document.location.reload() }).delay(2000, this, 'login');
-                } else if (response.status == 'NOT_REGISTERED') {
-                    _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
-                        {color: 'darkred', duration: 5000, position: position});
-                }
-
             }
         }).send();
     }
@@ -394,6 +374,105 @@ _modal.suggestions = _tap.register({
                var response = JSON.decode(this.response.text);
                self.chain();
            }
+        }).send();
+    }
+});
+
+/*
+    Modal window for login-logout
+*/
+_modal.login = _tap.register({
+
+    init: function() {
+        var self = this,
+            form = this.form = $('taplogin');
+        this.facebook = false;
+
+        form.user = form.getElement('input[name="uname"]');
+        form.pass = form.getElement('input[name="pass"]');
+        form.fb   = form.getElement('input[name="facebook"]');
+        form.btn  = form.getElement('input[type="submit"]');
+
+        this.subscribe({
+            'facebook.logged_in':  function () { 
+                this.facebook = true; 
+                this.form.fb.checked = true;
+                this.fbToggle();
+                this.form.fb.getParent().removeClass('hidden');
+                $$('#fb-faces,#fb-signup-faces').removeClass('hidden');
+                $$('#fb-no-faces,#fb-signup-no-faces').addClass('hidden');
+            }.bind(this), 
+            'facebook.logged_out': function () {
+                this.facebook = false;
+                this.form.fb.checked = false;
+                this.fbToggle();
+                //this.form.fb.getParent().addClass('hidden');
+                $$('#fb-faces,#fb-signup-faces').addClass('hidden');
+                $$('#fb-no-faces,#fb-signup-no-faces').removeClass('hidden');
+            }.bind(this)
+        });
+
+        form.addEvent('submit', function(e) {
+            e.stop();
+            var type = 'user';
+            if (self.facebook && self.form.fb.checked) {
+                type = 'facebook';
+            } else {
+                if (form.user.value.isEmpty()) {
+                    form.user.addClass('error');
+                    return form.user.focus();
+                } else
+                    form.user.removeClass('error');
+
+                if (form.pass.value.isEmpty()) {
+                    form.pass.addClass('error');
+                    return form.pass.focus();
+                } else
+                    form.pass.removeClass('error');
+            }
+            self.auth(form.user.value, form.pass.value, type);
+        });
+
+        form.fb.addEvent('click', this.fbToggle.bind(this));
+    },
+
+    fbToggle: function (e) {
+        var state = this.form.fb.checked;
+        this.form.fb.checked = state;
+        this.form.user.disabled = state;
+        this.form.pass.disabled = state;
+    },
+
+    auth: function(user, pass, type) {
+        var el = $('login-button');
+        var position = el.getPosition();
+        position = [position.x+63, position.y+25];
+
+        _notifications.alert('Please wait', "We are processing your request... <img src='/images/ajax_loading.gif'>",
+            { color: 'black',  duration: 10000, position: position});
+        var executing = _notifications.items.getLast();
+
+        data = {'user': user,
+                'pass': pass,
+                'type': type};
+        new Request({
+            url: '/AJAX/user/login',
+            data: data,
+            onSuccess: function() {
+                var response = JSON.decode(this.response.text);
+                _notifications.remove(executing);
+
+                if(response.status == 'REGISTERED') {
+                    _notifications.alert('Success', 'Welcome back.  Logging you in...',
+                        {color: 'darkgreen', duration: 2000, position: position});
+
+                    (function () { document.location.reload() }).delay(2000, this, 'login');
+                } else if (response.status == 'NOT_REGISTERED') {
+                    _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
+                        {color: 'darkred', duration: 5000, position: position});
+                }
+
+            }
         }).send();
     }
 });
