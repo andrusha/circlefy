@@ -80,6 +80,7 @@ var _modal = _tap.register({
         }
 
         var modalForm = $(name);
+        modalForm.showed = true;
         this.curtain.set('styles', {
             'opacity': '0.7',
             'display': 'block'
@@ -107,7 +108,6 @@ var _modal = _tap.register({
             'left': ( wsize.x - msize.x ) / 2 + "px",
             'margin': '0'
         });
-        modalForm.showed = true;
     },
 
     /*
@@ -169,7 +169,8 @@ _modal.signlogin = _tap.register({
 
         this.subscribe({
             'facebook.logged_in':  function () { 
-                if (this.showed)
+                //fuck it
+                if (false && !_vars.user.id)
                     this.auth(null, null, 'facebook');
             }.bind(this) 
         });

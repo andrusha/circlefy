@@ -38,7 +38,7 @@
                         data-tipid="tip-signup-facebook"
                     ></fb:login-button>
                 </span>
-                <span id="fb-signup-no-faces">
+                <span id="fb-signup-no-faces" class="hidden">
                     <fb:login-button 
                         width="300"
                         perms="<?=FBPERMISSIONS?>"
@@ -49,12 +49,12 @@
                 </span>
             </p>
 
-            <span class="modal-actions">
+            <span class="modal-actions" style="width: 210px;">
                     <span class="indicator">
                         <img src="/static/spinner.gif" />
                         <span class="indic-msg">Signing you up...</span>
                     </span>
-                    <button type="submit" value="signup" class="signup-button">Sign up</button><span style="display: block; float:left;"> or </span><button type="submit" value="login" class="login-button">Log in</button>
+                    <button type="submit" value="signup" class="signup-button">Sign up</button><span style="display: block; float:left;margin-right:9px"> or </span><button type="submit" value="login" class="login-button">Log in</button>
             </span>
         </form>
 	<span class="login-message">Circlefy allows you to create and join social circles that are directly related to your real-world social circles, such as Universities, Companies, and Locations.  It enables true real-time communities on the web.</span>

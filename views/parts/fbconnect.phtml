@@ -4,14 +4,20 @@
     FB.init({appId: '<?=FBAPPID?>', status: true, cookie: true, xfbml: true});
     FB.Event.subscribe('auth.sessionChange', function(response) {
         if (response.session) {
+            $$('#fb-faces,#fb-signup-faces').removeClass('hidden');
+            $$('#fb-no-faces,#fb-signup-no-faces').addClass('hidden');
             _tap.publish('facebook.logged_in', []);
         } else {
+            $$('#fb-faces,#fb-signup-faces').addClass('hidden');
+            $$('#fb-no-faces,#fb-signup-no-faces').removeClass('hidden');
             _tap.publish('facebook.logged_out', []);
         }
     });
     FB.getLoginStatus(function(response) {
         if (response.session) {
             // logged in and connected user, someone you know
+            $$('#fb-faces,#fb-signup-faces').removeClass('hidden');
+            $$('#fb-no-faces,#fb-signup-no-faces').addClass('hidden');
             _tap.publish('facebook.logged_in', []);
         } else {
             // no user session available, someone you dont know
