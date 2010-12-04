@@ -267,10 +267,10 @@ class UsersList extends Collection {
 
         @return array
     */
-    public static function idExists(array $ids) {
-        return array_map('intval',
+    public static function idExists(array $ids, $field = 'id') {
+        return array_map(function ($x) { return intval($x[0]); },
             DB::getInstance()
-              ->query("SELECT id FROM user WHERE id IN (#ids#)",
+              ->query("SELECT id FROM user WHERE {$field} IN (#ids#)",
                 array('ids' => $ids))
               ->fetch_all());
     }
@@ -280,10 +280,11 @@ class UsersList extends Collection {
  
         @return UsersList
     */
-    public static function fromIds(array $uids) {
+    public static function fromIds(array $uids, $facebook = false) {
+        $field = !$facebook ? 'id' : 'fb_id';
         return new UsersList(
             array_map(
                 function ($x) { return new User($x); },
-                self::idExists($uids)));
+                self::idExists($uids, $field)));
     }
 };

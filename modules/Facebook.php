@@ -177,12 +177,12 @@ class Facebook extends BaseModel {
         Fills user profile with info, we can fetch from
         facebook profile, e.g. gender, profile pic
     */
-    public function createWithFacebook($uname, $pass, $email) {
+    public function createWithFacebook($uname, $pass) {
         $info = $this->getUserInfo();
         if (!$info)
             return false;
 
-        $user = User::create(User::$types['user'], $uname, $pass, $email, $info['first_name'],
+        $user = User::create(User::$types['user'], $uname, $pass, $info['email'], $info['first_name'],
                             $info['last_name'], $_SERVER['REMOTE_ADDR'], intval($this->fuid));
 
         try {
@@ -216,14 +216,19 @@ class Facebook extends BaseModel {
             return false;
         
         $friends = $this->getUserFriends();
+        if (DEBUG)
+            FirePHP::getInstance(true)->log($friends);
+
         if (empty($friends))
             return true;
         
-        //haha, I know, that's weird, but works, right?
-        $user->follow(
-            UsersList::fromIds(
+        $friends = UsersList::fromIds(
                 array_map( function ($x) { return intval($x['id']); },
-                    $friends)));
+                    $friends), true);
+        if (DEBUG)
+            FirePHP::getInstance(true)->log($friends);
+        //haha, I know, that's weird, but works, right?
+        $user->follow($friends);
 
         return $ok;
     }

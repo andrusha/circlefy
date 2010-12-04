@@ -182,7 +182,6 @@ _modal.signup = _tap.register({
             data: {
                 action: 'create',
                 uname:  this.fields.uname.value,
-                email:  this.fields.email.value,
                 pass:   this.fields.pass.value
             },
             onRequest: function(){

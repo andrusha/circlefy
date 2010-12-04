@@ -15,8 +15,7 @@ class ajax_facebook extends Base {
             case 'create':
                 $uname = $_POST['uname'];
                 $pass  = $_POST['pass'];
-                $email = $_POST['email'];
-                $this->data = $this->create($uname, $pass, $email);
+                $this->data = $this->create($uname, $pass);
                 break;
             case 'check':
                 $this->data = $this->checkWithInfo();
@@ -31,12 +30,12 @@ class ajax_facebook extends Base {
         }
     }
 
-    private function create($uname, $pass, $email) {
+    private function create($uname, $pass) {
         $check = $this->check();
         if (!$check['success'])
             return $check;
 
-        $this->fb->createWithFacebook($uname, $pass, $email);
+        $this->fb->createWithFacebook($uname, $pass);
 
         return array('success' => true);
     }

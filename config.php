@@ -79,8 +79,8 @@ define("TOOLTIP_TEMPLATES",  BASE_PATH."views/parts/tooltips.phtml");
 define("MODAL_WINDOWS", BASE_PATH."views/parts/modal_windows.phtml");
 define("FBCONNECT",     BASE_PATH."views/parts/fbconnect.phtml");
 
-define("FBAPPID",     'e31fd60bbbc576ac7fd96f69215268d0');
-define("FBAPPSECRET", '6692d8984d00d3f67ee81bf31637970e');
+define("FBAPPID",     '151208708259047');
+define("FBAPPSECRET", 'f6e7e5edcf67283f629034b02a9e564d');
 
 define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user_interests,'.
                         'user_likes,user_location,user_work_history,email,read_friendlists,'.
