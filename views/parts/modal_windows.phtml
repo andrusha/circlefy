@@ -2,16 +2,16 @@
 
 <div id="modal-container">
 
-<!-- Signup window for new users -->
-    <div id="modal-signup" class="modal-window">
-        <h2>Just one more thing before we log you in..<small>We're almost there <strong><span id="modal-signup-name"></span></strong>, but first we'll need you to add a few more details to personalize your Tap experience.</small></h2>
-    
+<!-- Login or signup -->
+    <div id="modal-sign-login" class="modal-window">
+        <h2>Hi there!</h2>
+        <p>Select one option below</p>
         <form id="signup-form">
             <p class="forms">
             <label for="i-uname">Username</label>
             <input type="text" id="i-uname"
                    name="uname"
-                   class="required validate-alphanum maxLength:20 minLength:4 userDoesNotExists"
+                   class="required validate-alphanum maxLength:20 minLength:4"
                    data-tipid="tip-signup-user"
             />
             </p>
@@ -48,56 +48,15 @@
                     ></fb:login-button>
                 </span>
             </p>
+        </form>
 
-            <p class="modal-actions">
+        <span class="modal-actions">
                 <span class="indicator">
                     <img src="/static/spinner.gif" />
                     <span class="indic-msg">Signing you up...</span>
                 </span>
-                <span class="modal-actions">
-                    <button>Start Tapping</button> <a class="modal-cancel" href="#">close</a>
-                </span>
-            </p>
-        </form>
-    </div>
-
-<!-- Login -->
-    <div id="modal-login" class="modal-window">
-        <h2>Join conversation!</h2>
-                    <form id="taplogin" action="/" method="POST">
-                                    <p class="forms" style="margin-top:30px;">  
-                                        <label class="inblock">Username</label>
-                                        <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
-                                    </p>
-                                    <p class="forms">
-                                        <label class="inblock">Password</label>
-                                        <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
-                                    </p>
-                                    <div class="sep"></div>
-                                    <p class="forms">
-                                        <label for="facebook" class="smaller">Login with Facebook</label>
-                                        <input name="facebook" type="checkbox">
-                                        <span class="fb" id="fb-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>" show-faces="true"></fb:login-button></span>
-                                        <span class="fb hidden" id="fb-no-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
-                                    </p>
-                                    <span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
-                    </form>
-                   
-        <span class="modal-actions">
-                <a class="modal-cancel" href="#">close</a>
+                <button class="signup-button">Sign up</button><span style="display: block; float:left;"> or </span><button class="login-button">Log in</button>
         </span>
-    </div>
-
-
-<!-- Login or signup -->
-    <div id="modal-sign-login" class="modal-window">
-    <img class="modal-logo-large" src="http://circlefy.com/static/images/logo.png" />
-        <div class="text">
-        <h2>Hi there!<small>Select an option below</small></h2>
-        <span class="modal-actions">
-                <button class="signup-button">Sign up</button><button class="login-button">Log in</button>
-        </span>
-        </div>
 	<span class="login-message">Circlefy allows you to create and join social circles that are directly related to your real-world social circles, such as Universities, Companies, and Locations.  It enables true real-time communities on the web.</span>
     </div>
 
