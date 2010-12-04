@@ -55,27 +55,28 @@
 <!-- Login -->
     <div id="modal-login" class="modal-window">
         <h2>Join conversation!</h2>
-                    <form id="taplogin" action="/" method="POST">
-                                    <p class="forms" style="margin-top:30px;">  
-                                        <label class="inblock">Username</label>
-                                        <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
-                                    </p>
-                                    <p class="forms">
-                                        <label class="inblock">Password</label>
-                                        <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
-                                    </p>
-                                    <div class="sep"></div>
-                                    <p class="forms">
-                                        <label for="facebook" class="smaller">Login with Facebook</label>
-                                        <input name="facebook" type="checkbox">
-                                        <span class="fb" id="fb-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>" show-faces="true"></fb:login-button></span>
-                                        <span class="fb hidden" id="fb-no-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
-                                    </p>
-                                    <span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
-                    </form>
-                   
-        <span class="modal-actions">
-                <a class="modal-cancel" href="#">close</a>
+            <form id="taplogin" action="/" method="POST">
+                <p class="forms" style="margin-top:30px;">  
+                    <label class="inblock">Username</label>
+                    <input name="uname" type="text" class="basic" value="<?= $_POST['uname'] ?>" />
+                </p>
+                <p class="forms">
+                    <label class="inblock">Password</label>
+                    <input name="pass" type="password" class="basic" value="<?= $_POST['pass'] ?>" />
+                </p>
+                <p class="forms">
+                    <label for="facebook" class="smaller">Login with Facebook</label>
+                    <input name="facebook" type="checkbox">
+                </p>
+
+                <span class="modal-actions"><button id="login-button" type="submit">Log in</button></span>
+                <div class="sep"></div>
+                    <span class="fb" id="fb-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>" show-faces="true"></fb:login-button></span>
+                    <span class="fb hidden" id="fb-no-faces"><fb:login-button width="300" perms="<?=FBPERMISSIONS?>"></fb:login-button></span>
+            </form>
+               
+    <span class="modal-actions">
+            <a class="modal-cancel" href="#">close</a>
         </span>
     </div>
 
