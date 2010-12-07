@@ -2,7 +2,7 @@
    include(MAIL_HEADER); ?>
 <?=$fname?> <?=$lname?> have sent you a personal message. 
 
-"<?=$text?>"
+"<?=trim($text)?>"
 
 Click here to see this message and reply:
 http://<?=DOMAIN?>/convo/<?=$mid?>

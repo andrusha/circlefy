@@ -54,7 +54,7 @@ define("D_DATABASE", "circlefy");
 define("APC", function_exists('apc_fetch'));
 define("STDOUT", fopen('php://stdout', 'w'));
 
-define("DOMAIN",         $_SERVER['HTTP_HOST']);
+define("DOMAIN",         'circlefy.com');
 define("USER_PIC_REL",   "/static/user_pics/");
 define("GROUP_PIC_REL",  "/static/group_pics/");
 define("USER_PIC_PATH",  "/var/data/user_pics");

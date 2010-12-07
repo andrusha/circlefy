@@ -23,7 +23,8 @@ input[type=submit] {
 }
 
 body {
-	/*background:url(../images/bg.gif) repeat;*/
+    /* Stop chaging it already! */
+	background:url(../images/bg.gif) repeat;
 	font-family:Helvetica, Arial, sans-serif;
 	color:#545454;
 	text-shadow:1px 1px #fff;

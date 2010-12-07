@@ -92,7 +92,7 @@ class Mailer {
                     $f = $users[ intval($mail['user_id']) ];
                     self::send($u->email, $f->uname.' now following you',
                         self::formEmail('new_follower', array('your_name' => $u->fname,
-                            'fname' => $f->fname, 'lname' => $f->lname)));
+                            'fname' => $f->fname, 'lname' => $f->lname, 'uname' => $f->uname)));
                     break;
 
                 case 'new_message':
