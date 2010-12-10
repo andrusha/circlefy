@@ -32,9 +32,10 @@
                 </a>
             <? elseif ($c['reciever_id']): ?>
                 <a href="/user/<?=$c['sender']['id']?>" class="user">
-                    <img src="<?=USER_PIC_REL.'medium_'.$c['sender']['id'].'.jpg'?>" alt=""<?=$c['sender']['fname']?> <?=$c['sender']['lname']?> />
+                    <img src="<?=USER_PIC_REL.'medium_'.$c['sender']['id'].'.jpg'?>" 
+                         alt="<?=$c['sender']['fname']?> <?=$c['sender']['lname']?>"  
+                         class=" avatar-author profile-thumb"/>
                 </a>
-                <span class="pm-label">Private Message</span>
             <? endif; ?>
             <p>
                 <?=$c['text']?>
