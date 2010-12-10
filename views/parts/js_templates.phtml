@@ -65,7 +65,12 @@
     <!--
         <# for (var repl from this): #>
         <div id="conversation-<#: repl.id #>" class="reply-item">
-            <div class="thumb"><a href="/user/<#: repl.user.uname #>"><img src="<?=USER_PIC_REL?>medium_<#: repl.user_id #>.jpg" alt="<#: repl.user.fname #> <#: repl.user.lname #>" width="25" /></a></div>
+            <div class="thumb">
+                <img width="25" 
+                     alt="<#: repl.user.fname #> <#: repl.user.lname #>" 
+                     src="<?=USER_PIC_REL?>medium_<#: repl.user_id #>.jpg" 
+                     data-uname="<#: repl.user.uname #>" />
+            </div>
             <span class="text">
                 <h3 class="username">
                     <a href="/user/<#: repl.user.uname #>"><#: repl.user.uname #></a>:

@@ -1,4 +1,9 @@
 /*
+jslint white: true, undef: true, newcap: true, immed: true, evil: true
+global Class, _tap
+*/
+
+/*
 mixin: streaming
 	mixin for streaming/feedlist operations
 */
@@ -276,6 +281,8 @@ var _responses = _tap.register({
         _body.addEvents({
                 'click:relay(a.reply)': this.setupResponse.toHandler(this),
                 'click:relay(a.comments)': this.setupResponse.toHandler(this),
+                'click:relay(div.feed-item > img.avatar-author)': this.setupResponse.toHandler(this),
+                'click:relay(div.reply-item > div.thumb > img)': this.addUname.toHandler(this)
             });
 
         this.subscribe({
@@ -283,6 +290,13 @@ var _responses = _tap.register({
             'convos.loaded': this.setupResponse.bind(this)
         });
     },
+
+    addUname: function(el, e) {
+        e.stop();
+
+        var textarea = el.getParent('div.replies').getElement('textarea');
+        textarea.value += '@'+el.getData('uname')+' ';
+    }, 
 
     /*
 	handler: setupResponse()
@@ -365,7 +379,7 @@ var _responses = _tap.register({
         if (elements.length)
             elements.getLast().removeClass('last');
 
-        this.preprocess(items.getElements('span.reply-text'));
+        this.preprocess(items);
         items.getLast().addClass('last');
 
         items.setStyles({opacity:0});
@@ -402,9 +416,16 @@ var _responses = _tap.register({
 
     preprocess: function(items) {
         items.each(function (el) {
-            el = el[0];
+            var text = el.getElement('span.reply-text');
+
             //bearification
-            el.innerHTML = el.innerHTML.replace(/\(hug\)/ig, '<img src="/static/images/bear.gif" alt="hug">');
+            text.innerHTML = text.innerHTML.replace(/\(hug\)/ig, '<img src="/static/images/bear.gif" alt="hug">');
+
+            if (_vars.user && _vars.user.uname) {
+                var dogReg = new RegExp('@'+_vars.user.uname, 'gi');
+                if (dogReg.test(text.innerHTML))
+                    el.addClass('targeted');
+            }
         });
     },
 

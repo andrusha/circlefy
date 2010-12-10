@@ -176,6 +176,8 @@ class EventDispatcher(object):
     def on_delete_event(self, action, event, all = False):
         "Delete event by type"
         uid, type, id = intcast(event['user_id'], event['type'], event['event_id'])
+        if uid is None:
+            return
 
         where = 'WHERE user_id = %i' % uid
         if not all:
