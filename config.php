@@ -46,6 +46,9 @@ if (DEBUG) {
 }
 
 
+//use gzipped js & css instead of regular ones
+define("GZIPPED", true);
+
 define("D_ADDR",     "127.0.0.1");
 define("D_PASS",     "root");
 define("D_USER",     "root");

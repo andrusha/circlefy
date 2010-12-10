@@ -2,9 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<? if (GZIPPED): ?>
+<link rel="stylesheet" type="text/css" href="/static/css/_main.css.gz" media="screen" charset="utf-8" />
+<? else: ?>
 <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/roar.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/modal.css" />
+<? endif; ?>
 <!--[if !IE 7]>
 	<style type="text/css">
         /*** Sticky footer IE fix ***/
@@ -15,12 +19,24 @@
     if (isset($_h['styles']))
         foreach ($_h['styles'] as $s)
             echo "<link rel='stylesheet' type='text/css' href='/static/css/$s' />\n";
+
+    if(isset($_h['vars']))
+        echo "<script type='text/javascript'>\n_vars = ".json_encode($_h['vars'])."\n</script>\n";
 ?>
+
+<? if (GZIPPED): ?>
+<script type="text/javascript" src="/static/js/_libs.js.gz" charset="utf-8"></script>
+<script type="text/javascript" src="http://<?=$_SERVER['HTTP_HOST']?>:8000/static/Orbited.js"></script> 
+<script type="text/javascript" src="/static/js/_main.js.gz"></script>
+<? if ($_h['scripts']): ?>
+<script type="text/javascript" src="/static/js/_optional.js.gz"></script>
+<? endif; ?>
+<? else: ?>
 <script type="text/javascript" src="/static/js/mootools-core.js"></script>
 <script type="text/javascript" src="/static/js/mootools-more.js"></script>
 <script type="text/javascript" src="/static/js/libs.js"></script>
 <script type="text/javascript" src="/static/js/validators.js"></script>
-<script type="text/javascript" src="http://<?=DOMAIN?>:8000/static/Orbited.js"></script> 
+<script type="text/javascript" src="http://<?=$_SERVER['HTTP_HOST']?>:8000/static/Orbited.js"></script> 
 <script type="text/javascript" src="/static/js/main.js"></script>
 <script type="text/javascript" src="/static/js/push.js"></script>
 
@@ -34,12 +50,10 @@
 
 <script type="text/javascript" src="/static/js/notification.js"></script>
 <script type="text/javascript" src="/static/js/post.js"></script>
+<? endif; ?>
 
 <?php
-    if(isset($_h['vars']))
-        echo "<script type='text/javascript'>\n_vars = ".json_encode($_h['vars'])."\n</script>\n";
-
-    if (isset($_h['scripts']))
+    if (isset($_h['scripts']) && !GZIPPED)
         foreach ($_h['scripts'] as $s)
             echo "<script type='text/javascript' src='/static/js/$s'></script>\n";
 ?>

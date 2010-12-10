@@ -658,13 +658,13 @@ var _tapbox = _tap.register({
         e.stop();
         if (this.tapbox.value.isEmpty())
             return this.tapbox.focus();
-        var private = _controls.selector.getInside(), 
+        var priv = _controls.selector.getInside(), 
             anon = _controls.anon.getAnon(),
             data = {
             msg: this.tapbox.value,
             type: this.sendType,
             id: this.sendTo,
-            private: private,
+            'private': priv,
             anon: anon
         }
         if (this.tapbox.getData('mediatype') && this.tapbox.getData('mediatype').length) {
@@ -1057,7 +1057,7 @@ _live.taps = _tap.register({
 
     process: function(data) {
         if (_vars.feed.type == 'conversation' || 
-            (data.private != _vars.feed.inside && data.sender_id != _vars.user.id))
+            (data['private'] != _vars.feed.inside && data.sender_id != _vars.user.id))
             return;
 
         this.pushed.combine([data]);
