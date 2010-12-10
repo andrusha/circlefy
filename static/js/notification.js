@@ -1,3 +1,8 @@
+/*
+jslint white: true, undef: true, newcap: true, immed: true, evil: true
+global Class, _tap
+*/
+
 var _notification = _tap.register({
     init: function() {
         var parent = this.parent = $('notifications');
@@ -9,15 +14,24 @@ var _notification = _tap.register({
         parent.addEvents({
             'click:relay(a.toggle)': this.toggle.toHandler(this),
             'click:relay(button.close)': this.close.toHandler(this),
-            'click:relay(button.paginate)': this.paginate.toHandler(this),
+            'click:relay(button.paginate)': this.paginate.toHandler(this)
         });
 
         this.subscribe({
-            'push.data.event.delete': this.delete.bind(this),
+            'push.data.event.delete': this['delete'].bind(this),
             'push.data.event.delete.all': function () {
                 parent.addClass('hidden');
             }
         });
+
+        this.updateEvents();
+    },
+
+    updateEvents: function() {
+       $$('div.event').addEvent('click', function() {
+           var link = this.getElement('h3 > a');
+           document.location = link.href;
+       });
     },
 
     toggle: function(el, e) {
@@ -49,7 +63,7 @@ var _notification = _tap.register({
             this.parent.getElements('button[data-type="next"]').removeProperty('disabled');
         }
 
-        if (this.page == 0)
+        if (!this.page)
             this.parent.getElements('button[data-type="prev"]').setProperty('disabled', true);
 
         new Request.JSON({
@@ -63,6 +77,7 @@ var _notification = _tap.register({
 
                 list.empty();
                 items.inject(list);
+                this.updateEvents();
                 
                 if (items.length < 5)
                     this.parent.getElements('button[data-type="next"]').setProperty('disabled', true);
@@ -70,7 +85,7 @@ var _notification = _tap.register({
         }).post({action: 'fetch', page: this.page});
     },
 
-    delete: function(data) {
+    'delete': function(data) {
         if (data.user_id != _vars.user.id)
             return;
 
