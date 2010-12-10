@@ -282,6 +282,8 @@ var _responses = _tap.register({
                 'click:relay(a.reply)': this.setupResponse.toHandler(this),
                 'click:relay(a.comments)': this.setupResponse.toHandler(this),
                 'click:relay(div.feed-item > img.avatar-author)': this.setupResponse.toHandler(this),
+                'click:relay(div.latest-reply > img)': this.setupResponse.toHandler(this),
+                'click:relay(div.latest-reply > span)': this.setupResponse.toHandler(this),
                 'click:relay(div.reply-item > div.thumb > img)': this.addUname.toHandler(this)
             });
 
