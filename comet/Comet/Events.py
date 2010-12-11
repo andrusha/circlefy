@@ -197,6 +197,9 @@ class EventDispatcher(object):
         "Add 'mention' events to queue and send emails"
         uid, mid, sid = intcast(data['uid'], data['mid'], data['sid'])
 
+        if uid == sid:
+            return
+
         self.user_server.send_to(action, data, users = set([uid]))
 
         self.mailer.queue(uid, 'mention', message_id = mid, user_id = sid)
