@@ -407,26 +407,28 @@ _modal.login = _tap.register({
             }.bind(this)
         });
 
-        form.addEvent('submit', function(e) {
-            e.stop();
-            var type = 'user',
-                facebook = e.event.explicitOriginalTarget.id == 'facebook-button';
-            if (facebook) {
-                type = 'facebook';
-            } else {
-                if (form.user.value.isEmpty()) {
-                    form.user.addClass('error');
-                    return form.user.focus();
-                } else
-                    form.user.removeClass('error');
+        $$('#login-button').addEvent('click', function(e) {
+            e.stop(); 
 
-                if (form.pass.value.isEmpty()) {
-                    form.pass.addClass('error');
-                    return form.pass.focus();
-                } else
-                    form.pass.removeClass('error');
-            }
-            self.auth(form.user.value, form.pass.value, type);
+            if (form.user.value.isEmpty()) {
+                form.user.addClass('error');
+                return form.user.focus();
+            } else
+                form.user.removeClass('error');
+
+            if (form.pass.value.isEmpty()) {
+                form.pass.addClass('error');
+                return form.pass.focus();
+            } else
+                form.pass.removeClass('error');
+            
+            self.auth(form.user.value, form.pass.value, 'user');
+        });
+
+        $$('#facebook-button').addEvent('click', function(e) {
+            e.stop(); 
+
+            self.auth(form.user.value, form.pass.value, 'facebook');
         });
     },
 
