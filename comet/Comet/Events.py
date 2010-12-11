@@ -200,6 +200,6 @@ class EventDispatcher(object):
         if uid == sid:
             return
 
-        self.user_server.send_to(action, data, users = set([uid]))
+        self.user_server.send_to(action, data, users = set([sid]))
 
         self.mailer.queue(uid, 'mention', message_id = mid, user_id = sid)

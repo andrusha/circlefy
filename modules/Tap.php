@@ -232,8 +232,8 @@ class Tap extends BaseModel {
         Comet::send('response.new', current($this->data['replies']));
         
         $mentioned = self::parseMentions($text);
-        foreach($mentioned as $user)
-            Comet::send('mention.new', array('uid' => $user->id, 'mid' => $this->id, 'sid' => $user->id));
+        foreach($mentioned as $m)
+            Comet::send('mention.new', array('uid' => $m->id, 'mid' => $this->id, 'sid' => $user->id));
 
         return $this;
     }
