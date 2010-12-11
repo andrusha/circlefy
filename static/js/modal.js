@@ -1,4 +1,9 @@
 /*
+jslint white: true, undef: true, newcap: true, immed: true, evil: true
+global Class, _tap
+*/
+
+/*
     Generic modal windows handler
 */
 var _modal = _tap.register({
@@ -16,14 +21,14 @@ var _modal = _tap.register({
         });
         
         this.subscribe({
-            'modal.show.signup': function() { self.show('modal-signup') },
-            'modal.show.login': function() { self.show('modal-login') },
-            'modal.show.sign-notify': function() { self.show('modal-sign-notify') },
-            'modal.show.sign-login': function() { self.show('modal-sign-login') },
-            'modal.show.group.create': function() { self.show('modal-group-create') },
-            'modal.show.group-edit': function() { self.show('modal-group-edit') },
-            'modal.show.edit-members': function() { self.show('modal-edit-members') },
-            'modal.show.user-edit': function() { self.show('modal-user-edit') },
+            'modal.show.signup': function() { self.show('modal-signup'); },
+            'modal.show.login': function() { self.show('modal-login'); },
+            'modal.show.sign-notify': function() { self.show('modal-sign-notify'); },
+            'modal.show.sign-login': function() { self.show('modal-sign-login'); },
+            'modal.show.group.create': function() { self.show('modal-group-create'); },
+            'modal.show.group-edit': function() { self.show('modal-group-edit'); },
+            'modal.show.edit-members': function() { self.show('modal-edit-members'); },
+            'modal.show.user-edit': function() { self.show('modal-user-edit'); },
             'modal.show.image-display': function(embed, sizes) {
                 _modal.image_preview.show(embed, sizes);
             },
@@ -44,14 +49,14 @@ var _modal = _tap.register({
                 _modal.first_tap.show(data);
             },
             'modal.show.facebook': function() { 
-                if (self.next && self.facebooked)
+                if (self.next && self.facebooked) {
                     self.publish(self.next);
-                else {
+                } else {
                     self.show('modal-facebook');
                     _modal.facebook.show();
                 }
             },
-            'modal.show.post-tap': function() { self.show('modal-post-tap') },
+            'modal.show.post-tap': function() { self.show('modal-post-tap'); },
             'modal.hide': this.hide.bind(this),
             'facebook.logged_in':  function () { 
                 this.facebooked = true;
@@ -160,7 +165,7 @@ var _modal = _tap.register({
             modalForm.removeClass('show');
             if (!keep_curtain) {
                 self.curtain.removeClass('show');
-                self.curtain.setStyle('display', 'none')
+                self.curtain.setStyle('display', 'none');
             }
         });
 
@@ -178,7 +183,7 @@ _modal.facebook = _tap.register({
             'facebook.logged_in':  function () { 
                 if (this.showed)
                     this.publish(_modal.next);
-             }.bind(this), 
+             }.bind(this) 
         });
     },
 
@@ -292,7 +297,7 @@ _modal.suggestions = _tap.register({
                 indic.setStyle('display', 'none');
 
                 var response = JSON.decode(this.response.text);
-                if (response.success == 0 || response.data.length == 0) {
+                if (!response.success || response.data.length === 0) {
                     //we have no suggestions
                     fail.setStyle('display', 'block');
                     return;
@@ -386,36 +391,27 @@ _modal.login = _tap.register({
     init: function() {
         var self = this,
             form = this.form = $('taplogin');
-        this.facebook = false;
 
         form.user = form.getElement('input[name="uname"]');
         form.pass = form.getElement('input[name="pass"]');
-        form.fb   = form.getElement('input[name="facebook"]');
         form.btn  = form.getElement('input[type="submit"]');
 
         this.subscribe({
             'facebook.logged_in':  function () { 
-                this.facebook = true; 
-                this.form.fb.checked = true;
-                this.fbToggle();
-                this.form.fb.getParent().removeClass('hidden');
-                $$('#fb-faces,#fb-signup-faces').removeClass('hidden');
+                $$('#fb-faces,#fb-signup-faces,#facebook-button').removeClass('hidden');
                 $$('#fb-no-faces,#fb-signup-no-faces').addClass('hidden');
             }.bind(this), 
             'facebook.logged_out': function () {
-                this.facebook = false;
-                this.form.fb.checked = false;
-                this.fbToggle();
-                //this.form.fb.getParent().addClass('hidden');
-                $$('#fb-faces,#fb-signup-faces').addClass('hidden');
+                $$('#fb-faces,#fb-signup-faces,#facebook-button').addClass('hidden');
                 $$('#fb-no-faces,#fb-signup-no-faces').removeClass('hidden');
             }.bind(this)
         });
 
         form.addEvent('submit', function(e) {
             e.stop();
-            var type = 'user';
-            if (self.facebook && self.form.fb.checked) {
+            var type = 'user',
+                facebook = e.event.explicitOriginalTarget.id == 'facebook-button';
+            if (facebook) {
                 type = 'facebook';
             } else {
                 if (form.user.value.isEmpty()) {
@@ -432,15 +428,6 @@ _modal.login = _tap.register({
             }
             self.auth(form.user.value, form.pass.value, type);
         });
-
-        form.fb.addEvent('click', this.fbToggle.bind(this));
-    },
-
-    fbToggle: function (e) {
-        var state = this.form.fb.checked;
-        this.form.fb.checked = state;
-        this.form.user.disabled = state;
-        this.form.pass.disabled = state;
     },
 
     auth: function(user, pass, type) {
@@ -466,7 +453,7 @@ _modal.login = _tap.register({
                     _notifications.alert('Success', 'Welcome back.  Logging you in...',
                         {color: 'darkgreen', duration: 2000, position: position});
 
-                    (function () { document.location.reload() }).delay(2000, this, 'login');
+                    (function () { document.location.reload(); }).delay(2000, this, 'login');
                 } else if (response.status == 'NOT_REGISTERED') {
                     _notifications.alert('Error', 'Sorry, there is no user with this username and password, please try again',
                         {color: 'darkred', duration: 5000, position: position});
@@ -523,10 +510,10 @@ _modal.image_preview = _tap.register({
 _modal.group_email_auth = _tap.register({
     show: function () {
         var self   = this,
-              form = this.form = $('email-auth-form');
-          form.gid = $('email-auth-gid'),
-        form.email = $('email-auth-email'),
+              form = this.form = $('email-auth-form'),
               resp = $('auth-response');
+          form.gid = $('email-auth-gid');
+        form.email = $('email-auth-email');
         
       form.validator = new Form.Validator(form, {
            fieldSelectors: '#email-auth-email'
@@ -577,7 +564,7 @@ _modal.first_tap = _tap.register({
     show: function (data) {
         var self     = this,
             form     = this.form = $('firsttapform');
-            form.ctx = $('circle-context'),
+            form.ctx = $('circle-context');
             form.gid = $('first-tap-gid');
         
         form.validator = new Form.Validator(form, {

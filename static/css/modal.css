@@ -76,6 +76,14 @@ width:251px;
 	text-shadow:1px 1px #fff;
 	font-weight:bold;
 }
+#login-button {
+    float: left;
+    margin: 20px 10px 0px !important;
+}
+#facebook-button {
+    float: right;
+    margin: 20px 10px 0px !important;
+}
 #modal-sign-login button:hover {
 	background:#40729d;
 	color:#fff;
