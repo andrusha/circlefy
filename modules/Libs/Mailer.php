@@ -6,7 +6,8 @@
 */
 class Mailer {
     private static $types = array('welcome' => 1, 'join_confirm' => 2, 'new_personal' => 3,
-        'new_follower' => 4, 'new_message' => 5, 'new_reply' => 6, 'digest' => 7, 'new_member' => 8);
+        'new_follower' => 4, 'new_message' => 5, 'new_reply' => 6, 'digest' => 7, 'new_member' => 8,
+        'mention' => 9);
 
     private function __construct() {}
 
@@ -132,6 +133,13 @@ class Mailer {
                             'fname' => $s->fname, 'lname' => $s->lname, 'circle' => $g->name)));
                     break;
 
+                case 'mention':
+                    $s = $users[ intval($mail['user_id']) ];
+                    $m = $taps[ intval($mail['message_id']) ];
+                    self::send($u->email, $s->uname.' mentioned you in conversation',
+                        self::formEmail('mention', array('your_name' => $u->fname,
+                            'fname' => $s->fname, 'lname' => $s->lname, 'text' => $m->text, 'mid' => $m->id)));
+                    break;
             }
         }
     }

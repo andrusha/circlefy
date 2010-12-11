@@ -87,6 +87,7 @@ class UsersList extends Collection {
     /*
         @param str   $type
             byUname - user with specific uname
+            byUnames- returns a list of users with matching unames
             byId    - user with specific id
             byIds   - fetch a list of users with specified ids
             following - users whom you are following
@@ -99,6 +100,7 @@ class UsersList extends Collection {
 
         @param array $params
             uname  - username
+            unames - usernames
             id     - user id
             ids    - array of user ids
             gid    - group id
@@ -139,6 +141,10 @@ class UsersList extends Collection {
         switch ($type) {
             case 'byUname':
                 $where[] = 'u.uname = #uname#';
+                break;
+
+            case 'byUnames':
+                $where[] = 'u.uname IN (#unames#)';
                 break;
 
             case 'byId':

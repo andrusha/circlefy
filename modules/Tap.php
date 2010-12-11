@@ -230,8 +230,29 @@ class Tap extends BaseModel {
         end($this->data['replies']);
 
         Comet::send('response.new', current($this->data['replies']));
+        
+        $mentioned = self::parseMentions($text);
+        foreach($mentioned as $user)
+            Comet::send('mention.new', array('uid' => $user->id, 'mid' => $this->id, 'sid' => $user->id));
 
         return $this;
+    }
+
+    /*
+        Parses all twitter-style @name mentions and returns a user list
+
+        @return UsersList
+    */
+    private static function parseMentions($text) {
+        $unames = array();
+        preg_match_all('/@([a-z0-9-_.]+?)(?:\s|$)/im', $text, $unames, PREG_PATTERN_ORDER);
+        if (DEBUG)
+            FirePHP::getInstance(true)->log($unames, 'Mentioned unames');
+
+        if (!empty($unames[1]))
+            return UsersList::search('byUnames', array('unames' => $unames[1]), U_ID_ONLY);
+        else
+            return UsersList::makeEmpty();
     }
 
     /*

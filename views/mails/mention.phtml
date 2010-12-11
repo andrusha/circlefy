@@ -1,0 +1,7 @@
+<? // Email on new follower
+   include(MAIL_HEADER); ?>
+<?=$fname?> <?=$lname?> mentioned you in conversation about:
+"<?=trim($text)?>"
+
+http://<?=DOMAIN?>/convo/<?=$mid?>
+<? include(MAIL_FOOTER); ?>

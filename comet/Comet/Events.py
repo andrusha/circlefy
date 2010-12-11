@@ -68,6 +68,8 @@ class EventDispatcher(object):
             self.on_delete_event(action, data)
         elif action == 'event.delete.all':
             self.on_delete_event(action, data, all = True)
+        elif action == 'mention.new':
+            self.on_mention_new(action, data)
         else:
             logging.warning('Unknow event! %s: %s' (action, data))
 
@@ -190,3 +192,11 @@ class EventDispatcher(object):
         self.mysql.commit()
 
         self.user_server.send_to(action, event, users = set([uid]))
+
+    def on_mention_new(self, action, data):
+        "Add 'mention' events to queue and send emails"
+        uid, mid, sid = intcast(data['uid'], data['mid'], data['sid'])
+
+        self.user_server.send_to(action, data, users = set([uid]))
+
+        self.mailer.queue(uid, 'mention', message_id = mid, user_id = sid)

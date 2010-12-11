@@ -5,7 +5,8 @@ str_null = lambda x: str(x) if x is not None else 'NULL'
 class Mailer(object):
     def __init__(self, mysql):
         self.mysql = mysql
-        self.types = {'new_personal': 3, 'new_follower': 4, 'new_message': 5, 'new_reply': 6, 'new_member' : 8}
+        self.types = {'new_personal': 3, 'new_follower': 4, 'new_message': 5, 
+                      'new_reply': 6, 'new_member' : 8, 'mention': 9}
 
     def queue(self, reciever, etype, user_id = None, message_id = None, group_id = None, reply_id = None):
         "Adds email message to email queue"

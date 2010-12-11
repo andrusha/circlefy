@@ -424,7 +424,7 @@ var _responses = _tap.register({
             text.innerHTML = text.innerHTML.replace(/\(hug\)/ig, '<img src="/static/images/bear.gif" alt="hug">');
 
             if (_vars.user && _vars.user.uname) {
-                var dogReg = new RegExp('@'+_vars.user.uname, 'gi');
+                var dogReg = new RegExp('@'+_vars.user.uname+'(?:\\s|$)', 'gim');
                 if (dogReg.test(text.innerHTML))
                     el.addClass('targeted');
             }
