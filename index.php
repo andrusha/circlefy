@@ -7,7 +7,7 @@
     It is the single entry point for
     both AJAX & php pages
 */
-require_once('config.php');
+	require_once('config.php');
 
 if (DEBUG) {
     $firephp->group('Server params', array('Collapsed' => true));
