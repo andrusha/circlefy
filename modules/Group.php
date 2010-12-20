@@ -29,10 +29,11 @@ class Group extends BaseModel {
         'online_count', 'secret', 'auth_email');
 
     protected static $intFields = array('id', 'tags_group_id', 'fb_id',
-        'created_time', 'type', 'auth', 'status', 'online_count', 'secret');
+        'created_time', 'type', 'auth', 'status', 'online_count', 'secret',
+        'ancestor');
 
     protected static $addit = array('tags', 'members', 'messages_count',
-        'members_count', 'responses_count');
+        'members_count', 'responses_count', 'ancestor', 'childs');
 
     protected static $tableName = 'group';
 
@@ -54,6 +55,10 @@ class Group extends BaseModel {
         if (isset($data['status'])) {
             $statuses = array_flip(self::$statuses);
             $data['status'] = $statuses[$data['status']];
+        }
+        
+        if (isset($data['childs'])) {
+            $data['childs'] = $data['childs']->asArrayAll();
         }
 
         return $data;

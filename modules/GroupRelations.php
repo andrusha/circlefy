@@ -119,24 +119,10 @@ class GroupRelations {
     /*
         @return Group
     */
-    public static function getClosestParent(Group $g, $info = true, $cached = true) {
-        $group = GroupsList::search('parent', 
-                                    array('gid' => $g->id, 'depth' => '1'),
-                                    ($info ? 0 : G_JUST_ID))
-                           ->getFirst();
-
-        if (!$group)
-            return new Group(null);
-
-        return $group;
-    }
-
-    /*
-        @return GroupsList
-    */
-    public static function getChilds(Group $g) {
-        $groups = GroupsList::search('childs', 
-                                    array('gid' => $g->id, 'depth' => 1, 'limit' => 4));
+    public static function getParents(Group $g, $info = true) {
+        $groups = GroupsList::search('parents', 
+                                    array('gid' => $g->id),
+                                    ($info ? 0 : G_JUST_ID));
 
         return $groups;
     }
@@ -144,12 +130,11 @@ class GroupRelations {
     /*
         @return GroupsList
     */
-    public static function getSiblings(Group $g) {
-        $parent = self::getClosestParent($g, false);
-        if ($parent->id === null)
-            return GroupsList::getEmpty();
-        
-        return self::getChilds($parent);
+    public static function getChilds(Group $g) {
+        $groups = GroupsList::search('childs', 
+                                    array('gid' => $g->id, 'depth' => 3));
+
+        return $groups;
     }
 
 };

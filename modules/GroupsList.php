@@ -149,8 +149,8 @@ class GroupsList extends Collection {
             byFbIDs  - groups by their Facebook ID
             like     - search on group name by LIKE
             byUserAndLike - performs like search within followed groups
-            childs   - returns all child groups
-            parent   - returns closest parent group
+            childs   - returns all child groups with depth <= #depth#
+            parents  - returns list of parents 
             byIds    - return a groups by ids
 
         @param array $params
@@ -186,6 +186,7 @@ class GroupsList extends Collection {
             'members2'  => 'LEFT  JOIN group_members gm2 ON g.id = gm2.group_id',
             'messages'  => 'LEFT  JOIN message m         ON m.group_id = g.id',
             'relations' => 'INNER JOIN group_relations gr ON g.id = gr.descendant',
+            'relationsL'=> 'LEFT  JOIN group_relations gr2 ON gr2.descendant = g.id AND gr2.depth = 1 AND gr2.ancestor <> gr2.descendant',
             'relationsA'=> 'INNER JOIN group_relations gr ON g.id = gr.ancestor');
 
         switch ($type) {
@@ -218,14 +219,17 @@ class GroupsList extends Collection {
                 break;
 
             case 'childs':
-                $join[] = 'relations';
-                $where  = 'gr.ancestor = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
+                $fields[] = 'gr.depth'; 
+                $fields[] = 'gr2.ancestor'; 
+                $join[]   = 'relations';
+                $join[]   = 'relationsL';
+                $where    = 'gr.ancestor = #gid# AND gr.depth <= #depth#';
                 break;
 
-            case 'parent':
-                $join[] = 'relationsA';
-                $where  = 'gr.descendant = #gid# AND gr.ancestor <> gr.descendant AND gr.depth = #depth#';
-                $limit  = 'LIMIT 1';
+            case 'parents':
+                $fields[] = 'gr.depth'; 
+                $join[]   = 'relationsA';
+                $where    = 'gr.descendant = #gid#';
                 break;
 
             case 'byIds':
@@ -277,7 +281,7 @@ class GroupsList extends Collection {
                 if ($res['id'] === null)
                     continue;
 
-                $groups[] = new Group($res);
+                $groups[ intval($res['id']) ] = new Group($res);
             }
 
         $groups = new GroupsList($groups);

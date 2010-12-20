@@ -19,7 +19,14 @@ abstract class Collection implements IteratorAggregate, Countable {
     }
 
     public function asArrayAll() {
-        return array_map(function ($x) { return $x->asArray(); }, $this->data);
+        return array_map(function ($x) { 
+                if ($x instanceof Collection)
+                    return $x->asArrayAll();
+                else if (method_exists($x, 'asArray'))
+                    return $x->asArray();
+                else
+                    return $x;
+            }, $this->data);
     }
 
     //make countable
@@ -106,6 +113,19 @@ abstract class Collection implements IteratorAggregate, Countable {
         $class_name = get_called_class(); 
         return new $class_name($merged);
     }
+
+    /*
+        Append new elemnt to the end of collection
+    */
+    public function append($element) {
+        if (!empty($this->data)) {
+            $class = get_class(current($this->data));
+            if (!$element instanceof $class)
+                throw new InvalidArgumentException("Appended element should be instance of $class");
+        }
+
+        $this->data[$element->id] = $element;
+    }
     
     public function lastOne() {
         end($this->data);
@@ -136,5 +156,28 @@ abstract class Collection implements IteratorAggregate, Countable {
     public static function makeEmpty() {
         $class = get_called_class();
         return new $class(array());
+    }
+
+    /*
+        Create Tree structure with 'childs' as Collections
+
+        @param str $field used as parent key
+        @return Collection
+    */
+    public function formTree($field, $root_id) {
+        foreach ($this->data as $key=>$val) {
+            $id = $val->$field;
+            if (!$id || !isset($this->data[$id])) 
+                continue;
+
+            if (!isset($this->data[$id]['childs'])) 
+                $this->data[$id]->childs = static::makeEmpty();
+
+            $this->data[$id]->childs->append($val);
+        }
+
+        $this->data = array($root_id => $this->data[$root_id]);
+
+        return $this;
     }
 };

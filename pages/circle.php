@@ -44,19 +44,13 @@ class page_circle extends Base {
                     ->asArrayAll(),
             'feed');
 
-        $parent = GroupRelations::getClosestParent($group);
         $childs = GroupRelations::getChilds($group);
-        if ($parent->id !== null) {
-            $this->set($parent->asArray(), 'parent');
-            $this->set(GroupRelations::getSiblings($group)->asArrayAll(), 'siblings');
-        } 
-        
-        if (count($childs)) {
-            if ($parent->id === null)
-                $this->set($group->asArray(), 'parent');
-
-            $this->set($childs->asArrayAll(), 'childs');
+        $tree = $childs->formTree('ancestor', $group->id);
+        if (DEBUG) {
+            FirePHP::getInstance(true)->log($childs, 'childs');
+            FirePHP::getInstance(true)->log($tree,   'tree');
         }
+        $this->set($tree->asArrayAll(), 'childs');
 
         $this->set($member, 'state');
         $this->set($pending, 'user_pending');
@@ -70,4 +64,5 @@ class page_circle extends Base {
 
         $this->set('circle', 'page');
 	}
+
 };

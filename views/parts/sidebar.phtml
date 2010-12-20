@@ -231,121 +231,30 @@
     </div><!--box-->
     <? endif; ?>
 
- <? /*** Tree ***/ ?>
-    <? 
-    function place_desired_in_center($list, $did) {
-        $desired = null;
-        foreach ($list as $e)
-            if ($e['id'] == $did) {
-                $desired = $e;
-                break;
-            }
+ <? /*** Childs list ***/ ?>
+    <?
 
-        if (!$desired)
-            return $list;
+function print_childs($childs) {
+    foreach ($childs as $c):
+    ?>
+        <li style="margin-left: <?=(15*(intval($c['depth']+1)))?>px">
+            <a href="/circle/<?=$c['symbol']?>"><?=$c['name']?></a>
+        </li>
+    <?
+        if (!empty($c['childs']))
+            print_childs($c['childs']);
+    endforeach;
+}
 
-        $newlist = array();
-        foreach ($list as $id=>$e) {
-            if ($e['id'] != $did)
-                $newlist[] = $e;
-            if ($id == floor(count($list)/2))
-                $newlist[] = $desired;
-        }
-        
-        return $newlist;
-    }
-    
-    if (!empty($_s['parent']) || !empty($_s['siblings']) || !empty($_s['childs'])): 
-            $total_width = 240;
-            $circle_size = 50;
-            $circle_left = floor(($total_width - $circle_size)/2);
-            $line_left   = $circle_left + floor($circle_size/2);
-
-            $tree = array();
-            if ($_s['parent'])
-                $tree[] = array($_s['parent']);
-
-            if ($_s['siblings'])
-                $tree[] = $_s['siblings'];
-
-            if ($_s['childs'])
-                $tree[] = $_s['childs'];
-
-            //$tree = array(array($_s['parent']), (array)$_s['siblings'], (array)$_s['childs']);
+    if (!empty($_s['childs'])): 
     ?>
     <div class="box">
 
     
-        <h3 class="title">Circles tree</h3>
-
-        <?
-        foreach ($tree as $part => $elems):
-
-            if (!empty($elems)): 
-                $cells_count = count($elems);
-                $cell_width  = floor($total_width/$cells_count);
-                $circle_left = floor(($cell_width - $circle_size)/2);
-                $line_left   = $circle_left + floor($circle_size/2);
-            ?>
-            <div class="circles" style="width: <?=$total_width?>px;">
-
-            <?
-                $elems = place_desired_in_center($elems, $circle['id']);
-
-                $id = 0; 
-                foreach ($elems as $c):
-                    $id++;
-                    $lineclass = '';
-                    if ($cells_count > 1) {
-                        if ($id == 1)
-                            $lineclass = 'round right';
-                        elseif ($id == $cells_count)
-                            $lineclass = 'round left';
-                        else
-                            $lineclass = 'straight horizontal';
-                    }
-            ?>
-                <div class="cell" style="width: <?=$cell_width?>px">
-                    <div class="container">
-                        <? if ($part): ?>
-                            <? if ($lineclass && $lineclass != 'straight horizontal'): ?>
-                                <div class="line <?=$lineclass?>" style="left: <?=$line_left?>px; width: <?=$line_left?>px"></div>
-                                <div class="line straight" style="left: <?=$line_left?>px"></div>
-                            <? else: ?>
-                                <? if ($lineclass): ?>
-                                    <div class="line <?=$lineclass?>" style="left: 0px; width: <?=$cell_width?>px"></div>
-                                <? endif; ?>
-                                <div class="line straight long" style="left: <?=$line_left?>px"></div>
-                            <? endif; ?>
-                        <? endif; ?>
-
-                        <a href="/circle/<?=$c['symbol']?>" 
-                           id="tree-<?=$c['id']?>"
-                           class="circle-thumb"
-                           data-tipid="circle-<?=$c['id']?>" 
-                           data-tiptitle="<img src='/static/images/type_<?=$c['type']?>.png' width='16' height='16' /> <?=$c['name']?>" 
-                           data-tipcontent="<?=((!empty($c['descr']))?$c['descr']:'&nbsp;')?>"
-                           style="left: <?=$circle_left?>px; margin: 0">
-                            <span class="circle"></span>
-                            <img src="<?=GROUP_PIC_REL . 'medium_' . $c['id'] . '.jpg'?>" />
-                            <? if ($c['id'] == $_s['circle']['id']): ?>
-                                <span class="circle-title" style="color: red">you here</span>
-                            <? else: ?>
-                                <span class="circle-title"><?=substr($c['name'],0,6);?></span>
-                            <? endif; ?>
-                        </a>
-
-                        <? if (($c['id'] == $_s['circle']['id'] || !$part) && $part != count($tree)-1): ?>
-                            <div class="line straight" style="left: <?=$line_left?>px; top: <?=$circle_size?>px; margin-bottom: <?=$circle_size?>px"></div>
-                        <? endif; ?>
-                    </div>
-                </div>
-            <? endforeach; ?>
-
-            </div>       
-            <div class="clear"></div>
-        <? endif; 
-        endforeach;?>
+        <h3 class="title">Circle structure</h3>
+        <ul class="childs">
+            <? print_childs($_s['childs']); ?>
+        </ul>
 
     </div><!--box-->
     <? endif; ?>
