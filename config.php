@@ -8,9 +8,12 @@ ini_set('display_startup_errors', 1);
 if (!empty($_FILES) && !empty($_POST) && $_POST['PHPSESSID'])
     session_id($_POST['PHPSESSID']);
 session_start();
-
+ 
 define('BASE_PATH', realpath(dirname(__FILE__)).'/');
-define('DEBUG', false);
+if (isset($debug_redifine))
+    define('DEBUG', $debug_redifine);
+else
+    define('DEBUG', stripos($_SERVER['HTTP_USER_AGENT'], 'firefox') !== false);
 
 function __autoload($classname) {
     $generics = array('Base', 'BaseModel', 'Collection');
@@ -44,7 +47,7 @@ if (DEBUG) {
 
 
 //use gzipped js & css instead of regular ones
-define("GZIPPED", true);
+define("GZIPPED", false);
 
 define("D_ADDR",     "127.0.0.1");
 define("D_PASS",     "root");
@@ -79,10 +82,10 @@ define("TOOLTIP_TEMPLATES",  BASE_PATH."views/parts/tooltips.phtml");
 define("MODAL_WINDOWS", BASE_PATH."views/parts/modal_windows.phtml");
 define("FBCONNECT",     BASE_PATH."views/parts/fbconnect.phtml");
 
-//define("FBAPPID",     'e31fd60bbbc576ac7fd96f69215268d0');
-//define("FBAPPSECRET", '6692d8984d00d3f67ee81bf31637970e');
-define("FBAPPID",     '151208708259047');
-define("FBAPPSECRET", 'f6e7e5edcf67283f629034b02a9e564d');
+define("FBAPPID",     'e31fd60bbbc576ac7fd96f69215268d0');
+define("FBAPPSECRET", '6692d8984d00d3f67ee81bf31637970e');
+//define("FBAPPID",     '151208708259047');
+//define("FBAPPSECRET", 'f6e7e5edcf67283f629034b02a9e564d');
 
 define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user_interests,'.
                         'user_likes,user_location,user_work_history,email,read_friendlists,'.

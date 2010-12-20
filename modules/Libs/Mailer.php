@@ -7,7 +7,7 @@
 class Mailer {
     private static $types = array('welcome' => 1, 'join_confirm' => 2, 'new_personal' => 3,
         'new_follower' => 4, 'new_message' => 5, 'new_reply' => 6, 'digest' => 7, 'new_member' => 8,
-        'mention' => 9);
+        'mention' => 9, 'new_registred' => 10);
 
     private function __construct() {}
 
@@ -170,6 +170,10 @@ class Mailer {
 
     public static function newReply(User $u, array $m) {
         self::queue($u, 'new_reply', null, $m['user_id'], $m['message_id'], null, $m['id']);
+    }
+    
+    public static function newRegistred(User $u, User $new) {
+        self::queue($u, 'new_registred', null, $new->id);
     }
 
     public static function digest(User $u, TapsList $messages, TapsList $replies, TapsList $followers) {

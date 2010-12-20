@@ -78,6 +78,9 @@ class User extends BaseModel {
         $user = new User($data);
         Mailer::welcome($user);
 
+        /*foreach(array(37, 35) as $recv)
+            Mailer::newRegistred(new User($recv), $user);*/
+
         return $user;
     }
 

@@ -19,14 +19,14 @@ abstract class Collection implements IteratorAggregate, Countable {
     }
 
     public function asArrayAll() {
-        return array_map(function ($x) { 
+        return array_values(array_map(function ($x) { 
                 if ($x instanceof Collection)
                     return $x->asArrayAll();
                 else if (method_exists($x, 'asArray'))
                     return $x->asArray();
                 else
                     return $x;
-            }, $this->data);
+            }, $this->data));
     }
 
     //make countable
