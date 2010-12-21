@@ -177,6 +177,17 @@
 
 <? /*** Navigation menu***/ ?>
     <? if ($_s['show_nav']): ?>
+
+    <? if ($_s['stats']): ?>
+        <div class="box stats">
+            <div class="clear"></div>
+            
+            <span class="stats"><?=$_s['stats']['messages']?><small>messages<br />sent</small></span>
+            <span class="stats"><?=$_s['stats']['responses']?><small>responses<br />received</small></span>
+            <span class="stats last"><?=$_s['stats']['groups']?><small>circles<br />joined</small></span>
+        </div>
+    <? endif; ?>
+
     <ul id="navigation">
         <li <?=($_s['feed_type'] == 'feed' ? 'class="active"' : '')?>
             id="tab-your" 
