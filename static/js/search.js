@@ -2,6 +2,9 @@ _tap.mixin({
     name: 'searching',
 
     initSearch: function(search, suggest, type) {
+        if (!suggest)
+            return;
+
         var search = this.search = {
             input:         search,
             suggest:       suggest,

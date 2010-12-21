@@ -6,12 +6,16 @@ _edit.group = _tap.register({
     mixins: 'searching',
 
 	init: function() {
-        this.initSearch($('group-search-link'), $('link-search-results'), 'like');
+        var form   = this.form   = $('group-edit');
 
-        var form   = this.form   = $('group-edit'),
-            fields = this.fields = {},
+        if (!form)
+            return;
+
+        var fields = this.fields = {},
             inputs = form.getElements('input:not([type="submit"]), textarea, select'),
             mod    = $('add');
+
+        this.initSearch($('group-search-link'), $('link-search-results'), 'like');
 
         this.sidebar = $$('div.box.circle-title')[0];
 

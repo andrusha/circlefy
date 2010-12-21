@@ -516,6 +516,9 @@ _modal.group_email_auth = _tap.register({
               resp = $('auth-response');
           form.gid = $('email-auth-gid');
         form.email = $('email-auth-email');
+
+        if (!form || !resp)
+            return;
         
       form.validator = new Form.Validator(form, {
            fieldSelectors: '#email-auth-email'
