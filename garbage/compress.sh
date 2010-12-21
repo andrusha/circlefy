@@ -37,7 +37,7 @@ compress_js static/js/main.js static/js/push.js static/js/search.js static/js/mo
 mv -f $JS_PATH/_yui_temp.js.gz $JS_PATH/_main.js.gz
 
 echo "Compressing optional code"
-compress_js static/js/feed.js static/js/sidebar.js
+compress_js static/js/feed.js static/js/sidebar.js static/js/group_edit.js
 mv -f $JS_PATH/_yui_temp.js.gz $JS_PATH/_optional.js.gz
 
 echo "Compressing css"
