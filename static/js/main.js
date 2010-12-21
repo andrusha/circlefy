@@ -155,7 +155,7 @@ var _tooltips = _tap.register({
                 position: 'centerBottom'
             });
         }.bind(this));
-    },
+    }
 });
 
 // To be called when DOM is loaded

@@ -152,7 +152,7 @@ var _stream = _tap.register({
                 this.changeFeed();
             }.bind(this));
         }
-	},
+	}
 });
 
 /*
@@ -508,13 +508,9 @@ var _responses = _tap.register({
             },
             onRequest: function() {
                 chatbox.value = '';
-            },
-            onSuccess: function() {
-                var data = JSON.decode(this.response.text);
-                if (data.success) ;
             }
         }).send();
-    },
+    }
 });
 
 /*
@@ -570,7 +566,7 @@ _live.typing = _tap.register({
             if (parent)
                 item.inject(parent.getElement('div.typing'));
         }
-    },
+    }
 });
 
 /*
@@ -722,7 +718,7 @@ _resizer = _tap.register({
     init: function() {
         this.makeResizeable();
         this.subscribe({
-            'feed.updated': this.makeResizeable.bind(this),
+            'feed.updated': this.makeResizeable.bind(this)
         });
     },
 
@@ -739,7 +735,7 @@ _resizer = _tap.register({
                         c = el.getStyle('height');
                     el.setStyles({
                         height: (el.getStyle('height') > h ? h : c),
-                        'max-height': h,
+                        'max-height': h
                     });
                 },
                 onComplete: function(el) {
@@ -747,7 +743,7 @@ _resizer = _tap.register({
                 }
             });
         });
-    },
+    }
 });
 
 _warning = _tap.register({
@@ -937,7 +933,7 @@ _controls.tap_actions = _tap.register({
     remove: function(el, e) {
         e.stop();
         new Request.JSON({
-            url: '/AJAX/taps/delete',
+            url: '/AJAX/taps/delete'
         }).post({id: el.getData('id')});
     }
 });

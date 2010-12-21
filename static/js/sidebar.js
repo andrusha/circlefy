@@ -63,7 +63,7 @@ var _list = _tap.register({
         parent.addClass('active');
 
 		this.publish('feed.change', [type, id, data, null, null, inside, 0]);
-	},
+	}
 });
 
 var _view_all = _tap.register({
