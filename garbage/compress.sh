@@ -2,58 +2,66 @@
 JS_PATH=static/js
 CSS_PATH=static/css
 
-function compress_js {
-    echo "Combining files $@"
-    cat  $@ > $JS_PATH/_compressed_temp.js
+#append string to every array element
+function append {
+    str=$1
+    eval array=("\${$2[@]}")
 
-    echo "YUI-compressing..."
-    #java -jar garbage/yuicompressor-2.4.2.jar --type js $JS_PATH/_compressed_temp.js > $JS_PATH/_yui_temp.js
-    java -jar garbage/compiler.jar --js $JS_PATH/_compressed_temp.js --js_output_file $JS_PATH/_yui_temp.js
-    rm $JS_PATH/_compressed_temp.js
+    for x in `seq 0 $[ ${#array[@]} - 1 ]`; do
+        array[$x]=$str${array[$x]}
+    done
 
-    echo "GZip-compressing..."
-    gzip -9 -f $JS_PATH/_yui_temp.js
-    echo ""
+    eval $2="(${array[@]})"
 }
 
-function compress_js_closure {
-    echo "Combining files $@"
-    cat  $@ > $JS_PATH/_compressed_temp.js
+function compress_js {
+    OUTPUT=$1
+    TEMP="$OUTPUT"_temp
+    shift 1
+
+    args=("$@")
+    append $JS_PATH/ args
+    
+    echo "Combining files ${args[@]}"
+    cat  ${args[@]} > $TEMP 
 
     echo "Closure-compilig..."
-    java -jar garbage/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js $JS_PATH/_compressed_temp.js --js_output_file $JS_PATH/_yui_temp.js
-    rm $JS_PATH/_compressed_temp.js
+    java -jar garbage/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js $TEMP --js_output_file $OUTPUT 
+    rm $TEMP 
 
     echo "GZip-compressing..."
-    gzip -9 -f $JS_PATH/_yui_temp.js
+    gzip -9 -f $OUTPUT 
     echo ""
 }
 
 function compress_css {
-    echo "Combining files $@"
-    cat  $@ > $CSS_PATH/_compressed_temp.css
+    OUTPUT=$1
+    TEMP="$OUTPUT"_temp
+    shift 1
+
+    args=("$@")
+    append $CSS_PATH/ args
+
+    echo "Combining files ${args[@]}"
+    cat  ${args[@]} > $TEMP 
 
     echo "YUI-compressing..."
-    java -jar garbage/yuicompressor-2.4.2.jar --type css $CSS_PATH/_compressed_temp.css > $CSS_PATH/_yui_temp.css
-    rm $CSS_PATH/_compressed_temp.css
+    java -jar garbage/yuicompressor-2.4.2.jar --type css $TEMP > $OUTPUT 
+    rm $TEMP 
 
     echo "GZip-compressing..."
-    gzip -9 -f $CSS_PATH/_yui_temp.css
+    gzip -9 -f $OUTPUT 
     echo ""
 }
 
 echo "Compressing libs"
-compress_js_closure static/js/mootools-core.js static/js/mootools-more.js static/js/libs.js static/js/validators.js
-mv -f $JS_PATH/_yui_temp.js.gz $JS_PATH/_libs.js.gz
+compress_js $JS_PATH/_libs.js mootools-core.js mootools-more.js libs.js validators.js
 
 echo "Compressing main code"
-compress_js_closure static/js/main.js static/js/push.js static/js/search.js static/js/modal.js static/js/Swiff.Uploader.js static/js/user_edit.js static/js/group_create.js static/js/follow.js static/js/notification.js static/js/post.js
-mv -f $JS_PATH/_yui_temp.js.gz $JS_PATH/_main.js.gz
+compress_js $JS_PATH/_main.js main.js push.js search.js modal.js Swiff.Uploader.js user_edit.js group_create.js follow.js notification.js post.js
 
 echo "Compressing optional code"
-compress_js_closure static/js/feed.js static/js/sidebar.js static/js/group_edit.js
-mv -f $JS_PATH/_yui_temp.js.gz $JS_PATH/_optional.js.gz
+compress_js $JS_PATH/_optional.js feed.js sidebar.js group_edit.js
 
 echo "Compressing css"
-compress_css static/css/main.css static/css/roar.css static/css/modal.css
-mv -f $CSS_PATH/_yui_temp.css.gz $CSS_PATH/_main.css.gz
+compress_css $CSS_PATH/_main.css main.css roar.css modal.css
