@@ -8,7 +8,19 @@
             <li>
                 <div class="thumb"><span></span><img src="<?=GROUP_PIC_REL?>small_<#: sugg.id #>.jpg" alt="search" /></div>
                <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name.limit(30) #></a></h3>
-               <small><span><#: sugg.messages_count #> messages received</span><strong><#: sugg.online_count #><em>/<#: sugg.members_count #></em></strong></small>
+               <small>
+                <span>
+                    <#: sugg.messages_count #> messages received
+                </span>
+                
+                <strong>
+                    <#: sugg.online_count #>
+                    <em> 
+                        <#: 'viewer'.plural(sugg.online_count) #>, 
+                        <#: sugg.members_count #> <#: 'member'.plural(sugg.members_count) #>
+                    </em>
+                </strong>
+               </small>
                <div class="clear"></div>
             </li>
             <# endfor; #>

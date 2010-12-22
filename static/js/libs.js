@@ -1,6 +1,12 @@
 /* There would be self-coded/customized mootools-based libraries
  * so we can use mootools builder easily */
 
+String.implement({
+    plural: function(num) {
+        return num > 1 ? this+'s' : this;
+    }
+});
+
 /*
 Script: Template.jx
 	Basic templating system.
