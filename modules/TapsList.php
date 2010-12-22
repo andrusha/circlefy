@@ -61,6 +61,7 @@ class TapsList extends Collection {
             'user'      => 'INNER JOIN user          u  ON u.id        = m.sender_id',
             'user_l'    => 'LEFT  JOIN user          u2 ON u2.id       = m.reciever_id',
             'friends'   => 'INNER JOIN friends       f  ON m.sender_id = f.friend_id',
+            'friends_l' => 'LEFT  JOIN friends       f  ON m.sender_id = f.friend_id',
             'convo'     => 'INNER JOIN conversations c  ON m.id        = c.message_id',
             'convo_l'   => 'LEFT  JOIN conversations c  ON m.id        = c.message_id',
             'media'     => 'LEFT  JOIN media         md ON md.id       = m.media_id',
@@ -89,7 +90,8 @@ class TapsList extends Collection {
                 $distinct = true;
                 $join[]   = 'members_l';
                 $join[]   = 'convo_l';
-                $where[]  = "(gm.user_id = #uid# OR c.user_id = #uid# ".
+                $join[]   = 'friends_l';
+                $where[]  = "(f.user_id = #uid# OR gm.user_id = #uid# OR c.user_id = #uid# ".
                             '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
                             '       m.reciever_id IS NOT NULL))';
                 break;
