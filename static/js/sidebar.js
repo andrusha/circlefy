@@ -140,3 +140,28 @@ var _view_all = _tap.register({
         }).post({type: type, id: id});
     }
 });
+
+var _counters = _tap.register({
+    init: function () {
+        this.homepage = $('homepage-stats');
+
+        this.subscribe({
+            'push.data.tap.new': this.newTap.bind(this),
+            'push.data.member.new': this.newMember.bind(this)
+        });
+    },
+
+    newTap: function (data) {
+        if (data.sender_id == _vars.user.id && this.homepage) {
+            var cnt = this.homepage.getElement('span.stats.messages > span.value');
+            cnt.innerHTML = cnt.innerHTML.toInt() + 1;
+        }
+    },
+
+    newMember: function (data) {
+        if (data.user_id == _vars.user.id && this.homepage) {
+            var cnt = this.homepage.getElement('span.stats.circles > span.value');
+            cnt.innerHTML = cnt.innerHTML.toInt() + 1;
+        }
+    }
+});

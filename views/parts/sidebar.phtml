@@ -179,12 +179,21 @@
     <? if ($_s['show_nav']): ?>
 
     <? if ($_s['stats']): ?>
-        <div class="box stats">
+        <div class="box stats" id="homepage-stats">
             <div class="clear"></div>
             
-            <span class="stats"><?=$_s['stats']['messages']?><small>messages<br />sent</small></span>
-            <span class="stats"><?=$_s['stats']['responses']?><small>responses<br />received</small></span>
-            <span class="stats last"><?=$_s['stats']['groups']?><small>circles<br />joined</small></span>
+            <span class="stats messages">
+                <span class="value"><?=$_s['stats']['messages']?></span>
+                <small>messages<br />sent</small>
+            </span>
+            <span class="stats responses">
+                <span class="value"><?=$_s['stats']['responses']?></span>
+                <small>responses<br />received</small>
+            </span>
+            <span class="stats circles last">
+                <span class="value"><?=$_s['stats']['groups']?></span>
+                <small>circles<br />joined</small>
+            </span>
         </div>
     <? endif; ?>
 
