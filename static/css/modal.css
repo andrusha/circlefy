@@ -318,7 +318,10 @@ div#suggestions {
 	text-shadow:1px 1px #fff;
 	font-weight:bold;
 }
-#modal-channel-suggestion button:hover {
+#modal-channel-suggestion button[disabled] {
+    background: #D0D0D0;
+}
+#modal-channel-suggestion button:hover:not([disabled]) {
 	background:#40729d;
 	color:#fff;
 	text-shadow:1px 1px #000;

@@ -277,16 +277,15 @@ _modal.suggestions = _tap.register({
     },
 
     show: function (chain) {
-        var self = this,
-            indic = self.suggest.getElement('span.indicator'),
-            list = self.suggest.getElement('ul'),
-            fail = self.suggest.getElement('span.fail');
+        var indic = this.suggest.getElement('span.indicator'),
+            list = this.suggest.getElement('ul'),
+            fail = this.suggest.getElement('span.fail');
 
         if (chain) {
             this.chain = chain;
         }
 
-        new Request({
+        new Request.JSON({
             url: '/AJAX/group/suggest',
             data: {
                 action: 'get'    
@@ -296,65 +295,88 @@ _modal.suggestions = _tap.register({
                 indic.setStyle('display', 'block');
                 fail.setStyle('display', 'none');
             },
-            onSuccess: function () {
-                indic.setStyle('display', 'none');
-
-                var response = JSON.decode(this.response.text);
-                if (!response.success || response.data.length === 0) {
-                    //we have no suggestions
-                    fail.setStyle('display', 'block');
-                    return;
-                }
-
-                var items = _template.parse('suggestions', response.data);
-                items = Elements.from(items);
-                items.inject(list);
-
-                if (list.getSize().y > 300) {
-                    self.suggest.setStyle('height', 300);
-                }
-
-                var allBox = list.getElement('input[name="suggest_all"]'),
-                    boxes  = list.getElements('input[name="suggest"]');
-
-                list.getElements('li').addEvent('click', function (e) {
-                    if (e.target != this) {
-                        return;
-                    }
-                    
-                    var inp = this.getElement('input');
-                    inp.checked = !inp.checked;
-                    inp.fireEvent('change', e);
-                });
-
-                allBox.addEvent('change', function (e) {
-                    e.stop();
-
-                    var state = allBox.checked;
-                    this.getParent().toggleClass('selected');
-                    boxes.each(
-                        function (i) {
-                            i.set('checked', state);
-                        });
-                });
-
-                boxes.addEvent('change', function (e) {
-                    e.stop();
-
-                    this.getParent().toggleClass('selected');
-
-                    allBox.checked = false;
-                    allBox.getParent().removeClass('selected');
-
-                    if (boxes.every(function (i) { 
-                            return i.get('checked'); 
-                        })) {
-                        allBox.checked = true;
-                        allBox.getParent().addClass('selected');
-                    }
-                });
-            }
+            onFailure: this.fail.bind(this),
+            onException: this.fail.bind(this),
+            onSuccess: this.success.bind(this)
         }).send();
+    },
+
+    unlock: function (cont) {
+        var but = this.form.getElement('button');
+        but.removeProperty('disabled');
+
+        if (cont) {
+            but.innerHTML = but.getData('alt');
+        }
+    },
+
+    fail: function () {
+        this.unlock(true);
+
+        var fail = this.suggest.getElement('span.fail');
+        fail.setStyle('display', 'block');
+    },
+
+    success: function (response) {
+        this.unlock(); 
+
+        var indic = this.suggest.getElement('span.indicator'),
+            list = this.suggest.getElement('ul'),
+            fail = this.suggest.getElement('span.fail');
+
+        indic.setStyle('display', 'none');
+
+        if (!response.success || !response.data.length) {
+            return this.fail();
+        }
+
+        var items = _template.parse('suggestions', response.data);
+        items = Elements.from(items);
+        items.inject(list);
+
+        if (list.getSize().y > 300) {
+            this.suggest.setStyle('height', 300);
+        }
+
+        var allBox = list.getElement('input[name="suggest_all"]'),
+            boxes  = list.getElements('input[name="suggest"]');
+
+        list.getElements('li').addEvent('click', function (e) {
+            if (e.target != this) {
+                return;
+            }
+            
+            var inp = this.getElement('input');
+            inp.checked = !inp.checked;
+            inp.fireEvent('change', e);
+        });
+
+        allBox.addEvent('change', function (e) {
+            e.stop();
+
+            var state = allBox.checked;
+            this.getParent().toggleClass('selected');
+            boxes.each(
+                function (i) {
+                    i.set('checked', state);
+                });
+        });
+
+        boxes.addEvent('change', function (e) {
+            e.stop();
+
+            this.getParent().toggleClass('selected');
+
+            allBox.checked = false;
+            allBox.getParent().removeClass('selected');
+
+            if (boxes.every(function (i) { 
+                    return i.get('checked'); 
+                })) {
+                allBox.checked = true;
+                allBox.getParent().addClass('selected');
+            }
+        });
     },
 
     send: function () {
