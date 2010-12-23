@@ -1,18 +1,24 @@
+/*global _edit, _tap, _vars, Form, CirTooltip, Swiff, console, Request, window*/
+
 /*
  * All stuff related to user profile and settings edit 
 */
 
 _edit.user = _tap.register({
 
-	init: function() {
-        if (!_vars.user.id) return;
+	init: function () {
+        if (!_vars.user.id) {
+            return;
+        }
 
         var form   = this.form   = $('user-edit'),
             fields = this.fields = {},
             inputs = form.getElements('input:not([type="submit"])'),
             avatar = $('user-avatar-changer');
 
-        if (!avatar) return;
+        if (!avatar) {
+            return;
+        }
 
         new CirTooltip({
             hovered:  inputs.combine(avatar),
@@ -21,8 +27,8 @@ _edit.user = _tap.register({
             sticky:   true
         });
 
-        inputs.each( function (el) {
-           fields[el.name] = el;
+        inputs.each(function (el) {
+            fields[el.name] = el;
         });
 
         form.validator = new Form.Validator(form, {
@@ -46,24 +52,24 @@ _edit.user = _tap.register({
             typeFilter: {
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png'
             },
-            onSelectSuccess: function(files) {
+            onSelectSuccess: function (files) {
                 avparent.spin();
             },
-            onSelectFail: function(files) {
+            onSelectFail: function (files) {
                 avatar.fireEvent('showCustomTip', [{content: 'Please select image smaller than 2 Mb'}]);
             },
-            onFileComplete: function(file) {
+            onFileComplete: function (file) {
                 var resp = JSON.decode(file.response.text);
                 console.log(resp); 
                 if (resp.success) {
                     //a bit dirty, but there is no good solution for chrome
                     var newLarge = avatar.clone(true, true);
-                    newLarge.src = resp.medium+'?'+Math.random();
+                    newLarge.src = resp.medium + '?' + Math.random();
                     newLarge.replaces(avatar);
                     avatar = newLarge;
                 }
             }.bind(this),
-            onComplete: function() {
+            onComplete: function () {
                 avparent.unspin();
             }
         });
@@ -75,19 +81,23 @@ _edit.user = _tap.register({
         });
     },
 
-    update: function(passed, el, e) {
+    update: function (passed, el, e) {
         e.stop();
-        var data = Object.map(this.fields, function(elem, name) {
-            if (elem.type == 'checkbox')
+        var data = Object.map(this.fields, function (elem, name) {
+            if (elem.type == 'checkbox') {
                 return elem.checked;
+            }
+
             return elem.value;
         });
 
         new Request.JSON({
             url: '/AJAX/user/update',
             onSuccess: function (response) {
-                if (!response.success)
+                if (!response.success) {
                     return;
+                }
+
                 window.location.reload();
             }.bind(this)
         }).post(data);
@@ -96,7 +106,7 @@ _edit.user = _tap.register({
     /*
      * Lazy info updater, works without page reload
      */
-    updateInfo: function(group) {
+    updateInfo: function (group) {
         var f = this.fields,
             s = this.sidebar;
         //in some cases we may change title, but not symbol

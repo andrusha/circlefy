@@ -1,3 +1,5 @@
+/*global Observer, window, _tap, document, Template, _body, Roar, CirTooltip, $$, MediaEmbed */
+
 /*
 script: tap.js
 	Main script; Needed for the entire site.
@@ -14,7 +16,7 @@ global: _body and _head
 	Shortcuts for document.body and document.head
 */
 _tap.register({
-	init: function(){
+	init: function () {
 		window._body = $(document.body);
 		window._head = $(document.head);
 	}
@@ -31,8 +33,8 @@ var _live = {},
 /*
  * namespaces for all adding and editing classes
  */
-var _add  = {};
-var _edit = {};
+var _add  = {},
+    _edit = {};
 
 /*
  * If we include tap, we'll anyway need
@@ -60,7 +62,7 @@ var _template = {
         'typing':      'template-typing',
         'messages':    'template-messages',
         'circles':     'template-circles',
-        'notifications':'template-notifications',
+        'notifications': 'template-notifications',
         'post-search': 'template-post-search',
         'followers':   'template-followers'
     },
@@ -77,11 +79,14 @@ var _template = {
 		returns:
 		- (string) html content of the template evaled with the data
 	*/
-    parse: function(type, data) {
+    parse: function (type, data) {
         var template = this.compiled[type];
         if (!template) {
             template = this.map[type];
-            if (!template) return '';
+            if (!template) {
+                return '';
+            }
+
             template = this.compiled[type] = this.templater.compile($(template).innerHTML.cleanup());
         }
         return template.apply(data);
@@ -95,7 +100,7 @@ local: _dater
 */
 var _dater = _tap.register({
 
-    init: function() {
+    init: function () {
         var self = this;
         this.changeDates();
         this.changeDates.periodical(60000, this);
@@ -109,12 +114,13 @@ var _dater = _tap.register({
 		Goes to each element with the data-attrib 'timestamp'
 		and updates their dates.
 	*/
-    changeDates: function() {
+    changeDates: function () {
         var items = _body.getElements("[data-timestamp]");
-        items.each(function(el) {
+        items.each(function (el) {
             var timestamp = el.getData('timestamp') * 1;
-            if (timestamp)
-                el.text = Date.timeDiffInWords(new Date(timestamp*1000));
+            if (timestamp) {
+                el.text = Date.timeDiffInWords(new Date(timestamp * 1000));
+            }
         });
     }
 });
@@ -130,12 +136,12 @@ var _notifications = new Roar({
 
 
 var _tooltips = _tap.register({
-    init: function() {
-        this.subscribe('feed.init; feed.changed', function() {
+    init: function () {
+        this.subscribe('feed.init; feed.changed', function () {
             new CirTooltip({
-               hovered: $$('#feed .circle'),
-               template: 'name-tooltip',
-               position: 'centerTop'
+                hovered: $$('#feed .circle'),
+                template: 'name-tooltip',
+                position: 'centerTop'
             });
             new CirTooltip({
                 hovered: $$('#feed .avatar-author'),
@@ -143,7 +149,7 @@ var _tooltips = _tap.register({
                 position: 'centerTop'
             });
         }.bind(this));
-        this.subscribe('groups.get', function() {
+        this.subscribe('groups.get', function () {
             new CirTooltip({
                 hovered: $$('#sidebar .circle-thumb'),
                 template: 'side-tooltip',
@@ -160,7 +166,7 @@ var _tooltips = _tap.register({
 
 // To be called when DOM is loaded
 var _startup = _tap.register({
-    init: function() {
+    init: function () {
         // Tooltips
         new CirTooltip({
             hovered: $$('#sidebar .follower-thumb'),
@@ -190,19 +196,20 @@ var _startup = _tap.register({
         
         // Media viewer
         var self = this;
-        this.subscribe('feed.init; feed.changed; feed.updated', function() {
+        this.subscribe('feed.init; feed.changed; feed.updated', function () {
             var elems = $$('#feed .display-video, #feed .display-image');
-            elems.each( function(elem) {
+            elems.each(function(elem) {
                 if (elem.hasClass('display-video')) {
-                    elem.addEvent('click', function(e) {
+                    elem.addEvent('click', function (e) {
                         e.stop();
-                        var close_btn = e.target.getParent('div.message').getElement('.video-embed-close');
-                            embed_div = e.target.getParent('div.message').getElement('.video-embed');
+                        var close_btn = e.target.getParent('div.message').getElement('.video-embed-close'),
+                            embed_div = e.target.getParent('div.message').getElement('.video-embed'),
                             thumbnail = e.target.getParent('a.display-video');
+
                         embed_div.removeClass('hidden');
                         close_btn.removeClass('hidden');
                         thumbnail.addClass('hidden');
-                        close_btn.addEvent('click', function(e) { 
+                        close_btn.addEvent('click', function (e) { 
                             e.stop();
                             embed_div.addClass('hidden');
                             close_btn.addClass('hidden');
@@ -210,10 +217,10 @@ var _startup = _tap.register({
                         });
                     }.bind(this));
                 } else {
-                    elem.addEvent('click', function(e) {
+                    elem.addEvent('click', function (e) {
                         var sizes = e.target.getParent().getData('embedcode').split(','),
                             url   = e.target.getParent().getData('imageurl'),
-                            embed = '<img src="'+ url +'" width="'+ sizes[0] +'" height="'+ sizes[1] +'" />';
+                            embed = '<img src="' + url + '" width="' + sizes[0] + '" height="' + sizes[1] + '" />';
                         self.publish('modal.show.image-display', [embed, sizes]);
                     }.bind(this));
                 }

@@ -1,13 +1,11 @@
-/*
-jslint white: true, undef: true, newcap: true, immed: true, evil: true
-global Class, _tap
-*/
+/*global _tap, $$, document, Request, _template, Elements, _vars*/
 
 var _notification = _tap.register({
-    init: function() {
+    init: function () {
         var parent = this.parent = $('notifications');
-        if (!parent)
+        if (!parent) {
             return;
+        }
 
         this.page = 0;
 
@@ -27,31 +25,32 @@ var _notification = _tap.register({
         this.updateEvents();
     },
 
-    updateEvents: function() {
-       $$('div.event').addEvent('click', function() {
-           var link = this.getElement('h3 > a');
-           document.location = link.href;
-       });
+    updateEvents: function () {
+        $$('div.event').addEvent('click', function () {
+            var link = this.getElement('h3 > a');
+            document.location = link.href;
+        });
     },
 
-    toggle: function(el, e) {
+    toggle: function (el, e) {
         e.stop();
         el.getSiblings('div.list').toggleClass('hidden');
         el.toggleClass('toggled');
     },
 
-    close: function(el, e) {
+    close: function (el, e) {
         e.stop();
         new Request.JSON({
             url: '/AJAX/taps/events',
             onSuccess: function (response) {
-                if (response.success)
+                if (response.success) {
                     this.parent.addClass('hidden');
+                }
             }.bind(this)
         }).post({action: 'all_read'});
     },
 
-    paginate: function(el, e) {
+    paginate: function (el, e) {
         e.stop();
         var type = el.getData('type');
 
@@ -63,14 +62,16 @@ var _notification = _tap.register({
             this.parent.getElements('button[data-type="next"]').removeProperty('disabled');
         }
 
-        if (!this.page)
+        if (!this.page) {
             this.parent.getElements('button[data-type="prev"]').setProperty('disabled', true);
+        }
 
         new Request.JSON({
             url: '/AJAX/taps/events',
             onSuccess: function (response) {
-                if (!response.success)
+                if (!response.success) {
                     return;
+                }
 
                 var items = Elements.from(_template.parse('notifications', response.events)),
                     list  = this.parent.getElement('div.events');
@@ -79,20 +80,23 @@ var _notification = _tap.register({
                 items.inject(list);
                 this.updateEvents();
                 
-                if (items.length < 5)
+                if (items.length < 5) {
                     this.parent.getElements('button[data-type="next"]').setProperty('disabled', true);
+                }
             }.bind(this)
         }).post({action: 'fetch', page: this.page});
     },
 
-    'delete': function(data) {
-        if (data.user_id != _vars.user.id)
+    'delete': function (data) {
+        if (data.user_id != _vars.user.id) {
             return;
+        }
 
-        var id = '#event-'+(data.type == 2 ? 2 : 1)+'-'+data.event_id;
+        var id = '#event-' + (data.type == 2 ? 2 : 1) + '-' + data.event_id;
         $$(id).addClass('hidden');
 
-        if (data.type != 2)
-            $$('#global-'+data.event_id).removeClass('new');
+        if (data.type != 2) {
+            $$('#global-' + data.event_id).removeClass('new');
+        }
     }
 });

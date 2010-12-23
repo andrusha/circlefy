@@ -1,3 +1,5 @@
+/*global _tap, _vars, $$, Request, Elements, _template*/
+
 /*
  * script: sidebar.js
  * Everything related sidebar.
@@ -9,12 +11,12 @@
 mixin: list
 	A mixin for sidelist operations
 */
-var x;
+
 _tap.mixin({
 
 	name: 'lists',
 
-	setListVars: function() {
+	setListVars: function () {
         var sidebar = this.sidebar = $('sidebar');
         this.menu = sidebar.getElements('ul#navigation>li');
         this.pmButton = $('sendPMButton');
@@ -32,7 +34,7 @@ var _list = _tap.register({
 
 	mixins: 'lists',
 
-	init: function(){
+	init: function () {
 		this.setListVars();
         this.reply = $('reply');
 		this.menu.addEvent('click:relay(a)', this.changeFeed.toHandler(this));
@@ -40,15 +42,19 @@ var _list = _tap.register({
             this.publish('feed.change', ['private']);
         }.bind(this));
         this.subscribe('feed.changed', function (type) {
-            if (!this.reply) return;
-            if (!['group', 'private'].contains(type))
+            if (!this.reply) {
+                return;
+            }
+
+            if (!['group', 'private'].contains(type)) {
                 this.reply.addClass('hidden');
-            else
+            } else {
                 this.reply.removeClass('hidden');
+            }
         }.bind(this));
     },
 	
-	changeFeed: function(el, e){
+	changeFeed: function (el, e) {
         e.stop();
 		var parent = el.getParent('li'),
             type = parent.getData('type'),
@@ -56,8 +62,9 @@ var _list = _tap.register({
             data = {'feed': el.text },
             inside = parent.getData('inside') || 0;
 
-        if (_vars.guest && type != 'public')
+        if (_vars.guest && type != 'public') {
             return;
+        }
 
         parent.getSiblings('li').removeClass('active');
         parent.addClass('active');
@@ -74,24 +81,26 @@ var _view_all = _tap.register({
     getMore: function (el, e) {
         e.stop();
         var type = el.getData('type'),
-            id = el.getData('id').toInt();
+            id = el.getData('id').toInt(),
+            list = null;
 
         if (type == 'groups') {
             var parent = el.getParent('div#left');
-            if (parent)
-                var list = parent.getElement('div.user-circles');
-            else {
+            if (parent) {
+                list = parent.getElement('div.user-circles');
+            } else {
                 parent = el.getParent('div.box');
-                if (parent)
-                    var list = parent.getElement('div.circles');
+                if (parent) {
+                    list = parent.getElement('div.circles');
+                }
             }
 
             this.getGroups(id, list);
         } else if (['following', 'followers', 'members'].contains(type)) {
-            var list = el.getParent('div.box').getElement('div.followers');
+            list = el.getParent('div.box').getElement('div.followers');
             this.getUsers(type, id, list);
         } else if (type == 'involved') {
-            var list = el.getParent('div.box');
+            list = el.getParent('div.box');
             list.getElements('.follower-thumb').removeClass('hidden');
         }
 
@@ -101,31 +110,33 @@ var _view_all = _tap.register({
     getGroups: function (id, list) {
         new Request.JSON({
             url: '/AJAX/group/get',
-            onSuccess: (function(response) {
-                if (!response.success)
+            onSuccess: function (response) {
+                if (!response.success) {
                     return;
+                }
 
                 var items = Elements.from(_template.parse('circles', response.data));
                 list.empty();
                 items.inject(list);
                 
                 this.publish('groups.get', [items]);
-            }).bind(this)
+            }.bind(this)
         }).post({type: 'byUser', id: id});
     },
 
     getUsers: function (type, id, list) {
         new Request.JSON({
             url: '/AJAX/user/get',
-            onSuccess: (function(response) {
-                if (!response.success)
+            onSuccess: function (response) {
+                if (!response.success) {
                     return;
+                }
 
                 var items = Elements.from(_template.parse('followers', response.data));
                 items.inject(list.empty());
 
                 this.publish('users.get', [items]);
-            }).bind(this)
+            }.bind(this)
         }).post({type: type, id: id});
     }
 });

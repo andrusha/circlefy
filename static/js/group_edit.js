@@ -1,3 +1,5 @@
+/*global _tap, _edit, $$, CirTooltip, Request, Swiff, console, Elements, _template, Form, document, _vars*/
+
 /*
  * All stuff related to group editing (including group pic)
 */
@@ -5,11 +7,12 @@
 _edit.group = _tap.register({
     mixins: 'searching',
 
-	init: function() {
+	init: function () {
         var form   = this.form   = $('group-edit');
 
-        if (!form)
+        if (!form) {
             return;
+        }
 
         var fields = this.fields = {},
             inputs = form.getElements('input:not([type="submit"]), textarea, select'),
@@ -26,8 +29,8 @@ _edit.group = _tap.register({
             sticky:   true
         });
 
-        inputs.each( function (el) {
-           fields[el.name] = el;
+        inputs.each(function (el) {
+            fields[el.name] = el;
         });
 
         // Members moderation
@@ -35,67 +38,75 @@ _edit.group = _tap.register({
             var accept_btn = mod.getElement('.accept'),
                 reject_btn = mod.getElement('.reject');
             
-            accept_btn.addEvent('click', function() {
-                var users = new Array(),
+            accept_btn.addEvent('click', function () {
+                var users = [], 
                     members = mod.getElements('input:checked');
                 
-                members.each(function(el) {
+                members.each(function (el) {
                     var user = el.getData('user');
                     users.push(user);
                 });
                 var data = {'id': $('edit-id').value, 'users': users, 'action': 'approve'};
-                if (users.length)
+                if (users.length) {
                     new Request.JSON({
                         url: '/AJAX/group/moderate',
                         onSuccess: function (response) {
-                            if (!response.success)
+                            if (!response.success) {
                                 return;
-                            members.each(function(el) {
+                            }
+
+                            members.each(function (el) {
                                 el.getParent('li').dispose();
                             });
                             
                             var other_members = mod.getElements('input[type="checkbox"]');
                             
-                            if (other_members && !other_members.length) 
+                            if (other_members && !other_members.length) {
                                 mod.innerHTML = '<label>Member(s) approved successfully.</label>';
+                            }
                         }.bind(this)
                     }).post(data);
+                }
             });
-            reject_btn.addEvent('click', function() {
-                var users = new Array(),
+            reject_btn.addEvent('click', function () {
+                var users = [], 
                     members = mod.getElements('input:checked');
                 
-                members.each(function(el) {
+                members.each(function (el) {
                     var user = el.getData('user');
                     users.push(user);
                 });
                 var data = {'id': $('edit-id').value, 'users': users, 'action': 'reject'};
-                if (users.length)
+                if (users.length) {
                     new Request.JSON({
                         url: '/AJAX/group/moderate',
                         onSuccess: function (response) {
-                            if (!response.success)
+                            if (!response.success) {
                                 return;
-                            members.each(function(el) {
+                            }
+
+                            members.each(function (el) {
                                 el.getParent('li').dispose();
                             });
                             
                             var other_members = mod.getElements('input[type="checkbox"]');
                             
-                            if (other_members && !other_members.length) 
+                            if (other_members && !other_members.length) {
                                 mod.innerHTML = '<label>Member(s) rejected successfully.</label>';
+                            }
                         }.bind(this)
                     }).post(data);
-                
+                }
             });
         }
 
         this.oldSymbol = fields.symbol.value;
         
-        if (fields.auth.getSelected().get('text')[0] == 'email')
+        if (fields.auth.getSelected().get('text')[0] == 'email') {
             $('edit-auth-email-cont').removeClass('hidden');
+        }
 
-        fields.auth.addEvent('change', function(e) {
+        fields.auth.addEvent('change', function (e) {
             var auth = e.target.getSelected().get('text')[0];
             if (auth == 'email') {
                 $('edit-auth-email-cont').removeClass('hidden');
@@ -116,7 +127,10 @@ _edit.group = _tap.register({
         });
 
         var avatar = $('avatar-changer');
-        if (!avatar) return;
+        if (!avatar) {
+            return;
+        }
+
         var avparent = avatar.getParent('div');
 
         avparent.set('spinner', {message: 'uploading...', maskMargins: true});
@@ -135,29 +149,29 @@ _edit.group = _tap.register({
             typeFilter: {
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png'
             },
-            onSelectSuccess: function(files) {
+            onSelectSuccess: function (files) {
                 avparent.spin();
             },
-            onSelectFail: function(files) {
+            onSelectFail: function (files) {
                 avatar.fireEvent('showCustomTip', [{content: 'Please select image smaller than 2 Mb'}]);
             },
-            onFileComplete: function(file) {
+            onFileComplete: function (file) {
                 var resp = JSON.decode(file.response.text);
                 console.log(resp); 
                 if (resp.success) {
                     //a bit dirty, but there is no good solution for chrome
                     var newLarge = avatar.clone(true, true);
-                    newLarge.src = resp.medium+'?'+Math.random();
+                    newLarge.src = resp.medium + '?' + Math.random();
                     newLarge.replaces(avatar);
                     avatar = newLarge;
 
                     var oldMed = this.sidebar.getElement('img.profile-thumb'),
                         newMed = oldMed.clone(true, true);
-                    newMed.src = resp.medium+'?'+Math.random();
+                    newMed.src = resp.medium + '?' + Math.random();
                     newMed.replaces(oldMed);
                 }
             }.bind(this),
-            onComplete: function() {
+            onComplete: function () {
                 avparent.unspin();
             }
         });
@@ -169,23 +183,28 @@ _edit.group = _tap.register({
         });
     },
 
-    update: function(passed, el, e) {
+    update: function (passed, el, e) {
         e.stop();
-        var data = Object.map(this.fields, function(elem, name) {
-            if (elem.type == 'checkbox')
+        var data = Object.map(this.fields, function (elem, name) {
+            if (elem.type == 'checkbox') {
                 return elem.checked;
+            }
+
             return elem.get('value');
         });
 
         new Request.JSON({
             url: '/AJAX/group/update',
             onSuccess: function (response) {
-                if (!response.success)
+                if (!response.success) {
                     return;
-                if (response.group.symbol != this.oldSymbol)
-                    document.location = '/circle/'+response.group.symbol+'?edit';
-                else
+                }
+
+                if (response.group.symbol != this.oldSymbol) {
+                    document.location = '/circle/' + response.group.symbol + '?edit';
+                } else {
                     this.updateInfo(response.group);
+                }
             }.bind(this)
         }).post(data);
     },
@@ -193,7 +212,7 @@ _edit.group = _tap.register({
     /*
      * Lazy info updater, works without page reload
      */
-    updateInfo: function(group) {
+    updateInfo: function (group) {
         var f = this.fields,
             s = this.sidebar;
         //in some cases we may change title, but not symbol
@@ -209,11 +228,11 @@ _edit.group = _tap.register({
         this.publish('modal.hide', []);
     },
 
-    onSearch: function(resp) {
+    onSearch: function (resp) {
         Elements.from(_template.parse('post-search', resp.groups)).inject(this.search.list.empty());
         
-        this.search.list.getElements('li').each(function(el) {
-            el.addEvent('click', (function(e) {
+        this.search.list.getElements('li').each(function (el) {
+            el.addEvent('click', function (e) {
                 e.stop();
                 var group = el.get('rel'),
                     gname = el.getData('name'),
@@ -225,37 +244,38 @@ _edit.group = _tap.register({
                 this.search.suggest.addClass('hidden');
 
                 this.linkGroup(_vars.feed.id, group);
-            }).bind(this));
+            }.bind(this));
         }, this);
     },
 
-    linkGroup: function(child, parent) {
+    linkGroup: function (child, parent) {
         new Request.JSON({
             url: '/AJAX/group/link',
-            onSuccess: (function (resp) {
-                if (!resp.success)
+            onSuccess: function (resp) {
+                if (!resp.success) {
                     alert('Dirty little bastard!');
-                else
+                } else {
                     this.changeLinked(resp.group);
-            }).bind(this)
+                }
+            }.bind(this)
         }).post({child: child, parent: parent});
     },
 
-    changeLinked: function(group) {
+    changeLinked: function (group) {
         var parent = $('parent-circle'),
             img = parent.getElement('img');
 
         parent.removeClass('hidden');
-        img.src = img.src.replace(/medium_[0-9]*\.jpg/i, 'medium_'+group.id+'.jpg?');
+        img.src = img.src.replace(/medium_[0-9]*\.jpg/i, 'medium_' + group.id + '.jpg?');
     }
 });
 
 _edit.members = _tap.register({
-    init: function() {
+    init: function () {
         $$('button.moderate').addEvent('click', this.moderate.toHandler(this));
     },
 
-    moderate: function(el, e) {
+    moderate: function (el, e) {
         e.stop();
         
         var action = el.getData('action'),

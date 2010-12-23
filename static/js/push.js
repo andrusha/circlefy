@@ -1,3 +1,5 @@
+/*global _tap, document, _vars, Orbited, console, window, Date*/
+
 /*
 script: push.js
 	Interface to the Orbited system.
@@ -5,15 +7,16 @@ script: push.js
 
 var _push = _tap.register({
 
-	init: function(){
+	init: function () {
 		document.domain = document.domain;
         this.connected = false;
 		this.subscribe({'push.send': this.send.bind(this)});
-        if (_vars.user.id && _vars.user.uname)
+        if (_vars.user.id && _vars.user.uname) {
     		this.prepare();
+        }
 	},
 
-	prepare: function(){
+	prepare: function () {
 		var socket = this.socket = new Orbited.TCPSocket();
 		socket.onopen = this.handleOpen.bind(this);
 		socket.onread = this.handleData.bind(this);
@@ -21,23 +24,25 @@ var _push = _tap.register({
 		this.connect();
 	},
 
-	connect: function(){
+	connect: function () {
 		this.socket.open('localhost', 2223);
 	},
 
-	send: function(data) {
+	send: function (data) {
         if (!this.connected) {
             console.log('request made too soon');
             return;
         }
 		data = JSON.encode(data);
-		if (!data) return;
+		if (!data) {
+            return;
+        }
 		this.socket.send(data + '\r\n');
 		this.publish('push.sent', data);
 		return this;
 	},
 
-	handleOpen: function(){
+	handleOpen: function () {
 		var data = {
 			uid:   _vars.user.id,
 			uname: _vars.user.uname 
@@ -51,26 +56,30 @@ var _push = _tap.register({
 		return this;
 	},
 
-	handleData: function(raw){
+	handleData: function (raw) {
 		this.publish('push.data.raw', raw);
 		var parsed, data, len, test;
 		raw = raw.split('\n');
 		len = raw.reverse().length;
 		while (len--) {
 			data = JSON.decode(raw[len]);
-			if (!data) continue;
+			if (!data) {
+                continue;
+            }
 			this.publish('push.data', data);
 
-            type = data.type;
+            var type = data.type;
             switch (type) {
-				case 'ping':
-                    continue;
-                    break;
-				case 'refresh':
-                    window.location = [window.location, '?', new Date().getTime()].join('');
-                    break;
-                default:
-                    this.publish('push.data.'+type, [data.data]);
+            case 'ping':
+                continue;
+                break;
+
+            case 'refresh':
+                window.location = [window.location, '?', new Date().getTime()].join('');
+                break;
+
+            default:
+                this.publish('push.data.' + type, [data.data]);
             }
 		}
 	}
@@ -79,9 +88,9 @@ var _push = _tap.register({
 
 var _logger = _tap.register({
 	
-	init: function(){
+	init: function () {
 		this.subscribe({
-			'push.sent; push.data.raw': function(){
+			'push.sent; push.data.raw': function () {
 				console.log.apply(console, arguments);
 			}
 		});

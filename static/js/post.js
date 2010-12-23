@@ -1,11 +1,9 @@
-/*
-    post modal
-*/
+/*global _tap, Form, $$, CirTooltip, Elements, _template, Request, _notifications*/
 
 var _post = _tap.register({
     mixins: 'searching',
 
-    init: function(){
+    init: function () {
         this.initSearch($('group-search-post'), $('post-search-results'), 'yourGroups');
 
         this.form = $('posttapform');
@@ -15,6 +13,7 @@ var _post = _tap.register({
             evaluateFieldsOnBlur: false,
             evaluateFieldsOnChange: false
         });
+
         new CirTooltip({
             hovered:  $$('#postmessage, #group-search-post'),
             template: 'error-tooltip',
@@ -23,11 +22,11 @@ var _post = _tap.register({
         });
     },
 
-    onSearch: function(resp) {
+    onSearch: function (resp) {
         Elements.from(_template.parse('post-search', resp.groups)).inject(this.search.list.empty());
         
-        this.search.list.getElements('li').each(function(el) {
-            el.addEvent('click', (function(e) {
+        this.search.list.getElements('li').each(function (el) {
+            el.addEvent('click', function (e) {
                 e.stop();
                 var group = el.get('rel'),
                     gname = el.getData('name'),
@@ -41,7 +40,7 @@ var _post = _tap.register({
                 this.search.suggest.addClass('hidden');
                 clear.removeClass('hidden');
                 
-                clear.addEvent('click', (function(e) {
+                clear.addEvent('click', function (e) {
                     e.stop();
                     this.search.input.setData('gid', '');
                     this.search.input.setData('name', '');
@@ -50,15 +49,16 @@ var _post = _tap.register({
                     this.search.suggest.addClass('hidden');
                     this.search.suggest.getElement('ul').innerHTML = '';
                     clear.addClass('hidden');
-                }).bind(this));
-            }).bind(this));
+                }.bind(this));
+            }.bind(this));
         }, this);
     },
 
-    submitForm: function(passed, form, e) {
+    submitForm: function (passed, form, e) {
         e.stop();
-        if (!passed)
+        if (!passed) {
             return;
+        }
         
         var gid  = this.search.input.getData('gid'),
             pmsg = $('postmessage'),
@@ -77,15 +77,19 @@ var _post = _tap.register({
                 'title': pmsg.getData('title'),
                 'description': pmsg.getData('description'),
                 'thumbnail_url': pmsg.getData('thumbnail')
-            }
-            if (pmsg.getData('fullimage'))
+            };
+
+            if (pmsg.getData('fullimage')) {
                 media.fullimage_url = pmsg.getData('fullimage');
+            }
+
             data.media = media;
         }
+
         new Request({
             url: '/AJAX/taps/new',
             data: data,
-            onSuccess: function(){
+            onSuccess: function () {
                 var response = JSON.decode(this.response.text);
                 if (response.success) {
                     self.search.input.value = '';

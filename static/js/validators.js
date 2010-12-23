@@ -1,3 +1,5 @@
+/*global Form, Request*/
+
 /*
  * There is should be placed all global validators
  * so we may reuse them
@@ -30,21 +32,22 @@ Form.Validator.add('validate-alphaspace', {
 
 Form.Validator.add('groupDoesNotExists', {
     errorMsg: function (elem) {
-        return '<a href="/circle/'+elem.value+'">'+elem.value+'</a> circle already exists';
+        return '<a href="/circle/' + elem.value + '">' + elem.value + '</a> circle already exists';
     },
     test: function (elem, props) {
         var symbol = elem.value,
             status = false;
 
-        if (symbol == props.oldSymbol)
+        if (symbol == props.oldSymbol) {
             return true;
+        }
 
         new Request({
             url:  '/AJAX/group/exists',
             data: {symbol: symbol},
             link: 'cancel',
             async: false,
-            onSuccess: function() {
+            onSuccess: function () {
                 try {
                     status = !JSON.decode(this.response.text).exists;
                 } catch (err) {
@@ -73,7 +76,7 @@ Form.Validator.add('userDoesNotExists', {
             },
             link: 'cancel',
             async: false,
-            onSuccess: function() {
+            onSuccess: function () {
                 try {
                     status = JSON.decode(this.response.text).available;
                 } catch (err) {
@@ -94,8 +97,9 @@ Form.Validator.add('emailDoesNotExists', {
         var email  = elem.value,
             status = false;
 
-        if (email == props.oldEmail)
+        if (email == props.oldEmail) {
             return true;
+        }
 
         new Request({
             url:  '/AJAX/user/check',
@@ -105,7 +109,7 @@ Form.Validator.add('emailDoesNotExists', {
             },
             link: 'cancel',
             async: false,
-            onSuccess: function() {
+            onSuccess: function () {
                 try {
                     status = JSON.decode(this.response.text).available;
                 } catch (err) {
@@ -120,15 +124,13 @@ Form.Validator.add('emailDoesNotExists', {
 
 Form.Validator.add('validate-facebook', {
     errorMsg: function (elem) {
-        switch(elem.get('errorType')) {
-            case 'no_fb':
-                return 'You must login into facebook before proceed';
-                break;
-            case 'exists':
-                return 'User with this facebook account already exists';
-                break;
-            default:
-                return 'something went wrong durning account checking';
+        switch (elem.get('errorType')) {
+        case 'no_fb':
+            return 'You must login into facebook before proceed';
+        case 'exists':
+            return 'User with this facebook account already exists';
+        default:
+            return 'something went wrong durning account checking';
         }
     },
 
@@ -139,12 +141,13 @@ Form.Validator.add('validate-facebook', {
             data: {action: 'check'},
             link: 'cancel',
             async: false,
-            onSuccess: function() {
+            onSuccess: function () {
                 try {
                     var resp = JSON.decode(this.response.text);
                     status = resp.success;
-                    if (resp.reason)
+                    if (resp.reason) {
                         elem.set('errorType', resp.reason);
+                    }
                 } catch (err) {
                     status = false;
                 }
@@ -163,8 +166,11 @@ Form.Validator.add('groupSelected', {
         var cid    = elem.getData('gid'),
             name   = elem.getData('name'),
             status = false;
-        if (cid && (elem.value == name))
+
+        if (cid && (elem.value == name)) {
             status = true;
+        }
+
         return status;
     }
 });
