@@ -45,7 +45,7 @@ if ($_f['show_reply']){
 ?>
 <form id="reply" class="<?=$classes?>">
 	<a class="anonym" href="#"><img src="/static/images/user.gif" alt="guy" data-tiptitle="Post Anonymously" data-tipid="anontip" /></a>
-    <? if ($_f['show_reply']): ?>
+    <? if ($me['id']): ?>
         <img src="<?=USER_PIC_REL.'medium_'.$me['id'].'.jpg'?>" alt="It's you" class="avatar" />
     <? endif; ?>
     <textarea title="<?=$title?>"></textarea>
