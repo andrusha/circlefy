@@ -170,7 +170,7 @@ class DB {
         $formatted = array_map(array($this, 'formatByType'),  $list);
         $formatted = ' ('.implode('),(', $formatted).')';
 
-        $query = str_ireplace('#values#', $formatted, $query);
+		$query = str_ireplace('#values#', $formatted, $query);
         return $this->query($query, array());
     }
 

@@ -385,10 +385,10 @@ class GroupsList extends Collection {
             return new GroupsList(array());
 
         $db = DB::getInstance();
-        $db->startTransaction();
+		$db->startTransaction();
         try {
-            $query = "INSERT INTO `group` (fb_id, symbol, name, descr, type) VALUES #values#";
-            $db->listInsert($query, $list);
+            $query = "INSERT IGNORE INTO `group` (fb_id, symbol, name, descr, type) VALUES #values#";
+			$db->listInsert($query, $list);
             $fbids = array_map(function ($x) { return $x[0]; }, $list);
             $groups = GroupsList::search('byFbIDs', array('fbids' => $fbids));
 
