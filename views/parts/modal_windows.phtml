@@ -273,7 +273,9 @@
 
             <div id="parent-circle" class="circle-thumb <?=(!$parent ? ' hidden' : '')?>" data-tipid="tip-circle-main" data-tiptitle="<?=$parent['name']?>" style="margin-left: 24px">
                 <span class="circle" style="margin:0;"></span>
-                <img src="<?=GROUP_PIC_REL . 'medium_' . $parent['id'] . '.jpg'?>" class="profile-thumb" alt="thumb" style="opacity: 1" />
+				<? if(!empty($parent['id'])): ?>
+				<img src="<?=GROUP_PIC_REL . 'medium_' . $parent['id'] . '.jpg'?>" class="profile-thumb" alt="thumb" style="opacity: 1" />
+				<?endif;?>
             </div>
 
             <div style="position:relative">
