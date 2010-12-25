@@ -7,6 +7,12 @@ class page_user extends Base {
         $uname = $_GET['uname'];
 
         $user = User::init($uname);
+
+        if ($user->id == null) {
+            header('Location: /');
+            exit();
+        }
+
         $user->stats = $user->getStats();
         Events::readUserEvent($this->user, $user);
 
