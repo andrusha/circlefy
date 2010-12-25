@@ -1,8 +1,8 @@
-<? if (!empty($events)): ?>
-<div id="notifications">
+<div id="notifications <?=(empty($events) ? 'hidden' : '')?>">
     
     <div class="list">
         <div class="events">
+        <? if (!empty($events)): ?>
             <? foreach($events as $e): ?>
             <div id="event-<?=($e['type'] == 2 ? 2 : 1)?>-<?=$e['id']?>" class="event">
                 <? if (isset($e['group_id'])): ?>
@@ -39,6 +39,7 @@
                 </p>
             </div>
             <? endforeach; ?>
+        <? endif; ?>
         </div>
     
     	<div class="controls">
@@ -56,4 +57,3 @@
 	<a href="#" class="toggle">Missed Notifications</a>
 
 </div><!--notifications-->
-<? endif; ?>
