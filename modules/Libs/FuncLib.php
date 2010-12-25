@@ -66,7 +66,7 @@ abstract class FuncLib {
     */
     public static function linkify($str) {
         $str = preg_replace("/\\b([a-z\\.-_]*@[a-z\\.]*\\.[a-z]{1,6})\\b/i", "<a href='mailto:\\1' target='_blank'>\\1</a>", $str);
-        $str = preg_replace('#\b((?:[a-z]{1,5}://|www\.)([a-z0-9\-\.]*\.[a-z]{1,6}(?:[a-z_\-0-9/\#=\?]*)))\b#i', "<a href='\\1' target='_blank'>\\2</a>", $str);
+        $str = preg_replace('#\b((?:[a-z]{1,5}://|www\.)([a-z0-9\-\.]*\.[a-z]{1,6}(?:[a-z_\-0-9/\#=\?\.]*)))\b#i', "<a href='\\1' target='_blank'>\\2</a>", $str);
         return $str;
     }
 
