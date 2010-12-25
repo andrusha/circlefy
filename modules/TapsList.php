@@ -91,9 +91,11 @@ class TapsList extends Collection {
                 $join[]   = 'members_l';
                 $join[]   = 'convo_l';
                 $join[]   = 'friends_l';
-                $where[]  = "(f.user_id = #uid# OR gm.user_id = #uid# OR c.user_id = #uid# ".
-                            '  OR ((m.sender_id = #uid# OR m.reciever_id = #uid#) AND '.
-                            '       m.reciever_id IS NOT NULL))';
+                $where[]  = '((f.user_id  = #uid# AND m.reciever_id IS NULL) OR '.
+                            ' gm.user_id  = #uid# OR '.
+                            ' c.user_id   = #uid# OR'.
+                            ' (m.sender_id = #uid# AND m.reciever_id IS NOT NULL) OR '.
+                            ' (m.sender_id IS NOT NULL AND m.reciever_id = #uid#))';
                 break;
 
             case 'aggr_groups':
