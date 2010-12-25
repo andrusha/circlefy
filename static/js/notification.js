@@ -57,7 +57,7 @@ var _notification = _tap.register({
 
         data.type = type;
         data.user_id = _vars.user.id;
-        data.related_id = data.id;
+        data.related_id = data.message_id || data.friend_id || data.id;
         data.new_replies = 1;
         data.sender = data.sender || {id: data.user_id || data.sender_id || null};
         data.sender_id = data.sender_id || data.user_id || null;
@@ -89,6 +89,12 @@ var _notification = _tap.register({
         e.stop();
         el.getSiblings('div.list').toggleClass('hidden');
         el.toggleClass('toggled');
+    },
+
+    forceShow: function () {
+        $$('#notifications > .list').removeClass('hidden');
+        $$('#notifications > .toggle').removeClass('toggled');
+        $$('#notifications').removeClass('hidden');
     },
 
     close: function (el, e) {
@@ -139,6 +145,7 @@ var _notification = _tap.register({
 
         list.empty();
         items.inject(list);
+        this.forceShow();
     },
 
     getPage: function (page, callback) {
