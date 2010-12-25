@@ -151,7 +151,7 @@
 	overflow:hidden;
         border:1px solid #3c3c3c;
 }
-#notifications .controls .paginate[disabled=true] {
+#notifications .controls .paginate[disabled] {
 filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
 	/* For IE 8 */
 	-MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";

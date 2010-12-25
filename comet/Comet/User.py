@@ -34,14 +34,16 @@ class UserServer(AbstractServer):
         for uid in users | send_uids:
             if uid in self.users:
                 for conn in self.users[uid]:
-                    if (group is not None and group not in conn.groups) or \
-                       (convo is not None and convo not in conn.convos):
+                    if ((group is not None and group not in conn.groups) or \
+                       (convo is not None and convo not in conn.convos)) and \
+                       conn.uid not in users:
                        continue
 
                     conn.send_message(type, message)
                     sended.add(conn.uid)
 
         return users - sended
+
            
 class UserConnection(AbstractConnection):
     def __init__(self, server, conn, addr):

@@ -5,7 +5,9 @@
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
                            'feed'  => array('type' => 'group', 'id' => $circle['id'], 'inside' => 0, 'first_tap' => $first_tap ? 1 : 0),
-                           'comet' => array('groups' => array($circle['id']))),
+                           'comet' => array('groups' => array($circle['id'])),
+                           'events' => $events ? $events : array()
+                           ),
         'guest'   => $guest);
     if ($moderator)
         $_h['scripts'][] = 'group_edit.js';

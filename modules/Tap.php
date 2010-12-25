@@ -13,7 +13,7 @@ class Tap extends BaseModel {
     public static $replyFields = array('id', 'message_id', 'user_id', 'text', 'time');
 
     protected static $intFields = array('id', 'sender_id', 'time', 'group_id', 'reciever_id', 'media_id',
-        'modification_time', 'private');
+        'modification_time', 'private', 'anonymous');
 
     protected static $addit = array('responses', 'group', 'sender', 'reciever', 
         'media', 'replies', 'involved', 'is_new','new_replies', 'type');

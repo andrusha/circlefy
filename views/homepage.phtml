@@ -6,7 +6,8 @@
                            'guest' => $guest,
                            'feed'  => array('type' => $feed_type, 
                                             'id' => null, 
-                                            'inside' => 0) 
+                                            'inside' => 0),
+                            'events' => $events ? $events : array()
                             ),
         'guest'   => $guest);
     include(HEADER);

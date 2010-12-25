@@ -3,7 +3,8 @@
         'title'   => 'what is this?',
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => null, 'id' => null, 'inside' => 0) 
+                           'feed'  => array('type' => null, 'id' => null, 'inside' => 0),
+                           'events' => $events ? $events : array()
                             ),
         'guest'   => $guest);
     include(HEADER);

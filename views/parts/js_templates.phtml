@@ -323,7 +323,7 @@
                     <img src="<?=GROUP_PIC_REL?>small_<#: e.group_id #>.jpg" class="group_icon" />
                 </a>
             <# endif; #>
-            <# if (!e.anonymous): #>
+            <# if (!(e.anonymous*1)): #>
                 <a href="/user/<#: e.sender.uname #>">
                     <img src="<?=USER_PIC_REL?>small_<#: e.sender_id #>.jpg" class="avatar" />
                 </a>
@@ -335,7 +335,7 @@
                     <a href="/convo/<#: e.id #>">New message</a>
                 <# else if (e.type == 1): #>
                     <a href="/convo/<#: e.id #>"><#: e.new_replies #> unread repl<# if (e.new_replies == 1): #>y<# else: #>ies<# endif; #> </a>
-                <# else if (e.type == 1): #>
+                <# else if (e.type == 2): #>
                     <a href="/user/<#: e.sender.uname #>">Someone follows you</a>
                 <# endif; #>
             </h3>

@@ -5,7 +5,9 @@
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
                            'feed'  => array('type' => 'friend', 'id' => $user['id'], 'inside' => 0),
-                           'comet' => array('groups' => array())),
+                           'comet' => array('groups' => array()),
+                           'events' => $events ? $events : array()
+                           ),
         'guest'   => $guest);
     include(HEADER);
 ?>

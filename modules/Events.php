@@ -35,7 +35,7 @@ class Events {
               INNER JOIN user u ON u.id = m.sender_id
               INNER JOIN events e ON m.id = e.related_id AND e.type IN (0, 1) {$where1})
             UNION ALL
-            (SELECT e.type, e.user_id AS event_reciever, null, null, u.id AS sender_id, '', null, null, null, null, f.time AS modifiction_time, null, null, u.uname, u.fname, u.lname, null, null
+            (SELECT e.type, e.user_id AS event_reciever, null, null AS anonymous, u.id AS sender_id, '', null, null, null, null, f.time AS modifiction_time, null, null, u.uname, u.fname, u.lname, null, null
                FROM events e
               INNER JOIN friends f ON f.friend_id = e.user_id AND f.user_id = e.related_id
               INNER JOIN user u ON u.id = f.user_id
@@ -49,6 +49,10 @@ class Events {
         
         if ($res->num_rows)
             while ($line = $res->fetch_assoc()) {
+                foreach (array('anonymous', 'group_id', 'user_id', 'media_id', 'type', 'id', 'private') as $key)
+                    if ($line[$key])
+                        $line[$key] = intval($line[$key]);
+
                 $group = array_intersect_key($line, array_flip(array('group_id', 'name', 'symbol')));
                 $gorup['id'] = $line['group_id'];
 

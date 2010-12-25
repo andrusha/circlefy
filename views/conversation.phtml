@@ -4,7 +4,9 @@
         'scripts' => array('feed.js', 'sidebar.js'),
         'vars'    => array('user'  => $me,
                            'guest' => $guest,
-                           'feed'  => array('type' => 'conversation', 'id' => $convo['id'])),
+                           'feed'  => array('type' => 'conversation', 'id' => $convo['id']),
+                           'events' => $events ? $events : array()
+                          ),
         'guest'   => $guest,
         'fixed'   => true);
     include(HEADER);
