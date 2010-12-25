@@ -8,7 +8,7 @@ class page_user extends Base {
 
         $user = User::init($uname);
 
-        if ($user->id == null) {
+        if ($user && $user->id == null) {
             header('Location: /');
             exit();
         }
