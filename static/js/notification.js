@@ -55,13 +55,17 @@ var _notification = _tap.register({
             return;
         }
 
+        data.id = data.message_id || data.friend_id || data.id;
         data.type = type;
         data.user_id = _vars.user.id;
-        data.related_id = data.message_id || data.friend_id || data.id;
         data.new_replies = 1;
         data.sender = data.sender || {id: data.user_id || data.sender_id || null};
         data.sender_id = data.sender_id || data.user_id || null;
         data.group = data.group || {id: data.group_id || null};
+
+        if (data.user_id == data.sender_id) {
+            return;
+        }
 
         this.add_event(data);
         this.show(this.queue.slice(0, this.perPage));
@@ -72,7 +76,7 @@ var _notification = _tap.register({
 
         //if reply event occured, increase replies count
         this.queue.each(function (elem) {
-                if (elem.type == event.type && elem.related_id == event.related_id) {
+                if (elem.type == event.type && elem.id == event.id && elem.sender_id == event.sender_id) {
                     found = true;
                     if (elem.type == 1) {
                         elem.new_replies = elem.new_replies ? elem.new_replies + event.new_replies : event.new_replies;

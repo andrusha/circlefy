@@ -190,9 +190,9 @@ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
 	text-shadow:	    	1px 1px #000;
 }
 #notifications .events .event {
-    background-color: #538DC2;
     width: 100%;
     height: 80px;
+    cursor: pointer;
 }
 #notifications .events .avatar {
     clear:both;
@@ -237,4 +237,18 @@ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
 #notifications .events h3 a {
     font-weight: bold;
     font-size:  11px;
+}
+
+#notifications .event-container {
+    position: absolute;
+    z-index: 22;
+}
+
+#notifications .event-background {
+    background-color: #000000;
+    height: 80px;
+    opacity: 0.6;
+    position: absolute;
+    width: 100%;
+    z-index: 20;
 }
