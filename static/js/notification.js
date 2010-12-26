@@ -55,19 +55,21 @@ var _notification = _tap.register({
             return;
         }
 
-        data.id = data.message_id || data.friend_id || data.id;
-        data.type = type;
-        data.user_id = _vars.user.id;
-        data.new_replies = 1;
-        data.sender = data.sender || {id: data.user_id || data.sender_id || null};
-        data.sender_id = data.sender_id || data.user_id || null;
-        data.group = data.group || {id: data.group_id || null};
+        var event = data;
+
+        event.id = data.message_id || data.friend_id || data.id;
+        event.type = type;
+        event.user_id = _vars.user.id;
+        event.new_replies = 1;
+        event.sender = data.sender || {id: data.user_id || data.sender_id || null};
+        event.sender_id = data.sender_id || data.user_id || null;
+        event.group = data.group || {id: data.group_id || null};
 
         if (data.user_id == data.sender_id) {
             return;
         }
 
-        this.add_event(data);
+        this.add_event(event);
         this.show(this.queue.slice(0, this.perPage));
     },
 
