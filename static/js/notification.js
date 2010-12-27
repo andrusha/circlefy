@@ -1,4 +1,4 @@
-/*global _tap, $$, document, Request, _template, Elements, _vars, _body*/
+/*global _tap, $$, document, Request, _template, Elements, _vars, _body, Chain, Fx*/
 
 var _notification = _tap.register({
     init: function () {
@@ -55,22 +55,22 @@ var _notification = _tap.register({
             return;
         }
 
-        var event = data;
+        var event = Object.clone(data);
 
         event.id = data.message_id || data.friend_id || data.id;
         event.type = type;
         event.user_id = _vars.user.id;
         event.new_replies = 1;
-        event.sender = data.sender || {id: data.user_id || data.sender_id || null};
+        event.sender = data.sender || {id: data.sender_id || data.user_id || null};
         event.sender_id = data.sender_id || data.user_id || null;
         event.group = data.group || {id: data.group_id || null};
 
-        if (data.user_id == data.sender_id) {
+        if (event.user_id == event.sender_id) {
             return;
         }
 
         this.add_event(event);
-        this.show(this.queue.slice(0, this.perPage));
+        this.show(this.queue.slice(0, this.perPage), true);
     },
 
     add_event: function (event) {
@@ -145,12 +145,31 @@ var _notification = _tap.register({
         }
     },
 
-    show: function (events) {
+    show: function (events, animate) {
         var items = Elements.from(_template.parse('notifications', events)),
-            list  = this.parent.getElement('div.events');
+            list  = this.parent.getElement('div.events'),
+            first = items && items.length ? items[0] : null;
+
+
+        if (animate && first) {
+            first.setStyles({
+                'opacity': 0,
+                'margin-bottom': '-80px'
+            });
+        }
 
         list.empty();
         items.inject(list);
+
+        if (animate && first) {
+            first.set('morph', {
+                unit: 'px',
+                link: 'cancel',
+                onStart: Chain.prototype.clearChain,
+                transition: Fx.Transitions.Back.easeOut
+            }).morph({opacity: 1, 'margin-bottom': '6px'});
+        }
+
         this.forceShow();
     },
 
