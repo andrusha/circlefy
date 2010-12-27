@@ -1,15 +1,12 @@
 <? //Grop join confirmation for email authorization 
    include(MAIL_HEADER); ?>
-As for <?=date('jS F')?> you have missed some interesting stuff going on.
-
+As of <?=date('jS F')?> you have missed some interesting stuff going on.
 <? if (!empty($followers)): ?>
 <?=count($followers)?> new follower<?=(count($followers) > 1 ? 's' : '')?>:
     <? foreach ($followers as $f): ?>
 * <?=$f['fname']?> <?=$f['lname']?>
     <? endforeach; ?>
 <? endif; ?>
-
-
 <? if (!empty($messages)): ?>
 <?=count($messages)?> new message<?=(count($messages) > 1 ? 's' : '')?>:
     <? foreach ($messages as $m): ?>
@@ -20,8 +17,6 @@ As for <?=date('jS F')?> you have missed some interesting stuff going on.
         <? endif; ?>
     <? endforeach; ?>
 <? endif; ?>
-
-
 <? if (!empty($responses)): ?>
 <?=count($responses)?> conversation update<?=(count($response) > 1 ? 's' : '')?>:
     <? foreach ($responses as $r): ?>
