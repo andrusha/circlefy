@@ -58,12 +58,13 @@ class UserConnection(AbstractConnection):
         super(UserConnection, self).__call__()
         
         # it actually means 'disconnected'
-        if self.state == 'connected':
+        if self.state == 'connected' or True:
+            logging.info("User %i (%s), %s disconnected" % (self.uid, self.server.usernames[self.uid], self.state))
             self.del_groups()
             self.del_convos()
             self.server.users[self.uid].remove(self)
 
-            if  not self.server.users[self.uid]:
+            if not self.server.users[self.uid]:
                 self.userOnline(0)
 
                 logging.info("User %i (%s) gone offline" % (self.uid, self.server.usernames[self.uid]))
@@ -85,9 +86,11 @@ class UserConnection(AbstractConnection):
 
             typecast = lambda string: set(map(int, string.split(',')))
             if 'cids' in frame and frame['cids']: 
+                self.del_convos()
                 self.add_convos(typecast(frame['cids']))
 
             if 'gids' in frame and frame['gids']:
+                self.del_groups()
                 self.add_groups(typecast(frame['gids']))
         
             logging.info('Connection state for %s (%i) group: %s, convos: %s' % \
@@ -153,6 +156,7 @@ class UserConnection(AbstractConnection):
         try:
             message = json.dumps({'type': type, 'data': data})
             logging.debug('Try to send %s to %i' % (message, self.uid))
-            self.conn.send(message + '\r\n')
+            res = self.conn.send(message + '\r\n')
+            logging.debug('Something %s' % res)
         except:
             logging.error('Message sending error')
