@@ -469,7 +469,7 @@ _modal.login = _tap.register({
 
         position = [position.x + 63, position.y + 25];
 
-        _notifications.alert('Please wait', "We are processing your request... <img src='static/spinner.gif'>",
+        _notifications.alert('Please wait', "We are processing your request...",
             { color: 'black',  duration: 10000, position: position});
         var executing = _notifications.items.getLast();
 
