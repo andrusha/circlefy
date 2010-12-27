@@ -115,8 +115,18 @@
 	right:5px;
 	width:234px;
 	height:auto;
-	border:1px solid #0c1e31;
 	z-index:11;
+}
+
+#notifications .navigation-background {
+    background: none repeat scroll 0 0 #000000;
+    border: 1px solid black;
+    bottom: 0;
+    height: 52px;
+    opacity: 0.8;
+    position: absolute;
+    width: 100%;
+    z-index: 20;
 }
 
 #notifications .toggle {
@@ -127,14 +137,17 @@
 	text-shadow:1px 1px #000101;
 	font-weight:bold;
 	text-decoration:none;
-	background:url(../images/notifications_arrow.gif) no-repeat right center #346394;
+	background:url(../images/notifications_arrow.gif) no-repeat right center transparent;
+    position: relative;
+    z-index: 22;
 }
 #notifications .controls {
 	display:block;
 	width:228px;
 	height:22px;
 	padding:3px;
-    background-color:#346394;
+    position: relative;
+    z-index: 22;
 }
 #notifications .controls .paginate {
 	width:114px;
@@ -193,24 +206,25 @@ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
     width: 100%;
     height: 80px;
     cursor: pointer;
+    margin-bottom: 6px;
 }
 #notifications .events .avatar {
     clear:both;
     float:left;
     display:block;
     margin-left:10px;
-    margin-top:15px;
+    margin-top:20px;
     position:absolute;
-    height:15px;
-    width:15px;
+    height:20px;
+    width:20px;
 }
 #notifications .events .group_icon {
     clear: both;
     float:right;
-    margin-top: 15px;
+    margin-top: 20px;
     margin-right: 10px;
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
 }
 #notifications .events h3 {
 	padding:	7px 50px 0;
@@ -220,7 +234,7 @@ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
 	color:		#ccc;
 }
 #notifications .events p {
-	padding:				0px 34px 15px;
+	padding:				8px 50px 15px;
 	margin:					0;
 	font-size:				12px;
 	color:					#fff;
@@ -236,12 +250,13 @@ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
 
 #notifications .events h3 a {
     font-weight: bold;
-    font-size:  11px;
+    font-size:  14px;
 }
 
 #notifications .event-container {
     position: absolute;
     z-index: 22;
+    width: 100%;
 }
 
 #notifications .event-background {
@@ -251,4 +266,15 @@ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
     position: absolute;
     width: 100%;
     z-index: 20;
+
+	-moz-border-radius:		5px;
+	-webkit-border-radius:	5px;
+    border-radius:          5px;
+    -moz-box-shadow:        0 0 5px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow:		0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow:         	0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+#notifications .event:hover .event-background {
+    opacity: 0.4;
 }

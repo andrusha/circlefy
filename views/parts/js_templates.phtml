@@ -345,7 +345,9 @@
                     <# if (e.type == 2): #>
                         <a href="/user/<#: e.sender_id #>"><#: e.sender.fname #> <#: e.sender.lname #></a>
                     <# else: #>
-                        <a href="/convo/<#: e.id #>"><#: e.text #></a>
+                        <a href="/convo/<#: e.id #>">
+                            "<#: e.text #>"
+                        </a>
                     <# endif; #>
                 </p>
             </div>
