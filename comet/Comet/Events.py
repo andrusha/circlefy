@@ -86,7 +86,7 @@ class EventDispatcher(object):
                 recievers['group'] = group
 
         unrecieved = self.user_server.send_to(action, message, **recievers)
-        unrecieved = unrecieved if not private else set([reciever])
+        unrecieved = unrecieved if not private else recievers 
         if unrecieved:
             self.on_unrecieved_message(int(message['id']), unrecieved, data = message)
 

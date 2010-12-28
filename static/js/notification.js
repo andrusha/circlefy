@@ -1,4 +1,4 @@
-/*global _tap, $$, document, Request, _template, Elements, _vars, _body, Chain, Fx*/
+/*global _tap, $$, document, Request, _template, Elements, _vars, _body, Chain, Fx, _live*/
 
 var _notification = _tap.register({
     init: function () {
@@ -12,6 +12,9 @@ var _notification = _tap.register({
         this.perPage = 5;
         this.online = true;
         this.queue = _vars.events || []; //notifications queue
+        this.queue.each(function (elem) {
+            elem.persistant = true;
+        });
 
         parent.addEvents({
             'click:relay(a.toggle)': this.toggle.toHandler(this),
@@ -41,36 +44,75 @@ var _notification = _tap.register({
             }.bind(this),
             'push.data.response.new': function (data) {
                 this.event(1, data);
-            }.bind(this)/*,
+            }.bind(this),
             'push.data.user.follow': function (data) {
                 this.event(2, data);
-            }.bind(this)*/
+            }.bind(this),
+            'push.data.member.new': function (data) {
+                //this.event(3, data);
+            }.bind(this)
         });
 
     },
 
     event: function (type, data) {
-        //add event only if user offline
-        if (this.online) {
-            return;
+        var event = null;
+
+        switch (type) {
+        case 0:
+            event = {
+                type:        type,
+                id:          data.id,
+                sender_id:   data.sender_id,
+                group_id:    data.group_id,
+                reciever_id: data.reciever_id,
+                'private':   data['private'],
+                anonymous:   data.anonymous,
+                text:        data.text,
+                
+                //here comes objects
+                sender:      Object.clone(data.sender),
+                group:       Object.clone(data.group)
+            };
+            break;
+        case 1:
+            event = {
+                type:       type,
+                id:         data.message_id,
+                sender_id:  data.user_id,
+                group_id:   data.group_id,
+                text:       data.text,
+                new_replies: 1,
+
+                sender:     Object.clone(data.user)
+            };
+            break;
+        case 2:
+            event = {
+                type:       type,
+                user_id:    data.user.id,
+
+                sender:     Object.clone(data.user)
+            };
+            break;
+        case 3:
+            event = {
+                type:       type,
+                user_id:    data.user_id,
+                group_id:   data.group_id
+            };
+            break;
         }
+        event.persistent = !this.online;
 
-        var event = Object.clone(data);
-
-        event.id = data.message_id || data.friend_id || data.id;
-        event.type = type;
-        event.user_id = _vars.user.id;
-        event.new_replies = 1;
-        event.sender = data.sender || {id: data.sender_id || data.user_id || null};
-        event.sender_id = data.sender_id || data.user_id || null;
-        event.group = data.group || {id: data.group_id || null};
-
-        if (event.user_id == event.sender_id) {
+        if (_vars.user.id == event.sender_id) {
             return;
         }
 
         this.add_event(event);
         this.show(this.queue.slice(0, this.perPage), true);
+
+        this.buttonsUpdate();
     },
 
     add_event: function (event) {
@@ -121,10 +163,8 @@ var _notification = _tap.register({
 
         if (type == 'next') {
             this.page++;
-            this.parent.getElements('button[data-type="prev"]').removeProperty('disabled');
         } else if (this.page > 0) {
             this.page--;
-            this.parent.getElements('button[data-type="next"]').removeProperty('disabled');
         }
 
         if (this.queue.length <= this.page * this.perPage) {
@@ -136,12 +176,20 @@ var _notification = _tap.register({
             this.show(this.queue.slice(this.page * this.perPage, (this.page + 1) * this.perPage));
         }
 
-        if (this.queue.length < (this.page + 1) * this.perPage) {
+        this.buttonsUpdate();
+    },
+
+    buttonsUpdate: function () {
+        if (this.queue.length <= (this.page + 1) * this.perPage) {
             this.parent.getElements('button[data-type="next"]').setProperty('disabled', true);
+        } else {
+            this.parent.getElements('button[data-type="next"]').removeProperty('disabled');
         }
 
         if (!this.page) {
             this.parent.getElements('button[data-type="prev"]').setProperty('disabled', true);
+        } else {
+            this.parent.getElements('button[data-type="prev"]').removeProperty('disabled');
         }
     },
 
@@ -156,6 +204,13 @@ var _notification = _tap.register({
                 'opacity': 0,
                 'margin-bottom': '-80px'
             });
+        }
+        
+        if (first && events && events.length && !events[0].persistent) {
+            first.getElement('.event-background').setStyle('background-color', 'darkgreen');
+            (function () {
+                first.getElement('.event-background').setStyle('background-color', 'black');
+            }.delay(8000));
         }
 
         list.empty();
@@ -233,3 +288,4 @@ var _activity = _tap.register({
         this.publish('user.inactive');
     }
 });
+

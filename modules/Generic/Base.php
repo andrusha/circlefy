@@ -39,6 +39,20 @@ abstract class Base {
     }
 
     public function __destruct() {
+        if ($this->view_output == 'HTML') {
+            $this->set($this->user->asArray(false), 'me');
+            $this->set($this->user->guest,          'guest');
+            $this->set(array_flip(Group::$types),   'types');
+            $this->set(array_flip(Group::$auths),   'auths');
+            if (!$this->user->guest)
+                $this->set(Events::forUser($this->user)->format()->asArrayAll(), 'events');
+
+
+            if (isset($_GET['firsttime']))
+                $this->set(true, 'firsttime');
+            $this->set($this->page_name, 'page');
+        }
+
         if (DEBUG) {
             DB::getInstance()->flush_log();
 
@@ -51,17 +65,6 @@ abstract class Base {
 
         switch($this->view_output){
             case 'HTML':
-                $this->set($this->user->asArray(false), 'me');
-                $this->set($this->user->guest,          'guest');
-                $this->set(array_flip(Group::$types),   'types');
-                $this->set(array_flip(Group::$auths),   'auths');
-                if (!$this->user->guest)
-                    $this->set(Events::forUser($this->user)->format()->asArrayAll(), 'events');
-
-
-                if (isset($_GET['firsttime']))
-                    $this->set(true, 'firsttime');
-                $this->set($this->page_name, 'page');
                 $this->renderPage(BASE_PATH.'/views/'.$this->page_name.'.phtml', $this->data);
                 break;
             

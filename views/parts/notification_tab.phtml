@@ -12,6 +12,7 @@
                             <img src="<?=GROUP_PIC_REL?>small_<?=$e['group_id']?>.jpg" class="group_icon" />
                         </a>
                     <? endif; ?>
+
                     <? if (!$e['anonymous']): ?>
                         <a href="/user/<?=$e['sender']['uname']?>">
                             <img src="<?=USER_PIC_REL?>small_<?=$e['sender_id']?>.jpg" class="avatar" />
@@ -19,24 +20,33 @@
                     <? else: ?>
                         <img src="/static/images/user.gif" class="avatar" />
                     <? endif; ?>
+
                     <h3>
                         <? if ($e['type'] == 0): ?>
-                        <a href="/convo/<?=$e['id']?>">New message</a>
+                            <a href="/convo/<?=$e['id']?>">
+                                <?=($e['private'] ? 'New private message' : 'New message')?>:
+                            </a>
                         <? elseif ($e['type'] == 1): ?>
-                            <a href="/convo/<?=$e['id']?>"><?=$e['new_replies']?> unread repl<?=($e['new_replies'] == 1 ? 'y' : 'ies')?></a>
+                            <a href="/convo/<?=$e['id']?>">
+                                <?=($e['new_replies'] == 1 ? 
+                                    'Response from <a href="/user/'.$e['sender']['uname'].'">'.$e['sender']['uname'].'</a>': 
+                                    $e['new_replies'].' unread replies')
+                                ?>:
+                            </a>
                         <? elseif ($e['type'] == 2): ?>
-                            <a href="/user/<?=$e['sender']['uname']?>">Someone follows you</a>
+                            <a href="/user/<?=$e['sender']['uname']?>">
+                                New follower: <?=$e['sender']['fname']?> <?=$e['sender']['lname']?>
+                            </a>
                         <? endif; ?>
                     </h3>
+
                     <p>
                         <? if ($e['type'] == 2): ?>
-                        <a href="/user/<?=$e['sender']['uname']?>">
-                            <?=$e['sender']['fname']?> <?=$e['sender']['lname']?>
-                        </a>
+                            Will follows you everywhere in your tap journey!
                         <? else: ?>
-                        <a href="/convo/<?=$e['id']?>">
-                            "<?=$e['text']?>"
-                        </a>
+                            <a href="/convo/<?=$e['id']?>">
+                                "<?=trim($e['text'])?>"
+                            </a>
                         <? endif; ?>
                     </p>
                 </div>

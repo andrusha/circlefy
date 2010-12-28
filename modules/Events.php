@@ -59,7 +59,7 @@ class Events {
                 $sender = array_intersect_key($line, array_flip(array('user_id', 'uname', 'fname', 'lname')));
                 $sender['id'] = $line['user_id'];
 
-                $line['group'] = new Group($group);
+                $line['group']  = new Group($group);
                 $line['sender'] = new User($sender);
 
                 $uid = intval($line['event_reciever']);
