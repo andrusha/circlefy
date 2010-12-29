@@ -635,6 +635,7 @@ img.avatar-author {
 	float:left;
 }
 .feed-item h3 a {
+	font-size:12px;
 	color:#346394;
 	text-decoration:none;
 }
@@ -2187,6 +2188,7 @@ span.highlight {
 	width:570px;
 }
 .feed-item .message {
+	font-weight:bold;
 	font-style:normal;
 	color:#202020;
 	width:500px;
