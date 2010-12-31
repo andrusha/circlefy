@@ -527,7 +527,7 @@ Function.implement({
 
 String.implement({
     isEmpty : function () {
-        return (!this.test(/\w+/));
+        return (!this || !this.replace(/\s/g, ''));
     },
 
     cleanup: function () {

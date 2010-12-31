@@ -313,4 +313,51 @@ class Tap extends BaseModel {
 
         return $perm;
     }
+
+    public function detectLanguage($user_ip = '') {
+        if (!$this->id || !$this->data['text'])
+            return;
+
+        $curl = new Curl();
+        $result = $curl->get('https://ajax.googleapis.com/ajax/services/language/detect', 
+            array('v' => '1.0', 'q' => $this->data['text'], 'key' => TRANSLATE_KEY, 'userip' => $user_ip));
+
+        $result = json_decode($result, true);
+
+        if (DEBUG)
+            FirePHP::getInstance(true)->log($result, 'language');
+
+        if ($result['responseStatus'] == 200) {
+            $geo = static::langByIp($user_ip);
+
+            if ($result['responseData']['isReliable'] || $result['responseData']['confidence'] >= 0.3)
+                $lang = $result['responseData']['language'];
+            else if ($geo)
+                $lang = $geo;
+            else
+                $lang = 'en';
+
+            $query = 'UPDATE message SET language = #lang# WHERE id = #id#';
+            $this->db->query($query, array('lang' => $lang, 'id' => $this->id));
+        }
+
+        return $this;
+    } 
+
+    public static function langByIp($ip) {
+        if (!$ip)
+            return 'en';
+
+        require_once(BASE_PATH."modules/geoip/geoipcity.inc");
+        require_once(BASE_PATH."modules/geoip/geoipregionvars.php");
+
+        $base = geoip_open(BASE_PATH."static/GeoIP.dat", GEOIP_STANDARD);
+        $record = geoip_record_by_addr($base, $ip);
+        geoip_close($base);
+
+        if (DEBUG) 
+            FirePHP::getInstance(true)->log($record, 'geoip');
+
+        return $record->country_code;
+    }
 };

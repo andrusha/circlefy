@@ -99,7 +99,7 @@ class TapsList extends Collection {
                 break;
 
             case 'aggr_groups':
-                $join[]  = 'members';
+                $join[]  = 'members_l';
                 $where[] = 'gm.user_id = #uid#';
                 break;
 

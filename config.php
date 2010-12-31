@@ -90,6 +90,8 @@ define('FBPERMISSIONS', 'user_about_me,user_education_history,user_hometown,user
 
 define("METRIC_KEY",  "05a951428ed5199e27d52356aae83a22");
 
+//define("TRANSLATE_KEY", 'ABQIAAAAdCk83cDkZ0ia3ghCbXi2mxREPhq7TN-nX4_0yzQXinh4q73vgRRnGh_3vcUpJMs_OohdY_B1C5P9Jw'); //circlefy
+define("TRANSLATE_KEY", 'ABQIAAAAdCk83cDkZ0ia3ghCbXi2mxQl_1nmNw5LYBV_RSbp6zmT9736TxROQQ_ELFNHmVc7LXvs22C1LmE2Jg'); //andrew.tap.info
 //*** OPTIONS ***
 
 define("KEYWORDS_TRASHOLD",  3);

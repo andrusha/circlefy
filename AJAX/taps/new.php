@@ -30,6 +30,7 @@ class ajax_new extends Base {
         }
 
         $tap->makeActive($this->user);
+        $tap->detectLanguage($this->user->ip);
         $this->data = array('success' => 1);
     }
 };
