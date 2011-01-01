@@ -24,7 +24,7 @@ input[type=submit], button, div.feed-item > img.avatar-author, div.reply-item > 
 
 body {
     /* Stop chaging it already! */
-/*	background:url(../images/bg.gif) repeat;*/
+	background:url(../images/bg.gif) repeat;
 	font-family:Helvetica, Arial, sans-serif;
 	color:#545454;
 	text-shadow:1px 1px #fff;
@@ -2412,15 +2412,16 @@ width:50px;
 
 /*** Post type selector ***/
 #feed-selector {
+	cursor:pointer;
 	display:block;
-	background:url(../images/filter_bg.gif) repeat-x left bottom #fff;
-	padding:6px 6px 10px 0px;
-width:40px;
+	padding:6px 6px 10px 6px;
+	vertical-align:middle;
+width:80px;
 height:12px;
 float:right;
 	border:1px solid #a6a6a6;
 	font-size:11px;
-	font-weight:bold;
+	font-weight:none;
 	color:#616161;
 	text-decoration:none;
 	border-radius:2px;
@@ -2442,7 +2443,6 @@ display:none;
 }
 #feed-selector .dropdown a {
 color:#999;
-text-decoration:line-through;
 text-shadow:1px 1px #000;
 }
 #feed-selector:hover .dropdown {
@@ -2464,8 +2464,9 @@ margin:0;
 }
 #feed-selector .dropdown li.selected a {
     color: #fff;
-text-decoration:none;
-margin:0;
+	text-decoration:none;
+	margin:0;
+	font-weight:bold;
 }
 /*** /Post type selector ***/
 
