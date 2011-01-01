@@ -42,10 +42,16 @@
 
                     <p>
                         <? if ($e['type'] == 2): ?>
-                            Will follows you everywhere in your tap journey!
+                            Will follow you everywhere in your tap journey!
                         <? else: ?>
                             <a href="/convo/<?=$e['id']?>">
-                                "<?=trim($e['text'])?>"
+                                <? if ($e['text']): ?>
+                                    "<?=trim($e['text'])?>"
+                                <? elseif ($e['media_id'] && $e['media_title'] && $e['media_title'] != '&nbsp;'): ?>
+                                    "<?=trim($e['media_title'])?>"
+                                <? elseif ($e['media_id']): ?>
+                                    <?=($e['media_type'] == 1 ? 'Video-post' : 'Photo-post')?>
+                                <? endif; ?>
                             </a>
                         <? endif; ?>
                     </p>

@@ -95,13 +95,13 @@ class EventDispatcher(object):
         return set(users) if users else set()
 
     def on_new_response(self, action, response):
-        mid, timestamp = map(int, [response['message_id'], response['timestamp']])
+        rid, mid, timestamp = map(int, [response['id'], response['message_id'], response['timestamp']])
         self.touch_message(mid, timestamp)
 
         unrecieved = self.user_server.send_to(action, response, 
                         users = self.convo_followers(mid), convo = mid)
         if unrecieved:
-            self.on_unrecieved_response(mid, unrecieved, data = response)
+            self.on_unrecieved_response(mid, rid, unrecieved, data = response)
             
     def touch_message(self, mid, timestamp):
         "Update message timestamp to reply timestamp"
@@ -141,11 +141,12 @@ class EventDispatcher(object):
         self.mailer.queue(users, type, message_id = data['id'], 
             group_id = data['group_id'], user_id = data['sender_id'])
 
-    def on_unrecieved_response(self, message, users, data = None):
+    def on_unrecieved_response(self, message, reply, users, data = None):
         "Insert new reply event or update every event to +1"
-        joined = (', 1, %i, 1),(' % message).join(map(str, users))
-        sql = 'INSERT INTO events (user_id, type, related_id, new_replies) VALUES (%s, 1, %i, 1)' % (joined, message) + \
-              'ON DUPLICATE KEY UPDATE new_replies = new_replies + 1'
+        
+        joined = (', 1, %i, %i, 1),(' % (message, reply)).join(map(str, users))
+        sql = 'INSERT INTO events (user_id, type, related_id, addit_id, new_replies) VALUES (%s, 1, %i, %i, 1)' % (joined, message, reply) + \
+              'ON DUPLICATE KEY UPDATE new_replies = new_replies + 1, addit_id = VALUES(addit_id)'
         self.mysql.cursor().execute(sql)
         self.mysql.commit()
 

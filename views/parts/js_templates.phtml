@@ -334,7 +334,7 @@
                 <# endif; #>
                 <h3>
                     <# if (e.type == 0): #>
-                        <a href="/convo/<#: e.id #>">New message</a>
+                        <a href="/convo/<#: e.id #>">New <# if (e.private): #> private<# endif; #>message:</a>
                     <# else if (e.type == 1): #>
                         <a href="/convo/<#: e.id #>"><#: e.new_replies #> unread repl<# if (e.new_replies == 1): #>y<# else: #>ies<# endif; #> </a>
                     <# else if (e.type == 2): #>
