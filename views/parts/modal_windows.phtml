@@ -230,14 +230,14 @@
             
             <div class="clear"></div>
             
-            <label for="edit-descr">description   <small>a brief explaination what this circle stands for</small></label>
+            <label for="edit-descr">description   <small>a brief explaination what this circle represents</small></label>
             <textarea name="descr" id="edit-descr" 
                       class="maxLength:250"
                       data-tipid="tip-input-descr"
             /><?=$circle['descr']?></textarea>
 			
             <div class="cont">
-        	<label for="edit-type">circle type</label>
+        	<label for="edit-type">circle type <small> define the type of circle</small> </label>
             <select name="type" id="edit-type">
                 <? foreach ($types as $val => $t): ?>
                     <option value="<?=$val?>" <?=($t == $circle['type'] ? ' selected' : '')?>><?=$t?></option>
@@ -252,7 +252,7 @@
             </div>
             
             <div class="cont second">            
-            <label for="edit-auth">authentication type</label>
+            <label for="edit-auth">auth type <small>how you validate members</small></label>
             <select name="auth" id="edit-auth">
                 <? foreach ($auths as $val => $t): ?>
                     <option value="<?=$val?>" <?=($t == $circle['auth'] ? ' selected' : '')?>><?=$t?></option>
@@ -266,10 +266,10 @@
             
             <div class="clear"></div>
 
-            <span>secret <input type="checkbox" name="secret" <?=($circle['secret'] ? ' checked' : '')?>/></span>
+			<span>secret <input type="checkbox" name="secret" <?=($circle['secret'] ? ' checked' : '')?>/><small style="font-size:12px;">(it will not show up in search)</small></span>
 
             <div class="clear"></div>
-            <label for="group-search-link">Parent circle</label>
+			<label for="group-search-link">Link parent circle<br/><small style="font-size:12px;">Link a circle to a related parent circle to this circle ( i.e. Blake Dorms link to Harvard )</small></label>
 
             <div id="parent-circle" class="circle-thumb <?=(!$parent ? ' hidden' : '')?>" data-tipid="tip-circle-main" data-tiptitle="<?=$parent['name']?>" style="margin-left: 24px">
                 <span class="circle" style="margin:0;"></span>
@@ -386,7 +386,7 @@
             
             <div class="clear"></div>
             
-            <label for="create-descr">description   <small>a brief explaination what this circle stands for</small></label>
+            <label for="create-descr">description   <small>a brief explaination what this circle represents</small></label>
             <textarea name="descr" id="create-descr" 
                       class="maxLength:250"
                       data-tipid="tip-input-descr"
@@ -409,7 +409,8 @@
                 </div>
             </div>-->
             <div id="create-secret">
-                <span>secret <input type="checkbox" name="secret" /></span>
+                <span>secret <input type="checkbox" name="secret" /><small style="font-size:12px;">(it will not show up in search)</small></span>
+				
             </div>
             </div>
             

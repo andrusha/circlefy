@@ -10,14 +10,14 @@
                <h3 class="title"><a href="/circle/<#: sugg.symbol #>"><#: sugg.name.limit(30) #></a></h3>
                <small>
                 <span>
-                    <#: sugg.messages_count #> messages received
+                    <#: sugg.messages_count #> posts 
                 </span>
                 
                 <strong>
                     <#: sugg.online_count #>
                     <em> 
-                        <#: 'viewer'.plural(sugg.online_count) #>, 
-                        <#: sugg.members_count #> <#: 'member'.plural(sugg.members_count) #>
+                        <#: 'online members'.plural(sugg.online_count) #>, 
+                        <#: sugg.members_count #> <#: 'total member'.plural(sugg.members_count) #>
                     </em>
                 </strong>
                </small>
