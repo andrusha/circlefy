@@ -123,15 +123,18 @@ class Tap extends BaseModel {
         $this->db->startTransaction();
 
         try {
-            if ($this->media_id)
-                $this->db->query("DELETE FROM media WHERE id = ".$this->media_id);
             $this->db->query("DELETE FROM conversations WHERE message_id = ".$this->id);
             $this->db->query("DELETE FROM reply         WHERE message_id = ".$this->id);
             $this->db->query("DELETE FROM message       WHERE id = ".$this->id);
+            if ($this->media_id)
+                $this->db->query("DELETE FROM media WHERE id = ".$this->media_id);
+
             $this->db->commit();
             Comet::send('tap.delete', array('id' => $this->id));
         } catch (SQLException $e) {
             $this->db->rollback();
+            if (DEBUG)
+                FirePHP::getInstance(true)->error($e);
             return false;
         }
 

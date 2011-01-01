@@ -29,13 +29,14 @@ class Events {
             $limit = '';
 
         $query = "
-            (SELECT e.type, e.user_id AS event_reciever, m.id, m.anonymous, m.sender_id, m.text, m.time, m.group_id, m.reciever_id, m.media_id, m.modification_time, m.private, e.new_replies, u.uname, u.fname, u.lname, g2.symbol, g2.name
+            (SELECT e.type, e.user_id AS event_reciever, m.id, m.anonymous, m.sender_id, m.text, m.time, m.group_id, m.reciever_id, m.media_id, m.modification_time, m.private, e.new_replies, u.uname, u.fname, u.lname, g2.symbol, g2.name, me.title as media_title, me.description
                FROM message m 
                LEFT JOIN `group` g2 ON g2.id = m.group_id 
+               LEFT JOIN media me ON me.id = m.media_id
               INNER JOIN user u ON u.id = m.sender_id
               INNER JOIN events e ON m.id = e.related_id AND e.type IN (0, 1) {$where1})
             UNION ALL
-            (SELECT e.type, e.user_id AS event_reciever, null, null AS anonymous, u.id AS sender_id, '', null, null, null, null, f.time AS modifiction_time, null, null, u.uname, u.fname, u.lname, null, null
+            (SELECT e.type, e.user_id AS event_reciever, null, null AS anonymous, u.id AS sender_id, '', null, null, null, null, f.time AS modifiction_time, null, null, u.uname, u.fname, u.lname, null, null, null, null
                FROM events e
               INNER JOIN friends f ON f.friend_id = e.user_id AND f.user_id = e.related_id
               INNER JOIN user u ON u.id = f.user_id
