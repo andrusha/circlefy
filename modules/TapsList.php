@@ -33,6 +33,7 @@ class TapsList extends Collection {
             to         - user who recieve PM
             id         - tap id
             ids        - id list
+            you        - your id, uses in fetching user feed
 
         @param int $options
             T_LIMIT      - specify limit start from
@@ -148,6 +149,15 @@ class TapsList extends Collection {
             case 'byIds':
                 $where[] = 'm.id IN (#ids#)';
                 break;
+        }
+
+        if (in_array($type, array('friend', 'aggr_friends'))) {
+            if (isset($params['you'])) 
+                $where[] = '(m.private = 0 OR '.
+                    '(m.private = 1 AND '.
+                    ' m.group_id IN (SELECT group_id FROM group_members WHERE user_id = #you#)))';
+            else
+                $where[] = 'm.private = 0';
         }
 
         if ($options & T_SEARCH)

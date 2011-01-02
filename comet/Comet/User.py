@@ -8,7 +8,7 @@ from collections import defaultdict
 from Abstract import AbstractServer, AbstractConnection
 
 class UserServer(AbstractServer):
-    def __init__(self, mysql):
+    def __init__(self, mysql, cassandra):
         logging.info('Starting user server')
         super(UserServer, self).__init__(2223, UserConnection)
         
@@ -18,6 +18,7 @@ class UserServer(AbstractServer):
         self.convos    = defaultdict(set)  #{message_id: [user_id, ...]
 
         self.mysql = mysql
+        self.cassandra = cassandra
  
     def send_to(self, type, message, users = None, group = None, convo = None):
         "Send message to users in userlist or ones who see group/convo"
@@ -78,7 +79,9 @@ class UserConnection(AbstractConnection):
             self.uid = int(frame['uid'])
             self.server.usernames[self.uid] = frame['uname']
             self.server.users[self.uid].append(self)
-            self.userOnline(1)
+
+            if len(self.server.users[self.uid]) == 1:
+                self.userOnline(1)
 
             logging.info("User %s (%i) online" % (self.server.usernames[self.uid], self.uid))
         elif self.state == "connected" and \
@@ -107,7 +110,7 @@ class UserConnection(AbstractConnection):
             if self.uid not in self.server.groups[gid]:
                 self.server.groups[gid].add(self.uid)
                 online += [gid]
-        self.groupOnline(online, 1)
+        #self.groupOnline(online, 1)
 
     def del_groups(self):
         other = set()
@@ -120,7 +123,7 @@ class UserConnection(AbstractConnection):
             self.server.groups[gid].remove(self.uid)
             if not self.server.groups[gid]:
                 del self.server.groups[gid]
-        self.groupOnline(update, 0)
+        #self.groupOnline(update, 0)
 
     def add_convos(self, convos):
         self.convos = convos
@@ -142,6 +145,9 @@ class UserConnection(AbstractConnection):
         query = "UPDATE user SET online = %d WHERE id = %d" % (status, self.uid)
         self.server.mysql.cursor().execute(query)
         self.server.mysql.commit()
+    
+        users = self.server.cassandra.get('inverted_members', self.uid)
+        self.groupOnline(set(users) if users else set(), status)
 
     def groupOnline(self, gid_list, status = 1):
         if not gid_list:

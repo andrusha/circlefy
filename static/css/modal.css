@@ -278,7 +278,7 @@ div.modal-window.show {
     background: #EEFDEB;
 }
 
-.modal-cancel {
+.modal-cancel, .modal-to-sign-login {
     font-size:11px;
 	position:absolute;
 	top:0px;

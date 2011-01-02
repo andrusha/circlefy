@@ -973,6 +973,7 @@ _controls.selector = _tap.register({
         e.stop();
         this.list.getElements('li').removeClass('selected');
         el.getParent('li').addClass('selected');
+        this.selector.getElement('span.feed-type').innerHTML = el.getData('name');
     },
 
     getInside: function () {

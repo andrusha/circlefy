@@ -8,6 +8,11 @@ keyspaces:
           default_validation_class: LongType
           comment: 'gid = {uid: uid}'
 
+        - name: inverted_members
+          compare_with: LongType
+          default_validation_class: LongType
+          comment: 'uid = {gid: gid}'
+
         - name: convo_followers 
           compare_with: LongType
           default_validation_class: LongType

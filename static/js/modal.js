@@ -16,6 +16,11 @@ var _modal = _tap.register({
             e.stop();
             self.hide();
         });
+
+        $$('a.modal-to-sign-login').addEvent('click', function (e) {
+            e.stop();
+            self.show('modal-sign-login');
+        });
         
         this.subscribe({
             'modal.show.signup': function () { self.show('modal-signup'); },
@@ -68,7 +73,12 @@ var _modal = _tap.register({
         var a = new Keyboard({
             events: {
                 'esc': function () {
-                    this.publish('modal.hide', [false]);
+                    var active = $$('div.modal-window.show');
+                    if (active && 
+                        active.length && 
+                        !['modal-signup', 'modal-login', 'modal-sign-login', 'modal-facebook'].contains(active[0].id)) {
+                        this.publish('modal.hide', [false]);
+                    }
                 }.bind(this)
             }
         });

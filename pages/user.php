@@ -24,7 +24,7 @@ class page_user extends Base {
             'circles');
         
         $this->set(
-            TapsList::search('friend', array('uid' => $user->id), T_GROUP_INFO | T_MEDIA)
+            TapsList::search('friend', array('uid' => $user->id, 'you' => $this->user->id), T_GROUP_INFO | T_MEDIA)
                     ->lastResponses()
                     ->inject('sender', $user)
                     ->format()

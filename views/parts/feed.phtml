@@ -51,15 +51,15 @@ if ($_f['show_reply']){
     <textarea title="<?=$title?>"></textarea>
     <input type="submit" value=" " />
     <div id="feed-selector" <? if ($page == 'user' || !$_f['state']): ?>class="hidden"<? endif; ?>>
-    	<b>Post to:</b> Public
+    	<b>Post to:</b> <span class="feed-type">Public</span>
         <ul class="dropdown">
             <li class="selected"
                 data-inside="0"
-                ><a href="#">Public</a>
+                ><a href="#" data-name="Public">Public</a>
             </li>
             <li class=""
                 data-inside="1">
-                <a href="#">Private ( authenticated members only)</a>
+                <a href="#" data-name="Private">Private (authenticated members only)</a>
             </li>
         </ul>
     </div>

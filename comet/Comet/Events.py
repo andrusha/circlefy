@@ -115,8 +115,10 @@ class EventDispatcher(object):
     def on_group_follow(self, group, user, status):
         if status:
             self.cassandra.insert('group_members', group, {user: user})
+            self.cassandra.insert('inverted_members', user, {group: group})
         else:
             self.cassandra.remove('group_members', group, columns=[user])
+            self.cassandra.remove('inverted_members', user, columns=[group])
 
         if status:
             unrecieved = self.user_server.send_to('member.new', {'group_id': group, 'user_id': user, 'status': status}, 
