@@ -20,7 +20,7 @@ class Mailer {
     }
 
     private static function send($email, $subject, $text) {
-        $status = mail($email, $subject, $text, "From: Circlefy Robot <robot@circlefy.com>\r\n");
+        $status = mail($email, $subject, $text, "From: Circlefy <robot@circlefy.com>\r\n");
         if (!$status && DEBUG)
             FirePHP::getInstance(true)->error("Mail sending error to `$email`");
     }
