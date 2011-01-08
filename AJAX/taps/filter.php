@@ -45,7 +45,7 @@ class ajax_filter extends Base {
             $options |= T_OUTSIDE;
         }
 
-        if (in_array($type, array('friend', 'aggr_friends') && $this->user->id))
+        if (in_array($type, array('friend', 'aggr_friends')) && $this->user->id)
             $params['you'] = $this->user->id;
 
         if (in_array($type, array('feed', 'aggr_friends', 'aggr_convos', 'private')))

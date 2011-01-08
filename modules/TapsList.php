@@ -151,7 +151,7 @@ class TapsList extends Collection {
                 break;
         }
 
-        if (in_array($type, array('friend', 'aggr_friends'))) {
+        if (!empty($params) && in_array($type, array('friend', 'aggr_friends'))) {
             if (isset($params['you'])) 
                 $where[] = '(m.private = 0 OR '.
                     '(m.private = 1 AND '.
