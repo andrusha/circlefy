@@ -7,7 +7,7 @@ var _notification = _tap.register({
             return;
         }
 
-
+        this.title = document.title;
         this.page = 0;
         this.perPage = 5;
         this.online = true;
@@ -28,6 +28,10 @@ var _notification = _tap.register({
 
         this.subscribe({
             'user.active': function () {
+                    if (document.title != this.title) {
+                        document.title = this.title;
+                    }
+                    
                     this.online = true;
                 }.bind(this),
             'user.inactive': function () {
@@ -60,6 +64,11 @@ var _notification = _tap.register({
 
         switch (type) {
         case 0:
+            if (data['private']) {
+                document.title = 'New PM! - ' + this.title;
+            } else {
+                document.title = 'New message! - ' + this.title;
+            }
             event = {
                 type:        type,
                 id:          data.id,
@@ -76,6 +85,7 @@ var _notification = _tap.register({
             };
             break;
         case 1:
+            document.title = 'New response! - ' + this.title;
             event = {
                 type:       type,
                 id:         data.message_id,
@@ -88,6 +98,7 @@ var _notification = _tap.register({
             };
             break;
         case 2:
+            document.title = 'New follower! - ' + this.title;
             event = {
                 type:       type,
                 user_id:    data.user.id,
@@ -96,6 +107,7 @@ var _notification = _tap.register({
             };
             break;
         case 3:
+            document.title = 'New circle member! - ' + this.title;
             event = {
                 type:       type,
                 user_id:    data.user_id,
@@ -124,6 +136,7 @@ var _notification = _tap.register({
                     found = true;
                     if (elem.type == 1) {
                         elem.new_replies = elem.new_replies ? elem.new_replies + event.new_replies : event.new_replies;
+                        elem.text = event.text;
                     }
                 }
             });
