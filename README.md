@@ -11,10 +11,9 @@ Requirements
 Installation
 ------------
 
-After installing necessary software:  
-1. Using MySql Workbench synchronize local db from ./docs/db\_model.mwb  
-2. Load scheme in Cassandra from ./config/cassandra.cli  
-3. Start Orbited with ./config/orbited.cfg  
+1. Using MySql Workbench synchronize local db from `./docs/db\_model.mwb`  
+2. Load scheme in Cassandra from `./config/cassandra.cli`  
+3. Start Orbited with `./config/orbited.cfg`  
 4. Init comet server `./comet/index.py --init`  
 5. Start comet server `./comet/index.py`  
 6. Edit ./config.php according your facebook and google accounts.  
